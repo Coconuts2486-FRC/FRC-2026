@@ -1,0 +1,53 @@
+
+A map of all controls
+
+Change these controls based on how back buttons are bound
+
+    Driver Controls:
+A:
+B:
+X:
+Y:
+D-Pad Up/Down:
+D-Pad Left/right: 
+Right Bumper:
+Left Bumper:
+Right Trigger:
+Left Trigger: 
+Start: 
+Back:
+Right Stick:   Rotate
+Left Stick:    Strafe
+Right Stick Button:
+Left Stick Button:
+
+Back Buttons: //Change these to actual
+A = Top Left
+B = Top Right
+X = Bottom Left
+Y = Bottom Right
+
+    Co-Driver Controls:
+A:
+B:
+X:
+Y:
+D-Pad Up/Down:
+D-Pad Left/Right:
+Right Bumper:
+Left Bumper:
+Right Trigger:
+Left Trigger:
+Start:
+Back:
+Right Stick:
+Left Stick:
+Right Stick Button:
+Left Stick Button:
+
+Back Buttons: //Change these to actual
+A = Top Left
+B = Top Right
+X = Bottom Left
+Y = Bottom Right
+
