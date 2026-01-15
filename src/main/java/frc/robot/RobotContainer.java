@@ -37,11 +37,11 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.FieldConstants.AprilTagLayoutType;
 import frc.robot.commands.AutopilotCommands;
 import frc.robot.commands.DriveCommands;
+import frc.robot.subsystems.Match_Status.match_status;
 import frc.robot.subsystems.accelerometer.Accelerometer;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.SwerveConstants;
 import frc.robot.subsystems.flywheel_example.Flywheel;
-import frc.robot.subsystems.flywheel_example.FlywheelIO;
 import frc.robot.subsystems.flywheel_example.FlywheelIOSim;
 import frc.robot.subsystems.imu.ImuIO;
 import frc.robot.subsystems.imu.ImuIONavX;
@@ -76,6 +76,7 @@ public class RobotContainer {
   // These are the "Active Subsystems" that the robot controls
   private final Drive m_drivebase;
 
+  private final match_status m_match_status;
   private final ImuIO m_imu;
   private final Flywheel m_flywheel;
 
@@ -134,6 +135,7 @@ public class RobotContainer {
 
         m_drivebase = new Drive(m_imu);
         m_flywheel = new Flywheel(new FlywheelIOSim()); // new Flywheel(new FlywheelIOTalonFX());
+        m_match_status = new match_status(driverController, operatorController);
         m_vision =
             switch (Constants.getVisionType()) {
               case PHOTON ->
@@ -158,6 +160,7 @@ public class RobotContainer {
         // Sim robot, instantiate physics sim IO implementations
         m_imu = new ImuIOSim(Constants.loopPeriodSecs);
         m_drivebase = new Drive(m_imu);
+        m_match_status = new match_status(driverController, driverController);
         m_flywheel = new Flywheel(new FlywheelIOSim() {});
         m_vision =
             new Vision(
@@ -171,7 +174,8 @@ public class RobotContainer {
         // Replayed robot, disable IO implementations
         m_imu = new ImuIOSim(Constants.loopPeriodSecs);
         m_drivebase = new Drive(m_imu);
-        m_flywheel = new Flywheel(new FlywheelIO() {});
+        m_flywheel = new Flywheel(new FlywheelIOSim() {});
+        m_match_status = new match_status(driverController, driverController);
         m_vision =
             new Vision(m_drivebase::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
         m_accel = new Accelerometer(m_imu);
