@@ -176,6 +176,7 @@ public class Robot extends LoggedRobot {
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
+    FieldState.wonAuto = null;
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -198,7 +199,7 @@ public class Robot extends LoggedRobot {
     //   active in Shifts 2 and 4.
     //
     // https://docs.wpilib.org/en/stable/docs/yearly-overview/2026-game-data.html
-    // if (FieldState.wonAuto == null) {
+    if (FieldState.wonAuto == null) {
     // Only call this code block if the signal from FMS has not yet arrived
     String gameData = DriverStation.getGameSpecificMessage();
     if (gameData.length() > 0) {
@@ -220,7 +221,7 @@ public class Robot extends LoggedRobot {
 
   // Anything else for the teleopPeriodic() function
 
-  // }
+  }
 
   /** This function is called once when test mode is enabled. */
   @Override
