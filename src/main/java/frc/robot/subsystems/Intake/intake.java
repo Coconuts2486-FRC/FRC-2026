@@ -31,8 +31,8 @@ public class intake extends RBSISubsystem {
     return io.getPosition();
   }
 
-  public void setRollerSpeed(double speed) {
-    io.setRollerSpeed(speed);
+  public void setRollerVelocity(double velocity) {
+    io.setRollerVelocity(velocity);
   }
 
   public void stopRoller() {
