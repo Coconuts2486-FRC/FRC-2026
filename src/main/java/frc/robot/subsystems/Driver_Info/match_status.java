@@ -1,4 +1,4 @@
-package frc.robot.subsystems.Match_Status;
+package frc.robot.subsystems.Driver_Info;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -18,12 +18,12 @@ public class match_status extends VirtualSubsystem {
     this.coDriver = coDriver;
   }
 
-  public void rumble() { //makes both controllers rumble
+  public void rumble() { // makes both controllers rumble
     driver.setRumble(RumbleType.kBothRumble, 0.5);
     coDriver.setRumble(RumbleType.kBothRumble, 0.5);
   }
 
-  public void stopRumble() { //stops both controllers rumbling
+  public void stopRumble() { // stops both controllers rumbling
     driver.setRumble(RumbleType.kBothRumble, 0);
     coDriver.setRumble(RumbleType.kBothRumble, 0);
   }
@@ -63,7 +63,7 @@ public class match_status extends VirtualSubsystem {
         stopRumble();
       }
     } else {
-      stopRumble(); //if no value won for who won auto the controllers will never vibrate
+      stopRumble(); // if no value won for who won auto the controllers will never vibrate
     }
   }
 }

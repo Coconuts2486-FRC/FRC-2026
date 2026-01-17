@@ -200,26 +200,26 @@ public class Robot extends LoggedRobot {
     //
     // https://docs.wpilib.org/en/stable/docs/yearly-overview/2026-game-data.html
     if (FieldState.wonAuto == null) {
-    // Only call this code block if the signal from FMS has not yet arrived
-    String gameData = DriverStation.getGameSpecificMessage();
-    if (gameData.length() > 0) {
-      switch (gameData.charAt(0)) {
-        case 'B':
-          // Blue case code
-          FieldState.wonAuto = DriverStation.Alliance.Blue;
-          break;
-        case 'R':
-          // Red case code
-          FieldState.wonAuto = DriverStation.Alliance.Red;
-          break;
-        default:
-          // This is corrupt data, do nothing
-          break;
+      // Only call this code block if the signal from FMS has not yet arrived
+      String gameData = DriverStation.getGameSpecificMessage();
+      if (gameData.length() > 0) {
+        switch (gameData.charAt(0)) {
+          case 'B':
+            // Blue case code
+            FieldState.wonAuto = DriverStation.Alliance.Blue;
+            break;
+          case 'R':
+            // Red case code
+            FieldState.wonAuto = DriverStation.Alliance.Red;
+            break;
+          default:
+            // This is corrupt data, do nothing
+            break;
+        }
       }
     }
-  }
 
-  // Anything else for the teleopPeriodic() function
+    // Anything else for the teleopPeriodic() function
 
   }
 

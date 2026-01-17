@@ -37,7 +37,8 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.FieldConstants.AprilTagLayoutType;
 import frc.robot.commands.AutopilotCommands;
 import frc.robot.commands.DriveCommands;
-import frc.robot.subsystems.Match_Status.match_status;
+import frc.robot.subsystems.Driver_Info.can_status;
+import frc.robot.subsystems.Driver_Info.match_status;
 import frc.robot.subsystems.accelerometer.Accelerometer;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.SwerveConstants;
@@ -77,6 +78,7 @@ public class RobotContainer {
   private final Drive m_drivebase;
 
   private final match_status m_match_status;
+  private final can_status m_can_staus;
   private final ImuIO m_imu;
   private final Flywheel m_flywheel;
 
@@ -136,6 +138,7 @@ public class RobotContainer {
         m_drivebase = new Drive(m_imu);
         m_flywheel = new Flywheel(new FlywheelIOSim()); // new Flywheel(new FlywheelIOTalonFX());
         m_match_status = new match_status(driverController, operatorController);
+        m_can_staus = new can_status();
         m_vision =
             switch (Constants.getVisionType()) {
               case PHOTON ->
@@ -161,6 +164,7 @@ public class RobotContainer {
         m_imu = new ImuIOSim(Constants.loopPeriodSecs);
         m_drivebase = new Drive(m_imu);
         m_match_status = new match_status(driverController, driverController);
+        m_can_staus = new can_status();
         m_flywheel = new Flywheel(new FlywheelIOSim() {});
         m_vision =
             new Vision(
@@ -176,6 +180,7 @@ public class RobotContainer {
         m_drivebase = new Drive(m_imu);
         m_flywheel = new Flywheel(new FlywheelIOSim() {});
         m_match_status = new match_status(driverController, driverController);
+        m_can_staus = new can_status();
         m_vision =
             new Vision(m_drivebase::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
         m_accel = new Accelerometer(m_imu);

@@ -23,6 +23,11 @@ public class Module {
   private final ModuleIO io;
   private final ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
   private final int index;
+  public static boolean alive;
+  public static boolean alive1;
+  public static boolean alive2;
+  public static boolean alive3;
+  public static boolean alive4;
 
   private final Alert driveDisconnectedAlert;
   private final Alert turnDisconnectedAlert;
@@ -57,6 +62,47 @@ public class Module {
       Rotation2d angle = inputs.odometryTurnPositions[i];
       odometryPositions[i] = new SwerveModulePosition(positionMeters, angle);
     }
+
+    // check if modules are alive
+    // if (inputs.turnConnected && inputs.driveConnected && inputs.turnEncoderConnected) {
+    //   alive = true;
+    // } else {
+    //   alive = false;
+    // }
+
+    if (inputs.turnConnected
+        && inputs.driveConnected
+        && inputs.turnEncoderConnected
+        && index == 0) {
+      alive1 = true;
+    } else if (inputs.turnConnected
+        && inputs.driveConnected
+        && inputs.turnEncoderConnected
+        && index == 1) {
+      alive2 = true;
+    } else if (inputs.turnConnected
+        && inputs.driveConnected
+        && inputs.turnEncoderConnected
+        && index == 2) {
+      alive3 = true;
+    } else if (inputs.turnConnected
+        && inputs.driveConnected
+        && inputs.turnEncoderConnected
+        && index == 3) {
+      alive4 = true;
+    } else if (index < 4) {
+      alive1 = false;
+      alive2 = false;
+      alive3 = false;
+      alive4 = false;
+    }
+
+    Logger.recordOutput("CAN/Module1Alive", alive1);
+    Logger.recordOutput("CAN/Module2Alive", alive2);
+    Logger.recordOutput("CAN/Module3Alive", alive3);
+    Logger.recordOutput("CAN/Module4Alive", alive4);
+
+    // Logger.recordOutput("CAN/ModuleALive" + Integer.toString(index), alive);
 
     // Update alerts
     driveDisconnectedAlert.set(!inputs.driveConnected);
