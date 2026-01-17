@@ -63,13 +63,7 @@ public class Module {
       odometryPositions[i] = new SwerveModulePosition(positionMeters, angle);
     }
 
-    // check if modules are alive
-    // if (inputs.turnConnected && inputs.driveConnected && inputs.turnEncoderConnected) {
-    //   alive = true;
-    // } else {
-    //   alive = false;
-    // }
-
+    // if statement to check and set variables for seeing if each swerve module is alive
     if (inputs.turnConnected
         && inputs.driveConnected
         && inputs.turnEncoderConnected
@@ -96,13 +90,6 @@ public class Module {
       alive3 = false;
       alive4 = false;
     }
-
-    Logger.recordOutput("CAN/Module1Alive", alive1);
-    Logger.recordOutput("CAN/Module2Alive", alive2);
-    Logger.recordOutput("CAN/Module3Alive", alive3);
-    Logger.recordOutput("CAN/Module4Alive", alive4);
-
-    // Logger.recordOutput("CAN/ModuleALive" + Integer.toString(index), alive);
 
     // Update alerts
     driveDisconnectedAlert.set(!inputs.driveConnected);

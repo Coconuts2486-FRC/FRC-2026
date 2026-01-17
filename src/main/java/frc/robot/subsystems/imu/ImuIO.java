@@ -31,7 +31,7 @@ public interface ImuIO {
 
   @AutoLog
   public static class ImuIOInputs {
-    public boolean connected = false;
+    public static boolean connected = false;
 
     // Timestamp
     public long timestampNs = 0;
