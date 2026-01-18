@@ -1,5 +1,6 @@
 package frc.robot.subsystems.Turret_Spin;
 
+import edu.wpi.first.math.geometry.Pose3d;
 import frc.robot.util.RBSISubsystem;
 
 public class Turret_Spin extends RBSISubsystem {
@@ -15,10 +16,13 @@ public class Turret_Spin extends RBSISubsystem {
   @Override
   public void simulationPeriodic() {}
 
-  public void aimTarget() {}
+  public void aimTarget(){
+    
+  }
 
-  public double wantedVelocity(double robotSpeed, double z, double distance) {
-    return 0.0;
+  public double wantedVelocity(double robotSpeed, double z, double distance){
+    return 0.0;    
+
   }
 
   public void setVolts(double volts) {

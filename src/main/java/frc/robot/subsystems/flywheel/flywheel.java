@@ -3,12 +3,13 @@ package frc.robot.subsystems.flywheel;
 import frc.robot.util.RBSISubsystem;
 
 public class flywheel extends RBSISubsystem {
-
+  
   private flywheelIO io;
 
-  public void flywheel(flywheelIO io) {
+  public void flywheel(flywheelIO io){
     this.io = io;
   }
+
 
   public void flywheelSetVolts(double volts) {
     io.flywheelSetVolts(volts);
@@ -22,9 +23,12 @@ public class flywheel extends RBSISubsystem {
     io.flywheelStop();
   }
 
+
   @Override
   public void periodic() {}
 
   @Override
   public void simulationPeriodic() {}
+
+
 }
