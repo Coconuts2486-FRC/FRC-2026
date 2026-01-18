@@ -3,8 +3,6 @@ package frc.robot.subsystems.Turret_Spin;
 import frc.robot.util.RBSIIO;
 import org.littletonrobotics.junction.AutoLog;
 
-import com.thethriftybot.wrappers.DriverStationWrapper.defaultDriversStation;
-
 public interface Turret_SpinIO extends RBSIIO {
 
   @AutoLog
@@ -15,7 +13,7 @@ public interface Turret_SpinIO extends RBSIIO {
     public double[] currentAmps = new double[] {};
   }
 
-  public default void aimTarget(){}
+  public default void aimTarget() {}
 
   public default void setVolts(double volts) {}
 
