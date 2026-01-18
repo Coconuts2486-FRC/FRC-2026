@@ -338,6 +338,11 @@ public final class Constants {
     public static final PIDConstants pidSim = new PIDConstants(1.0, 0.0, 0.0);
   }
 
+  public static final class turretConstants {
+
+    public static final double hoodAngle = 0.0; // place holder
+  }
+
   /************************************************************************* */
   /** Place Other Mechanism Constant Classes Here ************************** */
   // public static class Mechanism1Constants {}

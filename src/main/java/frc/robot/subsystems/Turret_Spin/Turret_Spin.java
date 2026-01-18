@@ -1,10 +1,12 @@
 package frc.robot.subsystems.Turret_Spin;
 
-import edu.wpi.first.math.geometry.Pose3d;
+import frc.robot.Constants.turretConstants;
 import frc.robot.util.RBSISubsystem;
 
 public class Turret_Spin extends RBSISubsystem {
   public Turret_SpinIO io;
+  public double solution1;
+  public double solution2;
 
   public void Turret_Spin(Turret_SpinIO io) {
     this.io = io;
@@ -16,13 +18,38 @@ public class Turret_Spin extends RBSISubsystem {
   @Override
   public void simulationPeriodic() {}
 
-  public void aimTarget(){
-    
+  public void aimTarget() {}
+
+  public double wantedVelocity(double robotSpeed, double z, double distance) {
+
+    solution1 =
+        (2 * A(z, distance, robotSpeed) * robotSpeed)
+            / (-B(z, distance)
+                + Math.sqrt(
+                    (B(z, distance) * B(z, distance))
+                        - 4 * A(z, distance, robotSpeed) * C(z, distance)));
+    solution2 =
+        (2 * A(z, distance, robotSpeed) * robotSpeed)
+            / (-B(z, distance)
+                - Math.sqrt(
+                    (B(z, distance) * B(z, distance))
+                        - 4 * A(z, distance, robotSpeed) * C(z, distance)));
+
+    return solution1; /*place holder */
   }
 
-  public void wantedVelocity(double robotSpeed, double z, double distance){
-    
+  public double A(double z, double distance, double robotSpeed) {
+    return z + ((9.8 * distance * distance) / (2 * robotSpeed * robotSpeed));
+  }
 
+  public double B(double z, double distance) {
+    return (2 * z * Math.cos(turretConstants.hoodAngle))
+        - (distance * Math.sin(turretConstants.hoodAngle));
+  }
+
+  public double C(double z, double distance) {
+    return (z * Math.cos(turretConstants.hoodAngle))
+        - (distance * Math.sin(turretConstants.hoodAngle) * Math.cos(turretConstants.hoodAngle));
   }
 
   public void setVolts(double volts) {
