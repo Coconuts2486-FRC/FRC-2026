@@ -20,8 +20,8 @@ public class Turret_Spin extends RBSISubsystem {
     
   }
 
-  public double wantedVelocity(double robotSpeed, double z, double distance){
-    return 0.0;    
+  public void wantedVelocity(double robotSpeed, double z, double distance){
+    
 
   }
 
