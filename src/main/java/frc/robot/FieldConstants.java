@@ -25,6 +25,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Filesystem;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -35,6 +39,15 @@ import lombok.Getter;
  * have a blue alliance origin.
  */
 public class FieldConstants {
+
+  public static final Distance startingLineX = Inches.of(157.06);
+
+  public static final Translation2d towerCenter =
+      new Translation2d(Units.inchesToMeters(43.8), Units.inchesToMeters(169.78));
+
+  public static final Translation3d hubCenter =
+      new Translation3d(
+          Units.inchesToMeters(182.11), Units.inchesToMeters(158.84), Units.inchesToMeters(72));
 
   /** AprilTag Field Layout ************************************************ */
   public static final double aprilTagWidth = Inches.of(6.50).in(Meters);
