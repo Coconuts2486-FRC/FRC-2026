@@ -18,7 +18,6 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
-import static frc.robot.util.RBSIEnum.*;
 
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
@@ -31,12 +30,10 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Mass;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.RobotBase;
-import frc.robot.Constants.DrivebaseConstants;
-import frc.robot.Constants.RobotConstants;
-import frc.robot.Constants.RobotType;
 import frc.robot.FieldConstants.AprilTagLayoutType;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.SwerveConstants;
@@ -348,6 +345,25 @@ public final class Constants {
   // public static class Mechanism1Constants {}
   // public static class Mechanism2Constants {}
   // ...
+
+  /************************************************************************* */
+  /** Shooter Constants **************************************************** */
+  public static final class ShooterConstants {
+
+    // Fuel trajectory Constants
+    public static final double kThetaRad = Units.degreesToRadians(70.0); // fixed elevation
+    public static final double kApexClearanceMeters = 0.5; // h_c
+    public static final double kG = 9.81;
+
+    // Numerical Trajectory Solving Parameters
+    public static final double kV0Tol = 1e-6; // m/s
+    public static final int kMaxBisectionIters = 80;
+    public static final double kMinBracket = 0.1; // m/s
+    public static final double kMaxV0Search = 100.0; // m/s safety cap
+
+    // Shooter Mechanical Constants go here...
+    public static final double kShooterGearRatio = 1.0;
+  }
 
   /************************************************************************* */
   /** (Semi-)Autonomous Action Constants *********************************** */
