@@ -5,7 +5,8 @@ import frc.robot.util.RBSISubsystem;
 public class intake extends RBSISubsystem {
   private intakeIO io;
 
-  public void intake(intakeIO io) {
+  // Constructor
+  public intake(intakeIO io) {
     this.io = io;
   }
 
