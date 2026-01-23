@@ -40,14 +40,31 @@ import lombok.Getter;
  */
 public class FieldConstants {
 
-  public static final Distance startingLineX = Inches.of(157.06);
+  public static final Distance startingLineXBLue = Inches.of(157.06);
 
-  public static final Translation2d towerCenter =
+  public static final Distance startingLineXRed = Inches.of(493.06);
+
+  public static final Translation2d towerCenterBlue =
       new Translation2d(Units.inchesToMeters(43.8), Units.inchesToMeters(169.78));
 
-  public static final Translation3d hubCenter =
+  public static final Translation2d towerCenterRed =
+      new Translation2d(Units.inchesToMeters(607.42), Units.inchesToMeters(147.47));
+
+  public static final Translation3d hubCenterBLue =
       new Translation3d(
           Units.inchesToMeters(182.11), Units.inchesToMeters(158.84), Units.inchesToMeters(72));
+
+  public static final Translation3d hubCenterRed =
+      new Translation3d(
+          Units.inchesToMeters(469.11), Units.inchesToMeters(158.84), Units.inchesToMeters(72));
+
+  public static final Translation3d passingZoneBlue =
+      new Translation3d(
+          Units.inchesToMeters(78.03), Units.inchesToMeters(49.32), Units.inchesToMeters(0));
+
+  public static final Translation3d passingZoneRed =
+      new Translation3d(
+          Units.inchesToMeters(573.19), Units.inchesToMeters(267.85), Units.inchesToMeters(0));
 
   /** AprilTag Field Layout ************************************************ */
   public static final double aprilTagWidth = Inches.of(6.50).in(Meters);
