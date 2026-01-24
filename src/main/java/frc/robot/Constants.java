@@ -72,8 +72,8 @@ public final class Constants {
   //       under strict caveat emptor -- and submit any error and bugfixes
   //       via GitHub issues.
   private static SwerveType swerveType = SwerveType.PHOENIX6; // PHOENIX6, YAGSL
-  private static CTREPro phoenixPro = CTREPro.UNLICENSED; // LICENSED, UNLICENSED
-  private static AutoType autoType = AutoType.MANUAL; // MANUAL, PATHPLANNER, CHOREO
+  private static CTREPro phoenixPro = CTREPro.LICENSED; // LICENSED, UNLICENSED
+  private static AutoType autoType = AutoType.PATHPLANNER; // MANUAL, PATHPLANNER, CHOREO
   private static VisionType visionType = VisionType.NONE; // PHOTON, LIMELIGHT, NONE
 
   /** Enumerate the robot types (name your robots here) */
@@ -261,10 +261,17 @@ public final class Constants {
     // Theoretical free speed (m/s) at 12v applied output;
     // IMPORTANT: Follow the AdvantageKit instructions for measuring the ACTUAL maximum linear speed
     // of YOUR ROBOT, and replace the estimate here with your measured value!
-    public static final double kMaxLinearSpeed = Feet.of(18).in(Meters);
+    public static final double kMaxLinearSpeed = Meters.of(5.0).in(Meters);
 
     // Set 3/4 of a rotation per second as the max angular velocity (radians/sec)
     public static final double kMaxAngularSpeed = 1.5 * Math.PI;
+
+    // Slip Current -- the current draw when the wheels start to slip
+    // Measure this against a wall.  CHECK WITH THE CARPET AT AN ACTUAL EVENT!!!
+    public static final double kSlipCurrent = 17.0; // Amps
+
+    // Characterized Wheel Radius (using the "Drive Wheel Radius Characterization" auto routine)
+    public static final double kWheelRadiusMeters = Inches.of(1.900).in(Meters);
 
     // Maximum chassis accelerations desired for robot motion  -- metric / radians
     // TODO: Compute the maximum linear acceleration given the PHYSICS of the ROBOT!
@@ -299,14 +306,14 @@ public final class Constants {
     //
     // IMPORTANT:: These values are valid only for CTRE LICENSED operation!!
     //             Adjust these downward until your modules behave correctly
-    public static final double kDriveP = 40.0;
+    public static final double kDriveP = 50.0;
     public static final double kDriveD = 0.03;
-    public static final double kDriveV = 0.83;
+    public static final double kDriveV = 0.4;
     public static final double kDriveA = 0.0;
-    public static final double kDriveS = 0.21;
+    public static final double kDriveS = 2.05;
     public static final double kDriveT =
         SwerveConstants.kDriveGearRatio / DCMotor.getKrakenX60Foc(1).KtNMPerAmp;
-    public static final double kSteerP = 400.0;
+    public static final double kSteerP = 500.0;
     public static final double kSteerD = 20.0;
   }
 
@@ -385,11 +392,11 @@ public final class Constants {
             RobotConstants.kRobotMass.in(Kilograms),
             RobotConstants.kRobotMOI,
             new ModuleConfig(
-                SwerveConstants.kWheelRadiusMeters,
+                DrivebaseConstants.kWheelRadiusMeters,
                 DrivebaseConstants.kMaxLinearSpeed,
                 RobotConstants.kWheelCOF,
                 DCMotor.getKrakenX60Foc(1).withReduction(SwerveConstants.kDriveGearRatio),
-                SwerveConstants.kDriveSlipCurrent,
+                DrivebaseConstants.kSlipCurrent,
                 1),
             Drive.getModuleTranslations());
 
@@ -412,7 +419,7 @@ public final class Constants {
     // Motion profile for drive to pose
     private static final APProfile kAPProfile =
         new APProfile(kAPConstraints)
-            .withErrorXY(Centimeters.of(2))
+            .withErrorXY(Centimeters.of(1))
             .withErrorTheta(Degrees.of(0.5))
             .withBeelineRadius(Centimeters.of(8));
 
