@@ -92,6 +92,8 @@ public class RobotContainer {
   private final ImuIO m_imu;
   private final Flywheel m_flywheel;
 
+  private boolean elasticOnDriveTab = true;
+
   // ... Add additional subsystems here (e.g., elevator, arm, etc.)
 
   // These are "Virtual Subsystems" that report information but have no motors
@@ -317,8 +319,7 @@ public class RobotContainer {
                         m_drivebase,
                         () -> -driveStickY.value(),
                         () -> -driveStickX.value(),
-                        () -> turnStickX.value()),
-                m_drivebase));
+                        () -> turnStickX.value())));
 
     // Press A button -> BRAKE
     driverController
@@ -327,6 +328,15 @@ public class RobotContainer {
 
     // Press X button --> Stop with wheels in X-Lock position
     driverController.x().onTrue(Commands.runOnce(m_drivebase::stopWithX, m_drivebase));
+    // Press start button --> switch elastic tab
+    driverController
+        .start()
+        .onTrue(
+            Commands.runOnce(
+                () -> {
+                  elasticOnDriveTab = !elasticOnDriveTab;
+                  Elastic.selectTab(elasticOnDriveTab ? 2 : 0);
+                }));
 
     // Press Y button --> Manually Re-Zero the Gyro
     driverController
