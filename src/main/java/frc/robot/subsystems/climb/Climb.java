@@ -13,10 +13,6 @@ public class Climb extends RBSISubsystem {
     this.io = io;
   }
 
-  public void pivotToPos(double pos) {
-    io.pivotToPos(pos);
-  }
-
   public void extendToPos(double pos) {
     io.extendToPos(pos);
   }
