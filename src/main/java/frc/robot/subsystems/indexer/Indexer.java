@@ -24,7 +24,7 @@ public class Indexer extends RBSISubsystem {
   public void stop() {}
 
   @Override
-  public void periodic() {}
+  public void rbsiPeriodic() {}
 
   @Override
   public void simulationPeriodic() {}

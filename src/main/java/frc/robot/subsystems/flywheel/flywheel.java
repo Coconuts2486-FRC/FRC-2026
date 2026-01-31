@@ -24,7 +24,7 @@ public class flywheel extends RBSISubsystem {
   }
 
   @Override
-  public void periodic() {}
+  public void rbsiPeriodic() {}
 
   @Override
   public void simulationPeriodic() {}

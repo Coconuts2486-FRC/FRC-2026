@@ -14,7 +14,7 @@ public class Turret_Spin extends RBSISubsystem {
   }
 
   @Override
-  public void periodic() {}
+  public void rbsiPeriodic() {}
 
   @Override
   public void simulationPeriodic() {}
