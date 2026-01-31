@@ -319,8 +319,6 @@ public class RobotContainer {
             Commands.run(() -> m_intake.pivotToPos(0.6))
                 .finallyDo((() -> m_intake.pivotToPos(0.1))));
 
-    driverController.leftBumper().whileTrue(Commands.run(() -> m_climb.pivotToPos(0.4)));
-
     // Press LEFT BUMPER --> Drive to a pose 10 feet closer to the BLUE ALLIANCE wall
     driverController
         .leftTrigger()
