@@ -38,6 +38,8 @@ import frc.robot.FieldConstants.AprilTagLayoutType;
 import frc.robot.commands.AutopilotCommands;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.accelerometer.Accelerometer;
+import frc.robot.subsystems.climb.Climb;
+import frc.robot.subsystems.climb.ClimbIOTalonFX;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.SwerveConstants;
 import frc.robot.subsystems.flywheel_example.Flywheel;
@@ -47,6 +49,8 @@ import frc.robot.subsystems.imu.ImuIO;
 import frc.robot.subsystems.imu.ImuIONavX;
 import frc.robot.subsystems.imu.ImuIOPigeon2;
 import frc.robot.subsystems.imu.ImuIOSim;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.IntakeIOTalonFX;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
@@ -78,6 +82,8 @@ public class RobotContainer {
 
   private final ImuIO m_imu;
   private final Flywheel m_flywheel;
+  private final Intake m_intake;
+  private final Climb m_climb;
 
   // ... Add additional subsystems here (e.g., elevator, arm, etc.)
 
@@ -134,6 +140,8 @@ public class RobotContainer {
 
         m_drivebase = new Drive(m_imu);
         m_flywheel = new Flywheel(new FlywheelIOSim()); // new Flywheel(new FlywheelIOTalonFX());
+        m_intake = new Intake(new IntakeIOTalonFX());
+        m_climb = new Climb(new ClimbIOTalonFX());
         m_vision =
             switch (Constants.getVisionType()) {
               case PHOTON ->
@@ -152,6 +160,7 @@ public class RobotContainer {
               default -> null;
             };
         m_accel = new Accelerometer(m_imu);
+
         break;
 
       case SIM:
@@ -165,6 +174,8 @@ public class RobotContainer {
                 new VisionIOPhotonVisionSim(camera0Name, robotToCamera0, m_drivebase::getPose),
                 new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, m_drivebase::getPose));
         m_accel = new Accelerometer(m_imu);
+        m_intake = null;
+        m_climb = null;
         break;
 
       default:
@@ -175,6 +186,8 @@ public class RobotContainer {
         m_vision =
             new Vision(m_drivebase::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
         m_accel = new Accelerometer(m_imu);
+        m_intake = null;
+        m_climb = null;
         break;
     }
 
@@ -303,14 +316,14 @@ public class RobotContainer {
     driverController
         .rightBumper()
         .whileTrue(
-            Commands.startEnd(
-                () -> m_flywheel.runVelocity(flywheelSpeedInput.get()),
-                m_flywheel::stop,
-                m_flywheel));
+            Commands.run(() -> m_intake.pivotToPos(0.6))
+                .finallyDo((() -> m_intake.pivotToPos(0.1))));
+
+    driverController.leftBumper().whileTrue(Commands.run(() -> m_climb.pivotToPos(0.4)));
 
     // Press LEFT BUMPER --> Drive to a pose 10 feet closer to the BLUE ALLIANCE wall
     driverController
-        .leftBumper()
+        .leftTrigger()
         .whileTrue(
             Commands.defer(
                 () -> {
