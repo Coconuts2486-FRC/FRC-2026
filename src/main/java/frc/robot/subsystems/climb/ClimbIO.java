@@ -6,7 +6,9 @@ import frc.robot.util.RBSIIO;
 
 public interface ClimbIO extends RBSIIO {
 
-  public default void extendToPos(double pos) {}
+  public default void setPosition(double pos) {}
+
+  public default void getEncoderPos() {}
 
   public default void configure(
       double Kg,

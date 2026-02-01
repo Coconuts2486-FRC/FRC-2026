@@ -24,8 +24,12 @@ public class Intake extends RBSISubsystem {
     io.pivotToPos(pos);
   }
 
-  public double getPosition() {
-    return io.getPosition();
+  public void setMMagicPosition(double pos) {
+    io.setMMagicPosition(pos);
+  }
+
+  public void getPosition() {
+    io.getPosition();
   }
 
   public void stopRoller() {

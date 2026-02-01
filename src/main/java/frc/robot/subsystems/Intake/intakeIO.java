@@ -26,11 +26,11 @@ public interface IntakeIO extends RBSIIO {
 
   public default void stopPivot() {}
 
-  public default double getPosition() {
-    return 0.0;
-  }
+  public default void getPosition() {}
 
   public default void pivotToPos(double pos) {}
+
+  public default void setMMagicPosition(double pos) {}
 
   public default void configPID(double kP, double kI, double kD) {}
 }

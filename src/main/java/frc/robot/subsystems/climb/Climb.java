@@ -16,7 +16,7 @@ public class Climb extends RBSISubsystem {
     this.io = io;
   }
 
-  public void extendToPos(double pos) {
-    io.extendToPos(pos);
+  public void setPosition(double pos) {
+    io.setPosition(pos);
   }
 }

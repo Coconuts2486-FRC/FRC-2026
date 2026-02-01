@@ -305,9 +305,9 @@ public class RobotContainer {
     // Press X button --> Stop with wheels in X-Lock position
     driverController.x().onTrue(Commands.runOnce(m_drivebase::stopWithX, m_drivebase));
 
-    // Press Y button --> Manually Re-Zero the Gyro
+    // Press Start button --> Manually Re-Zero the Gyro
     driverController
-        .y()
+        .start()
         .onTrue(
             Commands.runOnce(m_drivebase::zeroHeadingForAlliance, m_drivebase)
                 .ignoringDisable(true));
@@ -318,6 +318,8 @@ public class RobotContainer {
         .whileTrue(
             Commands.run(() -> m_intake.pivotToPos(0.6))
                 .finallyDo((() -> m_intake.pivotToPos(0.1))));
+
+    driverController.y().whileTrue(Commands.run(() -> m_intake.getPosition()));
 
     // Press LEFT BUMPER --> Drive to a pose 10 feet closer to the BLUE ALLIANCE wall
     driverController
