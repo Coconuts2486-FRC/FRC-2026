@@ -321,6 +321,11 @@ public class RobotContainer {
 
     driverController.y().whileTrue(Commands.run(() -> m_intake.getPosition()));
 
+    driverController
+        .leftTrigger(0.1)
+        .whileTrue(
+            Commands.run(() -> m_intake.setRollerVelocity(driverController.getLeftTriggerAxis())));
+
     // Press LEFT BUMPER --> Drive to a pose 10 feet closer to the BLUE ALLIANCE wall
     driverController
         .leftTrigger()
