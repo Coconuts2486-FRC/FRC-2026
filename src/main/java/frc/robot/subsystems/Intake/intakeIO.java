@@ -8,6 +8,8 @@ public interface intakeIO extends RBSIIO {
 
   @AutoLog
   public static class intakeIOInputs {
+    public boolean pivotConnected = false;
+    public boolean rollerConnected = false;
     public double positionRad = 0.0;
     public double velocityRadPerSec = 0.0;
     public double appliedVolts = 0.0;

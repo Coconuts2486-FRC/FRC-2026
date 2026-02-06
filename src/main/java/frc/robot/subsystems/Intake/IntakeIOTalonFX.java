@@ -21,7 +21,27 @@ public class IntakeIOTalonFX implements intakeIO {
 
   private final DutyCycleEncoder pivotEncoder = new DutyCycleEncoder(2); // returns position 0-1
 
-  public IntakeIOTalonFX() {}
+  public IntakeIOTalonFX() {
+
+  }
+
+  @Override
+  public void updateInputs(intakeIOInputs){
+    var pivotStatus =
+      BaseStatusSignal.refreshAll(
+            pivot.getStatorCurrent(),
+            pivot.getPosition(),
+            pivot.getVelocity(),
+            pivot.getMotorVoltage());
+
+  var rollerStatus =
+      BaseStatusSignal.refreshAll(
+            rollers.getStatorCurrent(),
+            rollers.getPosition(),
+            rollers.getVelocity(),
+            rollers.getMotorVoltage());
+
+  }
 
   @Override
   public void setPivotVelocity(double velocity) {
