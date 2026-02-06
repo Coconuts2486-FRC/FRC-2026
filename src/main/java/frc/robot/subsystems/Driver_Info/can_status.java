@@ -12,26 +12,26 @@ public class can_status extends VirtualSubsystem {
   Boolean driveCAN = false;
   Boolean mainCAN = false;
 
-  private final TalonFX test = new TalonFX(31);
 
   public void can_status() {}
 
   @Override
   public void periodic() {
 
-    var testStatus =
-        BaseStatusSignal.refreshAll(
-            test.getStatorCurrent(),
-            test.getPosition(),
-            test.getVelocity(),
-            test.getMotorVoltage());
-    System.out.println(testStatus.isOK());
+    // var testStatus =
+    //     BaseStatusSignal.refreshAll(
+    //         test.getStatorCurrent(),
+    //         test.getPosition(),
+    //         test.getVelocity(),
+    //         test.getMotorVoltage());
+    // System.out.println(testStatus.isOK());
+    // example code for checking if motor is good 
 
-    if (testStatus.isOK()) {
-      mainCAN = true;
-    } else {
-      mainCAN = false;
-    }
+    // if () {
+    //   mainCAN = true;
+    // } else {
+    //   mainCAN = false;
+    // }
 
     // if statement to figure out if the drive CAN network is alive
     if (Module.alive1
@@ -56,6 +56,6 @@ public class can_status extends VirtualSubsystem {
     Logger.recordOutput("CAN/Module4Alive", Module.alive4);
 
     // logger inputs for each part of the main CAN network
-    Logger.recordOutput("CAN/TestAlive", testStatus.isOK());
+    //Logger.recordOutput("CAN/TestAlive", testStatus.isOK());
   }
 }
