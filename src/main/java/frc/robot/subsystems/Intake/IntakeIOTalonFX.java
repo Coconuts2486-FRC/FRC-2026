@@ -34,7 +34,7 @@ public class IntakeIOTalonFX implements intakeIO {
             pivot.getVelocity(),
             pivot.getMotorVoltage());
 
-    //checks the status of roller
+    // checks the status of roller
     var rollerStatus =
         BaseStatusSignal.refreshAll(
             rollers.getStatorCurrent(),

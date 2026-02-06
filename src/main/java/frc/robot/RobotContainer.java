@@ -325,6 +325,12 @@ public class RobotContainer {
             Commands.run(
                 () -> m_intake.setPivotVelocity(driverController.getRightTriggerAxis()), m_intake));
 
+    driverController
+        .leftTrigger(0.1)
+        .whileTrue(
+            Commands.run(
+                () -> m_intake.setPivotVelocity(-driverController.getLeftTriggerAxis()), m_intake));
+
     // prints the encoder position temporary testing function
     driverController.a().whileTrue(Commands.run(() -> m_intake.print(), m_intake));
 
