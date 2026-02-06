@@ -9,6 +9,9 @@ public class intake extends RBSISubsystem {
   private intakeIO io;
   private final intakeIOInputsAutoLogged inputs = new intakeIOInputsAutoLogged();
 
+  public boolean pivotAlive;
+  public boolean rollersAlive;
+
   public intake(intakeIO io) {
     this.io = io;
   }
@@ -27,6 +30,9 @@ public class intake extends RBSISubsystem {
   @Override
   public void periodic() {
     io.updateInputs(inputs);
+
+    rollersAlive = inputs.rollerConnected;
+    pivotAlive = inputs.pivotConnected;
   }
 
   // prints the encoder position temporary testing function
