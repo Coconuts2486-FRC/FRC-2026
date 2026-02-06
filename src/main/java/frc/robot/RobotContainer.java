@@ -37,6 +37,8 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.FieldConstants.AprilTagLayoutType;
 import frc.robot.commands.AutopilotCommands;
 import frc.robot.commands.DriveCommands;
+import frc.robot.subsystems.Intake.IntakeIOTalonFX;
+import frc.robot.subsystems.Intake.intake;
 import frc.robot.subsystems.accelerometer.Accelerometer;
 import frc.robot.subsystems.climb.Climb;
 import frc.robot.subsystems.climb.ClimbIOTalonFX;
@@ -49,8 +51,6 @@ import frc.robot.subsystems.imu.ImuIO;
 import frc.robot.subsystems.imu.ImuIONavX;
 import frc.robot.subsystems.imu.ImuIOPigeon2;
 import frc.robot.subsystems.imu.ImuIOSim;
-import frc.robot.subsystems.intake.Intake;
-import frc.robot.subsystems.intake.IntakeIOTalonFX;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
@@ -82,7 +82,7 @@ public class RobotContainer {
 
   private final ImuIO m_imu;
   private final Flywheel m_flywheel;
-  private final Intake m_intake;
+  private final intake m_intake;
   private final Climb m_climb;
 
   // ... Add additional subsystems here (e.g., elevator, arm, etc.)
@@ -140,7 +140,7 @@ public class RobotContainer {
 
         m_drivebase = new Drive(m_imu);
         m_flywheel = new Flywheel(new FlywheelIOSim()); // new Flywheel(new FlywheelIOTalonFX());
-        m_intake = new Intake(new IntakeIOTalonFX());
+        m_intake = new intake(new IntakeIOTalonFX());
         m_climb = new Climb(new ClimbIOTalonFX());
         m_vision =
             switch (Constants.getVisionType()) {
@@ -298,12 +298,12 @@ public class RobotContainer {
                 m_drivebase));
 
     // Press A button -> BRAKE
-    driverController
-        .a()
-        .whileTrue(Commands.runOnce(() -> m_drivebase.setMotorBrake(true), m_drivebase));
+    // driverController
+    //     .a()
+    //     .whileTrue(Commands.runOnce(() -> m_drivebase.setMotorBrake(true), m_drivebase));
 
     // Press X button --> Stop with wheels in X-Lock position
-    driverController.x().onTrue(Commands.runOnce(m_drivebase::stopWithX, m_drivebase));
+    // driverController.x().onTrue(Commands.runOnce(m_drivebase::stopWithX, m_drivebase));
 
     // Press Start button --> Manually Re-Zero the Gyro
     driverController
@@ -315,16 +315,14 @@ public class RobotContainer {
     // Press RIGHT BUMPER --> Run the example flywheel
     driverController
         .rightBumper()
-        .whileTrue(
-            Commands.run(() -> m_intake.pivotToPos(0.6))
-                .finallyDo((() -> m_intake.pivotToPos(0.1))));
-
-    driverController.y().whileTrue(Commands.run(() -> m_intake.getPosition()));
+        .whileTrue(Commands.run(() -> m_intake.pivotDown()).finallyDo((() -> m_intake.pivotUp())));
 
     driverController
-        .leftTrigger(0.1)
+        .rightTrigger(0.1)
         .whileTrue(
-            Commands.run(() -> m_intake.setRollerVelocity(driverController.getLeftTriggerAxis())));
+            Commands.run(() -> m_intake.setPivotVelocity(driverController.getRightTriggerAxis())));
+
+    driverController.a().whileTrue(Commands.run(() -> m_intake.getPosition()));
 
     // Press LEFT BUMPER --> Drive to a pose 10 feet closer to the BLUE ALLIANCE wall
     driverController

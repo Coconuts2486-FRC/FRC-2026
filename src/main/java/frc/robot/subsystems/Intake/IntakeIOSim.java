@@ -1,3 +1,3 @@
-package frc.robot.subsystems.intake;
+package frc.robot.subsystems.Intake;
 
 public class IntakeIOSim {}

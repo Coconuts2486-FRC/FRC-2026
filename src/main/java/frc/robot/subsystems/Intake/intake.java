@@ -1,11 +1,11 @@
-package frc.robot.subsystems.intake;
+package frc.robot.subsystems.Intake;
 
 import frc.robot.util.RBSISubsystem;
 
-public class Intake extends RBSISubsystem {
-  private IntakeIO io;
+public class intake extends RBSISubsystem {
+  private intakeIO io;
 
-  public Intake(IntakeIO io) {
+  public intake(intakeIO io) {
     this.io = io;
   }
 
@@ -20,16 +20,26 @@ public class Intake extends RBSISubsystem {
     io.setPivotVelocity(velocity);
   }
 
-  public void pivotToPos(double pos) {
-    io.pivotToPos(pos);
+  public void pivotDown() {
+    if (io.getPosition() < 9) {
+      io.setPivotVelocity(0.5);
+      io.setRollerVelocity(0.65);
+    } else {
+      io.stopPivot();
+      io.setRollerVelocity(0.65);
+    }
   }
 
-  public void setMMagicPosition(double pos) {
-    io.setMMagicPosition(pos);
+  public void pivotUp() {
+    io.goToPosition(5);
   }
 
-  public void getPosition() {
-    io.getPosition();
+  public void pivotGoToPosition(double pos) {
+    io.goToPosition(pos);
+  }
+
+  public double getPosition() {
+    return io.getPosition();
   }
 
   public void stopRoller() {

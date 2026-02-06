@@ -1,10 +1,10 @@
-package frc.robot.subsystems.intake;
+package frc.robot.subsystems.Intake;
 
 import frc.robot.subsystems.flywheel_example.FlywheelIO.FlywheelIOInputs;
 import frc.robot.util.RBSIIO;
 import org.littletonrobotics.junction.AutoLog;
 
-public interface IntakeIO extends RBSIIO {
+public interface intakeIO extends RBSIIO {
 
   @AutoLog
   public static class intakeIOInputs {
@@ -18,7 +18,7 @@ public interface IntakeIO extends RBSIIO {
 
   public default void setRollerVelocity(double volts) {}
 
-  public default void setPivotVelocity(double volts) {}
+  public default void setPivotVelocity(double velocity) {}
 
   public default void goToPosition(double position) {}
 
@@ -26,11 +26,9 @@ public interface IntakeIO extends RBSIIO {
 
   public default void stopPivot() {}
 
-  public default void getPosition() {}
+  public default double getPosition() {
+    return 0.0;
+  }
 
   public default void pivotToPos(double pos) {}
-
-  public default void setMMagicPosition(double pos) {}
-
-  public default void configPID(double kP, double kI, double kD) {}
 }
