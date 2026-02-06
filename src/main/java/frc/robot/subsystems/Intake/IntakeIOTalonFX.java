@@ -12,6 +12,7 @@ package frc.robot.subsystems.Intake;
 
 import static frc.robot.Constants.pivotConstants.*;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 
@@ -21,26 +22,26 @@ public class IntakeIOTalonFX implements intakeIO {
 
   private final DutyCycleEncoder pivotEncoder = new DutyCycleEncoder(2); // returns position 0-1
 
-  public IntakeIOTalonFX() {
-
-  }
+  public IntakeIOTalonFX() {}
 
   @Override
-  public void updateInputs(intakeIOInputs){
+  public void updateInputs(intakeIOInputs inputs) {
     var pivotStatus =
-      BaseStatusSignal.refreshAll(
+        BaseStatusSignal.refreshAll(
             pivot.getStatorCurrent(),
             pivot.getPosition(),
             pivot.getVelocity(),
             pivot.getMotorVoltage());
 
-  var rollerStatus =
-      BaseStatusSignal.refreshAll(
+    var rollerStatus =
+        BaseStatusSignal.refreshAll(
             rollers.getStatorCurrent(),
             rollers.getPosition(),
             rollers.getVelocity(),
             rollers.getMotorVoltage());
 
+    inputs.pivotConnected = pivotStatus.isOK();
+    inputs.rollerConnected = rollerStatus.isOK();
   }
 
   @Override

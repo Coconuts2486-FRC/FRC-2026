@@ -7,6 +7,7 @@ import frc.robot.util.RBSISubsystem;
 
 public class intake extends RBSISubsystem {
   private intakeIO io;
+  private final intakeIOInputsAutoLogged inputs = new intakeIOInputsAutoLogged();
 
   public intake(intakeIO io) {
     this.io = io;
@@ -22,6 +23,11 @@ public class intake extends RBSISubsystem {
 
   @Override
   public void simulationPeriodic() {}
+
+  @Override
+  public void periodic() {
+    io.updateInputs(inputs);
+  }
 
   // prints the encoder position temporary testing function
   public void print() {
