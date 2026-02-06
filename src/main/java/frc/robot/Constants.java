@@ -343,6 +343,19 @@ public final class Constants {
     public static final double hoodAngle = 0.0; // placeholder
   }
 
+  public static final class intakeConstants {
+
+    public static final double dropPostion = 5; // place holder
+    public static final double storedAngle = 5; // place angle
+
+    public static final double kp = 0;
+    public static final double ki = 0;
+    public static final double kd = 0;
+
+    public static final double maxVelocity = 0;
+    public static final double maxAcel = 0;
+  }
+
   public static final class climbConstants {
 
     // magic configs

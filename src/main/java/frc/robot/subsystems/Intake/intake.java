@@ -1,5 +1,8 @@
 package frc.robot.subsystems.Intake;
 
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import frc.robot.Constants.intakeConstants;
 import frc.robot.util.RBSISubsystem;
 
 public class intake extends RBSISubsystem {
@@ -9,8 +12,21 @@ public class intake extends RBSISubsystem {
     this.io = io;
   }
 
+  // max values are for rotations a second
+  ProfiledPIDController controller =
+      new ProfiledPIDController(
+          intakeConstants.kp,
+          intakeConstants.ki,
+          intakeConstants.kd,
+          new TrapezoidProfile.Constraints(intakeConstants.maxVelocity, intakeConstants.maxAcel));
+
   @Override
   public void simulationPeriodic() {}
+
+  // prints the encoder position temporary testing function
+  public void print() {
+    System.out.println(io.getPosition());
+  }
 
   public void setRollerVelocity(double velocity) {
     io.setRollerVelocity(velocity);
@@ -20,8 +36,9 @@ public class intake extends RBSISubsystem {
     io.setPivotVelocity(velocity);
   }
 
+  // gives the intake a little push but then lets it fall down and be free while intaking
   public void pivotDown() {
-    if (io.getPosition() < 9) {
+    if (io.getPosition() < intakeConstants.dropPostion) {
       io.setPivotVelocity(0.5);
       io.setRollerVelocity(0.65);
     } else {
@@ -30,12 +47,19 @@ public class intake extends RBSISubsystem {
     }
   }
 
+  // brings pivot up with pid while running intake motors still, stopping themif at position
   public void pivotUp() {
-    io.goToPosition(5);
+    if (io.getPosition() != intakeConstants.storedAngle) {
+      io.setPivotVelocity(controller.calculate(io.getPosition(), intakeConstants.storedAngle));
+      io.setRollerVelocity(0.65);
+    } else if (io.getPosition() == intakeConstants.storedAngle) {
+      io.setPivotVelocity(controller.calculate(io.getPosition(), intakeConstants.storedAngle));
+      io.stopRoller();
+    }
   }
 
   public void pivotGoToPosition(double pos) {
-    io.goToPosition(pos);
+    io.setPivotVelocity(controller.calculate(io.getPosition(), pos));
   }
 
   public double getPosition() {

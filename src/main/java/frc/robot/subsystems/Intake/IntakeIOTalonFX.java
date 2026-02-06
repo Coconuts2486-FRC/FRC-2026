@@ -10,20 +10,16 @@ package frc.robot.subsystems.Intake;
 // import static frc.robot.Constants.climbConstants.mm_kS;
 // import static frc.robot.Constants.climbConstants.mm_kV;
 
+import static frc.robot.Constants.pivotConstants.*;
+
 import com.ctre.phoenix6.hardware.TalonFX;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import frc.robot.Constants.pivotConstants.*;
 
 public class IntakeIOTalonFX implements intakeIO {
   private final TalonFX pivot = new TalonFX(32);
   private final TalonFX rollers = new TalonFX(33);
 
-  private final DutyCycleEncoder pivotEncoder = new DutyCycleEncoder(2);
-
-  ProfiledPIDController controller =
-      new ProfiledPIDController(0, 0, 0, new TrapezoidProfile.Constraints(5, 10));
+  private final DutyCycleEncoder pivotEncoder = new DutyCycleEncoder(2); // returns position 0-1
 
   public IntakeIOTalonFX() {}
 
@@ -38,12 +34,17 @@ public class IntakeIOTalonFX implements intakeIO {
   }
 
   @Override
-  public void pivotToPos(double pos) {
-    pivot.set(controller.calculate(pivotEncoder.get(), pos));
+  public double getPosition() {
+    return pivotEncoder.get();
   }
 
   @Override
-  public double getPosition() {
-    return pivotEncoder.get();
+  public void stopPivot() {
+    pivot.stopMotor();
+  }
+
+  @Override
+  public void stopRoller() {
+    rollers.stopMotor();
   }
 }

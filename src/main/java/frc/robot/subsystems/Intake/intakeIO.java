@@ -16,11 +16,9 @@ public interface intakeIO extends RBSIIO {
 
   public default void updateInputs(FlywheelIOInputs inputs) {}
 
-  public default void setRollerVelocity(double volts) {}
+  public default void setRollerVelocity(double velocity) {}
 
   public default void setPivotVelocity(double velocity) {}
-
-  public default void goToPosition(double position) {}
 
   public default void stopRoller() {}
 

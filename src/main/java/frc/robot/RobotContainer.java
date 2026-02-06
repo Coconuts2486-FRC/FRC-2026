@@ -312,17 +312,21 @@ public class RobotContainer {
             Commands.runOnce(m_drivebase::zeroHeadingForAlliance, m_drivebase)
                 .ignoringDisable(true));
 
-    // Press RIGHT BUMPER --> Run the example flywheel
-    driverController
-        .rightBumper()
-        .whileTrue(Commands.run(() -> m_intake.pivotDown()).finallyDo((() -> m_intake.pivotUp())));
+    // puts intake down
+    driverController.rightBumper().whileTrue(Commands.run(() -> m_intake.pivotDown(), m_intake));
 
+    // brings intake up
+    driverController.rightBumper().whileFalse(Commands.run(() -> m_intake.pivotUp(), m_intake));
+
+    // sets intake pivot speed to trigger value, temporary testing function
     driverController
         .rightTrigger(0.1)
         .whileTrue(
-            Commands.run(() -> m_intake.setPivotVelocity(driverController.getRightTriggerAxis())));
+            Commands.run(
+                () -> m_intake.setPivotVelocity(driverController.getRightTriggerAxis()), m_intake));
 
-    driverController.a().whileTrue(Commands.run(() -> m_intake.getPosition()));
+    // prints the encoder position temporary testing function
+    driverController.a().whileTrue(Commands.run(() -> m_intake.print(), m_intake));
 
     // Press LEFT BUMPER --> Drive to a pose 10 feet closer to the BLUE ALLIANCE wall
     driverController
