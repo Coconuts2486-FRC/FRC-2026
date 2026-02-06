@@ -9,8 +9,9 @@ public class intake extends RBSISubsystem {
   private intakeIO io;
   private final intakeIOInputsAutoLogged inputs = new intakeIOInputsAutoLogged();
 
-  public boolean pivotAlive;
-  public boolean rollersAlive;
+  //public variables to be pulled by can class
+  public static boolean pivotAlive;
+  public static boolean rollersAlive;
 
   public intake(intakeIO io) {
     this.io = io;
@@ -31,6 +32,7 @@ public class intake extends RBSISubsystem {
   public void periodic() {
     io.updateInputs(inputs);
 
+    //updates public variables checking to see if they die
     rollersAlive = inputs.rollerConnected;
     pivotAlive = inputs.pivotConnected;
   }

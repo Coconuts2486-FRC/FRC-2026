@@ -26,6 +26,7 @@ public class IntakeIOTalonFX implements intakeIO {
 
   @Override
   public void updateInputs(intakeIOInputs inputs) {
+    // checks the status of pivot
     var pivotStatus =
         BaseStatusSignal.refreshAll(
             pivot.getStatorCurrent(),
@@ -33,6 +34,7 @@ public class IntakeIOTalonFX implements intakeIO {
             pivot.getVelocity(),
             pivot.getMotorVoltage());
 
+    //checks the status of roller
     var rollerStatus =
         BaseStatusSignal.refreshAll(
             rollers.getStatorCurrent(),
