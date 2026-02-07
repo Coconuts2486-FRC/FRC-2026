@@ -13,6 +13,7 @@ public class intake extends RBSISubsystem {
   public static boolean pivotAlive;
   public static boolean rollersAlive;
 
+  // Constructor
   public intake(intakeIO io) {
     this.io = io;
   }
@@ -24,6 +25,8 @@ public class intake extends RBSISubsystem {
           intakeConstants.ki,
           intakeConstants.kd,
           new TrapezoidProfile.Constraints(intakeConstants.maxVelocity, intakeConstants.maxAcel));
+  @Override
+  public void rbsiPeriodic() {}
 
   @Override
   public void simulationPeriodic() {}

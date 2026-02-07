@@ -8,12 +8,13 @@ public class Turret_Spin extends RBSISubsystem {
   public double solution1;
   public double solution2;
 
-  public void Turret_Spin(Turret_SpinIO io) {
+  // Constructor
+  public Turret_Spin(Turret_SpinIO io) {
     this.io = io;
   }
 
   @Override
-  public void periodic() {}
+  public void rbsiPeriodic() {}
 
   @Override
   public void simulationPeriodic() {}

@@ -6,7 +6,8 @@ public class flywheel extends RBSISubsystem {
 
   private flywheelIO io;
 
-  public void flywheel(flywheelIO io) {
+  // Constructor
+  public flywheel(flywheelIO io) {
     this.io = io;
   }
 
@@ -23,7 +24,7 @@ public class flywheel extends RBSISubsystem {
   }
 
   @Override
-  public void periodic() {}
+  public void rbsiPeriodic() {}
 
   @Override
   public void simulationPeriodic() {}

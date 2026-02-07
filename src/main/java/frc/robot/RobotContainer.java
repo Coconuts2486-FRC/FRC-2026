@@ -13,8 +13,6 @@
 
 package frc.robot;
 
-import static frc.robot.Constants.Cameras.*;
-
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
@@ -25,14 +23,18 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants.CANBuses;
+import frc.robot.Constants.Cameras;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.FieldConstants.AprilTagLayoutType;
 import frc.robot.commands.AutopilotCommands;
@@ -47,10 +49,9 @@ import frc.robot.subsystems.drive.SwerveConstants;
 import frc.robot.subsystems.flywheel_example.Flywheel;
 import frc.robot.subsystems.flywheel_example.FlywheelIO;
 import frc.robot.subsystems.flywheel_example.FlywheelIOSim;
-import frc.robot.subsystems.imu.ImuIO;
-import frc.robot.subsystems.imu.ImuIONavX;
-import frc.robot.subsystems.imu.ImuIOPigeon2;
+import frc.robot.subsystems.imu.Imu;
 import frc.robot.subsystems.imu.ImuIOSim;
+import frc.robot.subsystems.vision.CameraSweepEvaluator;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
@@ -61,10 +62,19 @@ import frc.robot.util.Alert.AlertType;
 import frc.robot.util.GetJoystickValue;
 import frc.robot.util.LoggedTunableNumber;
 import frc.robot.util.OverrideSwitches;
-import frc.robot.util.RBSIEnum;
+import frc.robot.util.RBSICANBusRegistry;
+import frc.robot.util.RBSICANHealth;
+import frc.robot.util.RBSIEnum.AutoType;
+import frc.robot.util.RBSIEnum.DriveStyle;
+import frc.robot.util.RBSIEnum.Mode;
 import frc.robot.util.RBSIPowerMonitor;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+import org.photonvision.PhotonCamera;
+import org.photonvision.simulation.PhotonCameraSim;
+import org.photonvision.simulation.VisionSystemSim;
 
 /** This is the location for defining robot hardware, commands, and controller button bindings. */
 public class RobotContainer {
@@ -76,11 +86,14 @@ public class RobotContainer {
   final CommandXboxController operatorController = new CommandXboxController(1); // Second Operator
   final OverrideSwitches overrides = new OverrideSwitches(2); // Console toggle switches
 
+  // These two are needed for the Sweep evaluator for camera FOV simulation
+  final CommandJoystick joystick3 = new CommandJoystick(3); //  Joystick for CamersSweepEvaluator
+  private final CameraSweepEvaluator sweep;
+
   /** Declare the robot subsystems here ************************************ */
   // These are the "Active Subsystems" that the robot controls
   private final Drive m_drivebase;
 
-  private final ImuIO m_imu;
   private final Flywheel m_flywheel;
   private final intake m_intake;
   private final Climb m_climb;
@@ -88,6 +101,8 @@ public class RobotContainer {
   // ... Add additional subsystems here (e.g., elevator, arm, etc.)
 
   // These are "Virtual Subsystems" that report information but have no motors
+  private final Imu m_imu;
+
   @SuppressWarnings("unused")
   private final Accelerometer m_accel;
 
@@ -97,9 +112,15 @@ public class RobotContainer {
   @SuppressWarnings("unused")
   private final Vision m_vision;
 
+  @SuppressWarnings("unused")
+  private List<RBSICANHealth> canHealth;
+
   /** Dashboard inputs ***************************************************** */
   // AutoChoosers for both supported path planning types
   private final LoggedDashboardChooser<Command> autoChooserPathPlanner;
+
+  private final LoggedDashboardChooser<DriveStyle> driveStyle =
+      new LoggedDashboardChooser<>("Drive Style");
 
   private final AutoChooser autoChooserChoreo;
   private final AutoFactory autoFactoryChoreo;
@@ -113,6 +134,37 @@ public class RobotContainer {
   // Alerts
   private final Alert aprilTagLayoutAlert = new Alert("", AlertType.INFO);
 
+  // Vision Factories
+  private VisionIO[] buildVisionIOsReal(Drive drive) {
+    return switch (Constants.getVisionType()) {
+      case PHOTON ->
+          Arrays.stream(Cameras.ALL)
+              .map(c -> (VisionIO) new VisionIOPhotonVision(c.name(), c.robotToCamera()))
+              .toArray(VisionIO[]::new);
+
+      case LIMELIGHT ->
+          Arrays.stream(Cameras.ALL)
+              .map(c -> (VisionIO) new VisionIOLimelight(c.name(), drive::getHeading))
+              .toArray(VisionIO[]::new);
+
+      case NONE -> new VisionIO[] {new VisionIO() {}};
+    };
+  }
+
+  private static VisionIO[] buildVisionIOsSim(Drive drive) {
+    var cams = Constants.Cameras.ALL;
+    VisionIO[] ios = new VisionIO[cams.length];
+    for (int i = 0; i < cams.length; i++) {
+      var cfg = cams[i];
+      ios[i] = new VisionIOPhotonVisionSim(cfg.name(), cfg.robotToCamera(), drive::getPose);
+    }
+    return ios;
+  }
+
+  private VisionIO[] buildVisionIOsReplay() {
+    return new VisionIO[] {new VisionIO() {}};
+  }
+
   /**
    * Constructor for the Robot Container. This container holds subsystems, opertator interface
    * devices, and commands.
@@ -123,73 +175,84 @@ public class RobotContainer {
     switch (Constants.getMode()) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
-        // YAGSL drivebase, get config from deploy directory
 
+        // Register the CANBus
+        RBSICANBusRegistry.initReal(CANBuses.RIO, CANBuses.DRIVE);
+
+        // YAGSL drivebase, get config from deploy directory
         // Get the IMU instance
-        switch (SwerveConstants.kImuType) {
-          case "pigeon2":
-            m_imu = new ImuIOPigeon2();
-            break;
-          case "navx":
-          case "navx_spi":
-            m_imu = new ImuIONavX();
-            break;
-          default:
-            throw new RuntimeException("Invalid IMU type");
-        }
+        m_imu = new Imu(SwerveConstants.kImu.factory.get());
 
         m_drivebase = new Drive(m_imu);
         m_flywheel = new Flywheel(new FlywheelIOSim()); // new Flywheel(new FlywheelIOTalonFX());
         m_intake = new intake(new IntakeIOTalonFX());
         m_climb = new Climb(new ClimbIOTalonFX());
-        m_vision =
-            switch (Constants.getVisionType()) {
-              case PHOTON ->
-                  new Vision(
-                      m_drivebase::addVisionMeasurement,
-                      new VisionIOPhotonVision(camera0Name, robotToCamera0),
-                      new VisionIOPhotonVision(camera1Name, robotToCamera1));
-              case LIMELIGHT ->
-                  new Vision(
-                      m_drivebase::addVisionMeasurement,
-                      new VisionIOLimelight(camera0Name, m_drivebase::getHeading),
-                      new VisionIOLimelight(camera1Name, m_drivebase::getHeading));
-              case NONE ->
-                  new Vision(
-                      m_drivebase::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
-              default -> null;
-            };
+        m_vision = new Vision(m_drivebase::addVisionMeasurement, buildVisionIOsReal(m_drivebase));
         m_accel = new Accelerometer(m_imu);
+        sweep = null;
 
         break;
 
       case SIM:
-        // Sim robot, instantiate physics sim IO implementations
-        m_imu = new ImuIOSim(Constants.loopPeriodSecs);
+        RBSICANBusRegistry.initSim(CANBuses.RIO, CANBuses.DRIVE);
+
+        m_imu = new Imu(new ImuIOSim());
         m_drivebase = new Drive(m_imu);
-        m_flywheel = new Flywheel(new FlywheelIOSim() {});
-        m_vision =
-            new Vision(
-                m_drivebase::addVisionMeasurement,
-                new VisionIOPhotonVisionSim(camera0Name, robotToCamera0, m_drivebase::getPose),
-                new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, m_drivebase::getPose));
+        m_flywheel = new Flywheel(new FlywheelIOSim());
+
+        // ---------------- Vision IOs (robot code) ----------------
+        var cams = frc.robot.Constants.Cameras.ALL;
+
+        // If you keep Vision expecting exactly two cameras:
+        VisionIO[] visionIOs = buildVisionIOsSim(m_drivebase);
+        m_vision = new Vision(m_drivebase::addVisionMeasurement, visionIOs);
+
         m_accel = new Accelerometer(m_imu);
+
+        // ---------------- CameraSweepEvaluator (sim-only analysis) ----------------
+        VisionSystemSim visionSim = new VisionSystemSim("CameraSweepWorld");
+        visionSim.addAprilTags(FieldConstants.aprilTagLayout);
+
+        PhotonCameraSim[] simCams = new PhotonCameraSim[cams.length];
+
+        for (int i = 0; i < cams.length; i++) {
+          var cfg = cams[i];
+
+          PhotonCamera photonCam = new PhotonCamera(cfg.name());
+          PhotonCameraSim camSim = new PhotonCameraSim(photonCam, cfg.simProps());
+
+          visionSim.addCamera(camSim, cfg.robotToCamera());
+          simCams[i] = camSim;
+        }
+
+        // Create the sweep evaluator (expects two cameras; adapt if you add more later)
+        if (simCams.length >= 2) {
+          sweep = new CameraSweepEvaluator(visionSim, simCams[0], simCams[1]);
+        } else {
+          sweep = null; // or throw if you require exactly 2 cameras
+        }
+
         m_intake = null;
         m_climb = null;
         break;
 
       default:
         // Replayed robot, disable IO implementations
-        m_imu = new ImuIOSim(Constants.loopPeriodSecs);
+        RBSICANBusRegistry.initSim(CANBuses.RIO, CANBuses.DRIVE);
+        m_imu = new Imu(new ImuIOSim() {});
         m_drivebase = new Drive(m_imu);
         m_flywheel = new Flywheel(new FlywheelIO() {});
-        m_vision =
-            new Vision(m_drivebase::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
+        m_vision = new Vision(m_drivebase::addVisionMeasurement, buildVisionIOsReplay());
         m_accel = new Accelerometer(m_imu);
+        sweep = null;
         m_intake = null;
         m_climb = null;
         break;
     }
+
+    // Init all CAN busses specified in the `Constants.CANBuses` class
+    RBSICANBusRegistry.initReal(Constants.CANBuses.ALL);
+    canHealth = Arrays.stream(Constants.CANBuses.ALL).map(RBSICANHealth::new).toList();
 
     // In addition to the initial battery capacity from the Dashbaord, ``RBSIPowerMonitor`` takes
     // all the non-drivebase subsystems for which you wish to have power monitoring; DO NOT
@@ -237,6 +300,10 @@ public class RobotContainer {
             "Incorrect AUTO type selected in Constants: " + Constants.getAutoType());
     }
 
+    // Get drive style from the Dashboard Chooser
+    driveStyle.addDefaultOption("TANK", DriveStyle.TANK);
+    driveStyle.addOption("GAMER", DriveStyle.GAMER);
+
     // Define Auto commands
     defineAutoCommands();
     // Define SysIs Routines
@@ -263,6 +330,8 @@ public class RobotContainer {
     GetJoystickValue driveStickY;
     GetJoystickValue driveStickX;
     GetJoystickValue turnStickX;
+    // OPTIONAL: Use the DashboardChooser rather than the Constants file for Drive Style
+    // switch (driveStyle.get()) {
     switch (OperatorConstants.kDriveStyle) {
       case GAMER:
         driveStickY = driverController::getRightY;
@@ -345,7 +414,7 @@ public class RobotContainer {
                       m_drivebase
                           .getPose()
                           .transformBy(
-                              new Transform2d(Units.feetToMeters(-10.0), 0.0, Rotation2d.kZero));
+                              new Transform2d(Units.feetToMeters(-20.0), 0.0, Rotation2d.kZero));
 
                   // Alternatively, you could define a pose in a separate module and call it here.
                   //
@@ -369,6 +438,44 @@ public class RobotContainer {
                 // Stop when command ended
                 m_drivebase::stop,
                 m_drivebase));
+
+    if (Constants.getMode() == Mode.SIM) {
+      // IN SIMULATION ONLY:
+      // Double-press the A button on Joystick3 to run the CameraSweepEvaluator
+      // Use WPILib's built-in double-press binding
+      joystick3
+          .button(1)
+          .multiPress(2, 0.2)
+          .onTrue(
+              Commands.runOnce(
+                  () -> {
+                    try {
+                      sweep.runFullSweep(
+                          Filesystem.getOperatingDirectory()
+                              .toPath()
+                              .resolve("camera_sweep.csv")
+                              .toString());
+                    } catch (Exception e) {
+                      e.printStackTrace();
+                    }
+                  }));
+    }
+  }
+
+  /**
+   * Use this to pass the MANUAL SHOOT FUEL command to the main {@link Robot} class.
+   *
+   * @return the command to run in autonomous
+   */
+  public Command getManualAuto() {
+    // NOTE:
+    //
+    // For teams not using PathPlanner, this auto may be used to simply shoot the pre-loaded fuel
+    // into the HUB during AUTO.  Since shooters are beyond the scope of Az-RBSI, you will have to
+    // write your own command and call it here.
+
+    // Replace Commands.none() with your command that shoots fuel into the HUB.
+    return Commands.none();
   }
 
   /**
@@ -394,11 +501,6 @@ public class RobotContainer {
     RobotModeTriggers.autonomous().whileTrue(autoChooserChoreo.selectedCommandScheduler());
   }
 
-  /** Set the motor neutral mode to BRAKE / COAST for T/F */
-  public void setMotorBrake(boolean brake) {
-    m_drivebase.setMotorBrake(brake);
-  }
-
   /** Updates the alerts. */
   public void updateAlerts() {
     // AprilTag layout alert
@@ -412,13 +514,18 @@ public class RobotContainer {
     }
   }
 
+  /** Drivetrain getter method for use with Robot.java */
+  public Drive getDrivebase() {
+    return m_drivebase;
+  }
+
   /**
    * Set up the SysID routines from AdvantageKit
    *
    * <p>NOTE: These are currently only accessible with Constants.AutoType.PATHPLANNER
    */
   private void definesysIdRoutines() {
-    if (Constants.getAutoType() == RBSIEnum.AutoType.PATHPLANNER) {
+    if (Constants.getAutoType() == AutoType.PATHPLANNER) {
       // Drivebase characterization
       autoChooserPathPlanner.addOption(
           "Drive Wheel Radius Characterization",
