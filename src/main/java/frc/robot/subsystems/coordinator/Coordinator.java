@@ -26,6 +26,9 @@ public class Coordinator extends VirtualSubsystem {
   private boolean wantAutoAim = false;
   private boolean wantScore = false;
 
+  // Internal variables
+  private static boolean ok_to_shoot = false;
+
   public Coordinator(Drive drive, Targeting targeting /*, Shooter shooter, Intake intake */) {
     this.drive = drive;
     this.targeting = targeting;
@@ -96,5 +99,15 @@ public class Coordinator extends VirtualSubsystem {
     // 3) Log coordinator outputs for tuning
     // Logger.recordOutput("Coord/Mode", mode.toString());
     // Logger.recordOutput("Coord/WantAutoAim", wantAutoAim);
+
+    // But really do this based on calculating things!
+    // Based on field position, HUB active, turret in position, flywheel at speed, override not set,
+    // "DON'T SHOOT" button not pressed...
+    ok_to_shoot = true;
+  }
+
+  // Getter functions
+  public static boolean getOk2Shoot() {
+    return ok_to_shoot;
   }
 }
