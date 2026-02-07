@@ -159,7 +159,7 @@ public final class FixedThetaBallistics {
     double v0hy = dy / tHit - vPlatY;
     double psi = Math.atan2(v0hy, v0hx);
 
-    // Useful “zone” distances: crossings at dz on up/apex/down.
+    // Useful "zone" distances: crossings at dz on up/apex/down.
     // Horizontal ground track in launcher frame is linear in time with speed |D|/tHit.
     double tApex = v0 * Math.sin(theta) / g;
     double disc = v0 * v0 * Math.sin(theta) * Math.sin(theta) - 2.0 * g * dz;

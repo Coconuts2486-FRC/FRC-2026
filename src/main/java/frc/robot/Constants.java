@@ -31,6 +31,8 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Mass;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -38,6 +40,7 @@ import frc.robot.FieldConstants.AprilTagLayoutType;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.SwerveConstants;
 import frc.robot.util.Alert;
+import frc.robot.util.LoggedTunableNumber;
 import frc.robot.util.RBSIEnum.AutoType;
 import frc.robot.util.RBSIEnum.CTREPro;
 import frc.robot.util.RBSIEnum.DriveStyle;
@@ -104,7 +107,7 @@ public final class Constants {
   /** General Constants **************************************************** */
   public static final double loopPeriodSecs = 0.02;
 
-  public static final boolean tuningMode = false;
+  public static final boolean tuningMode = true;
 
   /************************************************************************* */
   /** Physical Constants for Robot Operation ******************************* */
@@ -216,6 +219,9 @@ public final class Constants {
     // Example:
     public static final RobotDeviceId FLYWHEEL_LEADER = new RobotDeviceId(3, CANBuses.RIO, 8);
     public static final RobotDeviceId FLYWHEEL_FOLLOWER = new RobotDeviceId(4, CANBuses.RIO, 9);
+
+    public static final RobotDeviceId INTAKE_PIVOT = new RobotDeviceId(17, CANBuses.RIO, null);
+    public static final RobotDeviceId INTAKE_ROLLER = new RobotDeviceId(18, CANBuses.RIO, null);
 
     /* BEAM BREAK and/or LIMIT SWITCH DIO CHANNELS */
     // This is where digital I/O feedback devices are defined
@@ -368,15 +374,20 @@ public final class Constants {
 
   public static final class intakeConstants {
 
-    public static final double dropPostion = 5; // place holder
-    public static final double storedAngle = 5; // place angle
+    public static final AngularVelocity kMaxPivotSpeed = RotationsPerSecond.of(1.0);
 
-    public static final double kp = 0;
+    public static final Angle dropPostion = Rotations.of(0.45); // place holder
+    public static final Angle storedAngle = Rotations.of(0.3); // place angle
+
+    public static final double kPivotGearRatio = 25.0 * 54.0 / 16.0;
+
+    public static final LoggedTunableNumber kp = new LoggedTunableNumber("Intake/kP", 0.5);
     public static final double ki = 0;
     public static final double kd = 0;
 
-    public static final double maxVelocity = 0;
-    public static final double maxAcel = 0;
+    public static final LoggedTunableNumber maxVelocity =
+        new LoggedTunableNumber("Intake/MaxVel", 0.5);
+    public static final LoggedTunableNumber maxAcel = new LoggedTunableNumber("Intake/MaxAccel", 1);
   }
 
   public static final class climbConstants {

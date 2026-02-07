@@ -36,6 +36,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.CANBuses;
 import frc.robot.Constants.Cameras;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.intakeConstants;
 import frc.robot.FieldConstants.AprilTagLayoutType;
 import frc.robot.commands.AutopilotCommands;
 import frc.robot.commands.DriveCommands;
@@ -382,23 +383,39 @@ public class RobotContainer {
                 .ignoringDisable(true));
 
     // puts intake down
-    driverController.rightBumper().whileTrue(Commands.run(() -> m_intake.pivotDown(), m_intake));
+    driverController
+        .rightBumper()
+        .whileTrue(Commands.run(() -> m_intake.pivotDown(), m_intake))
+        .whileFalse(Commands.run(() -> m_intake.stopPivot()));
 
     // brings intake up
-    driverController.rightBumper().whileFalse(Commands.run(() -> m_intake.pivotUp(), m_intake));
+    driverController
+        .leftBumper()
+        .whileTrue(Commands.run(() -> m_intake.pivotUp(), m_intake))
+        .whileFalse(Commands.run(() -> m_intake.stopPivot()));
 
     // sets intake pivot speed to trigger value, temporary testing function
     driverController
         .rightTrigger(0.1)
         .whileTrue(
             Commands.run(
-                () -> m_intake.setPivotVelocity(driverController.getRightTriggerAxis()), m_intake));
+                () ->
+                    m_intake.setPivotVelocity(
+                        intakeConstants.kMaxPivotSpeed.times(
+                            driverController.getRightTriggerAxis())),
+                m_intake))
+        .onFalse(Commands.run(() -> m_intake.stopPivot(), m_intake));
 
     driverController
         .leftTrigger(0.1)
         .whileTrue(
             Commands.run(
-                () -> m_intake.setPivotVelocity(-driverController.getLeftTriggerAxis()), m_intake));
+                () ->
+                    m_intake.setPivotVelocity(
+                        intakeConstants.kMaxPivotSpeed.times(
+                            -driverController.getLeftTriggerAxis())),
+                m_intake))
+        .onFalse(Commands.run(() -> m_intake.stopPivot(), m_intake));
 
     // prints the encoder position temporary testing function
     driverController.a().whileTrue(Commands.run(() -> m_intake.print(), m_intake));

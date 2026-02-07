@@ -146,7 +146,7 @@ public class CameraSweepEvaluator {
     // Sweep robot yaw at each location (degrees)
     double[] robotYawDeg = {-180, -135, -90, -45, 0, 45, 90, 135};
 
-    // Camera “extra” rotation sweep (applied on top of the mount rotation)
+    // Camera "extra" rotation sweep (applied on top of the mount rotation)
     double[] camYawDeg = {-15, 0, 15};
     double[] camPitchDeg = {-10, 0, 10};
 
