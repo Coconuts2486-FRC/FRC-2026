@@ -10,16 +10,16 @@ public class flywheel extends RBSISubsystem {
     this.io = io;
   }
 
-  public void flywheelSetVolts(double volts) {
-    io.flywheelSetVolts(volts);
-  }
-
-  public void flywheelSpeed(double speed) {
-    io.flywheelSpeed(speed);
+  public void flywheelSetVelocity(double Velocity) {
+    io.flywheelSetVelocity(Velocity);
   }
 
   public void flywheelStop() {
     io.flywheelStop();
+  }
+
+  public double getVelocity(){
+    return io.getVelocity();
   }
 
   @Override
@@ -27,4 +27,6 @@ public class flywheel extends RBSISubsystem {
 
   @Override
   public void simulationPeriodic() {}
+
+
 }
