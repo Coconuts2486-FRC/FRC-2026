@@ -29,7 +29,7 @@ public class intake extends RBSISubsystem {
   public void simulationPeriodic() {}
 
   @Override
-  public void periodic() {
+  public void rbsiPeriodic() {
     io.updateInputs(inputs);
 
     // updates public variables checking to see if they die
