@@ -12,6 +12,9 @@ public class Climb extends RBSISubsystem {
     // TODO Auto-generated constructor stub
   }
 
+  @Override
+  protected void rbsiPeriodic() {}
+
   public void Climb(ClimbIO io) {
     this.io = io;
   }

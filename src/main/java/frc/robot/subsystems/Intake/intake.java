@@ -25,8 +25,6 @@ public class intake extends RBSISubsystem {
           intakeConstants.ki,
           intakeConstants.kd,
           new TrapezoidProfile.Constraints(intakeConstants.maxVelocity, intakeConstants.maxAcel));
-  @Override
-  public void rbsiPeriodic() {}
 
   @Override
   public void simulationPeriodic() {}
