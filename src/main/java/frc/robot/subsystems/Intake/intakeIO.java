@@ -1,10 +1,5 @@
 package frc.robot.subsystems.Intake;
 
-import static edu.wpi.first.units.Units.Rotations;
-
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularVelocity;
-import frc.robot.subsystems.flywheel_example.FlywheelIO.FlywheelIOInputs;
 import frc.robot.util.RBSIIO;
 import org.littletonrobotics.junction.AutoLog;
 
@@ -20,18 +15,16 @@ public interface intakeIO extends RBSIIO {
     public double[] currentAmps = new double[] {};
   }
 
-  public default void updateInputs(FlywheelIOInputs inputs) {}
-
   public default void setRollerVelocity(double velocity) {}
 
-  public default void setPivotVelocity(AngularVelocity velocity) {}
+  public default void setPivotVelocity(double velocity) {}
 
   public default void stopRoller() {}
 
   public default void stopPivot() {}
 
-  public default Angle getPosition() {
-    return Rotations.of(0.0);
+  public default double getPosition() {
+    return 0.0;
   }
 
   public default void pivotToPos(double pos) {}

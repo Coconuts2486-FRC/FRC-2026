@@ -1,12 +1,7 @@
 package frc.robot.subsystems.Intake;
 
-import static edu.wpi.first.units.Units.Rotations;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
-
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.Constants.intakeConstants;
 import frc.robot.util.RBSISubsystem;
 
@@ -53,14 +48,14 @@ public class intake extends RBSISubsystem {
     io.setRollerVelocity(velocity);
   }
 
-  public void setPivotVelocity(AngularVelocity velocity) {
+  public void setPivotVelocity(double velocity) {
     io.setPivotVelocity(velocity);
   }
 
   // gives the intake a little push but then lets it fall down and be free while intaking
   public void pivotDown() {
-    if (io.getPosition().in(Rotations) < intakeConstants.dropPostion.in(Rotations)) {
-      io.setPivotVelocity(RotationsPerSecond.of(0.75));
+    if (io.getPosition() < intakeConstants.dropPostion) {
+      io.setPivotVelocity(0.75);
       io.setRollerVelocity(0.65);
     } else {
       io.stopPivot();
@@ -71,26 +66,20 @@ public class intake extends RBSISubsystem {
   // brings pivot up with pid while running intake motors still, stopping themif at position
   public void pivotUp() {
     if (io.getPosition() != intakeConstants.storedAngle) {
-      io.setPivotVelocity(
-          RotationsPerSecond.of(
-              controller.calculate(
-                  io.getPosition().in(Rotations), intakeConstants.storedAngle.in(Rotations))));
+      io.setPivotVelocity(controller.calculate(io.getPosition(), intakeConstants.storedAngle));
       io.setRollerVelocity(0.65);
     } else if (io.getPosition() == intakeConstants.storedAngle) {
-      io.setPivotVelocity(
-          RotationsPerSecond.of(
-              controller.calculate(
-                  io.getPosition().in(Rotations), intakeConstants.storedAngle.in(Rotations))));
+      io.setPivotVelocity(controller.calculate(io.getPosition(), intakeConstants.storedAngle));
+
       io.stopRoller();
     }
   }
 
   public void pivotGoToPosition(double pos) {
-    io.setPivotVelocity(
-        RotationsPerSecond.of(controller.calculate(io.getPosition().in(Rotations), pos)));
+    io.setPivotVelocity(controller.calculate(io.getPosition(), pos));
   }
 
-  public Angle getPosition() {
+  public double getPosition() {
     return io.getPosition();
   }
 

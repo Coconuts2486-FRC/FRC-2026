@@ -18,9 +18,6 @@ import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import com.pathplanner.lib.auto.AutoBuilder;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -36,9 +33,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.CANBuses;
 import frc.robot.Constants.Cameras;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.Constants.intakeConstants;
 import frc.robot.FieldConstants.AprilTagLayoutType;
-import frc.robot.commands.AutopilotCommands;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.Intake.IntakeIOTalonFX;
 import frc.robot.subsystems.Intake.intake;
@@ -71,7 +66,6 @@ import frc.robot.util.RBSIEnum.Mode;
 import frc.robot.util.RBSIPowerMonitor;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.photonvision.PhotonCamera;
 import org.photonvision.simulation.PhotonCameraSim;
@@ -396,52 +390,44 @@ public class RobotContainer {
 
     // sets intake pivot speed to trigger value, temporary testing function
     driverController
-        .rightTrigger(0.1)
+        .rightTrigger(0.01)
         .whileTrue(
             Commands.run(
-                () ->
-                    m_intake.setPivotVelocity(
-                        intakeConstants.kMaxPivotSpeed.times(
-                            driverController.getRightTriggerAxis())),
-                m_intake))
+                () -> m_intake.setPivotVelocity(driverController.getRightTriggerAxis()), m_intake))
         .onFalse(Commands.run(() -> m_intake.stopPivot(), m_intake));
 
     driverController
-        .leftTrigger(0.1)
+        .leftTrigger(0.01)
         .whileTrue(
             Commands.run(
-                () ->
-                    m_intake.setPivotVelocity(
-                        intakeConstants.kMaxPivotSpeed.times(
-                            -driverController.getLeftTriggerAxis())),
-                m_intake))
+                () -> m_intake.setPivotVelocity(-driverController.getLeftTriggerAxis()), m_intake))
         .onFalse(Commands.run(() -> m_intake.stopPivot(), m_intake));
 
     // prints the encoder position temporary testing function
     driverController.a().whileTrue(Commands.run(() -> m_intake.print(), m_intake));
 
     // Press LEFT BUMPER --> Drive to a pose 10 feet closer to the BLUE ALLIANCE wall
-    driverController
-        .leftTrigger()
-        .whileTrue(
-            Commands.defer(
-                () -> {
-                  // New pose 2 feet closer to BLUE ALLIANCE wall
-                  Pose2d pose =
-                      m_drivebase
-                          .getPose()
-                          .transformBy(
-                              new Transform2d(Units.feetToMeters(-20.0), 0.0, Rotation2d.kZero));
+    // driverController
+    //     .leftTrigger()
+    //     .whileTrue(
+    //         Commands.defer(
+    //             () -> {
+    //               // New pose 2 feet closer to BLUE ALLIANCE wall
+    //               Pose2d pose =
+    //                   m_drivebase
+    //                       .getPose()
+    //                       .transformBy(
+    //                           new Transform2d(Units.feetToMeters(-20.0), 0.0, Rotation2d.kZero));
 
-                  // Alternatively, you could define a pose in a separate module and call it here.
-                  //
-                  // Example from 2025 Reefscape:
-                  // --------
-                  // pose = ReefPoses.kBluePoleE;
+    // Alternatively, you could define a pose in a separate module and call it here.
+    //
+    // Example from 2025 Reefscape:
+    // --------
+    // pose = ReefPoses.kBluePoleE;
 
-                  return AutopilotCommands.runAutopilot(m_drivebase, pose);
-                },
-                Set.of(m_drivebase)));
+    //   return AutopilotCommands.runAutopilot(m_drivebase, pose);
+    // },
+    // Set.of(m_drivebase)));
 
     // Press POV LEFT to nudge the robot left
     driverController
