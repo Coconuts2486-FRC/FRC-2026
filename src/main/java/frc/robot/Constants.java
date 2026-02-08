@@ -374,18 +374,17 @@ public final class Constants {
 
     // public static final AngularVelocity kMaxPivotSpeed = RotationsPerSecond.of(106.3);
 
-    public static final double dropPostion = 0.45; // place holder
-    public static final double storedAngle = 0.3; // place holder
+    public static final double dropPostion = 0.3; // place holder
+    public static final double storedAngle = 0.252; // place holder
 
     public static final double kPivotGearRatio = 25.0 * 54.0 / 16.0;
 
-    public static final LoggedTunableNumber kp = new LoggedTunableNumber("Intake/kp", 3);
+    public static final LoggedTunableNumber kp = new LoggedTunableNumber("Intake/kp", 0.75);
 
     public static final double ki = 0;
     public static final double kd = 0;
 
-    public static final LoggedTunableNumber maxAcel =
-        new LoggedTunableNumber("Intake/MaxAccel", 10);
+    public static final LoggedTunableNumber maxAcel = new LoggedTunableNumber("Intake/MaxAccel", 5);
     public static final LoggedTunableNumber maxVelocity =
         new LoggedTunableNumber("Intake/maxVel", 5);
   }

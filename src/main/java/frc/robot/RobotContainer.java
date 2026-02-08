@@ -377,16 +377,18 @@ public class RobotContainer {
                 .ignoringDisable(true));
 
     // puts intake down
-    driverController
-        .rightBumper()
-        .whileTrue(Commands.run(() -> m_intake.pivotDown(), m_intake))
-        .whileFalse(Commands.run(() -> m_intake.stopPivot()));
+    // driverController
+    //     .rightBumper()
+    //     .whileTrue(Commands.run(() -> m_intake.pivotDown(), m_intake))
+    //     .whileFalse(Commands.run(() -> m_intake.stopPivot()));
 
-    // brings intake up
-    driverController
-        .leftBumper()
-        .whileTrue(Commands.run(() -> m_intake.pivotUp(), m_intake))
-        .whileFalse(Commands.run(() -> m_intake.stopPivot()));
+    // // brings intake up
+    // driverController
+    //     .leftBumper()
+    //     .whileTrue(Commands.run(() -> m_intake.pivotUp(), m_intake))
+    //     .whileFalse(Commands.run(() -> m_intake.stopPivot()));
+
+    driverController.rightBumper().toggleOnTrue(Commands.run(() -> m_intake.pivotDown()));
 
     // sets intake pivot speed to trigger value, temporary testing function
     driverController

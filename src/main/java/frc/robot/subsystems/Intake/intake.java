@@ -1,7 +1,7 @@
 package frc.robot.subsystems.Intake;
 
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.intakeConstants;
 import frc.robot.util.RBSISubsystem;
 
@@ -13,19 +13,18 @@ public class intake extends RBSISubsystem {
   public static boolean pivotAlive;
   public static boolean rollersAlive;
 
+  public static boolean intaking;
+
   // Constructor
   public intake(intakeIO io) {
     this.io = io;
+
+    setDefaultCommand(Commands.run(() -> pivotUp(), this));
   }
 
   // max values are for rotations a second
-  ProfiledPIDController controller =
-      new ProfiledPIDController(
-          intakeConstants.kp.get(),
-          intakeConstants.ki,
-          intakeConstants.kd,
-          new TrapezoidProfile.Constraints(
-              intakeConstants.maxVelocity.get(), intakeConstants.maxAcel.get()));
+  PIDController controller =
+      new PIDController(intakeConstants.kp.get(), intakeConstants.ki, intakeConstants.kd);
 
   @Override
   public void simulationPeriodic() {}
@@ -65,13 +64,15 @@ public class intake extends RBSISubsystem {
 
   // brings pivot up with pid while running intake motors still, stopping themif at position
   public void pivotUp() {
-    if (io.getPosition() != intakeConstants.storedAngle) {
-      io.setPivotVelocity(controller.calculate(io.getPosition(), intakeConstants.storedAngle));
-      io.setRollerVelocity(0.65);
-    } else if (io.getPosition() == intakeConstants.storedAngle) {
+    if (io.getPosition() < intakeConstants.storedAngle + 0.05
+        && io.getPosition() > intakeConstants.storedAngle - 0.05) {
       io.setPivotVelocity(controller.calculate(io.getPosition(), intakeConstants.storedAngle));
 
       io.stopRoller();
+    } else {
+
+      io.setPivotVelocity(controller.calculate(io.getPosition(), intakeConstants.storedAngle));
+      io.setRollerVelocity(0.65);
     }
   }
 
