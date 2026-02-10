@@ -19,15 +19,8 @@ public class IntakeIOTalonFX implements intakeIO {
 
   private final DutyCycleEncoder pivotEncoder = new DutyCycleEncoder(2); // returns position 0-1
 
-  // final VelocityVoltage velocityRequest = new VelocityVoltage(0);
-
-  // private final TalonFXConfiguration config = new TalonFXConfiguration();
-
-  /** Constuctor */
   public IntakeIOTalonFX() {
-    // config.Slot0 = new Slot0Configs().withKP(1.0);
-
-    // PhoenixUtil.tryUntilOk(5, () -> pivot.getConfigurator().apply(config, 0.25));
+    
   }
 
   @Override

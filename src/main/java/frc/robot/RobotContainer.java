@@ -391,19 +391,19 @@ public class RobotContainer {
     driverController.rightBumper().toggleOnTrue(Commands.run(() -> m_intake.pivotDown()));
 
     // sets intake pivot speed to trigger value, temporary testing function
-    driverController
-        .rightTrigger(0.01)
-        .whileTrue(
-            Commands.run(
-                () -> m_intake.setPivotVelocity(driverController.getRightTriggerAxis()), m_intake))
-        .onFalse(Commands.run(() -> m_intake.stopPivot(), m_intake));
+    // driverController
+    //     .rightTrigger(0.01)
+    //     .whileTrue(
+    //         Commands.run(
+    //             () -> m_intake.setPivotVelocity(driverController.getRightTriggerAxis()), m_intake))
+    //     .onFalse(Commands.run(() -> m_intake.stopPivot(), m_intake));
 
-    driverController
-        .leftTrigger(0.01)
-        .whileTrue(
-            Commands.run(
-                () -> m_intake.setPivotVelocity(-driverController.getLeftTriggerAxis()), m_intake))
-        .onFalse(Commands.run(() -> m_intake.stopPivot(), m_intake));
+    // driverController
+    //     .leftTrigger(0.01)
+    //     .whileTrue(
+    //         Commands.run(
+    //             () -> m_intake.setPivotVelocity(-driverController.getLeftTriggerAxis()), m_intake))
+    //     .onFalse(Commands.run(() -> m_intake.stopPivot(), m_intake));
 
     // prints the encoder position temporary testing function
     driverController.a().whileTrue(Commands.run(() -> m_intake.print(), m_intake));
