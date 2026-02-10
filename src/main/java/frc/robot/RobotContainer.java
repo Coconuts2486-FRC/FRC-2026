@@ -376,37 +376,11 @@ public class RobotContainer {
             Commands.runOnce(m_drivebase::zeroHeadingForAlliance, m_drivebase)
                 .ignoringDisable(true));
 
-    // puts intake down
-    // driverController
-    //     .rightBumper()
-    //     .whileTrue(Commands.run(() -> m_intake.pivotDown(), m_intake))
-    //     .whileFalse(Commands.run(() -> m_intake.stopPivot()));
-
-    // // brings intake up
-    // driverController
-    //     .leftBumper()
-    //     .whileTrue(Commands.run(() -> m_intake.pivotUp(), m_intake))
-    //     .whileFalse(Commands.run(() -> m_intake.stopPivot()));
-
+   
+    /*there is a default command in intake that makes it go up this toggles a new command 
+    that cancels the default and keeps the intake down with out the driver having to hold any button */
     driverController.rightBumper().toggleOnTrue(Commands.run(() -> m_intake.pivotDown()));
 
-    // sets intake pivot speed to trigger value, temporary testing function
-    // driverController
-    //     .rightTrigger(0.01)
-    //     .whileTrue(
-    //         Commands.run(
-    //             () -> m_intake.setPivotVelocity(driverController.getRightTriggerAxis()), m_intake))
-    //     .onFalse(Commands.run(() -> m_intake.stopPivot(), m_intake));
-
-    // driverController
-    //     .leftTrigger(0.01)
-    //     .whileTrue(
-    //         Commands.run(
-    //             () -> m_intake.setPivotVelocity(-driverController.getLeftTriggerAxis()), m_intake))
-    //     .onFalse(Commands.run(() -> m_intake.stopPivot(), m_intake));
-
-    // prints the encoder position temporary testing function
-    driverController.a().whileTrue(Commands.run(() -> m_intake.print(), m_intake));
 
     // Press LEFT BUMPER --> Drive to a pose 10 feet closer to the BLUE ALLIANCE wall
     // driverController
