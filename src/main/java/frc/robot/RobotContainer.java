@@ -35,10 +35,13 @@ import frc.robot.Constants.Cameras;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.FieldConstants.AprilTagLayoutType;
 import frc.robot.commands.DriveCommands;
+import frc.robot.subsystems.Intake.Intake;
+import frc.robot.subsystems.Intake.IntakeIOSim;
 import frc.robot.subsystems.Intake.IntakeIOTalonFX;
-import frc.robot.subsystems.Intake.intake;
 import frc.robot.subsystems.accelerometer.Accelerometer;
 import frc.robot.subsystems.climb.Climb;
+import frc.robot.subsystems.climb.ClimbIO;
+import frc.robot.subsystems.climb.ClimbIOSim;
 import frc.robot.subsystems.climb.ClimbIOTalonFX;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.SwerveConstants;
@@ -90,7 +93,7 @@ public class RobotContainer {
   private final Drive m_drivebase;
 
   private final Flywheel m_flywheel;
-  private final intake m_intake;
+  private final Intake m_intake;
   private final Climb m_climb;
 
   // ... Add additional subsystems here (e.g., elevator, arm, etc.)
@@ -180,10 +183,10 @@ public class RobotContainer {
 
         m_drivebase = new Drive(m_imu);
         m_flywheel = new Flywheel(new FlywheelIOSim()); // new Flywheel(new FlywheelIOTalonFX());
-        m_intake = new intake(new IntakeIOTalonFX());
-        m_climb = new Climb(new ClimbIOTalonFX());
         m_vision = new Vision(m_drivebase::addVisionMeasurement, buildVisionIOsReal(m_drivebase));
         m_accel = new Accelerometer(m_imu);
+        m_climb = new Climb(new ClimbIOTalonFX());
+        m_intake = new Intake(new IntakeIOTalonFX());
         sweep = null;
 
         break;
@@ -193,18 +196,14 @@ public class RobotContainer {
 
         m_imu = new Imu(new ImuIOSim());
         m_drivebase = new Drive(m_imu);
-        m_flywheel = new Flywheel(new FlywheelIOSim());
-
-        // ---------------- Vision IOs (robot code) ----------------
-        var cams = frc.robot.Constants.Cameras.ALL;
-
-        // If you keep Vision expecting exactly two cameras:
-        VisionIO[] visionIOs = buildVisionIOsSim(m_drivebase);
-        m_vision = new Vision(m_drivebase::addVisionMeasurement, visionIOs);
-
+        m_flywheel = new Flywheel(new FlywheelIOSim() {});
+        m_vision = new Vision(m_drivebase::addVisionMeasurement, buildVisionIOsSim(m_drivebase));
         m_accel = new Accelerometer(m_imu);
+        m_climb = new Climb(new ClimbIOSim());
+        m_intake = new Intake(new IntakeIOSim());
 
         // ---------------- CameraSweepEvaluator (sim-only analysis) ----------------
+        var cams = Cameras.ALL;
         VisionSystemSim visionSim = new VisionSystemSim("CameraSweepWorld");
         visionSim.addAprilTags(FieldConstants.aprilTagLayout);
 
@@ -227,8 +226,6 @@ public class RobotContainer {
           sweep = null; // or throw if you require exactly 2 cameras
         }
 
-        m_intake = null;
-        m_climb = null;
         break;
 
       default:
@@ -241,7 +238,7 @@ public class RobotContainer {
         m_accel = new Accelerometer(m_imu);
         sweep = null;
         m_intake = null;
-        m_climb = null;
+        m_climb = new Climb(new ClimbIO() {});
         break;
     }
 
@@ -376,11 +373,9 @@ public class RobotContainer {
             Commands.runOnce(m_drivebase::zeroHeadingForAlliance, m_drivebase)
                 .ignoringDisable(true));
 
-   
-    /*there is a default command in intake that makes it go up this toggles a new command 
+    /*there is a default command in intake that makes it go up this toggles a new command
     that cancels the default and keeps the intake down with out the driver having to hold any button */
     driverController.rightBumper().toggleOnTrue(Commands.run(() -> m_intake.pivotDown()));
-
 
     // Press LEFT BUMPER --> Drive to a pose 10 feet closer to the BLUE ALLIANCE wall
     // driverController

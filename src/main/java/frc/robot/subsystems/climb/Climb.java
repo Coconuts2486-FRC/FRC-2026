@@ -8,8 +8,9 @@ public class Climb extends RBSISubsystem {
 
   private ElevatorFeedforward ffmodel;
 
-  public Climb(ClimbIOTalonFX climbIOTalonFX) {
+  public Climb(ClimbIO io) {
     // TODO Auto-generated constructor stub
+    this.io = io;
   }
 
   @Override

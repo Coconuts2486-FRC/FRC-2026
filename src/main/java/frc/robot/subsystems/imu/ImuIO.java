@@ -31,7 +31,7 @@ public interface ImuIO extends RBSIIO {
 
   @AutoLog
   class ImuIOInputs {
-    public boolean connected = false;
+    public static boolean connected = false;
 
     /** FPGA-local timestamp when inputs were captured (ns) */
     public long timestampNs = 0L;
