@@ -4,24 +4,32 @@ import frc.robot.util.RBSISubsystem;
 
 public class Indexer extends RBSISubsystem {
   private final IndexerIO io;
+  private final IndexerIOInputsAutoLogged inputs = new IndexerIOInputsAutoLogged();
 
   public Indexer(IndexerIO io) {
     this.io = io;
+    io.updateInputs(inputs);
   }
 
-  public void indexerSetVolts(double volts) {
-    io.indexerSetVolts(volts);
+  public void feederSetVelocity(double velocity) {
+    io.feederSetVelocity(velocity);
+  }
+
+  public void feederStop() {
+    io.feederStop();
+  }
+
+  public double getFeederspeed() {
+    return io.getFeederspeed();
   }
 
   public void indexerSetVelocity(double velocity) {
     io.indexerSetVelocity(velocity);
   }
 
-  public void indexerSetPercent(double percent) {
-    io.indexerSetPercent(percent);
+  public void stop() {
+    io.stop();
   }
-
-  public void stop() {}
 
   @Override
   public void rbsiPeriodic() {}
