@@ -6,21 +6,20 @@ public class flywheel extends RBSISubsystem {
 
   private flywheelIO io;
 
-  // Constructor
-  public flywheel(flywheelIO io) {
+  public void flywheel(flywheelIO io) {
     this.io = io;
   }
 
-  public void flywheelSetVolts(double volts) {
-    io.flywheelSetVolts(volts);
-  }
-
-  public void flywheelSpeed(double speed) {
-    io.flywheelSpeed(speed);
+  public void flywheelSetVelocity(double Velocity) {
+    io.flywheelSetVelocity(Velocity);
   }
 
   public void flywheelStop() {
     io.flywheelStop();
+  }
+
+  public double getVelocity(){
+    return io.getVelocity();
   }
 
   @Override
