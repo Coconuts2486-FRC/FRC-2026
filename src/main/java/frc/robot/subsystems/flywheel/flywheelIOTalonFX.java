@@ -6,24 +6,20 @@ public class flywheelIOTalonFX implements flywheelIO {
 
   public static TalonFX flywheel = new TalonFX(777);
 
-
-  public flywheelIOTalonFX(){}
+  public flywheelIOTalonFX() {}
 
   @Override
-  public void flywheelSetVelocity(double velocity){
+  public void flywheelSetVelocity(double velocity) {
     flywheel.set(velocity);
-  } 
+  }
 
   @Override
-  public void flywheelStop(){
+  public void flywheelStop() {
     flywheel.stopMotor();
   }
 
   @Override
-  public double getVelocity(){
+  public double getVelocity() {
     return flywheel.getVelocity().getValueAsDouble();
   }
-
-
-  
 }

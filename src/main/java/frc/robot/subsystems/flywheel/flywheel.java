@@ -18,7 +18,7 @@ public class flywheel extends RBSISubsystem {
     io.flywheelStop();
   }
 
-  public double getVelocity(){
+  public double getVelocity() {
     return io.getVelocity();
   }
 

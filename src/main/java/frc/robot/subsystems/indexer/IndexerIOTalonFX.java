@@ -10,11 +10,7 @@ public class IndexerIOTalonFX implements IndexerIO {
   public IndexerIOTalonFX() {}
 
   @Override
-  public void updateInputs(IndexerIOInputs inputs){
-    
-  }
-
-
+  public void updateInputs(IndexerIOInputs inputs) {}
 
   @Override
   public void feederSetVelocity(double velocity) {

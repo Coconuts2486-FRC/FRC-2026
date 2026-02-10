@@ -1,6 +1,5 @@
 package frc.robot.subsystems.indexer;
 
-import frc.robot.subsystems.flywheel_example.FlywheelIO.FlywheelIOInputs;
 import frc.robot.util.RBSIIO;
 import org.littletonrobotics.junction.AutoLog;
 
@@ -24,7 +23,6 @@ public interface IndexerIO extends RBSIIO {
   }
 
   public default void updateInputs(IndexerIOInputs inputs) {}
-
 
   public default void indexerSetVelocity(double velocity) {}
 

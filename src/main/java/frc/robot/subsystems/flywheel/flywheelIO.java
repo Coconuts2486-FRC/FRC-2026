@@ -8,7 +8,7 @@ public interface flywheelIO extends RBSIIO {
 
   public default void flywheelStop() {}
 
-  public default double getVelocity(){
+  public default double getVelocity() {
     return 0.0;
   }
 }
