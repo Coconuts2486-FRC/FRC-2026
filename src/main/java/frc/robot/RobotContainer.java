@@ -18,9 +18,6 @@ import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import com.pathplanner.lib.auto.AutoBuilder;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -37,9 +34,12 @@ import frc.robot.Constants.CANBuses;
 import frc.robot.Constants.Cameras;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.FieldConstants.AprilTagLayoutType;
-import frc.robot.commands.AutopilotCommands;
 import frc.robot.commands.DriveCommands;
+import frc.robot.subsystems.Intake.IntakeIOTalonFX;
+import frc.robot.subsystems.Intake.intake;
 import frc.robot.subsystems.accelerometer.Accelerometer;
+import frc.robot.subsystems.climb.Climb;
+import frc.robot.subsystems.climb.ClimbIOTalonFX;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.SwerveConstants;
 import frc.robot.subsystems.flywheel_example.Flywheel;
@@ -66,7 +66,6 @@ import frc.robot.util.RBSIEnum.Mode;
 import frc.robot.util.RBSIPowerMonitor;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.photonvision.PhotonCamera;
 import org.photonvision.simulation.PhotonCameraSim;
@@ -91,6 +90,8 @@ public class RobotContainer {
   private final Drive m_drivebase;
 
   private final Flywheel m_flywheel;
+  private final intake m_intake;
+  private final Climb m_climb;
 
   // ... Add additional subsystems here (e.g., elevator, arm, etc.)
 
@@ -179,9 +180,12 @@ public class RobotContainer {
 
         m_drivebase = new Drive(m_imu);
         m_flywheel = new Flywheel(new FlywheelIOSim()); // new Flywheel(new FlywheelIOTalonFX());
+        m_intake = new intake(new IntakeIOTalonFX());
+        m_climb = new Climb(new ClimbIOTalonFX());
         m_vision = new Vision(m_drivebase::addVisionMeasurement, buildVisionIOsReal(m_drivebase));
         m_accel = new Accelerometer(m_imu);
         sweep = null;
+
         break;
 
       case SIM:
@@ -223,6 +227,8 @@ public class RobotContainer {
           sweep = null; // or throw if you require exactly 2 cameras
         }
 
+        m_intake = null;
+        m_climb = null;
         break;
 
       default:
@@ -234,6 +240,8 @@ public class RobotContainer {
         m_vision = new Vision(m_drivebase::addVisionMeasurement, buildVisionIOsReplay());
         m_accel = new Accelerometer(m_imu);
         sweep = null;
+        m_intake = null;
+        m_climb = null;
         break;
     }
 
@@ -354,51 +362,74 @@ public class RobotContainer {
                 m_drivebase));
 
     // Press A button -> BRAKE
-    driverController
-        .a()
-        .whileTrue(Commands.runOnce(() -> m_drivebase.setMotorBrake(true), m_drivebase));
+    // driverController
+    //     .a()
+    //     .whileTrue(Commands.runOnce(() -> m_drivebase.setMotorBrake(true), m_drivebase));
 
     // Press X button --> Stop with wheels in X-Lock position
-    driverController.x().onTrue(Commands.runOnce(m_drivebase::stopWithX, m_drivebase));
+    // driverController.x().onTrue(Commands.runOnce(m_drivebase::stopWithX, m_drivebase));
 
-    // Press Y button --> Manually Re-Zero the Gyro
+    // Press Start button --> Manually Re-Zero the Gyro
     driverController
-        .y()
+        .start()
         .onTrue(
             Commands.runOnce(m_drivebase::zeroHeadingForAlliance, m_drivebase)
                 .ignoringDisable(true));
 
-    // Press RIGHT BUMPER --> Run the example flywheel
-    driverController
-        .rightBumper()
-        .whileTrue(
-            Commands.startEnd(
-                () -> m_flywheel.runVelocity(flywheelSpeedInput.get()),
-                m_flywheel::stop,
-                m_flywheel));
+    // puts intake down
+    // driverController
+    //     .rightBumper()
+    //     .whileTrue(Commands.run(() -> m_intake.pivotDown(), m_intake))
+    //     .whileFalse(Commands.run(() -> m_intake.stopPivot()));
+
+    // // brings intake up
+    // driverController
+    //     .leftBumper()
+    //     .whileTrue(Commands.run(() -> m_intake.pivotUp(), m_intake))
+    //     .whileFalse(Commands.run(() -> m_intake.stopPivot()));
+
+    driverController.rightBumper().toggleOnTrue(Commands.run(() -> m_intake.pivotDown()));
+
+    // sets intake pivot speed to trigger value, temporary testing function
+    // driverController
+    //     .rightTrigger(0.01)
+    //     .whileTrue(
+    //         Commands.run(
+    //             () -> m_intake.setPivotVelocity(driverController.getRightTriggerAxis()), m_intake))
+    //     .onFalse(Commands.run(() -> m_intake.stopPivot(), m_intake));
+
+    // driverController
+    //     .leftTrigger(0.01)
+    //     .whileTrue(
+    //         Commands.run(
+    //             () -> m_intake.setPivotVelocity(-driverController.getLeftTriggerAxis()), m_intake))
+    //     .onFalse(Commands.run(() -> m_intake.stopPivot(), m_intake));
+
+    // prints the encoder position temporary testing function
+    driverController.a().whileTrue(Commands.run(() -> m_intake.print(), m_intake));
 
     // Press LEFT BUMPER --> Drive to a pose 10 feet closer to the BLUE ALLIANCE wall
-    driverController
-        .leftBumper()
-        .whileTrue(
-            Commands.defer(
-                () -> {
-                  // New pose 2 feet closer to BLUE ALLIANCE wall
-                  Pose2d pose =
-                      m_drivebase
-                          .getPose()
-                          .transformBy(
-                              new Transform2d(Units.feetToMeters(-20.0), 0.0, Rotation2d.kZero));
+    // driverController
+    //     .leftTrigger()
+    //     .whileTrue(
+    //         Commands.defer(
+    //             () -> {
+    //               // New pose 2 feet closer to BLUE ALLIANCE wall
+    //               Pose2d pose =
+    //                   m_drivebase
+    //                       .getPose()
+    //                       .transformBy(
+    //                           new Transform2d(Units.feetToMeters(-20.0), 0.0, Rotation2d.kZero));
 
-                  // Alternatively, you could define a pose in a separate module and call it here.
-                  //
-                  // Example from 2025 Reefscape:
-                  // --------
-                  // pose = ReefPoses.kBluePoleE;
+    // Alternatively, you could define a pose in a separate module and call it here.
+    //
+    // Example from 2025 Reefscape:
+    // --------
+    // pose = ReefPoses.kBluePoleE;
 
-                  return AutopilotCommands.runAutopilot(m_drivebase, pose);
-                },
-                Set.of(m_drivebase)));
+    //   return AutopilotCommands.runAutopilot(m_drivebase, pose);
+    // },
+    // Set.of(m_drivebase)));
 
     // Press POV LEFT to nudge the robot left
     driverController

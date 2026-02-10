@@ -38,6 +38,7 @@ import frc.robot.FieldConstants.AprilTagLayoutType;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.SwerveConstants;
 import frc.robot.util.Alert;
+import frc.robot.util.LoggedTunableNumber;
 import frc.robot.util.RBSIEnum.AutoType;
 import frc.robot.util.RBSIEnum.CTREPro;
 import frc.robot.util.RBSIEnum.DriveStyle;
@@ -104,7 +105,7 @@ public final class Constants {
   /** General Constants **************************************************** */
   public static final double loopPeriodSecs = 0.02;
 
-  public static final boolean tuningMode = false;
+  public static final boolean tuningMode = true;
 
   /************************************************************************* */
   /** Physical Constants for Robot Operation ******************************* */
@@ -216,6 +217,9 @@ public final class Constants {
     // Example:
     public static final RobotDeviceId FLYWHEEL_LEADER = new RobotDeviceId(3, CANBuses.RIO, 8);
     public static final RobotDeviceId FLYWHEEL_FOLLOWER = new RobotDeviceId(4, CANBuses.RIO, 9);
+
+    public static final RobotDeviceId INTAKE_PIVOT = new RobotDeviceId(17, CANBuses.RIO, 0);
+    public static final RobotDeviceId INTAKE_ROLLER = new RobotDeviceId(18, CANBuses.RIO, 1);
 
     /* BEAM BREAK and/or LIMIT SWITCH DIO CHANNELS */
     // This is where digital I/O feedback devices are defined
@@ -363,7 +367,58 @@ public final class Constants {
 
   public static final class turretConstants {
 
-    public static final double hoodAngle = 0.0; // place holder
+    public static final double hoodAngle = 0.0; // placeholder
+  }
+
+  public static final class intakeConstants {
+
+    // public static final AngularVelocity kMaxPivotSpeed = RotationsPerSecond.of(106.3);
+
+    public static final double dropPostion = 0.3; // place holder
+    public static final double storedAngle = 0.252; // place holder
+
+    public static final double kPivotGearRatio = 25.0 * 54.0 / 16.0;
+
+    public static final LoggedTunableNumber kp = new LoggedTunableNumber("Intake/kp", 0.75);
+
+    public static final double ki = 0;
+    public static final double kd = 0;
+
+    public static final LoggedTunableNumber maxAcel = new LoggedTunableNumber("Intake/MaxAccel", 5);
+    public static final LoggedTunableNumber maxVelocity =
+        new LoggedTunableNumber("Intake/maxVel", 5);
+  }
+
+  public static final class climbConstants {
+
+    // magic configs
+    public static final double mm_cruiseVelocity = 80;
+    public static final double mm_acceleration = 160;
+    public static final double mm_jerk = 1600;
+
+    // magic PIDSVA
+    public static final double mm_kP = 0.25;
+    public static final double mm_kI = 0.0;
+    public static final double mm_kD = 0.25;
+    public static final double mm_kS = 0.25;
+    public static final double mm_kV = 0.25;
+    public static final double mm_kA = 0.25;
+  }
+
+  public static final class pivotConstants {
+
+    // magic configs
+    public static final double mm_cruiseVelocity = 80;
+    public static final double mm_acceleration = 160;
+    public static final double mm_jerk = 1600;
+
+    // magic PIDSVA
+    public static final double mm_kP = 0.25;
+    public static final double mm_kI = 0.0;
+    public static final double mm_kD = 0.25;
+    public static final double mm_kS = 0.25;
+    public static final double mm_kV = 0.25;
+    public static final double mm_kA = 0.25;
   }
 
   /************************************************************************* */
