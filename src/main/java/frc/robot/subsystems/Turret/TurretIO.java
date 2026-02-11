@@ -1,9 +1,9 @@
-package frc.robot.subsystems.Turret_Spin;
+package frc.robot.subsystems.Turret;
 
 import frc.robot.util.RBSIIO;
 import org.littletonrobotics.junction.AutoLog;
 
-public interface Turret_SpinIO extends RBSIIO {
+public interface TurretIO extends RBSIIO {
 
   @AutoLog
   public static class Turret_SpinIOInputs {

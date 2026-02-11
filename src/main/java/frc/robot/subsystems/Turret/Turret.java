@@ -1,15 +1,15 @@
-package frc.robot.subsystems.Turret_Spin;
+package frc.robot.subsystems.Turret;
 
 import frc.robot.Constants.turretConstants;
 import frc.robot.util.RBSISubsystem;
 
-public class Turret_Spin extends RBSISubsystem {
-  public Turret_SpinIO io;
+public class Turret extends RBSISubsystem {
+  public TurretIO io;
   public double solution1;
   public double solution2;
 
   // Constructor
-  public Turret_Spin(Turret_SpinIO io) {
+  public Turret(TurretIO io) {
     this.io = io;
   }
 
