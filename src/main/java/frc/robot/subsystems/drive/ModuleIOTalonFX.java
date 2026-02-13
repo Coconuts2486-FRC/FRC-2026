@@ -45,7 +45,7 @@ import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.Constants;
 import frc.robot.Constants.DrivebaseConstants;
-import frc.robot.generated.TunerConstants;
+import frc.robot.generated.TunerFactory;
 import frc.robot.util.PhoenixUtil;
 import frc.robot.util.RBSICANBusRegistry;
 import java.util.Queue;
@@ -137,10 +137,10 @@ public class ModuleIOTalonFX implements ModuleIO {
 
     constants =
         switch (module) {
-          case 0 -> TunerConstants.FrontLeft;
-          case 1 -> TunerConstants.FrontRight;
-          case 2 -> TunerConstants.BackLeft;
-          case 3 -> TunerConstants.BackRight;
+          case 0 -> TunerFactory.INSTANCE.FrontLeft;
+          case 1 -> TunerFactory.INSTANCE.FrontRight;
+          case 2 -> TunerFactory.INSTANCE.BackLeft;
+          case 3 -> TunerFactory.INSTANCE.BackRight;
           default -> throw new IllegalArgumentException("Invalid module index");
         };
 

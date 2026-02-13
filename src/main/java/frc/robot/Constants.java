@@ -65,7 +65,7 @@ public final class Constants {
    * Define the various multiple robots that use this same code (e.g., COMPBOT, DEVBOT, SIMBOT,
    * etc.) and the operating modes of the code (REAL, SIM, or REPLAY)
    */
-  private static RobotType robotType = RobotType.DEVBOT;
+  private static RobotType robotType = RobotType.PINCHY;
 
   // Define swerve, auto, and vision types being used
   // NOTE: Only PHOENIX6 swerve base has been tested at this point!!!
@@ -79,7 +79,8 @@ public final class Constants {
 
   /** Enumerate the robot types (name your robots here) */
   public static enum RobotType {
-    DEVBOT, // Development / Alpha / Practice Bot
+    GEORGE, // Development / Alpha / Practice Bot
+    PINCHY, // Development / Alpha / Practice Bot
     COMPBOT, // Competition robot
     SIMBOT // Simulated robot
   }
@@ -132,14 +133,14 @@ public final class Constants {
     public static final Rotation2d kRioOrientation =
         switch (getRobot()) {
           case COMPBOT -> Rotation2d.fromDegrees(-90.);
-          case DEVBOT -> Rotation2d.fromDegrees(0.);
+          case GEORGE -> Rotation2d.fromDegrees(0.);
           default -> Rotation2d.fromDegrees(0.);
         };
     // IMU can be one of Pigeon2 or NavX
     public static final Rotation2d kIMUOrientation =
         switch (getRobot()) {
           case COMPBOT -> Rotation2d.fromDegrees(0.);
-          case DEVBOT -> Rotation2d.fromDegrees(0.);
+          case GEORGE -> Rotation2d.fromDegrees(0.);
           default -> Rotation2d.fromDegrees(0.);
         };
   }
@@ -597,7 +598,7 @@ public final class Constants {
   /** Get the current robot mode */
   public static Mode getMode() {
     return switch (robotType) {
-      case DEVBOT, COMPBOT -> RobotBase.isReal() ? Mode.REAL : Mode.REPLAY;
+      case GEORGE, PINCHY, COMPBOT -> RobotBase.isReal() ? Mode.REAL : Mode.REPLAY;
       case SIMBOT -> Mode.SIM;
     };
   }
