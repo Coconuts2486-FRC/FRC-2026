@@ -1,7 +1,6 @@
 package frc.robot.subsystems.driver_info;
 
 import frc.robot.subsystems.drive.Drive;
-import frc.robot.subsystems.drive.Module;
 import frc.robot.subsystems.imu.Imu;
 import frc.robot.util.VirtualSubsystem;
 import org.littletonrobotics.junction.Logger;
@@ -38,12 +37,14 @@ public class CANStatus extends VirtualSubsystem {
     //   mainCAN = false;
     // }
 
-    // if statement to figure out if the drive CAN network is alive
-    if (Module.alive1 && Module.alive2 && Module.alive3 && Module.alive4 && imu.isConnected()) {
-      driveCAN = true;
-    } else {
-      driveCAN = false;
-    }
+    // figure out if the drive CAN network is alive
+    var modules = drive.getModules();
+    driveCAN =
+        (modules[0].isAlive()
+            && modules[1].isAlive()
+            && modules[2].isAlive()
+            && modules[3].isAlive()
+            && imu.isConnected());
 
     // Logger inputs for each CAN network
     Logger.recordOutput("CAN/DriveCAN", driveCAN);
@@ -51,10 +52,10 @@ public class CANStatus extends VirtualSubsystem {
 
     // Logger inputs for each part of the drive CAN network
     Logger.recordOutput("CAN/PigeonALive", imu.isConnected());
-    Logger.recordOutput("CAN/Module1Alive", Module.alive1);
-    Logger.recordOutput("CAN/Module2Alive", Module.alive2);
-    Logger.recordOutput("CAN/Module3Alive", Module.alive3);
-    Logger.recordOutput("CAN/Module4Alive", Module.alive4);
+    Logger.recordOutput("CAN/Module1Alive", modules[0].isAlive());
+    Logger.recordOutput("CAN/Module2Alive", modules[1].isAlive());
+    Logger.recordOutput("CAN/Module3Alive", modules[2].isAlive());
+    Logger.recordOutput("CAN/Module4Alive", modules[3].isAlive());
 
     // logger inputs for each part of the main CAN network
     // Logger.recordOutput("CAN/TestAlive", testStatus.isOK());
