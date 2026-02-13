@@ -40,7 +40,7 @@ public class PhoenixOdometryThread extends Thread {
   private final List<Queue<Double>> genericQueues = new ArrayList<>();
   private final List<Queue<Double>> timestampQueues = new ArrayList<>();
 
-  private static boolean isCANFD = TunerFactory.INSTANCE.kCANBus.isNetworkFD();
+  private static final boolean isCANFD = TunerFactory.INSTANCE.canBus().isNetworkFD();
   private static PhoenixOdometryThread instance = null;
 
   private long droppedSamples = 0;

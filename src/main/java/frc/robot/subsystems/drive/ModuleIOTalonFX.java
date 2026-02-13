@@ -137,10 +137,10 @@ public class ModuleIOTalonFX implements ModuleIO {
 
     constants =
         switch (module) {
-          case 0 -> TunerFactory.INSTANCE.FrontLeft;
-          case 1 -> TunerFactory.INSTANCE.FrontRight;
-          case 2 -> TunerFactory.INSTANCE.BackLeft;
-          case 3 -> TunerFactory.INSTANCE.BackRight;
+          case 0 -> TunerFactory.INSTANCE.frontLeft();
+          case 1 -> TunerFactory.INSTANCE.frontRight();
+          case 2 -> TunerFactory.INSTANCE.backLeft();
+          case 3 -> TunerFactory.INSTANCE.backRight();
           default -> throw new IllegalArgumentException("Invalid module index");
         };
 
