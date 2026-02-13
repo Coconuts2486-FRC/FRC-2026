@@ -2,11 +2,11 @@ package frc.robot.subsystems.flywheel;
 
 import frc.robot.util.RBSISubsystem;
 
-public class flywheel extends RBSISubsystem {
+public class Flywheel extends RBSISubsystem {
 
-  private flywheelIO io;
+  private FlywheelIO io;
 
-  public void flywheel(flywheelIO io) {
+  public Flywheel(FlywheelIO io) {
     this.io = io;
   }
 

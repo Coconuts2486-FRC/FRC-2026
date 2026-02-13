@@ -38,6 +38,10 @@ public class Imu {
     io.updateInputs(inputs);
   }
 
+  public boolean isConnected() {
+    return inputs.connected;
+  }
+
   /** Hot-path access: primitive-only snapshot */
   public ImuIO.ImuIOInputs getInputs() {
     return inputs;

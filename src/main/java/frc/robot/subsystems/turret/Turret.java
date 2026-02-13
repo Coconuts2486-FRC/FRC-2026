@@ -1,4 +1,4 @@
-package frc.robot.subsystems.Turret;
+package frc.robot.subsystems.turret;
 
 import frc.robot.Constants.turretConstants;
 import frc.robot.util.RBSISubsystem;

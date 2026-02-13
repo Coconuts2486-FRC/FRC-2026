@@ -1,4 +1,4 @@
-package frc.robot.subsystems.Driver_Info;
+package frc.robot.subsystems.driver_info;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;

@@ -1,16 +1,24 @@
-package frc.robot.subsystems.Driver_Info;
+package frc.robot.subsystems.driver_info;
 
+import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.Module;
-import frc.robot.subsystems.imu.ImuIO;
+import frc.robot.subsystems.imu.Imu;
 import frc.robot.util.VirtualSubsystem;
 import org.littletonrobotics.junction.Logger;
 
 public class CANStatus extends VirtualSubsystem {
 
+  private final Drive drive;
+  private final Imu imu;
+
   Boolean driveCAN = false;
   Boolean mainCAN = false;
 
-  public void can_status() {}
+  /** Constructor */
+  public CANStatus(Drive drive, Imu imu) {
+    this.drive = drive;
+    this.imu = imu;
+  }
 
   @Override
   public void rbsiPeriodic() {
@@ -31,11 +39,7 @@ public class CANStatus extends VirtualSubsystem {
     // }
 
     // if statement to figure out if the drive CAN network is alive
-    if (Module.alive1
-        && Module.alive2
-        && Module.alive3
-        && Module.alive4
-        && ImuIO.ImuIOInputs.connected) {
+    if (Module.alive1 && Module.alive2 && Module.alive3 && Module.alive4 && imu.isConnected()) {
       driveCAN = true;
     } else {
       driveCAN = false;
@@ -46,7 +50,7 @@ public class CANStatus extends VirtualSubsystem {
     Logger.recordOutput("CAN/MainCAN", mainCAN);
 
     // Logger inputs for each part of the drive CAN network
-    Logger.recordOutput("CAN/PigeonALive", ImuIO.ImuIOInputs.connected);
+    Logger.recordOutput("CAN/PigeonALive", imu.isConnected());
     Logger.recordOutput("CAN/Module1Alive", Module.alive1);
     Logger.recordOutput("CAN/Module2Alive", Module.alive2);
     Logger.recordOutput("CAN/Module3Alive", Module.alive3);
