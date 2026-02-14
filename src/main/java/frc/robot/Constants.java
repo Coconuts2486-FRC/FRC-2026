@@ -365,11 +365,6 @@ public final class Constants {
     public static final double kDsim = 0.0;
   }
 
-  public static final class turretConstants {
-
-    public static final double hoodAngle = 0.0; // placeholder
-  }
-
   public static final class intakeConstants {
 
     // public static final AngularVelocity kMaxPivotSpeed = RotationsPerSecond.of(106.3);
@@ -422,10 +417,11 @@ public final class Constants {
   }
 
   /************************************************************************* */
-  /** Place Other Mechanism Constant Classes Here ************************** */
-  // public static class Mechanism1Constants {}
-  // public static class Mechanism2Constants {}
-  // ...
+  /** Turret Constants **************************************************** */
+  public static final class TurretConstants {
+    public static final double kTurretGearRatio = 10;
+    public static final double kHoodAngle = 71.5;
+  }
 
   /************************************************************************* */
   /** Shooter Constants **************************************************** */

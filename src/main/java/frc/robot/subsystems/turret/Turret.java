@@ -1,6 +1,8 @@
 package frc.robot.subsystems.turret;
 
-import frc.robot.Constants.turretConstants;
+import edu.wpi.first.math.MathUtil;
+import frc.robot.Constants.TurretConstants;
+import frc.robot.Constants.TurretConstants.*;
 import frc.robot.util.RBSISubsystem;
 import org.littletonrobotics.junction.Logger;
 
@@ -8,17 +10,20 @@ public class Turret extends RBSISubsystem {
   public TurretIO io;
   public double solution1;
   public double solution2;
-  
+
+  private double turretPosition;
 
   // Constructor
   public Turret(TurretIO io) {
     this.io = io;
   }
 
-
-
   @Override
   public void rbsiPeriodic() {
+
+    turretPosition =
+        MathUtil.inputModulus(io.getTurretEncoderPosition(), 1, 10)
+            / TurretConstants.kTurretGearRatio;
 
     Logger.recordOutput("Turret/Switch", readTurretSwitch());
   }
@@ -51,13 +56,13 @@ public class Turret extends RBSISubsystem {
   }
 
   public double B(double z, double distance) {
-    return (2 * z * Math.cos(turretConstants.hoodAngle))
-        - (distance * Math.sin(turretConstants.hoodAngle));
+    return (2 * z * Math.cos(TurretConstants.kHoodAngle))
+        - (distance * Math.sin(TurretConstants.kHoodAngle));
   }
 
   public double C(double z, double distance) {
-    return (z * Math.cos(turretConstants.hoodAngle))
-        - (distance * Math.sin(turretConstants.hoodAngle) * Math.cos(turretConstants.hoodAngle));
+    return (z * Math.cos(TurretConstants.kHoodAngle))
+        - (distance * Math.sin(TurretConstants.kHoodAngle) * Math.cos(TurretConstants.kHoodAngle));
   }
 
   public void setVolts(double volts) {
@@ -68,8 +73,8 @@ public class Turret extends RBSISubsystem {
     io.setPosition(position);
   }
 
-  public double getPosition() {
-    return io.getPosition();
+  public double getTurretEncoderPosition() {
+    return io.getTurretEncoderPosition();
   }
 
   public boolean readTurretSwitch() {
