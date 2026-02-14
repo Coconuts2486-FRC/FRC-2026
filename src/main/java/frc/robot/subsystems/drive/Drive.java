@@ -41,12 +41,15 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DrivebaseConstants;
 import frc.robot.Constants.RobotConstants;
+import frc.robot.Elastic;
 import frc.robot.subsystems.imu.Imu;
 import frc.robot.util.LocalADStarAK;
 import frc.robot.util.RBSIEnum.Mode;
@@ -80,6 +83,11 @@ public class Drive extends RBSISubsystem {
   private ProfiledPIDController angleController;
 
   private DriveSimPhysics simPhysics;
+  private final Field2d m_field = new Field2d();
+
+  private boolean lastOnOpponentHalf = false;
+  private static final double FIELD_LENGTH_METERS = 16.54175; // official FRC 2026 field length
+  private static final double MIDFIELD_X = /*FIELD_LENGTH_METERS / 3.0*/ 11.821474447275452;
 
   // Constructor
   public Drive(Imu imu) {
@@ -212,6 +220,7 @@ public class Drive extends RBSISubsystem {
                 (state) -> Logger.recordOutput("Drive/SysIdState", state.toString())),
             new SysIdRoutine.Mechanism(
                 (voltage) -> runCharacterization(voltage.in(Volts)), null, this));
+    SmartDashboard.putData("Field", m_field);
   }
 
   /** Periodic function that is called each robot cycle by the command scheduler */
@@ -276,6 +285,20 @@ public class Drive extends RBSISubsystem {
     odometryLock.unlock();
 
     gyroDisconnectedAlert.set(!imuInputs.connected && Constants.getMode() != Mode.SIM);
+    m_field.setRobotPose(m_PoseEstimator.getEstimatedPosition());
+
+    boolean onOpponentHalf = onOpponentHalf();
+
+    // Only switch tabs when the value CHANGES
+    if (onOpponentHalf != lastOnOpponentHalf) {
+      Elastic.selectTab(onOpponentHalf ? 2 : 0);
+      lastOnOpponentHalf = onOpponentHalf;
+    }
+    Pose2d pose = m_PoseEstimator.getEstimatedPosition(); // or getPose() if you already have it
+
+    // Optional logging
+    Logger.recordOutput("UI/OnOpponentHalf", onOpponentHalf);
+    Logger.recordOutput("UI/poseX", pose.getX());
   }
 
   /** Simulation Periodic Method */
@@ -427,6 +450,10 @@ public class Drive extends RBSISubsystem {
   }
 
   /** Getter Functions ***************************************************** */
+  /** Returns the module objects */
+  public Module[] getModules() {
+    return modules;
+  }
 
   /** Returns the module states (turn angles and drive velocities) for all of the modules. */
   @AutoLogOutput(key = "SwerveStates/Measured")
@@ -436,6 +463,11 @@ public class Drive extends RBSISubsystem {
       states[i] = modules[i].getState();
     }
     return states;
+  }
+
+  @AutoLogOutput(key = "SwerveStates/MeasuredDoubleArray")
+  private double[] getModuleStatesAsDoubleArrayForElastic() {
+    return getModuleStatesAsDoubleArray();
   }
 
   /** Returns the module positions (turn angles and drive positions) for all of the modules. */
@@ -669,5 +701,29 @@ public class Drive extends RBSISubsystem {
     stdDevs.set(1, 0, 0.02); // Y standard deviation (meters)
     stdDevs.set(2, 0, Math.toRadians(2)); // rotation standard deviation (radians)
     return stdDevs;
+  }
+
+  private double[] getModuleStatesAsDoubleArray() {
+    SwerveModuleState[] states = getModuleStates();
+    return new double[] {
+      states[0].angle.getDegrees(),
+      states[0].speedMetersPerSecond,
+      states[1].angle.getDegrees(),
+      states[1].speedMetersPerSecond,
+      states[2].angle.getDegrees(),
+      states[2].speedMetersPerSecond,
+      states[3].angle.getDegrees(),
+      states[3].speedMetersPerSecond
+    };
+  }
+
+  public boolean onOpponentHalf() {
+    Pose2d pose = m_PoseEstimator.getEstimatedPosition(); // or getPose() if you already have it
+
+    boolean isRed = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red;
+
+    double allianceRelativeX = isRed ? (FIELD_LENGTH_METERS - pose.getX()) : pose.getX();
+
+    return allianceRelativeX > MIDFIELD_X;
   }
 }

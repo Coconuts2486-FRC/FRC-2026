@@ -1,13 +1,12 @@
-package frc.robot.subsystems.Intake;
+package frc.robot.subsystems.intake;
 
 import static frc.robot.Constants.RobotDevices.*;
-import static frc.robot.Constants.pivotConstants.*;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 
-public class IntakeIOTalonFX implements intakeIO {
+public class IntakeIOTalonFX implements IntakeIO {
 
   // Declare Hardware
   private final TalonFX pivot =
@@ -22,7 +21,7 @@ public class IntakeIOTalonFX implements intakeIO {
   public IntakeIOTalonFX() {}
 
   @Override
-  public void updateInputs(intakeIOInputs inputs) {
+  public void updateInputs(IntakeIOInputs inputs) {
     // checks the status of pivot
     var pivotStatus =
         BaseStatusSignal.refreshAll(

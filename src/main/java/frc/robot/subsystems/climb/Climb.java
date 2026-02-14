@@ -8,16 +8,14 @@ public class Climb extends RBSISubsystem {
 
   private ElevatorFeedforward ffmodel;
 
-  public Climb(ClimbIOTalonFX climbIOTalonFX) {
+  /** Constructor */
+  public Climb(ClimbIO io) {
     // TODO Auto-generated constructor stub
+    this.io = io;
   }
 
   @Override
   protected void rbsiPeriodic() {}
-
-  public void Climb(ClimbIO io) {
-    this.io = io;
-  }
 
   public void setPosition(double pos) {
     io.setPosition(pos);

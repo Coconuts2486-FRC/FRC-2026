@@ -35,18 +35,22 @@ import frc.robot.Constants.Cameras;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.FieldConstants.AprilTagLayoutType;
 import frc.robot.commands.DriveCommands;
-import frc.robot.subsystems.Intake.IntakeIOTalonFX;
-import frc.robot.subsystems.Intake.intake;
 import frc.robot.subsystems.accelerometer.Accelerometer;
 import frc.robot.subsystems.climb.Climb;
+import frc.robot.subsystems.climb.ClimbIO;
+import frc.robot.subsystems.climb.ClimbIOSim;
 import frc.robot.subsystems.climb.ClimbIOTalonFX;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.SwerveConstants;
+import frc.robot.subsystems.driver_info.CANStatus;
 import frc.robot.subsystems.flywheel_example.Flywheel;
 import frc.robot.subsystems.flywheel_example.FlywheelIO;
 import frc.robot.subsystems.flywheel_example.FlywheelIOSim;
 import frc.robot.subsystems.imu.Imu;
 import frc.robot.subsystems.imu.ImuIOSim;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.IntakeIOSim;
+import frc.robot.subsystems.intake.IntakeIOTalonFX;
 import frc.robot.subsystems.turret.*;
 import frc.robot.subsystems.vision.CameraSweepEvaluator;
 import frc.robot.subsystems.vision.Vision;
@@ -91,8 +95,10 @@ public class RobotContainer {
   private final Drive m_drivebase;
 
   private final Flywheel m_flywheel;
-  private final intake m_intake;
+  private final Intake m_intake;
   private final Climb m_climb;
+
+  private boolean elasticOnDriveTab = true;
   private final Turret m_turret;
 
   // ... Add additional subsystems here (e.g., elevator, arm, etc.)
@@ -110,7 +116,10 @@ public class RobotContainer {
   private final Vision m_vision;
 
   @SuppressWarnings("unused")
-  private List<RBSICANHealth> canHealth;
+  private List<RBSICANHealth> m_canHealth;
+
+  @SuppressWarnings("unused")
+  private final CANStatus m_canStatus;
 
   /** Dashboard inputs ***************************************************** */
   // AutoChoosers for both supported path planning types
@@ -182,10 +191,10 @@ public class RobotContainer {
 
         m_drivebase = new Drive(m_imu);
         m_flywheel = new Flywheel(new FlywheelIOSim()); // new Flywheel(new FlywheelIOTalonFX());
-        m_intake = new intake(new IntakeIOTalonFX());
-        m_climb = new Climb(new ClimbIOTalonFX());
         m_vision = new Vision(m_drivebase::addVisionMeasurement, buildVisionIOsReal(m_drivebase));
         m_accel = new Accelerometer(m_imu);
+        m_climb = new Climb(new ClimbIOTalonFX());
+        m_intake = new Intake(new IntakeIOTalonFX());
         m_turret = new Turret(new TurretIOTalonFX());
         sweep = null;
 
@@ -196,18 +205,14 @@ public class RobotContainer {
 
         m_imu = new Imu(new ImuIOSim());
         m_drivebase = new Drive(m_imu);
-        m_flywheel = new Flywheel(new FlywheelIOSim());
-
-        // ---------------- Vision IOs (robot code) ----------------
-        var cams = frc.robot.Constants.Cameras.ALL;
-
-        // If you keep Vision expecting exactly two cameras:
-        VisionIO[] visionIOs = buildVisionIOsSim(m_drivebase);
-        m_vision = new Vision(m_drivebase::addVisionMeasurement, visionIOs);
-
+        m_flywheel = new Flywheel(new FlywheelIOSim() {});
+        m_vision = new Vision(m_drivebase::addVisionMeasurement, buildVisionIOsSim(m_drivebase));
         m_accel = new Accelerometer(m_imu);
+        m_climb = new Climb(new ClimbIOSim());
+        m_intake = new Intake(new IntakeIOSim());
 
         // ---------------- CameraSweepEvaluator (sim-only analysis) ----------------
+        var cams = Cameras.ALL;
         VisionSystemSim visionSim = new VisionSystemSim("CameraSweepWorld");
         visionSim.addAprilTags(FieldConstants.aprilTagLayout);
 
@@ -230,8 +235,6 @@ public class RobotContainer {
           sweep = null; // or throw if you require exactly 2 cameras
         }
 
-        m_intake = null;
-        m_climb = null;
         m_turret = null;
         break;
 
@@ -245,14 +248,15 @@ public class RobotContainer {
         m_accel = new Accelerometer(m_imu);
         sweep = null;
         m_intake = null;
-        m_climb = null;
+        m_climb = new Climb(new ClimbIO() {});
         m_turret = null;
         break;
     }
 
     // Init all CAN busses specified in the `Constants.CANBuses` class
     RBSICANBusRegistry.initReal(Constants.CANBuses.ALL);
-    canHealth = Arrays.stream(Constants.CANBuses.ALL).map(RBSICANHealth::new).toList();
+    m_canHealth = Arrays.stream(Constants.CANBuses.ALL).map(RBSICANHealth::new).toList();
+    m_canStatus = new CANStatus(m_drivebase, m_imu);
 
     // In addition to the initial battery capacity from the Dashbaord, ``RBSIPowerMonitor`` takes
     // all the non-drivebase subsystems for which you wish to have power monitoring; DO NOT
@@ -363,8 +367,7 @@ public class RobotContainer {
                         m_drivebase,
                         () -> -driveStickY.value(),
                         () -> -driveStickX.value(),
-                        () -> turnStickX.value()),
-                m_drivebase));
+                        () -> turnStickX.value())));
 
     // Press A button -> BRAKE
     // driverController
@@ -373,6 +376,15 @@ public class RobotContainer {
 
     // Press X button --> Stop with wheels in X-Lock position
     // driverController.x().onTrue(Commands.runOnce(m_drivebase::stopWithX, m_drivebase));
+    // Press start button --> switch elastic tab
+    driverController
+        .start()
+        .onTrue(
+            Commands.runOnce(
+                () -> {
+                  elasticOnDriveTab = !elasticOnDriveTab;
+                  Elastic.selectTab(elasticOnDriveTab ? 2 : 0);
+                }));
 
     // Press Start button --> Manually Re-Zero the Gyro
     driverController
@@ -381,18 +393,8 @@ public class RobotContainer {
             Commands.runOnce(m_drivebase::zeroHeadingForAlliance, m_drivebase)
                 .ignoringDisable(true));
 
-    // puts intake down
-    // driverController
-    //     .rightBumper()
-    //     .whileTrue(Commands.run(() -> m_intake.pivotDown(), m_intake))
-    //     .whileFalse(Commands.run(() -> m_intake.stopPivot()));
-
-    // // brings intake up
-    // driverController
-    //     .leftBumper()
-    //     .whileTrue(Commands.run(() -> m_intake.pivotUp(), m_intake))
-    //     .whileFalse(Commands.run(() -> m_intake.stopPivot()));
-
+    /*there is a default command in intake that makes it go up this toggles a new command
+    that cancels the default and keeps the intake down with out the driver having to hold any button */
     driverController.rightBumper().toggleOnTrue(Commands.run(() -> m_intake.pivotDown()));
 
     // sets intake pivot speed to trigger value, temporary testing function

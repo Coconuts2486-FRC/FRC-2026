@@ -93,6 +93,10 @@ public class Module {
     io.setTurnBrakeMode(enabled);
   }
 
+  public boolean isAlive() {
+    return (inputs.turnConnected && inputs.driveConnected && inputs.turnEncoderConnected);
+  }
+
   /** Returns the current turn angle of the module. */
   public Rotation2d getAngle() {
     return inputs.turnPosition;

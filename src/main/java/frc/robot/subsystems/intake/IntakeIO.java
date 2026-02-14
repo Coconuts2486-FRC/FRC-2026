@@ -1,12 +1,12 @@
-package frc.robot.subsystems.Intake;
+package frc.robot.subsystems.intake;
 
 import frc.robot.util.RBSIIO;
 import org.littletonrobotics.junction.AutoLog;
 
-public interface intakeIO extends RBSIIO {
+public interface IntakeIO extends RBSIIO {
 
   @AutoLog
-  public static class intakeIOInputs {
+  public static class IntakeIOInputs {
     public boolean pivotConnected = false;
     public boolean rollerConnected = false;
     public double positionRad = 0.0;
@@ -29,5 +29,5 @@ public interface intakeIO extends RBSIIO {
 
   public default void pivotToPos(double pos) {}
 
-  public default void updateInputs(intakeIOInputs inputs) {}
+  public default void updateInputs(IntakeIOInputs inputs) {}
 }

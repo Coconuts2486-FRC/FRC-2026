@@ -1,13 +1,13 @@
-package frc.robot.subsystems.Intake;
+package frc.robot.subsystems.intake;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.intakeConstants;
 import frc.robot.util.RBSISubsystem;
 
-public class intake extends RBSISubsystem {
-  private intakeIO io;
-  private final intakeIOInputsAutoLogged inputs = new intakeIOInputsAutoLogged();
+public class Intake extends RBSISubsystem {
+  private IntakeIO io;
+  private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
 
   // public variables to be pulled by can class
   public static boolean pivotAlive;
@@ -16,7 +16,7 @@ public class intake extends RBSISubsystem {
   public static boolean intaking;
 
   // Constructor
-  public intake(intakeIO io) {
+  public Intake(IntakeIO io) {
     this.io = io;
 
     setDefaultCommand(Commands.run(() -> pivotUp(), this));
