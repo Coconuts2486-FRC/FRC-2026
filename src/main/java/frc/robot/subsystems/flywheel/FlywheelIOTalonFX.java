@@ -2,11 +2,11 @@ package frc.robot.subsystems.flywheel;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 
-public class flywheelIOTalonFX implements flywheelIO {
+public class FlywheelIOTalonFX implements FlywheelIO {
 
   public static TalonFX flywheel = new TalonFX(777);
 
-  public flywheelIOTalonFX() {}
+  public FlywheelIOTalonFX() {}
 
   @Override
   public void flywheelSetVelocity(double velocity) {

@@ -22,11 +22,6 @@ public class Module {
   private final ModuleIO io;
   private final ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
   private final int index;
-  public static boolean alive;
-  public static boolean alive1;
-  public static boolean alive2;
-  public static boolean alive3;
-  public static boolean alive4;
 
   private final Alert driveDisconnectedAlert;
   private final Alert turnDisconnectedAlert;
@@ -63,34 +58,6 @@ public class Module {
       odometryPositions[i] = new SwerveModulePosition(positionMeters, angle);
     }
 
-    // if statement to check and set variables for seeing if each swerve module is alive
-    if (inputs.turnConnected
-        && inputs.driveConnected
-        && inputs.turnEncoderConnected
-        && index == 0) {
-      alive1 = true;
-    } else if (inputs.turnConnected
-        && inputs.driveConnected
-        && inputs.turnEncoderConnected
-        && index == 1) {
-      alive2 = true;
-    } else if (inputs.turnConnected
-        && inputs.driveConnected
-        && inputs.turnEncoderConnected
-        && index == 2) {
-      alive3 = true;
-    } else if (inputs.turnConnected
-        && inputs.driveConnected
-        && inputs.turnEncoderConnected
-        && index == 3) {
-      alive4 = true;
-    } else if (index < 4) {
-      alive1 = false;
-      alive2 = false;
-      alive3 = false;
-      alive4 = false;
-    }
-
     // Update alerts
     driveDisconnectedAlert.set(!inputs.driveConnected);
     turnDisconnectedAlert.set(!inputs.turnConnected);
@@ -124,6 +91,10 @@ public class Module {
   public void setBrakeMode(boolean enabled) {
     io.setDriveBrakeMode(enabled);
     io.setTurnBrakeMode(enabled);
+  }
+
+  public boolean isAlive() {
+    return (inputs.turnConnected && inputs.driveConnected && inputs.turnEncoderConnected);
   }
 
   /** Returns the current turn angle of the module. */

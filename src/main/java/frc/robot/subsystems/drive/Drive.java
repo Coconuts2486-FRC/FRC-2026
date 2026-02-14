@@ -450,6 +450,10 @@ public class Drive extends RBSISubsystem {
   }
 
   /** Getter Functions ***************************************************** */
+  /** Returns the module objects */
+  public Module[] getModules() {
+    return modules;
+  }
 
   /** Returns the module states (turn angles and drive velocities) for all of the modules. */
   @AutoLogOutput(key = "SwerveStates/Measured")

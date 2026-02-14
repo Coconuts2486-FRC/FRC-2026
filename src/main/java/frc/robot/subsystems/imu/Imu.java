@@ -19,8 +19,9 @@ package frc.robot.subsystems.imu;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import frc.robot.util.VirtualSubsystem;
 
-public class Imu {
+public class Imu extends VirtualSubsystem {
   private final ImuIO io;
   private final ImuIO.ImuIOInputs inputs = new ImuIO.ImuIOInputs();
 
@@ -34,8 +35,12 @@ public class Imu {
     this.io = io;
   }
 
-  public void periodic() {
+  public void rbsiPeriodic() {
     io.updateInputs(inputs);
+  }
+
+  public boolean isConnected() {
+    return inputs.connected;
   }
 
   /** Hot-path access: primitive-only snapshot */

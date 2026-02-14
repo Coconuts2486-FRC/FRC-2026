@@ -1,7 +1,6 @@
-package frc.robot.subsystems.Intake;
+package frc.robot.subsystems.intake;
 
 import static frc.robot.Constants.RobotDevices.*;
-import static frc.robot.Constants.pivotConstants.*;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.hardware.TalonFX;

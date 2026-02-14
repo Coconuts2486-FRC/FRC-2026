@@ -162,7 +162,7 @@ public class Vision extends VirtualSubsystem {
             VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
       }
 
-      // Per-camera logs (arrays allocate; acceptable if you’re OK with this in the log loop)
+      // Per-camera logs (arrays allocate; acceptable if you're OK with this in the log loop)
       Logger.recordOutput(
           "Vision/Camera" + cameraIndex + "/TagPoses", tagPoses.toArray(new Pose3d[0]));
       Logger.recordOutput(

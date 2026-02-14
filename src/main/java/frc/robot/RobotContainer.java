@@ -35,9 +35,6 @@ import frc.robot.Constants.Cameras;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.FieldConstants.AprilTagLayoutType;
 import frc.robot.commands.DriveCommands;
-import frc.robot.subsystems.Intake.Intake;
-import frc.robot.subsystems.Intake.IntakeIOSim;
-import frc.robot.subsystems.Intake.IntakeIOTalonFX;
 import frc.robot.subsystems.accelerometer.Accelerometer;
 import frc.robot.subsystems.climb.Climb;
 import frc.robot.subsystems.climb.ClimbIO;
@@ -45,11 +42,15 @@ import frc.robot.subsystems.climb.ClimbIOSim;
 import frc.robot.subsystems.climb.ClimbIOTalonFX;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.SwerveConstants;
+import frc.robot.subsystems.driver_info.CANStatus;
 import frc.robot.subsystems.flywheel_example.Flywheel;
 import frc.robot.subsystems.flywheel_example.FlywheelIO;
 import frc.robot.subsystems.flywheel_example.FlywheelIOSim;
 import frc.robot.subsystems.imu.Imu;
 import frc.robot.subsystems.imu.ImuIOSim;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.IntakeIOSim;
+import frc.robot.subsystems.intake.IntakeIOTalonFX;
 import frc.robot.subsystems.vision.CameraSweepEvaluator;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
@@ -113,7 +114,10 @@ public class RobotContainer {
   private final Vision m_vision;
 
   @SuppressWarnings("unused")
-  private List<RBSICANHealth> canHealth;
+  private List<RBSICANHealth> m_canHealth;
+
+  @SuppressWarnings("unused")
+  private final CANStatus m_canStatus;
 
   /** Dashboard inputs ***************************************************** */
   // AutoChoosers for both supported path planning types
@@ -246,7 +250,8 @@ public class RobotContainer {
 
     // Init all CAN busses specified in the `Constants.CANBuses` class
     RBSICANBusRegistry.initReal(Constants.CANBuses.ALL);
-    canHealth = Arrays.stream(Constants.CANBuses.ALL).map(RBSICANHealth::new).toList();
+    m_canHealth = Arrays.stream(Constants.CANBuses.ALL).map(RBSICANHealth::new).toList();
+    m_canStatus = new CANStatus(m_drivebase, m_imu);
 
     // In addition to the initial battery capacity from the Dashbaord, ``RBSIPowerMonitor`` takes
     // all the non-drivebase subsystems for which you wish to have power monitoring; DO NOT
