@@ -19,9 +19,7 @@ public class IntakeIOTalonFX implements intakeIO {
 
   private final DutyCycleEncoder pivotEncoder = new DutyCycleEncoder(2); // returns position 0-1
 
-  public IntakeIOTalonFX() {
-    
-  }
+  public IntakeIOTalonFX() {}
 
   @Override
   public void updateInputs(intakeIOInputs inputs) {

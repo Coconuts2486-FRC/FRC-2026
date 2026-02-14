@@ -1,20 +1,27 @@
-package frc.robot.subsystems.Turret_Spin;
+package frc.robot.subsystems.turret;
 
 import frc.robot.Constants.turretConstants;
 import frc.robot.util.RBSISubsystem;
+import org.littletonrobotics.junction.Logger;
 
-public class Turret_Spin extends RBSISubsystem {
-  public Turret_SpinIO io;
+public class Turret extends RBSISubsystem {
+  public TurretIO io;
   public double solution1;
   public double solution2;
+  
 
   // Constructor
-  public Turret_Spin(Turret_SpinIO io) {
+  public Turret(TurretIO io) {
     this.io = io;
   }
 
+
+
   @Override
-  public void rbsiPeriodic() {}
+  public void rbsiPeriodic() {
+
+    Logger.recordOutput("Turret/Switch", readTurretSwitch());
+  }
 
   @Override
   public void simulationPeriodic() {}
@@ -63,6 +70,10 @@ public class Turret_Spin extends RBSISubsystem {
 
   public double getPosition() {
     return io.getPosition();
+  }
+
+  public boolean readTurretSwitch() {
+    return io.readTurretSwitch();
   }
 
   public void stop() {
