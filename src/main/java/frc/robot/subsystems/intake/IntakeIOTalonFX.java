@@ -4,6 +4,8 @@ import static frc.robot.Constants.RobotDevices.*;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.hardware.core.CoreCANcoder;
+import com.ctre.phoenix6.hardware.CANcoder;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 
 public class IntakeIOTalonFX implements IntakeIO {
@@ -16,7 +18,7 @@ public class IntakeIOTalonFX implements IntakeIO {
 
   public final int[] powerPorts = {INTAKE_PIVOT.getPowerPort(), INTAKE_ROLLER.getPowerPort()};
 
-  private final DutyCycleEncoder pivotEncoder = new DutyCycleEncoder(2); // returns position 0-1
+  private final CANcoder pivotEncoder;
 
   public IntakeIOTalonFX() {}
 
@@ -57,7 +59,7 @@ public class IntakeIOTalonFX implements IntakeIO {
   @Override
   public double getPosition() {
     // The encoder returns position in units of rotations
-    return pivotEncoder.get();
+    return pivotEncoder.getAbsolutePosition().getValueAsDouble();
   }
 
   @Override
