@@ -422,6 +422,10 @@ public final class Constants {
   public static final class TurretConstants {
     public static final double kTurretGearRatio = 10;
     public static final double kHoodAngle = 71.5;
+
+    public static final double kP = 1.5;
+    public static final double kI = 0;
+    public static final double kD = 0;
   }
 
   /************************************************************************* */

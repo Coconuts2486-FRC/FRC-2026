@@ -1,6 +1,7 @@
 package frc.robot.subsystems.turret;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import frc.robot.Constants.TurretConstants;
 import frc.robot.util.RBSISubsystem;
 import org.littletonrobotics.junction.Logger;
@@ -16,6 +17,8 @@ public class Turret extends RBSISubsystem {
   public Turret(TurretIO io) {
     this.io = io;
   }
+
+  PIDController turretPIDController = new PIDController(TurretConstants.kP, TurretConstants.kP, TurretConstants.kI)
 
   @Override
   public void rbsiPeriodic() {
@@ -80,11 +83,15 @@ public class Turret extends RBSISubsystem {
     return io.getTurretEncoderPosition();
   }
 
-  public double realTurretPosition() {
+  public double simplifiedTurretPosition() {
     return MathUtil.inputModulus(io.getTurretEncoderPosition(), 1, 10)
         / TurretConstants.kTurretGearRatio;
 
       }
+
+  public void rotateToPosition(double pos){
+    io.setPosition(turretPIDController.calculate(io.getTurretEncoderPosition(),pos));
+  }
 
   public boolean readTurretSwitch() {
     return io.readTurretSwitch();
