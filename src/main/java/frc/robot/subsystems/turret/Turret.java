@@ -64,6 +64,10 @@ public class Turret extends RBSISubsystem {
         - (distance * Math.sin(TurretConstants.kHoodAngle) * Math.cos(TurretConstants.kHoodAngle));
   }
 
+
+
+
+  /**Functions***************** */
   public void setVolts(double volts) {
     io.setVolts(volts);
   }
@@ -76,6 +80,12 @@ public class Turret extends RBSISubsystem {
     return io.getTurretEncoderPosition();
   }
 
+  public double realTurretPosition() {
+    return MathUtil.inputModulus(io.getTurretEncoderPosition(), 1, 10)
+        / TurretConstants.kTurretGearRatio;
+
+      }
+
   public boolean readTurretSwitch() {
     return io.readTurretSwitch();
   }
@@ -83,4 +93,6 @@ public class Turret extends RBSISubsystem {
   public void stop() {
     io.stop();
   }
+
+  
 }
