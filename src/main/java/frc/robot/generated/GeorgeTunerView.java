@@ -9,35 +9,35 @@ import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 public final class GeorgeTunerView implements TunerView {
   @Override
   public CANBus canBus() {
-    return PinchyTunerConstants.kCANBus;
+    return GeorgeTunerConstants.kCANBus;
   }
 
   @Override
   public SwerveDrivetrainConstants drivetrain() {
-    return PinchyTunerConstants.DrivetrainConstants;
+    return GeorgeTunerConstants.DrivetrainConstants;
   }
 
   @Override
   public SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>
       frontLeft() {
-    return PinchyTunerConstants.FrontLeft;
+    return GeorgeTunerConstants.FrontLeft;
   }
 
   @Override
   public SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>
       frontRight() {
-    return PinchyTunerConstants.FrontRight;
+    return GeorgeTunerConstants.FrontRight;
   }
 
   @Override
   public SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>
       backLeft() {
-    return PinchyTunerConstants.BackLeft;
+    return GeorgeTunerConstants.BackLeft;
   }
 
   @Override
   public SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>
       backRight() {
-    return PinchyTunerConstants.BackRight;
+    return GeorgeTunerConstants.BackRight;
   }
 }
