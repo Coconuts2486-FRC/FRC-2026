@@ -2,7 +2,6 @@ package frc.robot.subsystems.turret;
 
 import edu.wpi.first.math.MathUtil;
 import frc.robot.Constants.TurretConstants;
-import frc.robot.Constants.TurretConstants.*;
 import frc.robot.util.RBSISubsystem;
 import org.littletonrobotics.junction.Logger;
 
