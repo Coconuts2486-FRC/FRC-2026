@@ -2,6 +2,7 @@ package frc.robot.subsystems.turret;
 
 import com.ctre.phoenix6.hardware.CANcoder;
 import edu.wpi.first.wpilibj.DigitalInput;
+import frc.robot.Constants.TurretConstants;
 
 public class TurretIOTalonFX implements TurretIO {
 
@@ -9,7 +10,10 @@ public class TurretIOTalonFX implements TurretIO {
   private CANcoder turretEncoder = new CANcoder(43);
 
   // Constructor
-  public TurretIOTalonFX() {}
+  public TurretIOTalonFX() {
+
+    turretEncoder = new CANcoder(TurretConstants.encoderID);
+  }
 
   @Override
   public boolean readTurretSwitch() {

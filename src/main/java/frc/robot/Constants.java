@@ -65,7 +65,7 @@ public final class Constants {
    * Define the various multiple robots that use this same code (e.g., COMPBOT, DEVBOT, SIMBOT,
    * etc.) and the operating modes of the code (REAL, SIM, or REPLAY)
    */
-  private static RobotType robotType = RobotType.GEORGE;
+  private static RobotType robotType = RobotType.SIMBOT;
 
   // Define swerve, auto, and vision types being used
   // NOTE: Only PHOENIX6 swerve base has been tested at this point!!!
@@ -383,6 +383,8 @@ public final class Constants {
     public static final LoggedTunableNumber maxAcel = new LoggedTunableNumber("Intake/MaxAccel", 5);
     public static final LoggedTunableNumber maxVelocity =
         new LoggedTunableNumber("Intake/maxVel", 5);
+
+    public static final int encoderID = 15;
   }
 
   public static final class climbConstants {
@@ -422,6 +424,7 @@ public final class Constants {
   public static final class TurretConstants {
     public static final double kTurretGearRatio = 10;
     public static final double kHoodAngle = 71.5;
+    public static final int encoderID = 43;
 
     public static final double kP = 1.5;
     public static final double kI = 0;

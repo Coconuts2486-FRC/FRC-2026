@@ -3,10 +3,9 @@ package frc.robot.subsystems.intake;
 import static frc.robot.Constants.RobotDevices.*;
 
 import com.ctre.phoenix6.BaseStatusSignal;
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.hardware.core.CoreCANcoder;
 import com.ctre.phoenix6.hardware.CANcoder;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import com.ctre.phoenix6.hardware.TalonFX;
+import frc.robot.Constants.intakeConstants;
 
 public class IntakeIOTalonFX implements IntakeIO {
 
@@ -20,7 +19,10 @@ public class IntakeIOTalonFX implements IntakeIO {
 
   private final CANcoder pivotEncoder;
 
-  public IntakeIOTalonFX() {}
+  public IntakeIOTalonFX() {
+
+    pivotEncoder = new CANcoder(intakeConstants.encoderID);
+  }
 
   @Override
   public void updateInputs(IntakeIOInputs inputs) {

@@ -11,6 +11,7 @@ public interface TurretIO extends RBSIIO {
     public double velocityRadPerSec = 0.0;
     public double appliedVolts = 0.0;
     public double[] currentAmps = new double[] {};
+    public double getTurretEncoderPosition = 0.0;
   }
 
   public default void aimTarget() {}

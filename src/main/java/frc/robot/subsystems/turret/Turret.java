@@ -29,13 +29,15 @@ public class Turret extends RBSISubsystem {
         MathUtil.inputModulus(io.getTurretEncoderPosition(), 1, 10)
             / TurretConstants.kTurretGearRatio;
 
-    Logger.recordOutput("Turret/Switch", readTurretSwitch());
+    Logger.recordOutput("Turret/Is In Position?", !readTurretSwitch());
+   
   }
 
   @Override
   public void simulationPeriodic() {}
 
   public void aimTarget() {}
+
 
   public double wantedVelocity(double robotSpeed, double z, double distance) {
 
@@ -92,6 +94,7 @@ public class Turret extends RBSISubsystem {
   }
 
   public boolean readTurretSwitch() {
+
     return io.readTurretSwitch();
   }
 
