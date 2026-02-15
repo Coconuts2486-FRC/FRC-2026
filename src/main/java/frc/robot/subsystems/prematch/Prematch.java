@@ -8,18 +8,25 @@ import frc.robot.subsystems.drive.*;
 import frc.robot.subsystems.intake.*;
 import frc.robot.subsystems.turret.*;
 import frc.robot.util.RBSISubsystem;
+import java.util.List;
 import org.littletonrobotics.junction.*;
 
 public class Prematch extends RBSISubsystem {
 
-  public Prematch() {}
+  private PrematchInterface io;
+
+  public Prematch(Turret turret, PrematchInterface io) {
+    this.turret = turret;
+    this.io = io;
+  }
 
   public SmartDashboard dashboard;
 
   public Turret turret;
 
-  public String info;
-  public int position;
+  public List<String> clickableInfo = List.of("Systems_Check", "Replaced_Battery");
+  public List<String> robotInfoText = List.of("Turrets_In_Position", "Pivot_In_Position");
+  public int stringPosition = 0;
 
   @Override
   public void rbsiPeriodic() {
@@ -27,8 +34,30 @@ public class Prematch extends RBSISubsystem {
     Logger.recordOutput("Turret at Zero Point", turret.readTurretSwitch());
   }
 
+  public void checklist(Boolean conditionIsTrue) {
 
-  public void checklist(){
+    if (stringPosition < clickableInfo.size()) {
+      Logger.recordMetadata("Currently Checking", clickableInfo.get(stringPosition));
 
+      if (conditionIsTrue) {
+        updateChecklist();
+      }
+
+    } else if (stringPosition < robotInfoText.size() + clickableInfo.size()) {
+      Logger.recordMetadata(
+          "Currently Checking", robotInfoText.get(stringPosition - clickableInfo.size()));
+
+      if (conditionIsTrue) {
+        updateChecklist();
+      }
+    }
+  }
+
+  public void updateChecklist() {
+    stringPosition++;
+
+    if (stringPosition >= robotInfoText.size() + clickableInfo.size()) {
+      stringPosition = 0;
+    }
   }
 }

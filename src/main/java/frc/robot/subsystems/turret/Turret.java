@@ -30,14 +30,12 @@ public class Turret extends RBSISubsystem {
             / TurretConstants.kTurretGearRatio;
 
     Logger.recordOutput("Turret/Is In Position?", !readTurretSwitch());
-   
   }
 
   @Override
   public void simulationPeriodic() {}
 
   public void aimTarget() {}
-
 
   public double wantedVelocity(double robotSpeed, double z, double distance) {
 
