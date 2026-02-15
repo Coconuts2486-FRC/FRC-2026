@@ -51,6 +51,7 @@ import frc.robot.subsystems.imu.ImuIOSim;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.intake.IntakeIOTalonFX;
+import frc.robot.subsystems.turret.*;
 import frc.robot.subsystems.vision.CameraSweepEvaluator;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
@@ -98,6 +99,7 @@ public class RobotContainer {
   private final Climb m_climb;
 
   private boolean elasticOnDriveTab = true;
+  private final Turret m_turret;
 
   // ... Add additional subsystems here (e.g., elevator, arm, etc.)
 
@@ -193,6 +195,7 @@ public class RobotContainer {
         m_accel = new Accelerometer(m_imu);
         m_climb = new Climb(new ClimbIOTalonFX());
         m_intake = new Intake(new IntakeIOTalonFX());
+        m_turret = new Turret(new TurretIOTalonFX());
         sweep = null;
 
         break;
@@ -232,6 +235,7 @@ public class RobotContainer {
           sweep = null; // or throw if you require exactly 2 cameras
         }
 
+        m_turret = null;
         break;
 
       default:
@@ -245,6 +249,7 @@ public class RobotContainer {
         sweep = null;
         m_intake = null;
         m_climb = new Climb(new ClimbIO() {});
+        m_turret = null;
         break;
     }
 
@@ -391,6 +396,28 @@ public class RobotContainer {
     /*there is a default command in intake that makes it go up this toggles a new command
     that cancels the default and keeps the intake down with out the driver having to hold any button */
     driverController.rightBumper().toggleOnTrue(Commands.run(() -> m_intake.pivotDown()));
+
+    // sets intake pivot speed to trigger value, temporary testing function
+    // driverController
+    //     .rightTrigger(0.01)
+    //     .whileTrue(
+    //         Commands.run(
+    //             () -> m_intake.setPivotVelocity(driverController.getRightTriggerAxis()),
+    // m_intake))
+    //     .onFalse(Commands.run(() -> m_intake.stopPivot(), m_intake));
+
+    // driverController
+    //     .leftTrigger(0.01)
+    //     .whileTrue(
+    //         Commands.run(
+    //             () -> m_intake.setPivotVelocity(-driverController.getLeftTriggerAxis()),
+    // m_intake))
+    //     .onFalse(Commands.run(() -> m_intake.stopPivot(), m_intake));
+
+    // prints the encoder position temporary testing function
+    driverController
+        .a()
+        .whileTrue(Commands.run(() -> System.out.println(m_turret.readTurretSwitch())));
 
     // Press LEFT BUMPER --> Drive to a pose 10 feet closer to the BLUE ALLIANCE wall
     // driverController
