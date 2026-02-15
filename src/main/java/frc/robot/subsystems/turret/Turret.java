@@ -12,13 +12,15 @@ public class Turret extends RBSISubsystem {
   public double solution2;
 
   private double turretPosition;
+  private final TurretIOInputsAutoLogged inputs = new TurretIOInputsAutoLogged();
 
   // Constructor
   public Turret(TurretIO io) {
     this.io = io;
   }
 
-  PIDController turretPIDController = new PIDController(TurretConstants.kP, TurretConstants.kP, TurretConstants.kI)
+  PIDController turretPIDController =
+      new PIDController(TurretConstants.kP, TurretConstants.kP, TurretConstants.kI);
 
   @Override
   public void rbsiPeriodic() {
@@ -67,10 +69,7 @@ public class Turret extends RBSISubsystem {
         - (distance * Math.sin(TurretConstants.kHoodAngle) * Math.cos(TurretConstants.kHoodAngle));
   }
 
-
-
-
-  /**Functions***************** */
+  /** Functions***************** */
   public void setVolts(double volts) {
     io.setVolts(volts);
   }
@@ -86,11 +85,10 @@ public class Turret extends RBSISubsystem {
   public double simplifiedTurretPosition() {
     return MathUtil.inputModulus(io.getTurretEncoderPosition(), 1, 10)
         / TurretConstants.kTurretGearRatio;
+  }
 
-      }
-
-  public void rotateToPosition(double pos){
-    io.setPosition(turretPIDController.calculate(io.getTurretEncoderPosition(),pos));
+  public void rotateToPosition(double pos) {
+    io.setPosition(turretPIDController.calculate(io.getTurretEncoderPosition(), pos));
   }
 
   public boolean readTurretSwitch() {
@@ -100,6 +98,4 @@ public class Turret extends RBSISubsystem {
   public void stop() {
     io.stop();
   }
-
-  
 }
