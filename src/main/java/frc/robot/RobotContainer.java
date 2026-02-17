@@ -18,6 +18,8 @@ import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -43,9 +45,9 @@ import frc.robot.subsystems.climb.ClimbIOTalonFX;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.SwerveConstants;
 import frc.robot.subsystems.driver_info.CANStatus;
-import frc.robot.subsystems.flywheel_example.Flywheel;
-import frc.robot.subsystems.flywheel_example.FlywheelIO;
-import frc.robot.subsystems.flywheel_example.FlywheelIOSim;
+import frc.robot.subsystems.flywheel.Flywheel;
+import frc.robot.subsystems.flywheel.FlywheelIO;
+import frc.robot.subsystems.flywheel.FlywheelIOSim;
 import frc.robot.subsystems.imu.Imu;
 import frc.robot.subsystems.imu.ImuIOSim;
 import frc.robot.subsystems.intake.Intake;
@@ -319,8 +321,11 @@ public class RobotContainer {
   /** Use this method to define your Autonomous commands for use with PathPlanner / Choreo */
   private void defineAutoCommands() {
 
-    // NamedCommands.registerCommand("Zero", Commands.runOnce(() -> m_drivebase.zero()));
+        // TODO Change the velocity
+    NamedCommands.registerCommand("Intake", Commands.runOnce(() -> m_intake.pivotDown()).andThen(
+      Commands.run(() -> m_intake.setPivotVelocity(1))));
   }
+
 
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
@@ -375,7 +380,7 @@ public class RobotContainer {
     //     .whileTrue(Commands.runOnce(() -> m_drivebase.setMotorBrake(true), m_drivebase));
 
     // Press X button --> Stop with wheels in X-Lock position
-    // driverController.x().onTrue(Commands.runOnce(m_drivebase::stopWithX, m_drivebase));
+    driverController.x().onTrue(Commands.runOnce(m_drivebase::stopWithX, m_drivebase));
     // Press start button --> switch elastic tab
     driverController
         .start()
@@ -442,7 +447,7 @@ public class RobotContainer {
     // },
     // Set.of(m_drivebase)));
 
-    // Press POV LEFT to nudge the robot left
+    // Press POV buttons to nudge the robot in each direction
     driverController
         .povLeft()
         .whileTrue(
@@ -453,6 +458,36 @@ public class RobotContainer {
                 },
                 // Stop when command ended
                 m_drivebase::stop,
+                m_drivebase));
+
+    driverController
+        .povRight()
+        .whileTrue(
+            Commands.run(
+                () -> {
+                  m_drivebase.runVelocity(
+                      new ChassisSpeeds(Units.inchesToMeters(0.), Units.inchesToMeters(-11.0), 0.));
+                },
+                m_drivebase));
+
+    driverController
+        .povUp()
+        .whileTrue(
+            Commands.run(
+                () -> {
+                  m_drivebase.runVelocity(
+                      new ChassisSpeeds(Units.inchesToMeters(-11), Units.inchesToMeters(0), 0));
+                },
+                m_drivebase));
+
+    driverController
+        .povDown()
+        .whileTrue(
+            Commands.run(
+                () -> {
+                  m_drivebase.runVelocity(
+                      new ChassisSpeeds(Units.inchesToMeters(11), Units.inchesToMeters(0), 0));
+                },
                 m_drivebase));
 
     if (Constants.getMode() == Mode.SIM) {

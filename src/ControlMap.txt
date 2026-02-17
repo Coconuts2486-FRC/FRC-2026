@@ -8,18 +8,18 @@ A:
 B:
 X:
 Y:
-D-Pad Up/Down:
-D-Pad Left/right: 
+D-Pad Up/Down: Nudge robot forwards/backwards
+D-Pad Left/right: Nudge robot to left/right
 Right Bumper:
 Left Bumper:
 Right Trigger:
 Left Trigger: 
 Start: 
 Back:
-Right Stick:   Rotate
-Left Stick:    Strafe
+Right Stick:   Rotate or Strafe
+Left Stick:    Strafe or Rotate
 Right Stick Button:
-Left Stick Button:
+Left Stick Button: Toggle Snake
 
 Back Buttons: //Change these to actual
 A = Top Left
