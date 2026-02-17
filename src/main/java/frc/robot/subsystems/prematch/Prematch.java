@@ -10,11 +10,11 @@ import frc.robot.subsystems.intake.*;
 import frc.robot.subsystems.turret.*;
 import frc.robot.util.RBSISubsystem;
 import java.util.List;
-import org.littletonrobotics.junction.*;
+import java.util.Map;
+import java.util.function.BooleanSupplier;
+import org.littletonrobotics.junction.Logger;
 
 public class Prematch extends RBSISubsystem {
-
-  
 
   public Prematch(Turret turret, Intake intake) {
     this.turret = turret;
@@ -25,51 +25,66 @@ public class Prematch extends RBSISubsystem {
 
   public Turret turret;
   public Intake intake;
+  public Boolean enableUpdate = false;
+
+  public int var1 = 1;
+  public int var2 = 2;
 
   public List<String> clickableInfo = List.of("Systems_Check", "Replaced_Battery");
-  public List<String> robotInfoText = List.of("Turrets_In_Position", "Pivot_In_Position");
-  public int stringPosition = 0;
+  public List<String> physicalChecksList = List.of("Turret in Position", "Intake_In_Position");
+  public Map<String, BooleanSupplier> physicalChecksMap =
+      Map.of(
+          "Turret_In_Position",
+          this::Turret_In_Position,
+          "Intake_In_Position",
+          this::Intake_In_Position);
+  public int stringPosition = 1;
 
   @Override
   public void rbsiPeriodic() {
 
-    Logger.recordOutput("Turret at Zero Point", turret.readTurretSwitch());
+    if (var1 < var2) {
+
+      Logger.recordOutput(
+          "Prematch/Currently Checking", String.valueOf(physicalChecksList.get(stringPosition)));
+
+    } else if (stringPosition < (physicalChecksList.size() + clickableInfo.size())) {
+      Logger.recordOutput(
+          "Prematch/Currently Checking",
+          String.valueOf(physicalChecksList.get(stringPosition - clickableInfo.size())));
+    }
+
+    Logger.recordOutput("Prematch/Turret in Position", !Turret_In_Position());
+    Logger.recordOutput("Prematch/Currently Checking 2", physicalChecksList.get(stringPosition));
   }
 
-  public void checklist(Boolean conditionIsTrue) {
+  public void enableUpdate() {
 
-    if (stringPosition < clickableInfo.size()) {
-      Logger.recordMetadata("Currently Checking", clickableInfo.get(stringPosition));
-
-      if (conditionIsTrue) {
-        updateChecklist();
-      }
-
-    } else if (stringPosition < robotInfoText.size() + clickableInfo.size()) {
-      Logger.recordMetadata(
-          "Currently Checking", robotInfoText.get(stringPosition - clickableInfo.size()));
-
-      if (conditionIsTrue) {
-        updateChecklist();
-      }
-    }
+    enableUpdate = true;
+    updateChecklist();
+    enableUpdate = false;
   }
 
   public void updateChecklist() {
-    stringPosition++;
 
-    if (stringPosition >= robotInfoText.size() + clickableInfo.size()) {
+    if (enableUpdate) {
+      stringPosition++;
+    }
+    if (stringPosition >= physicalChecksMap.size() + clickableInfo.size()) {
       stringPosition = 0;
     }
   }
 
   // Bits of code that set up booleans for the list to read. These are private so that it doesn't
   // get mixed up with similar functions in RobotContainer.
-  private Boolean goodTurretPosition() {
+
+  // this checks turret position
+  private Boolean Turret_In_Position() {
     return turret.readTurretSwitch();
   }
 
-  private Boolean goodPivotPosition() {
+  // this checks intake position
+  private Boolean Intake_In_Position() {
     if (Constants.intakeConstants.storedAngle < (intake.getPosition() + 0.02)) {
       if (Constants.intakeConstants.storedAngle > (intake.getPosition() - 0.02)) {
         return true;

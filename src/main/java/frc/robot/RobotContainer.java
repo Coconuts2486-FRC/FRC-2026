@@ -51,6 +51,7 @@ import frc.robot.subsystems.imu.ImuIOSim;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.intake.IntakeIOTalonFX;
+import frc.robot.subsystems.prematch.*;
 import frc.robot.subsystems.turret.*;
 import frc.robot.subsystems.vision.CameraSweepEvaluator;
 import frc.robot.subsystems.vision.Vision;
@@ -100,6 +101,7 @@ public class RobotContainer {
 
   private boolean elasticOnDriveTab = true;
   private final Turret m_turret;
+  private final Prematch m_prematch;
 
   // ... Add additional subsystems here (e.g., elevator, arm, etc.)
 
@@ -196,6 +198,7 @@ public class RobotContainer {
         m_climb = new Climb(new ClimbIOTalonFX());
         m_intake = new Intake(new IntakeIOTalonFX());
         m_turret = new Turret(new TurretIOTalonFX());
+        m_prematch = new Prematch(m_turret, m_intake);
         sweep = null;
 
         break;
@@ -236,6 +239,8 @@ public class RobotContainer {
         }
 
         m_turret = null;
+        m_prematch = null;
+
         break;
 
       default:
@@ -250,6 +255,8 @@ public class RobotContainer {
         m_intake = null;
         m_climb = new Climb(new ClimbIO() {});
         m_turret = null;
+        m_prematch = null;
+
         break;
     }
 
