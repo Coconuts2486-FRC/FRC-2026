@@ -255,7 +255,7 @@ public class RobotContainer {
         m_intake = null;
         m_climb = new Climb(new ClimbIO() {});
         m_turret = null;
-        m_prematch = null;
+        m_prematch = new Prematch(m_turret, m_intake);
 
         break;
     }
@@ -376,6 +376,7 @@ public class RobotContainer {
                         () -> -driveStickX.value(),
                         () -> turnStickX.value())));
 
+    driverController.rightStick().onTrue(Commands.runOnce(() -> m_prematch.enableUpdate()));
     // Press A button -> BRAKE
     // driverController
     //     .a()
