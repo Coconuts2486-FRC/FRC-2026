@@ -19,7 +19,6 @@ import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -45,9 +44,6 @@ import frc.robot.subsystems.climb.ClimbIOTalonFX;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.SwerveConstants;
 import frc.robot.subsystems.driver_info.CANStatus;
-import frc.robot.subsystems.flywheel.Flywheel;
-import frc.robot.subsystems.flywheel.FlywheelIO;
-import frc.robot.subsystems.flywheel.FlywheelIOSim;
 import frc.robot.subsystems.imu.Imu;
 import frc.robot.subsystems.imu.ImuIOSim;
 import frc.robot.subsystems.intake.Intake;
@@ -97,7 +93,7 @@ public class RobotContainer {
   // These are the "Active Subsystems" that the robot controls
   private final Drive m_drivebase;
 
-  private final Flywheel m_flywheel;
+  // private final Flywheel m_flywheel;
   private final Intake m_intake;
   private final Climb m_climb;
 
@@ -194,7 +190,7 @@ public class RobotContainer {
         m_imu = new Imu(SwerveConstants.kImu.factory.get());
 
         m_drivebase = new Drive(m_imu);
-        m_flywheel = new Flywheel(new FlywheelIOSim()); // new Flywheel(new FlywheelIOTalonFX());
+        // m_flywheel = new Flywheel(new FlywheelIOSim()); // new Flywheel(new FlywheelIOTalonFX());
         m_vision = new Vision(m_drivebase::addVisionMeasurement, buildVisionIOsReal(m_drivebase));
         m_accel = new Accelerometer(m_imu);
         m_climb = new Climb(new ClimbIOTalonFX());
@@ -210,7 +206,7 @@ public class RobotContainer {
 
         m_imu = new Imu(new ImuIOSim());
         m_drivebase = new Drive(m_imu);
-        m_flywheel = new Flywheel(new FlywheelIOSim() {});
+        // m_flywheel = new Flywheel(new FlywheelIOSim() {});
         m_vision = new Vision(m_drivebase::addVisionMeasurement, buildVisionIOsSim(m_drivebase));
         m_accel = new Accelerometer(m_imu);
         m_climb = new Climb(new ClimbIOSim());
@@ -250,7 +246,7 @@ public class RobotContainer {
         RBSICANBusRegistry.initSim(CANBuses.RIO, CANBuses.DRIVE);
         m_imu = new Imu(new ImuIOSim() {});
         m_drivebase = new Drive(m_imu);
-        m_flywheel = new Flywheel(new FlywheelIO() {});
+        // m_flywheel = new Flywheel(new FlywheelIO() {});
         m_vision = new Vision(m_drivebase::addVisionMeasurement, buildVisionIOsReplay());
         m_accel = new Accelerometer(m_imu);
         sweep = null;
@@ -270,7 +266,7 @@ public class RobotContainer {
     // In addition to the initial battery capacity from the Dashbaord, ``RBSIPowerMonitor`` takes
     // all the non-drivebase subsystems for which you wish to have power monitoring; DO NOT
     // include ``m_drivebase``, as that is automatically monitored.
-    m_power = new RBSIPowerMonitor(batteryCapacity, m_flywheel);
+    m_power = new RBSIPowerMonitor(batteryCapacity);
 
     // Set up the SmartDashboard Auto Chooser based on auto type
     switch (Constants.getAutoType()) {
@@ -328,11 +324,12 @@ public class RobotContainer {
   /** Use this method to define your Autonomous commands for use with PathPlanner / Choreo */
   private void defineAutoCommands() {
 
-        // TODO Change the velocity
-    NamedCommands.registerCommand("Intake", Commands.runOnce(() -> m_intake.pivotDown()).andThen(
-      Commands.run(() -> m_intake.setPivotVelocity(1))));
+    // TODO Change the velocity
+    NamedCommands.registerCommand(
+        "Intake",
+        Commands.runOnce(() -> m_intake.pivotDown())
+            .andThen(Commands.run(() -> m_intake.setPivotVelocity(1))));
   }
-
 
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
@@ -606,18 +603,18 @@ public class RobotContainer {
           m_drivebase.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
       // Example Flywheel SysId Characterization
-      autoChooserPathPlanner.addOption(
-          "Flywheel SysId (Quasistatic Forward)",
-          m_flywheel.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-      autoChooserPathPlanner.addOption(
-          "Flywheel SysId (Quasistatic Reverse)",
-          m_flywheel.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-      autoChooserPathPlanner.addOption(
-          "Flywheel SysId (Dynamic Forward)",
-          m_flywheel.sysIdDynamic(SysIdRoutine.Direction.kForward));
-      autoChooserPathPlanner.addOption(
-          "Flywheel SysId (Dynamic Reverse)",
-          m_flywheel.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+      // autoChooserPathPlanner.addOption(
+      //     "Flywheel SysId (Quasistatic Forward)",
+      //     m_flywheel.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+      // autoChooserPathPlanner.addOption(
+      //     "Flywheel SysId (Quasistatic Reverse)",
+      //     m_flywheel.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+      // autoChooserPathPlanner.addOption(
+      //     "Flywheel SysId (Dynamic Forward)",
+      //     m_flywheel.sysIdDynamic(SysIdRoutine.Direction.kForward));
+      // autoChooserPathPlanner.addOption(
+      //     "Flywheel SysId (Dynamic Reverse)",
+      //     m_flywheel.sysIdDynamic(SysIdRoutine.Direction.kReverse));
     }
   }
 

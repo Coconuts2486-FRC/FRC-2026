@@ -69,7 +69,12 @@ public class Prematch extends RBSISubsystem {
   public void simulationPeriodic() {
 
     double now = Timer.getFPGATimestamp();
+
     Logger.recordOutput("Prematch/Turret in Position", !Turret_In_Position());
+
+    if (physicalTestIndicator && now >= indicatorEndTime) {
+      physicalTestIndicator = false;
+    }
 
     if (stringPosition >= clickableInfo.size()) {
       stringPosition = 0;
@@ -85,18 +90,16 @@ public class Prematch extends RBSISubsystem {
     Logger.recordOutput("Prematch/Physical Test Switch", physicalTestIndicator);
   }
 
-  public void enableUpdate() {
-    stringPosition++;
-    physicalTestIndicator = true;
-    indicatorEndTime = Timer.getFPGATimestamp() + timerLimit;
-  }
-
   // Bits of code that set up booleans for the list to read. These are private so that it doesn't
   // get mixed up with similar functions in RobotContainer.
 
   // this checks turret position
   private boolean Turret_In_Position() {
     return turret.readTurretSwitch();
+  }
+
+  public void enableUpdate() {
+    physicalTestIndicator = true;
   }
 
   // this checks intake position
