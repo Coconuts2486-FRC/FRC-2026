@@ -30,4 +30,8 @@ public interface IntakeIO extends RBSIIO {
   public default void pivotToPos(double pos) {}
 
   public default void updateInputs(IntakeIOInputs inputs) {}
+
+  public default boolean isIntakeRunning() {
+    return false;
+  }
 }

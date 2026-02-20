@@ -24,13 +24,17 @@ public class Prematch extends RBSISubsystem {
   private boolean physicalTestIndicator = false;
 
   // Display timing vars
-  public double indicatorEndTime;
-  private static final double timerLimit = 1.6;
+  private double indicatorEndTime;
+  private static final double timerLimit = 1;
 
   public int stringPosition = 0;
 
+  /**** Be careful when editing these lists. Changing one of the lists without changing the others
+   * accordingly will cause this entire bit of code to break and crash.
+   * Make sure you understand how these lists work. */
   public List<String> clickableInfo =
       List.of("Systems Check?", "Replaced Battery?", "Turret in Position?", "Intake in Position?");
+
   public List<String> physicalChecksList = List.of("Turret in Position?", "Intake in Position?");
   public List<String> humanConfirmationList = List.of("Systems Check", "Replaced Battery");
   public Map<String, BooleanSupplier> physicalChecksMap =
@@ -45,9 +49,9 @@ public class Prematch extends RBSISubsystem {
 
     double now = Timer.getFPGATimestamp();
 
-    Logger.recordOutput("Prematch/Turret in Position", !Turret_In_Position());
+    Logger.recordOutput("Prematch/Turret in Position", Turret_In_Position());
 
-    if (physicalTestIndicator && now >= indicatorEndTime) {
+    if (now >= indicatorEndTime) {
       physicalTestIndicator = false;
     }
 
@@ -59,31 +63,7 @@ public class Prematch extends RBSISubsystem {
       Logger.recordOutput(
           "Prematch/Physical Check",
           physicalChecksMap.get(clickableInfo.get(stringPosition)).getAsBoolean());
-    }
-
-    Logger.recordOutput("Prematch/Currently Checking", clickableInfo.get(stringPosition));
-    Logger.recordOutput("Prematch/Physical Test Switch", physicalTestIndicator);
-  }
-
-  @Override
-  public void simulationPeriodic() {
-
-    double now = Timer.getFPGATimestamp();
-
-    Logger.recordOutput("Prematch/Turret in Position", !Turret_In_Position());
-
-    if (physicalTestIndicator && now >= indicatorEndTime) {
-      physicalTestIndicator = false;
-    }
-
-    if (stringPosition >= clickableInfo.size()) {
-      stringPosition = 0;
-    }
-
-    if (stringPosition >= humanConfirmationList.size()) {
-      Logger.recordOutput(
-          "Prematch/Physical Check",
-          physicalChecksMap.get(clickableInfo.get(stringPosition)).getAsBoolean());
+      Logger.recordOutput("Prematch/Physical Test Switch", physicalTestIndicator);
     }
 
     Logger.recordOutput("Prematch/Currently Checking", clickableInfo.get(stringPosition));
@@ -99,7 +79,14 @@ public class Prematch extends RBSISubsystem {
   }
 
   public void enableUpdate() {
+    if (physicalTestIndicator) {
+      return;
+    }
+
     physicalTestIndicator = true;
+    stringPosition++;
+    indicatorEndTime = Timer.getFPGATimestamp() + timerLimit;
+    System.out.println("ran enableUpdate function");
   }
 
   // this checks intake position

@@ -378,7 +378,7 @@ public class RobotContainer {
                         () -> -driveStickX.value(),
                         () -> turnStickX.value())));
 
-    driverController.rightStick().onTrue(Commands.runOnce(() -> m_prematch.enableUpdate()));
+    driverController.y().onTrue(Commands.runOnce(() -> m_prematch.enableUpdate()));
     // Press A button -> BRAKE
     // driverController
     //     .a()

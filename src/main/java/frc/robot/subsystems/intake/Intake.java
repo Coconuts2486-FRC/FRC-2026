@@ -91,4 +91,8 @@ public class Intake extends RBSISubsystem {
   public void stopPivot() {
     io.stopPivot();
   }
+
+  public void isIntakeRunning() {
+    io.isIntakeRunning();
+  }
 }
