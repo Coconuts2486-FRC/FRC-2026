@@ -9,6 +9,7 @@ public class TurretIOTalonFX implements TurretIO {
   private DigitalInput limitSwitch = new DigitalInput(0);
   private CANcoder turretEncoder = new CANcoder(43);
 
+
   // Constructor
   public TurretIOTalonFX() {
 

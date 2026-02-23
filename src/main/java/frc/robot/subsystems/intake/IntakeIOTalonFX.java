@@ -72,7 +72,7 @@ public class IntakeIOTalonFX implements IntakeIO {
   @Override
   public double getPosition() {
     // The encoder returns position in units of rotations
-    return pivotEncoder2.get();
+    return pivotEncoder.getAbsolutePosition().getValueAsDouble();
   }
 
   @Override
