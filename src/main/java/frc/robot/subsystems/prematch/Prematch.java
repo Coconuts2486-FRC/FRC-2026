@@ -33,10 +33,16 @@ public class Prematch extends RBSISubsystem {
    * accordingly will cause this entire bit of code to break and crash.
    * Make sure you understand how these lists work. */
   public List<String> clickableInfo =
-      List.of("Systems Check?", "Replaced Battery?", "Turret in Position?", "Intake in Position?");
+      List.of(
+          "Systems Check?",
+          "Replaced Battery?",
+          "Bumpers Correct Color?",
+          "Turret in Position?",
+          "Intake in Position?");
 
   public List<String> physicalChecksList = List.of("Turret in Position?", "Intake in Position?");
-  public List<String> humanConfirmationList = List.of("Systems Check", "Replaced Battery");
+  public List<String> humanConfirmationList =
+      List.of("Systems Check", "Replaced Battery", "Bumpers Correct Color?");
   public Map<String, BooleanSupplier> physicalChecksMap =
       Map.of(
           "Turret in Position?",

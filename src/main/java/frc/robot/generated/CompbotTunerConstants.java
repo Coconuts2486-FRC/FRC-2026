@@ -153,8 +153,12 @@ public class CompbotTunerConstants {
   private static final Distance kFrontRightYPos = Inches.of(-10.875);
 
   // Back Left
-  private static final int kBackLeftDriveMotorId = 7;
-  private static final int kBackLeftSteerMotorId = 8;
+  private static final int kBackLeftDriveMotorId = 32
+      /** 7 */
+      ;
+  private static final int kBackLeftSteerMotorId = 33
+      /** 8 */
+      ;
   private static final int kBackLeftEncoderId = 9;
   private static final Angle kBackLeftEncoderOffset = Rotations.of(0.0);
   private static final boolean kBackLeftSteerMotorInverted = true;
