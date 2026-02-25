@@ -13,10 +13,10 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 
-package frc.robot.subsystems.flywheel_example;
+package frc.robot.subsystems.shooter;
 
-import static frc.robot.Constants.FlywheelConstants.*;
 import static frc.robot.Constants.RobotDevices.*;
+import static frc.robot.Constants.ShooterConstants.*;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
@@ -42,28 +42,26 @@ import org.littletonrobotics.junction.Logger;
  * NOTE: To use the Spark Flex / NEO Vortex, replace all instances of "CANSparkMax" with
  * "CANSparkFlex".
  */
-public class FlywheelIOSpark implements FlywheelIO {
+public class ShooterIOSpark implements ShooterIO {
 
   // Define the leader / follower motors from the RobotDevices section of RobotContainer
   private final SparkMax leader =
-      new SparkMax(FLYWHEEL_LEADER.getDeviceNumber(), MotorType.kBrushless);
+      new SparkMax(SHOOTER_LEADER.getDeviceNumber(), MotorType.kBrushless);
   private final SparkMax follower =
-      new SparkMax(FLYWHEEL_FOLLOWER.getDeviceNumber(), MotorType.kBrushless);
+      new SparkMax(SHOOTER_FOLLOWER.getDeviceNumber(), MotorType.kBrushless);
   private final RelativeEncoder encoder = leader.getEncoder();
   private final SparkClosedLoopController pid = leader.getClosedLoopController();
   // IMPORTANT: Include here all devices listed above that are part of this mechanism!
-  public final int[] powerPorts = {
-    FLYWHEEL_LEADER.getPowerPort(), FLYWHEEL_FOLLOWER.getPowerPort()
-  };
+  public final int[] powerPorts = {SHOOTER_LEADER.getPowerPort(), SHOOTER_FOLLOWER.getPowerPort()};
   private final SimpleMotorFeedforward ff = new SimpleMotorFeedforward(kSreal, kVreal, kAreal);
 
-  public FlywheelIOSpark() {
+  public ShooterIOSpark() {
 
     // Configure leader motor
     var leaderConfig = new SparkFlexConfig();
     leaderConfig
         .idleMode(
-            switch (kFlywheelIdleMode) {
+            switch (kShooterIdleMode) {
               case COAST -> IdleMode.kCoast;
               case BRAKE -> IdleMode.kBrake;
             })
@@ -100,19 +98,19 @@ public class FlywheelIOSpark implements FlywheelIO {
   }
 
   @Override
-  public void updateInputs(FlywheelIOInputs inputs) {
-    inputs.positionRad = Units.rotationsToRadians(encoder.getPosition() / kFlywheelGearRatio);
+  public void updateInputs(ShooterIOInputs inputs) {
+    inputs.positionRad = Units.rotationsToRadians(encoder.getPosition() / kShooterGearRatio);
     inputs.velocityRadPerSec =
-        Units.rotationsPerMinuteToRadiansPerSecond(encoder.getVelocity() / kFlywheelGearRatio);
+        Units.rotationsPerMinuteToRadiansPerSecond(encoder.getVelocity() / kShooterGearRatio);
     inputs.appliedVolts = leader.getAppliedOutput() * leader.getBusVoltage();
     inputs.currentAmps = new double[] {leader.getOutputCurrent(), follower.getOutputCurrent()};
 
     // AdvantageKit logging
-    Logger.recordOutput("Flywheel/PositionRad", inputs.positionRad);
-    Logger.recordOutput("Flywheel/VelocityRadPerSec", inputs.velocityRadPerSec);
-    Logger.recordOutput("Flywheel/AppliedVolts", inputs.appliedVolts);
-    Logger.recordOutput("Flywheel/LeaderCurrent", inputs.currentAmps[0]);
-    Logger.recordOutput("Flywheel/FollowerCurrent", inputs.currentAmps[1]);
+    Logger.recordOutput("Shooter/PositionRad", inputs.positionRad);
+    Logger.recordOutput("Shooter/VelocityRadPerSec", inputs.velocityRadPerSec);
+    Logger.recordOutput("Shooter/AppliedVolts", inputs.appliedVolts);
+    Logger.recordOutput("Shooter/LeaderCurrent", inputs.currentAmps[0]);
+    Logger.recordOutput("Shooter/FollowerCurrent", inputs.currentAmps[1]);
   }
 
   @Override
@@ -124,7 +122,7 @@ public class FlywheelIOSpark implements FlywheelIO {
   public void setVelocity(double velocityRadPerSec) {
     double ffVolts = ff.calculate(velocityRadPerSec);
     pid.setSetpoint(
-        Units.radiansPerSecondToRotationsPerMinute(velocityRadPerSec) * kFlywheelGearRatio,
+        Units.radiansPerSecondToRotationsPerMinute(velocityRadPerSec) * kShooterGearRatio,
         ControlType.kVelocity,
         ClosedLoopSlot.kSlot0,
         ffVolts,
@@ -140,7 +138,7 @@ public class FlywheelIOSpark implements FlywheelIO {
    * Configure the closed-loop control gains
    *
    * <p>TODO: This functionality is no longer supported by the REVLib SparkClosedLoopController
-   * class. In order to keep control of the flywheel's underlying funtionality, shift everything to
+   * class. In order to keep control of the Shooter's underlying funtionality, shift everything to
    * SmartMotion control.
    */
   @Override

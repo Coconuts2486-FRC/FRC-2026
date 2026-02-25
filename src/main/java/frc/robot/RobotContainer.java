@@ -44,13 +44,29 @@ import frc.robot.subsystems.climb.ClimbIOTalonFX;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.SwerveConstants;
 import frc.robot.subsystems.driver_info.CANStatus;
+import frc.robot.subsystems.feeder.Feeder;
+import frc.robot.subsystems.feeder.FeederIO;
+import frc.robot.subsystems.feeder.FeederIOSim;
+import frc.robot.subsystems.feeder.FeederIOTalonFX;
 import frc.robot.subsystems.imu.Imu;
 import frc.robot.subsystems.imu.ImuIOSim;
+import frc.robot.subsystems.indexer.Indexer;
+import frc.robot.subsystems.indexer.IndexerIO;
+import frc.robot.subsystems.indexer.IndexerIOSim;
+import frc.robot.subsystems.indexer.IndexerIOTalonFX;
 import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.intake.IntakeIOTalonFX;
-import frc.robot.subsystems.prematch.*;
-import frc.robot.subsystems.turret.*;
+import frc.robot.subsystems.prematch.Prematch;
+import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.ShooterIO;
+import frc.robot.subsystems.shooter.ShooterIOSim;
+import frc.robot.subsystems.shooter.ShooterIOTalonFX;
+import frc.robot.subsystems.turret.Turret;
+import frc.robot.subsystems.turret.TurretIO;
+import frc.robot.subsystems.turret.TurretIOSim;
+import frc.robot.subsystems.turret.TurretIOTalonFX;
 import frc.robot.subsystems.vision.CameraSweepEvaluator;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
@@ -96,6 +112,9 @@ public class RobotContainer {
   // private final Flywheel m_flywheel;
   private final Intake m_intake;
   private final Climb m_climb;
+  private final Indexer m_indexer;
+  private final Feeder m_feeder;
+  private final Shooter m_shooter;
 
   private boolean elasticOnDriveTab = true;
   private final Turret m_turret;
@@ -195,6 +214,9 @@ public class RobotContainer {
         m_accel = new Accelerometer(m_imu);
         m_climb = new Climb(new ClimbIOTalonFX());
         m_intake = new Intake(new IntakeIOTalonFX());
+        m_indexer = new Indexer(new IndexerIOTalonFX());
+        m_feeder = new Feeder(new FeederIOTalonFX());
+        m_shooter = new Shooter(new ShooterIOTalonFX());
         m_turret = new Turret(new TurretIOTalonFX());
         m_prematch = new Prematch(m_turret, m_intake);
         sweep = null;
@@ -211,6 +233,11 @@ public class RobotContainer {
         m_accel = new Accelerometer(m_imu);
         m_climb = new Climb(new ClimbIOSim());
         m_intake = new Intake(new IntakeIOSim());
+        m_indexer = new Indexer(new IndexerIOSim());
+        m_feeder = new Feeder(new FeederIOSim());
+        m_shooter = new Shooter(new ShooterIOSim());
+        m_turret = new Turret(new TurretIOSim());
+        m_prematch = null;
 
         // ---------------- CameraSweepEvaluator (sim-only analysis) ----------------
         var cams = Cameras.ALL;
@@ -236,9 +263,6 @@ public class RobotContainer {
           sweep = null; // or throw if you require exactly 2 cameras
         }
 
-        m_turret = null;
-        m_prematch = null;
-
         break;
 
       default:
@@ -250,9 +274,12 @@ public class RobotContainer {
         m_vision = new Vision(m_drivebase::addVisionMeasurement, buildVisionIOsReplay());
         m_accel = new Accelerometer(m_imu);
         sweep = null;
-        m_intake = null;
+        m_intake = new Intake(new IntakeIO() {});
+        m_indexer = new Indexer(new IndexerIO() {});
+        m_feeder = new Feeder(new FeederIO() {});
+        m_shooter = new Shooter(new ShooterIO() {});
         m_climb = new Climb(new ClimbIO() {});
-        m_turret = null;
+        m_turret = new Turret(new TurretIO() {});
         m_prematch = new Prematch(m_turret, m_intake);
 
         break;
@@ -364,6 +391,12 @@ public class RobotContainer {
             () -> -driveStickY.value(),
             () -> -driveStickX.value(),
             () -> -turnStickX.value()));
+
+    // Set DEFAULT COMMANDS for subsystems
+    m_indexer.setDefaultCommand(Commands.run(() -> {}));
+    m_feeder.setDefaultCommand(Commands.run(() -> {}));
+    m_shooter.setDefaultCommand(Commands.run(() -> {}));
+    m_turret.setDefaultCommand(Commands.run(() -> {}));
 
     // ** Example Commands -- Remap, remove, or change as desired **
     // Press B button while driving --> ROBOT-CENTRIC

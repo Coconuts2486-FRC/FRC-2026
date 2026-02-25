@@ -7,15 +7,15 @@
 // license that can be found in the AdvantageKit-License.md file
 // at the root directory of this project.
 
-package frc.robot.subsystems.flywheel_example;
+package frc.robot.subsystems.shooter;
 
 import frc.robot.util.RBSIIO;
 import org.littletonrobotics.junction.AutoLog;
 
-public interface FlywheelIO extends RBSIIO {
+public interface ShooterIO extends RBSIIO {
 
   @AutoLog
-  public static class FlywheelIOInputs {
+  public static class ShooterIOInputs {
     public double positionRad = 0.0;
     public double velocityRadPerSec = 0.0;
     public double appliedVolts = 0.0;
@@ -23,7 +23,7 @@ public interface FlywheelIO extends RBSIIO {
   }
 
   /** Updates the set of loggable inputs. */
-  public default void updateInputs(FlywheelIOInputs inputs) {}
+  public default void updateInputs(ShooterIOInputs inputs) {}
 
   /** Run closed loop at the specified velocity. */
   public default void setVelocity(double velocityRadPerSec) {}

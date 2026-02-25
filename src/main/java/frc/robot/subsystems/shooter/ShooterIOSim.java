@@ -7,7 +7,7 @@
 // license that can be found in the AdvantageKit-License.md file
 // at the root directory of this project.
 
-package frc.robot.subsystems.flywheel_example;
+package frc.robot.subsystems.shooter;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -19,18 +19,18 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 
-public class FlywheelIOSim implements FlywheelIO {
-  // Reduction between motors and encoder, as output over input. If the flywheel
+public class ShooterIOSim implements ShooterIO {
+  // Reduction between motors and encoder, as output over input. If the Shooter
   // spins slower than the motors, this number should be greater than one.
-  private static final double kFlywheelGearing = 1.0;
+  private static final double kShooterGearing = 1.0;
 
   // 1/2 MR^2
-  private static final double kFlywheelMomentOfInertia =
+  private static final double kShooterMomentOfInertia =
       0.5 * Units.lbsToKilograms(1.5) * Math.pow(Units.inchesToMeters(4), 2);
 
   private final DCMotor m_gearbox = DCMotor.getNEO(1);
   private final LinearSystem<N1, N1, N1> m_plant =
-      LinearSystemId.createFlywheelSystem(m_gearbox, kFlywheelGearing, kFlywheelMomentOfInertia);
+      LinearSystemId.createFlywheelSystem(m_gearbox, kShooterGearing, kShooterMomentOfInertia);
 
   private final FlywheelSim sim = new FlywheelSim(m_plant, m_gearbox);
   private PIDController pid = new PIDController(0.0, 0.0, 0.0);
@@ -41,7 +41,7 @@ public class FlywheelIOSim implements FlywheelIO {
   private double appliedVolts = 0.0;
 
   @Override
-  public void updateInputs(FlywheelIOInputs inputs) {
+  public void updateInputs(ShooterIOInputs inputs) {
     if (closedLoop) {
       appliedVolts =
           MathUtil.clamp(pid.calculate(sim.getAngularVelocityRadPerSec()) + ffVolts, -12.0, 12.0);

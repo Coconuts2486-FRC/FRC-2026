@@ -216,22 +216,34 @@ public final class Constants {
     /* SUBSYSTEM CAN DEVICE IDS */
     // This is where mechanism subsystem devices are defined (Including ID, bus, and power port)
     // Example:
-    public static final RobotDeviceId FLYWHEEL_LEADER = new RobotDeviceId(3, CANBuses.RIO, 8);
-    public static final RobotDeviceId FLYWHEEL_FOLLOWER = new RobotDeviceId(4, CANBuses.RIO, 9);
+    public static final RobotDeviceId SHOOTER_LEADER = new RobotDeviceId(25, CANBuses.RIO, 8);
+    public static final RobotDeviceId SHOOTER_FOLLOWER = new RobotDeviceId(26, CANBuses.RIO, 9);
 
     public static final RobotDeviceId INTAKE_PIVOT = new RobotDeviceId(11, CANBuses.RIO, 0);
     public static final RobotDeviceId INTAKE_ROLLER = new RobotDeviceId(13, CANBuses.RIO, 1);
+    public static final RobotDeviceId INTAKE_ENCODER = new RobotDeviceId(12, CANBuses.RIO, null);
+
+    public static final RobotDeviceId INDEXER_ROLLER = new RobotDeviceId(15, CANBuses.RIO, null);
+
+    public static final RobotDeviceId FEEDER_ROLLER = new RobotDeviceId(20, CANBuses.RIO, null);
+
+    public static final RobotDeviceId TURRET_POINTER = new RobotDeviceId(30, CANBuses.RIO, null);
+    public static final RobotDeviceId TURRET_ENCODER = new RobotDeviceId(31, CANBuses.RIO, null);
+
+    public static final RobotDeviceId CLIMB_MOTOR = new RobotDeviceId(20, CANBuses.DRIVE, null);
 
     /* BEAM BREAK and/or LIMIT SWITCH DIO CHANNELS */
     // This is where digital I/O feedback devices are defined
     // Example:
     // public static final int ELEVATOR_BOTTOM_LIMIT = 3;
+    public static final int TURRET_MAGHOME = 0;
 
     /* LINEAR SERVO PWM CHANNELS */
     // This is where PWM-controlled devices (actuators, servos, pneumatics, etc.)
     // are defined
     // Example:
     // public static final int INTAKE_SERVO = 0;
+    public static final int LEDS = 0;
   }
 
   /************************************************************************* */
@@ -334,18 +346,18 @@ public final class Constants {
 
   /************************************************************************* */
   /** Example Flywheel Mechanism Constants ********************************* */
-  public static final class FlywheelConstants {
+  public static final class ShooterConstants {
 
     // Mechanism idle mode
-    public static final MotorIdleMode kFlywheelIdleMode = MotorIdleMode.COAST; // BRAKE, COAST
+    public static final MotorIdleMode kShooterIdleMode = MotorIdleMode.COAST; // BRAKE, COAST
 
     // Mechanism motor gear ratio
-    public static final double kFlywheelGearRatio = 1.5;
+    public static final double kShooterGearRatio = 24.0 / 18.0;
 
     // Flywheel motor open-loop and closed-loop ramp periods for current smoothing
     //   Time from from 0 -> full duty
-    public static final double kFlywheelClosedLoopRampPeriod = 0.15; // seconds
-    public static final double kFlywheelOpenLoopRampPeriod = 0.25; // seconds
+    public static final double kShooterClosedLoopRampPeriod = 0.15; // seconds
+    public static final double kShooterOpenLoopRampPeriod = 0.25; // seconds
 
     // MODE == REAL / REPLAY
     // Feedforward constants
@@ -364,6 +376,17 @@ public final class Constants {
     // Feedback (PID) constants
     public static final double kPsim = 0.0;
     public static final double kDsim = 0.0;
+
+    // Fuel trajectory Constants
+    public static final double kThetaRad = Units.degreesToRadians(70.0); // fixed elevation
+    public static final double kApexClearanceMeters = 0.5; // h_c
+    public static final double kG = 9.81;
+
+    // Numerical Trajectory Solving Parameters
+    public static final double kV0Tol = 1e-6; // m/s
+    public static final int kMaxBisectionIters = 80;
+    public static final double kMinBracket = 0.1; // m/s
+    public static final double kMaxV0Search = 100.0; // m/s safety cap
   }
 
   public static final class intakeConstants {
@@ -432,23 +455,6 @@ public final class Constants {
   }
 
   /************************************************************************* */
-  /** Shooter Constants **************************************************** */
-  public static final class ShooterConstants {
-
-    // Fuel trajectory Constants
-    public static final double kThetaRad = Units.degreesToRadians(70.0); // fixed elevation
-    public static final double kApexClearanceMeters = 0.5; // h_c
-    public static final double kG = 9.81;
-
-    // Numerical Trajectory Solving Parameters
-    public static final double kV0Tol = 1e-6; // m/s
-    public static final int kMaxBisectionIters = 80;
-    public static final double kMinBracket = 0.1; // m/s
-    public static final double kMaxV0Search = 100.0; // m/s safety cap
-
-    // Shooter Mechanical Constants go here...
-    public static final double kShooterGearRatio = 1.0;
-  }
 
   /************************************************************************* */
   /** (Semi-)Autonomous Action Constants *********************************** */

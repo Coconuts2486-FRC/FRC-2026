@@ -7,10 +7,10 @@
 // license that can be found in the AdvantageKit-License.md file
 // at the root directory of this project.
 
-package frc.robot.subsystems.flywheel_example;
+package frc.robot.subsystems.shooter;
 
 import static edu.wpi.first.units.Units.Volts;
-import static frc.robot.Constants.FlywheelConstants.*;
+import static frc.robot.Constants.ShooterConstants.*;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -20,13 +20,13 @@ import frc.robot.util.RBSISubsystem;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-public class Flywheel extends RBSISubsystem {
-  private final FlywheelIO io;
-  private final FlywheelIOInputsAutoLogged inputs = new FlywheelIOInputsAutoLogged();
+public class Shooter extends RBSISubsystem {
+  private final ShooterIO io;
+  private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
   private final SysIdRoutine sysId;
 
-  /** Creates a new Flywheel. */
-  public Flywheel(FlywheelIO io) {
+  /** Creates a new Shooter. */
+  public Shooter(ShooterIO io) {
     this.io = io;
 
     // Switch constants based on mode (the physics simulator is treated as a
@@ -49,7 +49,7 @@ public class Flywheel extends RBSISubsystem {
                 null,
                 null,
                 null,
-                (state) -> Logger.recordOutput("Flywheel/SysIdState", state.toString())),
+                (state) -> Logger.recordOutput("Shooter/SysIdState", state.toString())),
             new SysIdRoutine.Mechanism((voltage) -> runVolts(voltage.in(Volts)), null, this));
   }
 
@@ -57,7 +57,7 @@ public class Flywheel extends RBSISubsystem {
   @Override
   protected void rbsiPeriodic() {
     io.updateInputs(inputs);
-    Logger.processInputs("Flywheel", inputs);
+    Logger.processInputs("Shooter", inputs);
   }
 
   /** Run open loop at the specified voltage. */
@@ -70,11 +70,11 @@ public class Flywheel extends RBSISubsystem {
     var velocityRadPerSec = Units.rotationsPerMinuteToRadiansPerSecond(velocityRPM);
     io.setVelocity(velocityRadPerSec);
 
-    // Log flywheel setpoint
-    Logger.recordOutput("Flywheel/SetpointRPM", velocityRPM);
+    // Log Shooter setpoint
+    Logger.recordOutput("Shooter/SetpointRPM", velocityRPM);
   }
 
-  /** Stops the flywheel. */
+  /** Stops the Shooter. */
   public void stop() {
     io.stop();
   }
@@ -90,7 +90,7 @@ public class Flywheel extends RBSISubsystem {
   }
 
   /** Returns the current velocity in RPM. */
-  @AutoLogOutput(key = "Mechanism/Flywheel")
+  @AutoLogOutput(key = "Mechanism/Shooter")
   public double getVelocityRPM() {
     return Units.radiansPerSecondToRotationsPerMinute(inputs.velocityRadPerSec);
   }

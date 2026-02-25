@@ -6,13 +6,13 @@ import frc.robot.subsystems.climb.*;
 import frc.robot.subsystems.drive.*;
 import frc.robot.subsystems.intake.*;
 import frc.robot.subsystems.turret.*;
-import frc.robot.util.RBSISubsystem;
+import frc.robot.util.VirtualSubsystem;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.Logger;
 
-public class Prematch extends RBSISubsystem {
+public class Prematch extends VirtualSubsystem {
 
   public Prematch(Turret turret, Intake intake) {
     this.turret = turret;
