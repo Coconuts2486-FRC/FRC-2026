@@ -352,10 +352,34 @@ public class RobotContainer {
   private void defineAutoCommands() {
 
     // TODO Change the velocity
-    NamedCommands.registerCommand(
-        "Intake",
-        Commands.runOnce(() -> m_intake.pivotDown())
-            .andThen(Commands.run(() -> m_intake.setPivotVelocity(1))));
+    NamedCommands.registerCommand("IntakeDown", Commands.runOnce(() -> m_intake.pivotDown()));
+
+    NamedCommands.registerCommand("Intake", Commands.run(() -> m_intake.setRollerVelocity(1)));
+
+    // NamedCommands.registerCommand(
+    //   "ClimbPrepare",
+    //   Commands.runOnce(()));
+
+    // NamedCommands.registerCommand(
+    //   "Climb",
+    //   Commands.runOnce(()));
+
+    // NamedCommands.registerCommand(
+    //   "Shoot",
+    //   Commands.runOnce(()));
+
+    // NamedCommands.registerCommand(
+    //   "Pass",
+    //   Commands.runOnce(()));
+
+    // NamedCommands.registerCommand(
+    //   "ClimbPrepare",
+    //   Commands.runOnce(()));
+
+    // NamedCommands.registerCommand(
+    //   "Climb",
+    //   Commands.runOnce(()));
+
   }
 
   /**
