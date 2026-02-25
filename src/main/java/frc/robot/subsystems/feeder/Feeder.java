@@ -23,10 +23,6 @@ public class Feeder extends RBSISubsystem {
     return io.getFeederspeed();
   }
 
-  public void FeederSetVelocity(double velocity) {
-    io.FeederSetVelocity(velocity);
-  }
-
   public void stop() {
     io.stop();
   }

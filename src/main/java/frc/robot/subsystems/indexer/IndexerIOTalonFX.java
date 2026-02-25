@@ -12,15 +12,6 @@ public class IndexerIOTalonFX implements IndexerIO {
   @Override
   public void updateInputs(IndexerIOInputs inputs) {}
 
-  @Override
-  public void feederSetVelocity(double velocity) {
-    feeder.set(velocity);
-  }
-
-  @Override
-  public void feederStop() {
-    feeder.stopMotor();
-  }
 
   @Override
   public void indexerSetVelocity(double velocity) {

@@ -14,14 +14,6 @@ public interface IndexerIO extends RBSIIO {
     public boolean feederConnected = false;
   }
 
-  public default void feederSetVelocity(double velocity) {}
-
-  public default void feederStop() {}
-
-  public default double getFeederspeed() {
-    return 0.0;
-  }
-
   public default void updateInputs(IndexerIOInputs inputs) {}
 
   public default void indexerSetVelocity(double velocity) {}

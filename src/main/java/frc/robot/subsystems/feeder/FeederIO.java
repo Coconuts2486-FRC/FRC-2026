@@ -23,8 +23,4 @@ public interface FeederIO extends RBSIIO {
   }
 
   public default void updateInputs(FeederIOInputs inputs) {}
-
-  public default void FeederSetVelocity(double velocity) {}
-
-  public default void FeederStop() {}
 }

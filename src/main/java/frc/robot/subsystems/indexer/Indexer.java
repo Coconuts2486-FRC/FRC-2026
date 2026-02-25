@@ -11,17 +11,6 @@ public class Indexer extends RBSISubsystem {
     io.updateInputs(inputs);
   }
 
-  public void feederSetVelocity(double velocity) {
-    io.feederSetVelocity(velocity);
-  }
-
-  public void feederStop() {
-    io.feederStop();
-  }
-
-  public double getFeederspeed() {
-    return io.getFeederspeed();
-  }
 
   public void indexerSetVelocity(double velocity) {
     io.indexerSetVelocity(velocity);
