@@ -55,11 +55,18 @@ public class Intake extends RBSISubsystem {
   public void pivotDown() {
     if (io.getPosition() < intakeConstants.dropPostion) {
       io.setPivotVelocity(0.75);
-      io.setRollerVelocity(0.65);
+      //io.setRollerVelocity(0.65);
     } else {
       io.stopPivot();
-      io.setRollerVelocity(0.65);
+      //io.setRollerVelocity(0.65);
     }
+  }
+
+  public void runRollers(){
+    io.setRollerVelocity(0.65);
+  }
+  public void stopRollers(){
+    io.stopRoller();
   }
 
   // brings pivot up with pid while running intake motors still, stopping themif at position
@@ -72,7 +79,7 @@ public class Intake extends RBSISubsystem {
     } else {
 
       io.setPivotVelocity(controller.calculate(io.getPosition(), intakeConstants.storedAngle));
-      io.setRollerVelocity(0.65);
+      //io.setRollerVelocity(0.65);
     }
   }
 

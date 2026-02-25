@@ -41,6 +41,4 @@ public class ClimbIOTalonFX implements ClimbIO {
   public void getEncoderPos() {
     System.out.println();
   }
-
-  private final DutyCycleEncoder uppiesEncoder = new DutyCycleEncoder(3);
 }
