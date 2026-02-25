@@ -384,6 +384,7 @@ public class RobotContainer {
         turnStickX = driverController::getRightX;
     }
 
+    // =======================================================================
     // SET STANDARD DRIVING AS DEFAULT COMMAND FOR THE DRIVEBASE
     m_drivebase.setDefaultCommand(
         DriveCommands.fieldRelativeDrive(
@@ -392,12 +393,32 @@ public class RobotContainer {
             () -> -driveStickX.value(),
             () -> -turnStickX.value()));
 
+    // =======================================================================
     // Set DEFAULT COMMANDS for subsystems
-    m_indexer.setDefaultCommand(Commands.run(() -> {}));
-    m_feeder.setDefaultCommand(Commands.run(() -> {}));
-    m_shooter.setDefaultCommand(Commands.run(() -> {}));
-    m_turret.setDefaultCommand(Commands.run(() -> {}));
+    m_indexer.setDefaultCommand(
+        Commands.run(
+            () -> {
+              // Get the running states of intake rollers & feeder.  Set the indexer to run if
+              // either input is true.
+            }));
+    m_feeder.setDefaultCommand(
+        Commands.run(
+            () -> {
+              // Listen to the shooter, and turn on when the shooter is up to speed.
+            }));
+    m_shooter.setDefaultCommand(
+        Commands.run(
+            () -> {
+              // Listen to the Coordinator, and set the velocity based on physics computation.  If
+              // in "Don't Shoot" status, set speed to some idle value.
+            }));
+    m_turret.setDefaultCommand(
+        Commands.run(
+            () -> {
+              // Listen to the Coordinator, and set the angle based on the physics computation.
+            }));
 
+    // =======================================================================
     // ** Example Commands -- Remap, remove, or change as desired **
     // Press B button while driving --> ROBOT-CENTRIC
     driverController
