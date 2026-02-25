@@ -11,7 +11,6 @@ public class Indexer extends RBSISubsystem {
     io.updateInputs(inputs);
   }
 
-
   public void indexerSetVelocity(double velocity) {
     io.indexerSetVelocity(velocity);
   }

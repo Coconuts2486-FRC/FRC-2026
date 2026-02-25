@@ -100,7 +100,7 @@ public class Intake extends RBSISubsystem {
     io.stopPivot();
   }
 
-  public void isIntakeRunning() {
-    io.isIntakeRunning();
+  public boolean isIntakeRunning() {
+    return io.isIntakeRunning();
   }
 }

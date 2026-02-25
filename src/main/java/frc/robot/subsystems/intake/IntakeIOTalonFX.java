@@ -51,7 +51,6 @@ public class IntakeIOTalonFX implements IntakeIO {
   /** Set the mechanism angular velocity in physical units */
   @Override
   public void setPivotVelocity(double velocity) {
-
     pivot.set(velocity);
   }
 

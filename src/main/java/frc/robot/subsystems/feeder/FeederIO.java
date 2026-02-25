@@ -22,5 +22,9 @@ public interface FeederIO extends RBSIIO {
     return 0.0;
   }
 
+  public default boolean isFeederRunning() {
+    return false;
+  }
+
   public default void updateInputs(FeederIOInputs inputs) {}
 }

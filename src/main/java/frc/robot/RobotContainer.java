@@ -420,11 +420,18 @@ public class RobotContainer {
     // =======================================================================
     // Set DEFAULT COMMANDS for subsystems
     m_indexer.setDefaultCommand(
+        // Get the running states of intake rollers & feeder.  Set the indexer to run if
+        // either input is true.
         Commands.run(
             () -> {
-              // Get the running states of intake rollers & feeder.  Set the indexer to run if
-              // either input is true.
-            }));
+              if (m_intake.isIntakeRunning() || m_feeder.isFeederRunning()) {
+                m_indexer.indexerSetVelocity(0.5); // TODO:change this velocity
+              } else {
+                m_indexer.stop();
+              }
+            },
+            m_indexer));
+
     m_feeder.setDefaultCommand(
         Commands.run(
             () -> {
