@@ -425,7 +425,7 @@ public class RobotContainer {
         Commands.run(
             () -> {
               if (m_intake.isIntakeRunning() || m_feeder.isFeederRunning()) {
-                m_indexer.indexerSetVelocity(0.5); // TODO:change this velocity
+                m_indexer.setVelocity(0.5); // TODO:change this velocity
               } else {
                 m_indexer.stop();
               }
@@ -492,22 +492,9 @@ public class RobotContainer {
     that cancels the default and keeps the intake down with out the driver having to hold any button */
     driverController.rightBumper().toggleOnTrue(Commands.run(() -> m_intake.pivotDown()));
 
-    // sets intake pivot speed to trigger value, temporary testing function
-    // driverController
-    //     .rightTrigger(0.01)
-    //     .whileTrue(
-    //         Commands.run(
-    //             () -> m_intake.setPivotVelocity(driverController.getRightTriggerAxis()),
-    // m_intake))
-    //     .onFalse(Commands.run(() -> m_intake.stopPivot(), m_intake));
-
-    // driverController
-    //     .leftTrigger(0.01)
-    //     .whileTrue(
-    //         Commands.run(
-    //             () -> m_intake.setPivotVelocity(-driverController.getLeftTriggerAxis()),
-    // m_intake))
-    //     .onFalse(Commands.run(() -> m_intake.stopPivot(), m_intake));
+    // Testing functions
+    driverController.leftBumper().whileTrue(Commands.run(() -> m_indexer.setVelocity(.5)));
+    driverController.povUp().whileTrue(Commands.run(() -> m_intake.setPivotVelocity(0.05)));
 
     // prints the encoder position temporary testing function
     driverController
