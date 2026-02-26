@@ -354,7 +354,7 @@ public class RobotContainer {
     // TODO Change the velocity
     NamedCommands.registerCommand("IntakeDown", Commands.runOnce(() -> m_intake.pivotDown()));
 
-    NamedCommands.registerCommand("Intake", Commands.run(() -> m_intake.setRollerVelocity(1)));
+    NamedCommands.registerCommand("Intake", Commands.run(() -> m_intake.setRollerVelocity(0.65)));
 
     // NamedCommands.registerCommand(
     //   "ClimbPrepare",
@@ -433,23 +433,30 @@ public class RobotContainer {
             m_indexer));
 
     m_feeder.setDefaultCommand(
+        // Listen to the shooter, and turn on when the shooter is up to speed.
         Commands.run(
             () -> {
-              // Listen to the shooter, and turn on when the shooter is up to speed.
+              if (
+              /*m_shooter.isShooterRunning()*/ m_feeder
+                  .isFeederRunning()) { // TODO:change this to shooter when shootering
+                m_feeder.runFeeder();
+              } else m_feeder.stopFeeder();
             }));
+
     m_shooter.setDefaultCommand(
         Commands.run(
             () -> {
               // Listen to the Coordinator, and set the velocity based on physics computation.  If
               // in "Don't Shoot" status, set speed to some idle value.
             }));
+
     m_turret.setDefaultCommand(
         Commands.run(
             () -> {
               // Listen to the Coordinator, and set the angle based on the physics computation.
             }));
 
-    // =======================================================================
+    // ===============================================================================
     // ** Example Commands -- Remap, remove, or change as desired **
     // Press B button while driving --> ROBOT-CENTRIC
     driverController
@@ -490,7 +497,13 @@ public class RobotContainer {
 
     /*there is a default command in intake that makes it go up this toggles a new command
     that cancels the default and keeps the intake down with out the driver having to hold any button */
-    driverController.rightBumper().toggleOnTrue(Commands.run(() -> m_intake.pivotDown()));
+    driverController.leftBumper().toggleOnTrue(Commands.run(() -> m_intake.pivotDown()));
+
+    driverController
+        .rightBumper()
+        .toggleOnTrue(
+            Commands.run(() -> m_intake.runRollers())
+                .andThen(Commands.runOnce(() -> m_intake.stopRollers())));
 
     // sets intake pivot speed to trigger value, temporary testing function
     // driverController

@@ -14,9 +14,9 @@ public interface FeederIO extends RBSIIO {
     public boolean feederConnected = false;
   }
 
-  public default void feederSetVelocity(double velocity) {}
+  public default void setFeederVelocity(double velocity) {}
 
-  public default void feederStop() {}
+  public default void stopFeeder() {}
 
   public default double getFeederspeed() {
     return 0.0;

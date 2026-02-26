@@ -16,7 +16,7 @@ public class FeederIOTalonFX implements FeederIO {
   public void updateInputs(FeederIOInputs inputs) {}
 
   @Override
-  public void feederSetVelocity(double velocity) {
+  public void setFeederVelocity(double velocity) {
     feeder.set(velocity);
   }
 
@@ -30,7 +30,7 @@ public class FeederIOTalonFX implements FeederIO {
   }
 
   @Override
-  public void feederStop() {
+  public void stopFeeder() {
     feeder.stopMotor();
   }
 }
