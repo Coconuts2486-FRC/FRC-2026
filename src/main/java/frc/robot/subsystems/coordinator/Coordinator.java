@@ -1,24 +1,27 @@
 package frc.robot.subsystems.coordinator;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.vision.Targeting;
 import frc.robot.util.VirtualSubsystem;
 
 public class Coordinator extends VirtualSubsystem {
   public enum Mode {
-    IDLE,
-    INTAKE,
-    AIM,
-    SCORE,
-    CLIMB
+    SYSTEM_CHECK, // Disabled, pre-match
+    IDLE, // Disabled, playing defense, climb
+    INTAKE, // Filling the hopper
+    SCORE, // Shooting FUEL to the HUB
+    PASS, // Shooting FUEL to our alliance zone
+    CLIMB // Climbing
   }
 
   private final Drive drive;
   private final Targeting targeting;
-  // add shooter/intake/etc here as needed
+  private final Shooter shooter;
+  private final Intake intake;
 
   private Mode mode = Mode.IDLE;
 
@@ -29,9 +32,11 @@ public class Coordinator extends VirtualSubsystem {
   // Internal variables
   private static boolean ok_to_shoot = false;
 
-  public Coordinator(Drive drive, Targeting targeting /*, Shooter shooter, Intake intake */) {
+  public Coordinator(Drive drive, Targeting targeting, Shooter shooter, Intake intake) {
     this.drive = drive;
     this.targeting = targeting;
+    this.shooter = shooter;
+    this.intake = intake;
   }
 
   public void setMode(Mode mode) {
@@ -65,16 +70,16 @@ public class Coordinator extends VirtualSubsystem {
         // default behavior (maybe driver control only)
       }
 
-      case AIM -> {
-        if (wantAutoAim && tgt.isPresent()) {
-          // Example: compute desired heading from target solution
-          double desiredHeadingRad = targeting.getDesiredRobotHeadingRad(pose, tgt.get());
+      // case AIM -> {
+      //   if (wantAutoAim && tgt.isPresent()) {
+      //     // Example: compute desired heading from target solution
+      //     double desiredHeadingRad = targeting.getDesiredRobotHeadingRad(pose, tgt.get());
 
-          // Produce a chassis request (you might have your own helper)
-          ChassisSpeeds speeds = targeting.buildAimingDriveRequest(desiredHeadingRad);
-          drive.runVelocity(speeds);
-        }
-      }
+      //     // Produce a chassis request (you might have your own helper)
+      //     ChassisSpeeds speeds = targeting.buildAimingDriveRequest(desiredHeadingRad);
+      //     drive.runVelocity(speeds);
+      //   }
+      // }
 
       case SCORE -> {
         // Example: require "aimed + shooter ready" then feed
@@ -94,6 +99,8 @@ public class Coordinator extends VirtualSubsystem {
       case CLIMB -> {
         // climb logic
       }
+
+      default -> {}
     }
 
     // 3) Log coordinator outputs for tuning

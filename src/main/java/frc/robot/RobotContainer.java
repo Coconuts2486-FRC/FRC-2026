@@ -441,7 +441,8 @@ public class RobotContainer {
                   .isFeederRunning()) { // TODO:change this to shooter when shootering
                 m_feeder.runFeeder();
               } else m_feeder.stopFeeder();
-            }));
+            },
+            m_feeder));
 
     m_shooter.setDefaultCommand(
         Commands.run(
@@ -507,12 +508,19 @@ public class RobotContainer {
 
     // Testing functions
     driverController.leftBumper().whileTrue(Commands.run(() -> m_indexer.setVelocity(.5)));
-    
+
     driverController.povUp().whileTrue(Commands.run(() -> m_intake.setPivotVelocity(0.05)));
-                //reads out pivot position- useful for determining where exactly we need to tell it to pivot to (pov left)
-    driverController.povLeft().whileTrue(Commands.run(() -> System.out.println(m_intake.getPosition())));
-                //checks magnetic switch (pov right)
-    driverController.povRight().whileTrue(Commands.run(() -> System.out.println("Magnetic switch state:"+m_turret.readTurretSwitch())));
+    // reads out pivot position- useful for determining where exactly we need to tell it to pivot to
+    // (pov left)
+    driverController
+        .povLeft()
+        .whileTrue(Commands.run(() -> System.out.println(m_intake.getPosition())));
+    // checks magnetic switch (pov right)
+    driverController
+        .povRight()
+        .whileTrue(
+            Commands.run(
+                () -> System.out.println("Magnetic switch state:" + m_turret.readTurretSwitch())));
 
     // prints the encoder position temporary testing function
     driverController
