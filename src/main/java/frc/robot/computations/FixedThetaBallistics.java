@@ -176,4 +176,13 @@ public final class FixedThetaBallistics {
 
     return new Solution(v0, psi, tHit, branch, zA, new CrossingDistances(rUp, rApex, rDown));
   }
+
+  /**
+   * Return a blank solution object in the event that
+   *
+   * @return
+   */
+  public static Solution blankSolution() {
+    return new Solution(0.0, 0.0, 0.0, Branch.DESCENDING, 0.0, new CrossingDistances(0, 0, 0));
+  }
 }
