@@ -3,9 +3,11 @@ package frc.robot.subsystems.intake;
 import static frc.robot.Constants.RobotDevices.*;
 
 import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import frc.robot.Constants.intakeConstants;
+import frc.robot.util.PhoenixUtil;
 
 public class IntakeIOTalonFX implements IntakeIO {
 
@@ -17,11 +19,21 @@ public class IntakeIOTalonFX implements IntakeIO {
 
   public final int[] powerPorts = {INTAKE_PIVOT.getPowerPort(), INTAKE_ROLLER.getPowerPort()};
 
-  private final CANcoder pivotEncoder;
+  private final CANcoder pivotEncoder =
+      new CANcoder(INTAKE_ENCODER.getDeviceNumber(), INTAKE_ENCODER.getCANBus());
 
+  /** Constructor */
   public IntakeIOTalonFX() {
 
-    pivotEncoder = new CANcoder(intakeConstants.encoderID);
+    // Configure motors and encoders
+
+    // Current limiting
+
+    // FUSE cancoder onto pivot motor
+
+    CANcoderConfiguration cancoderConfig = new CANcoderConfiguration();
+    cancoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1.0;
+    PhoenixUtil.tryUntilOk(5, () -> pivotEncoder.getConfigurator().apply(cancoderConfig));
   }
 
   @Override

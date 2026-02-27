@@ -1,7 +1,6 @@
 package frc.robot.subsystems.intake;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.intakeConstants;
 import frc.robot.util.RBSISubsystem;
 
@@ -19,7 +18,7 @@ public class Intake extends RBSISubsystem {
   public Intake(IntakeIO io) {
     this.io = io;
 
-    setDefaultCommand(Commands.run(() -> pivotUp(), this));
+    // setDefaultCommand(Commands.run(() -> pivotUp(), this));
   }
 
   // max values are for rotations a second

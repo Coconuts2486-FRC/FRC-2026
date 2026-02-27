@@ -5,12 +5,10 @@ import static edu.wpi.first.units.Units.Meters;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.FieldConstants;
-import frc.robot.computations.FieldRelativeShooterSolver;
 import frc.robot.computations.FieldRelativeShooterSolver.FieldShotSolution;
 import frc.robot.util.VirtualSubsystem;
 import java.util.function.Supplier;
@@ -143,8 +141,8 @@ public class Coordinator extends VirtualSubsystem {
     }
 
     // Using the target and the current pose, compute v0 and phi
-    fuelSolution =
-        FieldRelativeShooterSolver.solve(new Pose3d(pose), Transform3d.kZero, target, velocity);
+    // fuelSolution =
+    //     FieldRelativeShooterSolver.solve(new Pose3d(pose), Transform3d.kZero, target, velocity);
 
     // Check on intake roller running
     boolean intakeRunning = intakeRollersRunningSupplier.get();

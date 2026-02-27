@@ -24,7 +24,7 @@ public interface IntakeIO extends RBSIIO {
   public default void stopPivot() {}
 
   public default double getPosition() {
-    return 0.0;
+    return 6.7;
   }
 
   public default void pivotToPos(double pos) {}

@@ -219,18 +219,18 @@ public final class Constants {
     public static final RobotDeviceId SHOOTER_LEADER = new RobotDeviceId(25, CANBuses.RIO, 8);
     public static final RobotDeviceId SHOOTER_FOLLOWER = new RobotDeviceId(26, CANBuses.RIO, 9);
 
-    public static final RobotDeviceId INTAKE_PIVOT = new RobotDeviceId(11, CANBuses.RIO, 0);
+    public static final RobotDeviceId INTAKE_PIVOT = new RobotDeviceId(11, CANBuses.RIO, 9);
     public static final RobotDeviceId INTAKE_ROLLER = new RobotDeviceId(13, CANBuses.RIO, 1);
-    public static final RobotDeviceId INTAKE_ENCODER = new RobotDeviceId(12, CANBuses.RIO, null);
+    public static final RobotDeviceId INTAKE_ENCODER = new RobotDeviceId(43, CANBuses.RIO, 0);
 
-    public static final RobotDeviceId INDEXER_ROLLER = new RobotDeviceId(15, CANBuses.RIO, null);
+    public static final RobotDeviceId INDEXER_ROLLER = new RobotDeviceId(15, CANBuses.RIO, 11);
 
-    public static final RobotDeviceId FEEDER_ROLLER = new RobotDeviceId(20, CANBuses.RIO, null);
+    public static final RobotDeviceId FEEDER_ROLLER = new RobotDeviceId(20, CANBuses.RIO, 12);
 
-    public static final RobotDeviceId TURRET_POINTER = new RobotDeviceId(30, CANBuses.RIO, null);
-    public static final RobotDeviceId TURRET_ENCODER = new RobotDeviceId(31, CANBuses.RIO, null);
+    public static final RobotDeviceId TURRET_POINTER = new RobotDeviceId(30, CANBuses.RIO, 13);
+    public static final RobotDeviceId TURRET_ENCODER = new RobotDeviceId(31, CANBuses.RIO, 14);
 
-    public static final RobotDeviceId CLIMB_MOTOR = new RobotDeviceId(20, CANBuses.DRIVE, null);
+    public static final RobotDeviceId CLIMB_MOTOR = new RobotDeviceId(20, CANBuses.DRIVE, 15);
 
     /* BEAM BREAK and/or LIMIT SWITCH DIO CHANNELS */
     // This is where digital I/O feedback devices are defined
