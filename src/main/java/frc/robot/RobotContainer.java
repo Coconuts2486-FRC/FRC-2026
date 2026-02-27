@@ -533,9 +533,7 @@ public class RobotContainer {
                 () -> System.out.println("Magnetic switch state:" + m_turret.readTurretSwitch())));
 
     // prints the encoder position temporary testing function
-    driverController
-        .a()
-        .whileTrue(Commands.run(() -> System.out.println(m_turret.readTurretSwitch())));
+    driverController.a().whileTrue(Commands.run(() -> System.out.println(m_intake.getPosition())));
 
     // Press LEFT BUMPER --> Drive to a pose 10 feet closer to the BLUE ALLIANCE wall
     // driverController
