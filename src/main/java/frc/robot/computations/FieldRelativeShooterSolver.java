@@ -29,7 +29,15 @@ public final class FieldRelativeShooterSolver {
       double time,
       FixedThetaBallistics.Branch branchAtEndpoint,
       double zApex,
-      FixedThetaBallistics.CrossingDistances crossingsAtDz) {}
+      FixedThetaBallistics.CrossingDistances crossingsAtDz) {
+    public double getVelocity() {
+      return this.v0;
+    }
+
+    public Rotation2d getAngle() {
+      return this.psiField;
+    }
+  }
 
   /**
    * @param fieldRobotPose robot/platform pose in FIELD frame

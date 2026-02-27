@@ -5,7 +5,6 @@ import static frc.robot.Constants.RobotDevices.*;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import frc.robot.Constants.intakeConstants;
 
 public class IntakeIOTalonFX implements IntakeIO {
@@ -19,7 +18,6 @@ public class IntakeIOTalonFX implements IntakeIO {
   public final int[] powerPorts = {INTAKE_PIVOT.getPowerPort(), INTAKE_ROLLER.getPowerPort()};
 
   private final CANcoder pivotEncoder;
-  private final DutyCycleEncoder pivotEncoder2 = new DutyCycleEncoder(8);
 
   public IntakeIOTalonFX() {
 
@@ -60,8 +58,18 @@ public class IntakeIOTalonFX implements IntakeIO {
   }
 
   @Override
-  public boolean isIntakeRunning() {
+  public boolean isIntakeRollersRunning() {
     if (rollers.get() > 0.02) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean isIntakeExtended() {
+    if (pivotEncoder.getAbsolutePosition().getValueAsDouble()
+        > (intakeConstants.dropPostion - 0.05)) {
       return true;
     } else {
       return false;

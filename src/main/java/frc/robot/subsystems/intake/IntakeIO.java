@@ -31,7 +31,11 @@ public interface IntakeIO extends RBSIIO {
 
   public default void updateInputs(IntakeIOInputs inputs) {}
 
-  public default boolean isIntakeRunning() {
+  public default boolean isIntakeRollersRunning() {
+    return false;
+  }
+
+  public default boolean isIntakeExtended() {
     return false;
   }
 }

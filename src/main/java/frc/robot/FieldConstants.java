@@ -25,9 +25,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Filesystem;
 import java.io.IOException;
@@ -45,26 +46,34 @@ public class FieldConstants {
   public static final Distance startingLineXRed = Inches.of(493.06);
 
   public static final Translation2d towerCenterBlue =
-      new Translation2d(Units.inchesToMeters(43.8), Units.inchesToMeters(169.78));
+      new Translation2d(Inches.of(43.8), Inches.of(169.78));
 
   public static final Translation2d towerCenterRed =
-      new Translation2d(Units.inchesToMeters(607.42), Units.inchesToMeters(147.47));
+      new Translation2d(Inches.of(607.42), Inches.of(147.47));
 
-  public static final Translation3d hubCenterBLue =
-      new Translation3d(
-          Units.inchesToMeters(182.11), Units.inchesToMeters(158.84), Units.inchesToMeters(72));
+  public static final Pose3d hubCenterBlue =
+      new Pose3d(
+          new Translation3d(Inches.of(182.11), Inches.of(158.84), Inches.of(72)), Rotation3d.kZero);
 
-  public static final Translation3d hubCenterRed =
-      new Translation3d(
-          Units.inchesToMeters(469.11), Units.inchesToMeters(158.84), Units.inchesToMeters(72));
+  public static final Pose3d hubCenterRed =
+      new Pose3d(
+          new Translation3d(Inches.of(469.11), Inches.of(158.84), Inches.of(72)), Rotation3d.kZero);
 
-  public static final Translation3d passingZoneBlue =
-      new Translation3d(
-          Units.inchesToMeters(78.03), Units.inchesToMeters(49.32), Units.inchesToMeters(0));
+  public static final Pose3d passingOutpostBlue =
+      new Pose3d(
+          new Translation3d(Inches.of(78.03), Inches.of(49.32), Inches.of(0)), Rotation3d.kZero);
 
-  public static final Translation3d passingZoneRed =
-      new Translation3d(
-          Units.inchesToMeters(573.19), Units.inchesToMeters(267.85), Units.inchesToMeters(0));
+  public static final Pose3d passingDepotBlue =
+      new Pose3d(
+          new Translation3d(Inches.of(78.03), Inches.of(267.85), Inches.of(0)), Rotation3d.kZero);
+
+  public static final Pose3d passingOutpostRed =
+      new Pose3d(
+          new Translation3d(Inches.of(573.19), Inches.of(267.85), Inches.of(0)), Rotation3d.kZero);
+
+  public static final Pose3d passingDepotRed =
+      new Pose3d(
+          new Translation3d(Inches.of(573.19), Inches.of(49.32), Inches.of(0)), Rotation3d.kZero);
 
   /** AprilTag Field Layout ************************************************ */
   public static final double aprilTagWidth = Inches.of(6.50).in(Meters);

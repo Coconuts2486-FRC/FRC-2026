@@ -41,6 +41,7 @@ import frc.robot.subsystems.climb.Climb;
 import frc.robot.subsystems.climb.ClimbIO;
 import frc.robot.subsystems.climb.ClimbIOSim;
 import frc.robot.subsystems.climb.ClimbIOTalonFX;
+import frc.robot.subsystems.coordinator.Coordinator;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.SwerveConstants;
 import frc.robot.subsystems.driver_info.CANStatus;
@@ -120,6 +121,7 @@ public class RobotContainer {
   private final Turret m_turret;
   private final Prematch m_prematch;
 
+  private final Coordinator m_coordinator;
   // ... Add additional subsystems here (e.g., elevator, arm, etc.)
 
   // These are "Virtual Subsystems" that report information but have no motors
@@ -295,6 +297,14 @@ public class RobotContainer {
     // include ``m_drivebase``, as that is automatically monitored.
     m_power = new RBSIPowerMonitor(batteryCapacity);
 
+    // Build the coordinator
+    m_coordinator =
+        new Coordinator(
+            m_drivebase::getPose,
+            m_drivebase::getFieldLinearVelocity,
+            m_intake::isIntakeRollersRunning,
+            m_intake::isIntakeExtended);
+
     // Set up the SmartDashboard Auto Chooser based on auto type
     switch (Constants.getAutoType()) {
       case MANUAL:
@@ -424,7 +434,7 @@ public class RobotContainer {
         // either input is true.
         Commands.run(
             () -> {
-              if (m_intake.isIntakeRunning() || m_feeder.isFeederRunning()) {
+              if (m_intake.isIntakeRollersRunning() || m_feeder.isFeederRunning()) {
                 m_indexer.setVelocity(0.5); // TODO:change this velocity
               } else {
                 m_indexer.stop();
