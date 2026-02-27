@@ -39,6 +39,8 @@ public final class FieldRelativeShooterSolver {
     }
   }
 
+  private static FixedThetaBallistics.Solution local;
+
   /**
    * @param fieldRobotPose robot/platform pose in FIELD frame
    * @param launcherTransformRobot transform from ROBOT origin to LAUNCHER exit (robot frame)
@@ -73,8 +75,12 @@ public final class FieldRelativeShooterSolver {
     double vLy = s * vFx + c * vFy;
 
     // Solve in launcher frame
-    FixedThetaBallistics.Solution local =
-        FixedThetaBallistics.solveDescendingWithApexClearance(dxL, dyL, dzL, vLx, vLy);
+    try {
+      local = FixedThetaBallistics.solveDescendingWithApexClearance(dxL, dyL, dzL, vLx, vLy);
+    } catch (IllegalArgumentException | IllegalStateException e) {
+      // If exception raised in the solver, use a "blank" solution w/ v0 = 0.
+      local = FixedThetaBallistics.blankSolution();
+    }
 
     // Convert psi from launcher frame to field frame yaw
     double psiFieldRad = MathUtil.angleModulus(local.psiRad() + yaw);
