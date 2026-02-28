@@ -436,24 +436,24 @@ public class RobotContainer {
         Commands.run(
             () -> {
               if (m_intake.isIntakeRollersRunning() || m_feeder.isFeederRunning()) {
-                m_indexer.setVelocity(-0.5); // TODO:change this velocity
-              } else if (!m_intake.isIntakeRollersRunning() || !m_feeder.isFeederRunning()) {
+                m_indexer.setVelocity(-0.37); // TODO:change this velocity
+              } else {
                 m_indexer.stop();
               }
             },
             m_indexer));
 
-    m_feeder.setDefaultCommand(
-        // Listen to the shooter, and turn on when the shooter is up to speed.
-        Commands.run(
-            () -> {
-              if (
-              /*m_shooter.isShooterRunning()*/ m_feeder
-                  .isFeederRunning()) { // TODO:change this to shooter when shootering
-                m_feeder.runFeeder();
-              } else m_feeder.stopFeeder();
-            },
-            m_feeder));
+    // m_feeder.setDefaultCommand(
+    //     // Listen to the shooter, and turn on when the shooter is up to speed.
+    //     Commands.run(
+    //         () -> {
+    //           if (
+    //           /*m_shooter.isShooterRunning()*/ m_feeder
+    //               .isFeederRunning()) { // TODO:change this to shooter when shootering
+    //             m_feeder.runFeeder();
+    //           } else m_feeder.stopFeeder();
+    //         },
+    //         m_feeder));
 
     m_shooter.setDefaultCommand(
         Commands.run(
@@ -583,6 +583,21 @@ public class RobotContainer {
                       new ChassisSpeeds(Units.inchesToMeters(0.), Units.inchesToMeters(-11.0), 0.));
                 },
                 m_drivebase));
+
+    driverController
+        .rightTrigger()
+        .toggleOnTrue(
+            Commands.run(
+                () ->
+                    m_shooter.runVelocity(
+                        -50.0))); // ShooterConstants.kTestShooterSpeed.getAsDouble())));
+    driverController
+        .rightTrigger()
+        .toggleOnTrue(
+            Commands.run(
+                () ->
+                    m_feeder.setFeederVelocity(
+                        0.4))); // ShooterConstants.kTestFeederSpeed.getAsDouble())));
 
     driverController
         .povUp()

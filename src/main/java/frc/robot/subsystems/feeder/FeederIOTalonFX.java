@@ -22,11 +22,7 @@ public class FeederIOTalonFX implements FeederIO {
 
   @Override
   public boolean isFeederRunning() {
-    if (feeder.get() > 0.02) {
-      return true;
-    } else {
-      return false;
-    }
+    return Math.abs(feeder.get()) > 0.02;
   }
 
   @Override

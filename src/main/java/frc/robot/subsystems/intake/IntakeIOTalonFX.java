@@ -146,7 +146,7 @@ public class IntakeIOTalonFX implements IntakeIO {
    */
   @Override
   public boolean isIntakeRollersRunning() {
-    return rollers.get() > 0.02;
+    return Math.abs(rollers.get()) > 0.02;
   }
 
   /**
