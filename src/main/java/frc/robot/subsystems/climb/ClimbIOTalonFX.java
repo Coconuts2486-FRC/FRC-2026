@@ -1,16 +1,22 @@
 package frc.robot.subsystems.climb;
 
+import static frc.robot.Constants.RobotDevices.CLIMB_ENCODER;
+import static frc.robot.Constants.RobotDevices.CLIMB_MOTOR;
 import static frc.robot.Constants.climbConstants.*;
 
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import frc.robot.util.PhoenixUtil;
 
 public class ClimbIOTalonFX implements ClimbIO {
-  private final TalonFX uppies = new TalonFX(41);
+  private final TalonFX uppies = new TalonFX(CLIMB_MOTOR.getDeviceNumber(),CLIMB_MOTOR.getCANBus());
   final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
+  private final CANcoder climbEncoder = new CANcoder(CLIMB_ENCODER.getDeviceNumber(),CLIMB_ENCODER.getCANBus());
 
   public ClimbIOTalonFX() {
     /** Motion Magic Configs */
@@ -29,6 +35,11 @@ public class ClimbIOTalonFX implements ClimbIO {
     magicConfigs.MotionMagicAcceleration = mm_acceleration;
     magicConfigs.MotionMagicJerk = mm_jerk;
     uppies.getConfigurator().apply(uppiesConfig);
+
+
+    CANcoderConfiguration cancoderConfig = new CANcoderConfiguration();
+     cancoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1.0;
+     PhoenixUtil.tryUntilOk(5, () -> climbEncoder.getConfigurator().apply(cancoderConfig));
   }
 
   @Override
@@ -37,7 +48,7 @@ public class ClimbIOTalonFX implements ClimbIO {
   }
 
   @Override
-  public void getEncoderPos() {
-    System.out.println();
+  public double getPosition() {
+    return climbEncoder.getAbsolutePosition().getValueAsDouble();
   }
 }
