@@ -18,7 +18,9 @@ public interface ClimbIO extends RBSIIO {
 
   public default void setPosition(double pos) {}
 
-  public default void getEncoderPos() {}
+  public default double getPosition() {
+    return 0.0;
+  }
 
   public default void configure(
       double Kg,
