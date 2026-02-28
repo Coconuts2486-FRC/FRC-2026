@@ -15,8 +15,8 @@ public class Indexer extends RBSISubsystem {
     io.setVelocity(velocity);
   }
 
-  public void stop() {
-    io.stop();
+  public void indexerStop() {
+    io.indexerStop();
   }
 
   @Override

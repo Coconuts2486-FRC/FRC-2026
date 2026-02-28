@@ -133,11 +133,6 @@ public class IntakeIOTalonFX implements IntakeIO {
     rollers.stopMotor();
   }
 
-  @Override
-  public void stopRoller() {
-    rollers.stopMotor();
-  }
-
   /** Getter functions ***************************************************** */
   /**
    * Get the intake rollers running boolean
@@ -146,7 +141,11 @@ public class IntakeIOTalonFX implements IntakeIO {
    */
   @Override
   public boolean isIntakeRollersRunning() {
-    return Math.abs(rollers.get()) > 0.02;
+    if (Math.abs(rollers.get()) > 0.02) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   /**

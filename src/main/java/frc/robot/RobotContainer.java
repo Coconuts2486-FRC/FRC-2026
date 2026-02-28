@@ -438,7 +438,7 @@ public class RobotContainer {
               if (m_intake.isIntakeRollersRunning() || m_feeder.isFeederRunning()) {
                 m_indexer.setVelocity(-0.37); // TODO:change this velocity
               } else {
-                m_indexer.stop();
+                m_indexer.indexerStop();
               }
             },
             m_indexer));
@@ -586,18 +586,17 @@ public class RobotContainer {
 
     driverController
         .rightTrigger()
-        .toggleOnTrue(
+        .toggleOnTrue(Commands.run(() -> m_shooter.runVelocity(-50.0)))
+        .onFalse(
             Commands.run(
-                () ->
-                    m_shooter.runVelocity(
-                        -50.0))); // ShooterConstants.kTestShooterSpeed.getAsDouble())));
+                () -> m_shooter.stop())); // ShooterConstants.kTestShooterSpeed.getAsDouble())));
     driverController
         .rightTrigger()
-        .toggleOnTrue(
+        .toggleOnTrue(Commands.run(() -> m_feeder.setFeederVelocity(0.4)))
+        .onFalse(
             Commands.run(
                 () ->
-                    m_feeder.setFeederVelocity(
-                        0.4))); // ShooterConstants.kTestFeederSpeed.getAsDouble())));
+                    m_feeder.stopFeeder())); // ShooterConstants.kTestFeederSpeed.getAsDouble())));
 
     driverController
         .povUp()
