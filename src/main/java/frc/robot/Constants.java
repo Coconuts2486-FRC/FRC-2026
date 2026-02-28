@@ -353,6 +353,7 @@ public final class Constants {
 
     // Mechanism motor gear ratio
     public static final double kShooterGearRatio = 24.0 / 18.0;
+    public static final double flywheelCircumfrence = 0.319186;
 
     // Flywheel motor open-loop and closed-loop ramp periods for current smoothing
     //   Time from from 0 -> full duty
