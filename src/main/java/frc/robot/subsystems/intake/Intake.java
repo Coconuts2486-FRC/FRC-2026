@@ -1,6 +1,7 @@
 package frc.robot.subsystems.intake;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.intakeConstants;
 import frc.robot.util.RBSISubsystem;
 
@@ -18,7 +19,7 @@ public class Intake extends RBSISubsystem {
   public Intake(IntakeIO io) {
     this.io = io;
 
-    // setDefaultCommand(Commands.run(() -> pivotUp(), this));
+    setDefaultCommand(Commands.run(() -> pivotUp(), this));
   }
 
   // max values are for rotations a second
@@ -52,12 +53,11 @@ public class Intake extends RBSISubsystem {
 
   // gives the intake a little push but then lets it fall down and be free while intaking
   public void pivotDown() {
-    if (io.getPosition() < intakeConstants.dropPostion) {
-      io.setPivotVelocity(0.75);
-      // io.setRollerVelocity(0.65);
+    if (io.getPosition() > intakeConstants.dropPostion) {
+      io.setPivotVelocity(-0.4);
+
     } else {
       io.stopPivot();
-      // io.setRollerVelocity(0.65);
     }
   }
 
@@ -79,7 +79,7 @@ public class Intake extends RBSISubsystem {
     } else {
 
       io.setPivotVelocity(controller.calculate(io.getPosition(), intakeConstants.storedAngle));
-      // io.setRollerVelocity(0.65);
+      io.setRollerVelocity(0.65);
     }
   }
 

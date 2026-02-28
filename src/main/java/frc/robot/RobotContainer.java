@@ -435,8 +435,8 @@ public class RobotContainer {
         Commands.run(
             () -> {
               if (m_intake.isIntakeRollersRunning() || m_feeder.isFeederRunning()) {
-                m_indexer.setVelocity(0.5); // TODO:change this velocity
-              } else {
+                m_indexer.setVelocity(-0.5); // TODO:change this velocity
+              } else if (!m_intake.isIntakeRollersRunning() || !m_feeder.isFeederRunning()) {
                 m_indexer.stop();
               }
             },
@@ -454,13 +454,14 @@ public class RobotContainer {
             },
             m_feeder));
 
-    // m_shooter.setDefaultCommand(
-    //     Commands.run(
-    //         () -> {
-    //           // Listen to the Coordinator, and set the velocity based on physics computation.
-    // If
-    //           // in "Don't Shoot" status, set speed to some idle value.
-    //         }));
+    m_shooter.setDefaultCommand(
+        Commands.run(
+            () -> {
+              // Listen to the Coordinator, and set the velocity based on physics computation.
+              // If
+              // in "Don't Shoot" status, set speed to some idle value.
+            },
+            m_shooter));
 
     m_turret.setDefaultCommand(
         Commands.run(
@@ -518,7 +519,6 @@ public class RobotContainer {
                 .andThen(Commands.runOnce(() -> m_intake.stopRollers())));
 
     // Testing functions
-    driverController.leftBumper().whileTrue(Commands.run(() -> m_indexer.setVelocity(.5)));
 
     driverController.povUp().whileTrue(Commands.run(() -> m_intake.setPivotVelocity(0.05)));
     // reads out pivot position- useful for determining where exactly we need to tell it to pivot to

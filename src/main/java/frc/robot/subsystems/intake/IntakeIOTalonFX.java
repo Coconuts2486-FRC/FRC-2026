@@ -4,8 +4,10 @@ import static frc.robot.Constants.RobotDevices.*;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import frc.robot.Constants.PowerConstants;
 import frc.robot.Constants.intakeConstants;
 import frc.robot.util.PhoenixUtil;
 
@@ -32,8 +34,18 @@ public class IntakeIOTalonFX implements IntakeIO {
     // FUSE cancoder onto pivot motor
 
     CANcoderConfiguration cancoderConfig = new CANcoderConfiguration();
+    TalonFXConfiguration rollerConfig = new TalonFXConfiguration();
+
+    // roller
+    rollerConfig.CurrentLimits.SupplyCurrentLimit = PowerConstants.kMotorPortMaxCurrent;
+    rollerConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+
+    // cancoder
     cancoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1.0;
+
+    // applying
     PhoenixUtil.tryUntilOk(5, () -> pivotEncoder.getConfigurator().apply(cancoderConfig));
+    PhoenixUtil.tryUntilOk(5, () -> rollers.getConfigurator().apply(rollerConfig));
   }
 
   @Override

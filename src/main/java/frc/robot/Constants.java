@@ -393,8 +393,8 @@ public final class Constants {
 
     // public static final AngularVelocity kMaxPivotSpeed = RotationsPerSecond.of(106.3);
 
-    public static final double dropPostion = 0.3; // place holder
-    public static final double storedAngle = 0.252; // place holder
+    public static final double dropPostion = 0.44;
+    public static final double storedAngle = 0.76;
 
     public static final double kPivotGearRatio = 25.0 * 54.0 / 16.0;
 
