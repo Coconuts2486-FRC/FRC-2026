@@ -97,8 +97,8 @@ public class Prematch extends VirtualSubsystem {
 
   // this checks intake position
   private boolean Intake_In_Position() {
-    if (Constants.intakeConstants.storedAngle < (intake.getPosition() + 0.02)) {
-      if (Constants.intakeConstants.storedAngle > (intake.getPosition() - 0.02)) {
+    if (Constants.IntakeConstants.storedAngle < (intake.getPivotPosition() + 0.02)) {
+      if (Constants.IntakeConstants.storedAngle > (intake.getPivotPosition() - 0.02)) {
         return true;
       } else {
         return false;

@@ -194,8 +194,7 @@ public final class Constants {
     public static final RobotDeviceId FR_ROTATION =
         new RobotDeviceId(SwerveConstants.kFRSteerMotorId, SwerveConstants.kFRSteerCanbus, 3);
     public static final RobotDeviceId FR_CANCODER =
-        new RobotDeviceId(SwerveConstants.kFREncoderId, SwerveConstants.kFREncoderCanbus, 1
-        );
+        new RobotDeviceId(SwerveConstants.kFREncoderId, SwerveConstants.kFREncoderCanbus, 1);
     // Back Left
     public static final RobotDeviceId BL_DRIVE =
         new RobotDeviceId(SwerveConstants.kBLDriveMotorId, SwerveConstants.kBLDriveCanbus, 14);
@@ -238,7 +237,8 @@ public final class Constants {
     // This is where digital I/O feedback devices are defined
     // Example:
     // public static final int ELEVATOR_BOTTOM_LIMIT = 3;
-    public static final int TURRET_MAGHOME = 0;
+    public static final int TURRET_MAGHOME = 2;
+    public static final int INTAKE_RELEASE = 0;
 
     /* LINEAR SERVO PWM CHANNELS */
     // This is where PWM-controlled devices (actuators, servos, pneumatics, etc.)
@@ -392,17 +392,20 @@ public final class Constants {
     public static final double kMaxV0Search = 100.0; // m/s safety cap
   }
 
-  public static final class intakeConstants {
+  /** Intake Mechanism Constants ******************************************* */
+  public static final class IntakeConstants {
 
     // public static final AngularVelocity kMaxPivotSpeed = RotationsPerSecond.of(106.3);
 
+    // Pivot angle positions
     public static final double dropPostion = 0.44;
     public static final double storedAngle = 0.76;
 
+    // Pivot gear ratio
     public static final double kPivotGearRatio = 25.0 * 54.0 / 16.0;
 
+    // PID Values for the intake pivot
     public static final LoggedTunableNumber kp = new LoggedTunableNumber("Intake/kp", 0.75);
-
     public static final double ki = 0;
     public static final double kd = 0;
 
@@ -410,7 +413,8 @@ public final class Constants {
     public static final LoggedTunableNumber maxVelocity =
         new LoggedTunableNumber("Intake/maxVel", 5);
 
-    public static final int encoderID = 15;
+    // Intake rollers constats
+    public static final double kRollerPrimitiveSpeed = 0.65;
   }
 
   public static final class climbConstants {

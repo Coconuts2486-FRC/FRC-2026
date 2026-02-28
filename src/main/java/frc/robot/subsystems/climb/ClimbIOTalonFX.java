@@ -14,9 +14,11 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import frc.robot.util.PhoenixUtil;
 
 public class ClimbIOTalonFX implements ClimbIO {
-  private final TalonFX uppies = new TalonFX(CLIMB_MOTOR.getDeviceNumber(),CLIMB_MOTOR.getCANBus());
+  private final TalonFX uppies =
+      new TalonFX(CLIMB_MOTOR.getDeviceNumber(), CLIMB_MOTOR.getCANBus());
   final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
-  private final CANcoder climbEncoder = new CANcoder(CLIMB_ENCODER.getDeviceNumber(),CLIMB_ENCODER.getCANBus());
+  private final CANcoder climbEncoder =
+      new CANcoder(CLIMB_ENCODER.getDeviceNumber(), CLIMB_ENCODER.getCANBus());
 
   public ClimbIOTalonFX() {
     /** Motion Magic Configs */
@@ -36,10 +38,9 @@ public class ClimbIOTalonFX implements ClimbIO {
     magicConfigs.MotionMagicJerk = mm_jerk;
     uppies.getConfigurator().apply(uppiesConfig);
 
-
     CANcoderConfiguration cancoderConfig = new CANcoderConfiguration();
-     cancoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1.0;
-     PhoenixUtil.tryUntilOk(5, () -> climbEncoder.getConfigurator().apply(cancoderConfig));
+    cancoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1.0;
+    PhoenixUtil.tryUntilOk(5, () -> climbEncoder.getConfigurator().apply(cancoderConfig));
   }
 
   @Override

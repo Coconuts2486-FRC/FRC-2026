@@ -364,7 +364,8 @@ public class RobotContainer {
     // TODO Change the velocity
     NamedCommands.registerCommand("IntakeDown", Commands.runOnce(() -> m_intake.pivotDown()));
 
-    NamedCommands.registerCommand("Intake", Commands.run(() -> m_intake.setRollerVelocity(0.65)));
+    NamedCommands.registerCommand(
+        "Intake", Commands.run(() -> m_intake.setRollerPrimitiveSpeed(0.65)));
 
     // NamedCommands.registerCommand(
     //   "ClimbPrepare",
@@ -520,7 +521,7 @@ public class RobotContainer {
 
     // Testing functions
 
-    driverController.povUp().whileTrue(Commands.run(() -> m_intake.setPivotVelocity(0.05)));
+    driverController.povUp().whileTrue(Commands.run(() -> m_intake.setPivotPrimitiveSpeed(0.05)));
     // reads out pivot position- useful for determining where exactly we need to tell it to pivot to
     // (pov left)
     driverController.povLeft().whileTrue(Commands.run(() -> m_intake.print()));
@@ -532,7 +533,9 @@ public class RobotContainer {
                 () -> System.out.println("Magnetic switch state:" + m_turret.readTurretSwitch())));
 
     // prints the encoder position temporary testing function
-    driverController.a().whileTrue(Commands.run(() -> System.out.println(m_intake.getPosition())));
+    driverController
+        .a()
+        .whileTrue(Commands.run(() -> System.out.println(m_intake.getPivotPosition())));
 
     // Press LEFT BUMPER --> Drive to a pose 10 feet closer to the BLUE ALLIANCE wall
     // driverController
