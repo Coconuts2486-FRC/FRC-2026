@@ -172,8 +172,7 @@ public class PinchyTunerConstants {
   private static final boolean kBackRightEncoderInverted = false;
 
   private static final Distance kBackRightXPos = Inches.of(-10.875);
-  private static final Distance kBackRightYPos = Inches.of(-
-  );
+  private static final Distance kBackRightYPos = Inches.of(-10.875);
 
   public static final SwerveModuleConstants<
           TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>

@@ -65,7 +65,7 @@ public final class Constants {
    * Define the various multiple robots that use this same code (e.g., COMPBOT, DEVBOT, SIMBOT,
    * etc.) and the operating modes of the code (REAL, SIM, or REPLAY)
    */
-  private static RobotType robotType = RobotType.SIMBOT;
+  private static RobotType robotType = RobotType.COMPBOT;
 
   // Define swerve, auto, and vision types being used
   // NOTE: Only PHOENIX6 swerve base has been tested at this point!!!
@@ -337,9 +337,9 @@ public final class Constants {
     //             Adjust these downward until your modules behave correctly
     public static final double kDriveP = 50.0;
     public static final double kDriveD = 0.03;
-    public static final double kDriveV = 0.4;
+    public static final double kDriveV = 0.5;
     public static final double kDriveA = 0.0;
-    public static final double kDriveS = 2.05;
+    public static final double kDriveS = 3.5;
     public static final double kDriveT =
         SwerveConstants.kDriveGearRatio / DCMotor.getKrakenX60Foc(1).KtNMPerAmp;
     public static final double kSteerP = 500.0;

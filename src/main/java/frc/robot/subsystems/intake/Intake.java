@@ -19,6 +19,7 @@ package frc.robot.subsystems.intake;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.util.RBSISubsystem;
 
@@ -34,8 +35,8 @@ public class Intake extends RBSISubsystem {
   public Intake(IntakeIO io) {
     this.io = io;
 
-    // setDefaultCommand(
-    //  Commands.run(() -> pivotUp(), this).alongWith(Commands.run(() -> stopRollers())));
+    setDefaultCommand(
+        Commands.run(() -> pivotUp(), this).alongWith(Commands.run(() -> stopRollers())));
   }
 
   /** Simulation periodic function */
