@@ -57,6 +57,8 @@ public class Intake extends RBSISubsystem {
         // Otherwise: brake
         io.setBrake();
       }
+    } else {
+      io.setCoast();
     }
   }
 

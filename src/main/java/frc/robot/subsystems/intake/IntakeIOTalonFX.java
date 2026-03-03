@@ -130,6 +130,10 @@ public class IntakeIOTalonFX implements IntakeIO {
   @Override
   public void stopPivot() {
     pivot.stopMotor();
+  }
+
+  @Override
+  public void stopRoller() {
     rollers.stopMotor();
   }
 
