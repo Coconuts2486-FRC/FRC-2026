@@ -513,11 +513,7 @@ public class RobotContainer {
     that cancels the default and keeps the intake down with out the driver having to hold any button */
     driverController.leftBumper().toggleOnTrue(Commands.run(() -> m_intake.pivotDown()));
 
-    driverController
-        .rightBumper()
-        .toggleOnTrue(
-            Commands.run(() -> m_intake.runRollers())
-                .andThen(Commands.runOnce(() -> m_intake.stopRollers())));
+    driverController.rightBumper().toggleOnTrue(Commands.run(() -> m_intake.runRollers()));
 
     // Testing functions
 
