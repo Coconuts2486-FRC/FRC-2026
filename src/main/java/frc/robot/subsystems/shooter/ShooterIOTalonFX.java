@@ -111,11 +111,11 @@ public class ShooterIOTalonFX implements ShooterIO {
   }
 
   @Override
-  public void setVelocity(double velocityRadPerSec) {
+  public void setVelocity(double velocityRotationsPerSecond) {
     // create a Motion Magic Velocity request, voltage output
     final MotionMagicVelocityVoltage m_request = new MotionMagicVelocityVoltage(0);
     m_request.withEnableFOC(isCTREPro);
-    leader.setControl(m_request.withVelocity(Units.radiansToRotations(velocityRadPerSec)));
+    leader.setControl(m_request.withVelocity(velocityRotationsPerSecond));
   }
 
   @Override
