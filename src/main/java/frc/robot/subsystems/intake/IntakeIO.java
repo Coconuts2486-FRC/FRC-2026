@@ -17,6 +17,11 @@
 
 package frc.robot.subsystems.intake;
 
+import static edu.wpi.first.units.Units.*;
+
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Voltage;
 import frc.robot.util.RBSIIO;
 import org.littletonrobotics.junction.AutoLog;
 
@@ -26,9 +31,11 @@ public interface IntakeIO extends RBSIIO {
   public static class IntakeIOInputs {
     public boolean pivotConnected = false;
     public boolean rollerConnected = false;
-    public double positionRad = 0.0;
-    public double velocityRadPerSec = 0.0;
-    public double appliedVolts = 0.0;
+    public Angle pivotPositionRot = Rotations.of(0.0);
+    public AngularVelocity pivotAvAngularVelocity = RotationsPerSecond.of(0.0);
+    public AngularVelocity rollersAngularVelocity = RotationsPerSecond.of(0.0);
+    public Voltage pivotAppliedVolts = Volts.of(0.0);
+    public Voltage rollersAppliedVolts = Volts.of(0.0);
     public double[] currentAmps = new double[] {};
     public boolean releaseButton = false;
   }

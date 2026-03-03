@@ -295,7 +295,9 @@ public class RobotContainer {
     // In addition to the initial battery capacity from the Dashbaord, ``RBSIPowerMonitor`` takes
     // all the non-drivebase subsystems for which you wish to have power monitoring; DO NOT
     // include ``m_drivebase``, as that is automatically monitored.
-    m_power = new RBSIPowerMonitor(batteryCapacity);
+    m_power =
+        new RBSIPowerMonitor(
+            batteryCapacity, m_intake, m_indexer, m_feeder, m_shooter, m_turret, m_climb);
 
     // Build the coordinator
     m_coordinator =
