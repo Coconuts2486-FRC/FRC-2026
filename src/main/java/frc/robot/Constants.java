@@ -256,7 +256,7 @@ public final class Constants {
     // Set to TANK for Drive = Left Stick, Turn = Right Stick;
     // Set to GAMER for Drive = Right Stick, Turn = Left Stick;
     // NOTE: Intrepid programmers can turn this into a Dashboard-settable value
-    public static final DriveStyle kDriveStyle = DriveStyle.TANK; // TANK, GAMER
+    public static final DriveStyle kDriveStyle = DriveStyle.GAMER; // TANK, GAMER
 
     // Joystick Deadbands
     public static final double kDeadband = 0.1;

@@ -1,0 +1,70 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 8.092326678240742,
+        "y": 4.599972294560185
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 8.407716507523148,
+        "y": 5.468262080439815
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.19648046875,
+        "y": 7.146251446759258
+      },
+      "prevControl": {
+        "x": 8.133757766801516,
+        "y": 6.797666784794273
+      },
+      "nextControl": {
+        "x": 6.370509476273148,
+        "y": 7.453439959490741
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.760784939236112,
+        "y": 7.590500361689815
+      },
+      "prevControl": {
+        "x": 6.092648871527778,
+        "y": 7.626192491319445
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 1.5,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 1.5,
+    "rotation": -90.0
+  },
+  "reversed": false,
+  "folder": "Ambopteryx Ascent",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -90.0
+  },
+  "useDefaultConstraints": false
+}
