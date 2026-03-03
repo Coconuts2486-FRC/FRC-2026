@@ -89,7 +89,16 @@ public class IntakeIOTalonFX implements IntakeIO {
 
     inputs.pivotConnected = pivotStatus.isOK();
     inputs.rollerConnected = rollerStatus.isOK();
+    inputs.pivotPositionRot = pivot.getPosition().getValue();
+    inputs.pivotAvAngularVelocity = pivot.getVelocity().getValue();
+    inputs.rollersAngularVelocity = rollers.getVelocity().getValue();
     inputs.releaseButton = getReleaseState();
+    inputs.rollersAppliedVolts = rollers.getMotorVoltage().getValue();
+    inputs.pivotAppliedVolts = pivot.getMotorVoltage().getValue();
+    inputs.currentAmps =
+        new double[] {
+          pivot.getSupplyCurrent().getValueAsDouble(), rollers.getSupplyCurrent().getValueAsDouble()
+        };
   }
 
   /** Set the coast mode of the mechanism as COAST */
