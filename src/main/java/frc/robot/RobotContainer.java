@@ -582,17 +582,16 @@ public class RobotContainer {
 
     driverController
         .rightTrigger()
-        .toggleOnTrue(Commands.run(() -> m_shooter.runVelocity(-50.0)))
+        .toggleOnTrue(
+            Commands.run(() -> m_shooter.runVelocity(-75.0))
+                .alongWith(Commands.run(() -> m_feeder.setFeederVelocity(0.4))))
         .onFalse(
-            Commands.run(
-                () -> m_shooter.stop())); // ShooterConstants.kTestShooterSpeed.getAsDouble())));
-    driverController
-        .rightTrigger()
-        .toggleOnTrue(Commands.run(() -> m_feeder.setFeederVelocity(0.4)))
-        .onFalse(
-            Commands.run(
-                () ->
-                    m_feeder.stopFeeder())); // ShooterConstants.kTestFeederSpeed.getAsDouble())));
+            Commands.run(() -> m_shooter.stop())
+                .alongWith(
+                    Commands.run(
+                        () ->
+                            m_feeder
+                                .stopFeeder()))); // ShooterConstants.kTestShooterSpeed.getAsDouble())));
 
     driverController
         .povUp()
