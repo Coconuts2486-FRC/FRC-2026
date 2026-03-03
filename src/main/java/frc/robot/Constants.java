@@ -65,7 +65,7 @@ public final class Constants {
    * Define the various multiple robots that use this same code (e.g., COMPBOT, DEVBOT, SIMBOT,
    * etc.) and the operating modes of the code (REAL, SIM, or REPLAY)
    */
-  private static RobotType robotType = RobotType.SIMBOT;
+  private static RobotType robotType = RobotType.COMPBOT;
 
   // Define swerve, auto, and vision types being used
   // NOTE: Only PHOENIX6 swerve base has been tested at this point!!!
@@ -237,8 +237,8 @@ public final class Constants {
     // This is where digital I/O feedback devices are defined
     // Example:
     // public static final int ELEVATOR_BOTTOM_LIMIT = 3;
-    public static final int TURRET_MAGHOME = 2;
-    public static final int INTAKE_RELEASE = 0;
+    public static final int TURRET_MAGHOME = 0;
+    public static final int INTAKE_RELEASE = 9;
 
     /* LINEAR SERVO PWM CHANNELS */
     // This is where PWM-controlled devices (actuators, servos, pneumatics, etc.)
@@ -337,9 +337,9 @@ public final class Constants {
     //             Adjust these downward until your modules behave correctly
     public static final double kDriveP = 50.0;
     public static final double kDriveD = 0.03;
-    public static final double kDriveV = 0.4;
+    public static final double kDriveV = 0.5;
     public static final double kDriveA = 0.0;
-    public static final double kDriveS = 2.05;
+    public static final double kDriveS = 3.5;
     public static final double kDriveT =
         SwerveConstants.kDriveGearRatio / DCMotor.getKrakenX60Foc(1).KtNMPerAmp;
     public static final double kSteerP = 500.0;
@@ -390,6 +390,11 @@ public final class Constants {
     public static final int kMaxBisectionIters = 80;
     public static final double kMinBracket = 0.1; // m/s
     public static final double kMaxV0Search = 100.0; // m/s safety cap
+
+    public static final LoggedTunableNumber kTestShooterSpeed =
+        new LoggedTunableNumber("Tuning/Shooter", 0.0);
+    public static final LoggedTunableNumber kTestFeederSpeed =
+        new LoggedTunableNumber("Tuning/Feeder", 0.0);
   }
 
   /** Intake Mechanism Constants ******************************************* */

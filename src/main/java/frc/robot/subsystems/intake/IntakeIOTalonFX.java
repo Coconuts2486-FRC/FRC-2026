@@ -139,7 +139,6 @@ public class IntakeIOTalonFX implements IntakeIO {
   @Override
   public void stopPivot() {
     pivot.stopMotor();
-    rollers.stopMotor();
   }
 
   @Override
@@ -155,7 +154,11 @@ public class IntakeIOTalonFX implements IntakeIO {
    */
   @Override
   public boolean isIntakeRollersRunning() {
-    return rollers.get() > 0.02;
+    if (Math.abs(rollers.get()) > 0.02) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   /**

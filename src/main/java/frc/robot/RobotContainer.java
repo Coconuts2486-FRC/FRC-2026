@@ -438,24 +438,24 @@ public class RobotContainer {
         Commands.run(
             () -> {
               if (m_intake.isIntakeRollersRunning() || m_feeder.isFeederRunning()) {
-                m_indexer.setVelocity(-0.5); // TODO:change this velocity
-              } else if (!m_intake.isIntakeRollersRunning() || !m_feeder.isFeederRunning()) {
-                m_indexer.stop();
+                m_indexer.setVelocity(-0.37); // TODO:change this velocity
+              } else {
+                m_indexer.indexerStop();
               }
             },
             m_indexer));
 
-    m_feeder.setDefaultCommand(
-        // Listen to the shooter, and turn on when the shooter is up to speed.
-        Commands.run(
-            () -> {
-              if (
-              /*m_shooter.isShooterRunning()*/ m_feeder
-                  .isFeederRunning()) { // TODO:change this to shooter when shootering
-                m_feeder.runFeeder();
-              } else m_feeder.stopFeeder();
-            },
-            m_feeder));
+    // m_feeder.setDefaultCommand(
+    //     // Listen to the shooter, and turn on when the shooter is up to speed.
+    //     Commands.run(
+    //         () -> {
+    //           if (
+    //           /*m_shooter.isShooterRunning()*/ m_feeder
+    //               .isFeederRunning()) { // TODO:change this to shooter when shootering
+    //             m_feeder.runFeeder();
+    //           } else m_feeder.stopFeeder();
+    //         },
+    //         m_feeder));
 
     m_shooter.setDefaultCommand(
         Commands.run(
@@ -515,11 +515,7 @@ public class RobotContainer {
     that cancels the default and keeps the intake down with out the driver having to hold any button */
     driverController.leftBumper().toggleOnTrue(Commands.run(() -> m_intake.pivotDown()));
 
-    driverController
-        .rightBumper()
-        .toggleOnTrue(
-            Commands.run(() -> m_intake.runRollers())
-                .andThen(Commands.runOnce(() -> m_intake.stopRollers())));
+    driverController.rightBumper().toggleOnTrue(Commands.run(() -> m_intake.runRollers()));
 
     // Testing functions
 
@@ -585,6 +581,19 @@ public class RobotContainer {
                       new ChassisSpeeds(Units.inchesToMeters(0.), Units.inchesToMeters(-11.0), 0.));
                 },
                 m_drivebase));
+
+    driverController
+        .rightTrigger()
+        .toggleOnTrue(
+            Commands.run(() -> m_shooter.runVelocity(-75.0))
+                .alongWith(Commands.run(() -> m_feeder.setFeederVelocity(0.4))))
+        .onFalse(
+            Commands.run(() -> m_shooter.stop())
+                .alongWith(
+                    Commands.run(
+                        () ->
+                            m_feeder
+                                .stopFeeder()))); // ShooterConstants.kTestShooterSpeed.getAsDouble())));
 
     driverController
         .povUp()

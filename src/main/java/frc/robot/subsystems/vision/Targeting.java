@@ -140,7 +140,7 @@ public class Targeting {
         // refresh; this is a simple latch to measure stability
         lastGoodAimTimestamp = now;
       }
-      // Require the condition to have been true “recently” (stability)
+      // Require the condition to have been true recently (stability)
       return (now - lastGoodAimTimestamp) <= kStableWindowSec;
     } else {
       // reset

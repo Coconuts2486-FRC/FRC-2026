@@ -29,7 +29,7 @@ public class Coordinator extends VirtualSubsystem {
   private final Supplier<Boolean> intakeExtendedSupplier;
   private Mode mode = Mode.IDLE;
 
-  // latched “intent” flags (set by commands/buttons)
+  // latched "intent" flags (set by commands/buttons)
   private boolean wantAutoAim = false;
   private boolean wantScore = false;
 
