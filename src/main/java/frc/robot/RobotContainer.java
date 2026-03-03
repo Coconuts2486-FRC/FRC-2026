@@ -361,11 +361,10 @@ public class RobotContainer {
   /** Use this method to define your Autonomous commands for use with PathPlanner / Choreo */
   private void defineAutoCommands() {
 
-    // TODO Change the velocity
-    NamedCommands.registerCommand("IntakeDown", Commands.runOnce(() -> m_intake.pivotDown()));
+    NamedCommands.registerCommand("IntakeDown", Commands.run(() -> m_intake.pivotDown()));
 
     NamedCommands.registerCommand(
-        "Intake", Commands.run(() -> m_intake.setRollerPrimitiveSpeed(0.65)));
+        "Intake", Commands.run(() -> m_intake.runRollers()));
 
     // NamedCommands.registerCommand(
     //   "ClimbPrepare",
@@ -436,7 +435,7 @@ public class RobotContainer {
         Commands.run(
             () -> {
               if (m_intake.isIntakeRollersRunning() || m_feeder.isFeederRunning()) {
-                m_indexer.setVelocity(-0.37); // TODO:change this velocity
+                m_indexer.setVelocity(-0.37);
               } else {
                 m_indexer.indexerStop();
               }

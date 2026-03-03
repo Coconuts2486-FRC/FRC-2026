@@ -3,41 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.442215928819445,
-        "y": 7.146251446759258
+        "x": 3.760784939236112,
+        "y": 7.590500361689815
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.442215928819445,
-        "y": 7.146251446759258
+        "x": 2.4444408275462965,
+        "y": 7.594830656828703
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.19648046875,
-        "y": 7.146251446759258
+        "x": 0.7463746383101857,
+        "y": 5.970117042824074
       },
       "prevControl": {
-        "x": 6.19648046875,
-        "y": 7.146251446759258
-      },
-      "nextControl": {
-        "x": 8.196480468750003,
-        "y": 7.146251446759258
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 8.092326678240742,
-        "y": 4.599972294560185
-      },
-      "prevControl": {
-        "x": 8.74280443431713,
-        "y": 7.20818778935185
+        "x": 3.2463746383101855,
+        "y": 5.970117042824074
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,7 +29,21 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.8483450551044092,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 0.75,
+        "maxAcceleration": 1.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -58,7 +56,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": "Ambopteryx Ascent",
