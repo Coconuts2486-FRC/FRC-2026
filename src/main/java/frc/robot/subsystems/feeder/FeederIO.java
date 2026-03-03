@@ -7,6 +7,7 @@ public interface FeederIO extends RBSIIO {
 
   @AutoLog
   public static class FeederIOInputs {
+    public double positionRad = 0.0;
     public double velocityRadPerSec = 0.0;
     public double appliedVolts = 0.0;
     public double[] currentAmps = new double[] {};
@@ -15,6 +16,9 @@ public interface FeederIO extends RBSIIO {
   }
 
   public default void setFeederVelocity(double velocity) {}
+
+  /** Run closed loop at the specified velocity. */
+  public default void setVelocity(double velocityRadPerSec) {}
 
   public default void stopFeeder() {}
 

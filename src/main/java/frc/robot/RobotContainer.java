@@ -365,8 +365,7 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("IntakeDown", Commands.run(() -> m_intake.pivotDown()));
 
-    NamedCommands.registerCommand(
-        "Intake", Commands.run(() -> m_intake.runRollers()));
+    NamedCommands.registerCommand("Intake", Commands.run(() -> m_intake.runRollers()));
 
     // NamedCommands.registerCommand(
     //   "ClimbPrepare",
