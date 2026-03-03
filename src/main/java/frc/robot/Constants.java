@@ -555,11 +555,11 @@ public final class Constants {
     // Example Cameras are mounted in the back corners, 18" up from the floor, facing sideways
     public static final CameraConfig[] ALL = {
       new CameraConfig(
-          "camera_0",
+          "Photon_BW9",
           new Transform3d(
-              Inches.of(-13.0),
-              Inches.of(13.0),
-              Inches.of(12.0),
+              Inches.of(-11.25),
+              Inches.of(13.5),
+              Inches.of(15.5),
               new Rotation3d(0.0, 0.0, Math.PI / 2)),
           1.0,
           new SimCameraProperties() {
@@ -573,11 +573,11 @@ public final class Constants {
           }),
       //
       new CameraConfig(
-          "camera_1",
+          "Photon_BW9",
           new Transform3d(
-              Inches.of(-13.0),
-              Inches.of(-13.0),
-              Inches.of(12.0),
+              Inches.of(-11.25),
+              Inches.of(-13.5),
+              Inches.of(15.5),
               new Rotation3d(0.0, 0.0, -Math.PI / 2)),
           1.0,
           new SimCameraProperties() {
