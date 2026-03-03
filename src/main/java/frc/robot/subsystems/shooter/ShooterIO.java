@@ -26,7 +26,7 @@ public interface ShooterIO extends RBSIIO {
   public default void updateInputs(ShooterIOInputs inputs) {}
 
   /** Run closed loop at the specified velocity. */
-  public default void setVelocity(double velocityRadPerSec) {}
+  public default void setVelocity(double velocityRotationsPerSecond) {}
 
   /** Set gain constants */
   public default void configureGains(double kP, double kI, double kD, double kS, double kV) {}
