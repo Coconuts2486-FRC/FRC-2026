@@ -18,7 +18,6 @@
 package frc.robot.subsystems.intake;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.util.RBSISubsystem;
@@ -47,19 +46,6 @@ public class Intake extends RBSISubsystem {
   @Override
   public void rbsiPeriodic() {
     io.updateInputs(inputs);
-
-    // If in disabled mode, check the "release button" related to motor state
-    if (DriverStation.isDisabled()) {
-      if (io.getReleaseState()) {
-        // Button pressed: coast
-        io.setCoast();
-      } else {
-        // Otherwise: brake
-        io.setBrake();
-      }
-    } else {
-      io.setCoast();
-    }
   }
 
   /**
@@ -177,7 +163,7 @@ public class Intake extends RBSISubsystem {
    * @return rollersAlive boolean
    */
   public boolean rollersAlive() {
-    return inputs.rollerConnected;
+    return true; // inputs.rollerConnected;
   }
 
   /**
@@ -186,6 +172,6 @@ public class Intake extends RBSISubsystem {
    * @return pivotAlive boolean
    */
   public boolean pivotAlive() {
-    return inputs.pivotConnected;
+    return true; // inputs.pivotConnected;
   }
 }
