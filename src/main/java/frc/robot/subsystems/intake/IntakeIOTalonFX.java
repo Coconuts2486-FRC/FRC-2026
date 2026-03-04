@@ -20,12 +20,16 @@ package frc.robot.subsystems.intake;
 import static frc.robot.Constants.RobotDevices.*;
 
 import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.PowerConstants;
 import frc.robot.util.PhoenixUtil;
@@ -43,7 +47,13 @@ public class IntakeIOTalonFX implements IntakeIO {
   private final CANcoder pivotEncoder =
       new CANcoder(INTAKE_ENCODER.getDeviceNumber(), INTAKE_ENCODER.getCANBus());
 
-  private final DigitalInput releaseButton = new DigitalInput(INTAKE_RELEASE);
+  private final StatusSignal<Angle> pivotPosition = pivot.getPosition();
+  private final StatusSignal<AngularVelocity> pivotVelocity = pivot.getVelocity();
+  private final StatusSignal<AngularVelocity> rollerVelocity = rollers.getVelocity();
+  private final StatusSignal<Voltage> pivotAppliedVolts = pivot.getMotorVoltage();
+  private final StatusSignal<Voltage> rollersAppliedVolts = rollers.getMotorVoltage();
+  private final StatusSignal<Current> pivotCurrent = pivot.getSupplyCurrent();
+  private final StatusSignal<Current> rollersCurrent = rollers.getSupplyCurrent();
 
   /** Constructor */
   public IntakeIOTalonFX() {
@@ -56,49 +66,58 @@ public class IntakeIOTalonFX implements IntakeIO {
 
     CANcoderConfiguration cancoderConfig = new CANcoderConfiguration();
     TalonFXConfiguration rollerConfig = new TalonFXConfiguration();
+    TalonFXConfiguration pivotConfig = new TalonFXConfiguration();
 
     // roller
     rollerConfig.CurrentLimits.SupplyCurrentLimit = PowerConstants.kMotorPortMaxCurrent;
     rollerConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    rollerConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+
+    // pivot
+    pivotConfig.CurrentLimits.SupplyCurrentLimit = PowerConstants.kMotorPortMaxCurrent;
+    pivotConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    pivotConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
     // cancoder
     cancoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1.0;
 
+    BaseStatusSignal.setUpdateFrequencyForAll(
+        50.0,
+        pivotCurrent,
+        pivotPosition,
+        pivotVelocity,
+        pivotAppliedVolts,
+        rollersCurrent,
+        rollerVelocity,
+        rollersAppliedVolts);
+
     // applying
     PhoenixUtil.tryUntilOk(5, () -> pivotEncoder.getConfigurator().apply(cancoderConfig));
     PhoenixUtil.tryUntilOk(5, () -> rollers.getConfigurator().apply(rollerConfig));
+    pivot.optimizeBusUtilization();
+    rollers.optimizeBusUtilization();
   }
 
   @Override
   public void updateInputs(IntakeIOInputs inputs) {
     // checks the status of pivot
-    var pivotStatus =
-        BaseStatusSignal.refreshAll(
-            pivot.getStatorCurrent(),
-            pivot.getPosition(),
-            pivot.getVelocity(),
-            pivot.getMotorVoltage());
+    // var pivotStatus =
+    BaseStatusSignal.refreshAll(pivotCurrent, pivotPosition, pivotVelocity, pivotAppliedVolts);
 
     // checks the status of roller
-    var rollerStatus =
-        BaseStatusSignal.refreshAll(
-            rollers.getStatorCurrent(),
-            rollers.getPosition(),
-            rollers.getVelocity(),
-            rollers.getMotorVoltage());
+    // var rollerStatus =
+    BaseStatusSignal.refreshAll(rollersCurrent, rollerVelocity, rollersAppliedVolts);
 
-    inputs.pivotConnected = pivotStatus.isOK();
-    inputs.rollerConnected = rollerStatus.isOK();
-    inputs.pivotPositionRot = pivot.getPosition().getValue();
-    inputs.pivotAvAngularVelocity = pivot.getVelocity().getValue();
-    inputs.rollersAngularVelocity = rollers.getVelocity().getValue();
-    inputs.releaseButton = getReleaseState();
-    inputs.rollersAppliedVolts = rollers.getMotorVoltage().getValue();
-    inputs.pivotAppliedVolts = pivot.getMotorVoltage().getValue();
+    // inputs.pivotConnected = pivotStatus.isOK();
+    // inputs.rollerConnected = rollerStatus.isOK();
+    inputs.pivotPositionRot = pivotPosition.getValueAsDouble();
+    inputs.pivotAvAngularVelocity = pivotVelocity.getValueAsDouble();
+    inputs.rollersAngularVelocity = rollerVelocity.getValueAsDouble();
+    // inputs.releaseButton = true; // getReleaseState();
+    inputs.rollersAppliedVolts = rollersAppliedVolts.getValueAsDouble();
+    inputs.pivotAppliedVolts = pivotAppliedVolts.getValueAsDouble();
     inputs.currentAmps =
-        new double[] {
-          pivot.getSupplyCurrent().getValueAsDouble(), rollers.getSupplyCurrent().getValueAsDouble()
-        };
+        new double[] {pivotCurrent.getValueAsDouble(), rollersCurrent.getValueAsDouble()};
   }
 
   /** Set the coast mode of the mechanism as COAST */
@@ -176,19 +195,5 @@ public class IntakeIOTalonFX implements IntakeIO {
   public double getPivotPosition() {
     // The encoder returns position in units of rotations
     return pivotEncoder.getAbsolutePosition().getValueAsDouble();
-  }
-
-  /**
-   * Get the current pressed state of the intake release button
-   *
-   * <p>NOTE: Because of how DIO ports work, when the switch is not pressed, the port reads "high"
-   * or "true". This function returns whether the button is pressed, so negates the output of the
-   * DIO read function.
-   *
-   * @return true if the button is pressed, false otherwise
-   */
-  @Override
-  public boolean getReleaseState() {
-    return !releaseButton.get();
   }
 }
