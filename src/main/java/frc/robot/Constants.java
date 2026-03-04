@@ -419,7 +419,7 @@ public final class Constants {
         new LoggedTunableNumber("Intake/maxVel", 5);
 
     // Intake rollers constats
-    public static final double kRollerPrimitiveSpeed = 0.65;
+    public static final double kRollerPrimitiveSpeed = 0.55; //0.65
   }
 
   public static final class climbConstants {

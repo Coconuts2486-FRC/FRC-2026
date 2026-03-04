@@ -3,25 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.760784939236112,
-        "y": 7.590500361689815
+        "x": 8.092326678240742,
+        "y": 4.599972294560185
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.4444408275462965,
-        "y": 7.594830656828703
+        "x": 8.407716507523148,
+        "y": 5.468262080439815
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.7463746383101857,
-        "y": 5.970117042824074
+        "x": 7.19648046875,
+        "y": 7.146251446759258
       },
       "prevControl": {
-        "x": 3.2463746383101855,
-        "y": 5.970117042824074
+        "x": 8.133757766801516,
+        "y": 6.797666784794273
+      },
+      "nextControl": {
+        "x": 6.370509476273148,
+        "y": 7.453439959490741
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.760784939236112,
+        "y": 7.590500361689815
+      },
+      "prevControl": {
+        "x": 6.092648871527778,
+        "y": 7.626192491319445
       },
       "nextControl": null,
       "isLocked": false,
@@ -29,21 +45,7 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [
-    {
-      "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.8483450551044092,
-      "maxWaypointRelativePos": 1.0,
-      "constraints": {
-        "maxVelocity": 0.75,
-        "maxAcceleration": 1.0,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0,
-        "nominalVoltage": 12.0,
-        "unlimited": false
-      }
-    }
-  ],
+  "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -55,11 +57,11 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 180.0
+    "velocity": 1.5,
+    "rotation": -75.0
   },
   "reversed": false,
-  "folder": "Ambopteryx Ascent",
+  "folder": "Diplodocus Depot",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -90.0

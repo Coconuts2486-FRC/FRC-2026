@@ -3,9 +3,8 @@
   "robotLength": 0.8128,
   "holonomicMode": true,
   "pathFolders": [
-    "Ambopteryx Ascent",
-    "Carnosaurus Depot Coop",
-    "Diplodocus Depot Defect"
+    "Diplodocus Depot",
+    "Hadrosaruous Human Player"
   ],
   "autoFolders": [],
   "defaultMaxVel": 3.0,

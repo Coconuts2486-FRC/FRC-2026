@@ -436,7 +436,7 @@ public class RobotContainer {
         Commands.run(
             () -> {
               if (m_intake.isIntakeRollersRunning() || m_feeder.isFeederRunning()) {
-                m_indexer.setVelocity(-0.37);
+                m_indexer.setVelocity(-0.4);
               } else {
                 m_indexer.indexerStop();
               }
@@ -517,10 +517,10 @@ public class RobotContainer {
 
     // Testing functions
 
-    driverController.povUp().whileTrue(Commands.run(() -> m_intake.setPivotPrimitiveSpeed(0.05)));
+    // driverController.povUp().whileTrue(Commands.run(() -> m_intake.setPivotPrimitiveSpeed(0.05)));
     // reads out pivot position- useful for determining where exactly we need to tell it to pivot to
     // (pov left)
-    driverController.povLeft().whileTrue(Commands.run(() -> m_intake.print()));
+    // driverController.povLeft().whileTrue(Commands.run(() -> m_intake.print()));
     // checks magnetic switch (pov right)
     driverController
         .povRight()
@@ -529,9 +529,9 @@ public class RobotContainer {
                 () -> System.out.println("Magnetic switch state:" + m_turret.readTurretSwitch())));
 
     // prints the encoder position temporary testing function
-    driverController
-        .a()
-        .whileTrue(Commands.run(() -> System.out.println(m_intake.getPivotPosition())));
+    // driverController
+    //     .a()
+    //     .whileTrue(Commands.run(() -> System.out.println(m_intake.getPivotPosition())));
 
     // Press LEFT BUMPER --> Drive to a pose 10 feet closer to the BLUE ALLIANCE wall
     // driverController
@@ -557,18 +557,18 @@ public class RobotContainer {
     // Set.of(m_drivebase)));
 
     // Press POV buttons to nudge the robot in each direction
-    // driverController
-    //     .povLeft()
-    //     .whileTrue(
-    //         Commands.startEnd(
-    //             () -> {
-    //               m_drivebase.runVelocity(
-    //                   new ChassisSpeeds(Units.inchesToMeters(0.), Units.inchesToMeters(11.0),
-    // 0.));
-    //             },
-    //             // Stop when command ended
-    //             m_drivebase::stop,
-    //             m_drivebase));
+    driverController
+        .povLeft()
+        .whileTrue(
+            Commands.startEnd(
+                () -> {
+                  m_drivebase.runVelocity(
+                      new ChassisSpeeds(Units.inchesToMeters(0.), Units.inchesToMeters(11.0),
+    0.));
+                },
+                // Stop when command ended
+                m_drivebase::stop,
+                m_drivebase));
 
     driverController
         .povRight()
@@ -583,7 +583,7 @@ public class RobotContainer {
     driverController
         .rightTrigger()
         .toggleOnTrue(
-            Commands.run(() -> m_shooter.runVelocity(-75.0))
+            Commands.run(() -> m_shooter.runVelocity(-65.0))
                 .alongWith(Commands.run(() -> m_feeder.setFeederVelocity(0.4))))
         .onFalse(
             Commands.run(() -> m_shooter.stop())

@@ -23,13 +23,13 @@
                                 {
                                   "type": "path",
                                   "data": {
-                                    "pathName": "AZ1"
+                                    "pathName": "HAZ1"
                                   }
                                 },
                                 {
                                   "type": "path",
                                   "data": {
-                                    "pathName": "AZ2"
+                                    "pathName": "HAZ2"
                                   }
                                 }
                               ]
@@ -60,7 +60,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "AZ3Climb"
+                        "pathName": "HAZ3 Climb"
                       }
                     }
                   ]

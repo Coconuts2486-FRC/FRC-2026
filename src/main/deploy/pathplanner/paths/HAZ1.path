@@ -1,0 +1,70 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 4.442,
+        "y": 0.84
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.417319661458333,
+        "y": 0.6576322337962961
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.0836303530092595,
+        "y": 0.7212744502314821
+      },
+      "prevControl": {
+        "x": 5.9927896412037045,
+        "y": 0.6338156105324071
+      },
+      "nextControl": {
+        "x": 8.080431700090598,
+        "y": 0.8011936247568904
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.129068576388889,
+        "y": 3.356
+      },
+      "prevControl": {
+        "x": 8.779562162592812,
+        "y": 0.7477884532252639
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 1.5,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 75.0
+  },
+  "reversed": false,
+  "folder": "Hadrosaruous Human Player",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 90.0
+  },
+  "useDefaultConstraints": false
+}
