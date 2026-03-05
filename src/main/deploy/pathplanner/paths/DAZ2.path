@@ -3,45 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.092326678240742,
-        "y": 4.599972294560185
+        "x": 8.218298900462964,
+        "y": 4.732768012152778
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.407716507523148,
-        "y": 5.468262080439815
+        "x": 8.53368872974537,
+        "y": 5.601057798032408
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "DAZ1-2"
     },
     {
       "anchor": {
-        "x": 7.19648046875,
-        "y": 7.146251446759258
+        "x": 6.902610894097222,
+        "y": 7.364734519675926
       },
       "prevControl": {
-        "x": 8.133757766801516,
-        "y": 6.797666784794273
+        "x": 7.89531879478581,
+        "y": 7.244189822942883
       },
       "nextControl": {
-        "x": 6.370509476273148,
-        "y": 7.453439959490741
+        "x": 6.027300781250001,
+        "y": 7.471023582175926
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.760784939236112,
-        "y": 7.590500361689815
+        "x": 3.4137052228009264,
+        "y": 7.517935112847221
       },
       "prevControl": {
-        "x": 6.092648871527778,
-        "y": 7.626192491319445
+        "x": 5.716438078703705,
+        "y": 7.670938874421295
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "DAZ2-3"
     }
   ],
   "rotationTargets": [],
@@ -58,13 +58,13 @@
   },
   "goalEndState": {
     "velocity": 1.5,
-    "rotation": -75.0
+    "rotation": -90.0
   },
   "reversed": false,
   "folder": "Diplodocus Depot",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": -75.0
   },
   "useDefaultConstraints": false
 }
