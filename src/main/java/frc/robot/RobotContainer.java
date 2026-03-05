@@ -517,7 +517,8 @@ public class RobotContainer {
 
     // Testing functions
 
-    // driverController.povUp().whileTrue(Commands.run(() -> m_intake.setPivotPrimitiveSpeed(0.05)));
+    // driverController.povUp().whileTrue(Commands.run(() ->
+    // m_intake.setPivotPrimitiveSpeed(0.05)));
     // reads out pivot position- useful for determining where exactly we need to tell it to pivot to
     // (pov left)
     // driverController.povLeft().whileTrue(Commands.run(() -> m_intake.print()));
@@ -563,8 +564,7 @@ public class RobotContainer {
             Commands.startEnd(
                 () -> {
                   m_drivebase.runVelocity(
-                      new ChassisSpeeds(Units.inchesToMeters(0.), Units.inchesToMeters(11.0),
-    0.));
+                      new ChassisSpeeds(Units.inchesToMeters(0.), Units.inchesToMeters(11.0), 0.));
                 },
                 // Stop when command ended
                 m_drivebase::stop,
