@@ -1,13 +1,16 @@
 package frc.robot.subsystems.turret;
 
+import static frc.robot.Constants.RobotDevices.TURRET_ENCODER;
+
 import com.ctre.phoenix6.hardware.CANcoder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants.TurretConstants;
 
 public class TurretIOTalonFX implements TurretIO {
 
-  private DigitalInput limitSwitch = new DigitalInput(0);
-  private CANcoder turretEncoder = new CANcoder(43);
+  private DigitalInput turretSwitch = new DigitalInput(0);
+  private CANcoder turretEncoder =
+      new CANcoder(TURRET_ENCODER.getDeviceNumber(), TURRET_ENCODER.getCANBus());
 
   // Constructor
   public TurretIOTalonFX() {
@@ -17,7 +20,7 @@ public class TurretIOTalonFX implements TurretIO {
 
   @Override
   public boolean readTurretSwitch() {
-    return limitSwitch.get();
+    return turretSwitch.get();
   }
 
   @Override
