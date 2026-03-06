@@ -1,0 +1,84 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.5094966001157415,
+        "y": 0.5083026620370368
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.193027126736111,
+        "y": 0.4804837962962961
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.37388548900463,
+        "y": 0.5083026620370368
+      },
+      "prevControl": {
+        "x": 4.705941802163343,
+        "y": 0.46848690269808957
+      },
+      "nextControl": {
+        "x": 6.076115017361111,
+        "y": 0.5501621817129638
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.821,
+        "y": 3.180685257523148
+      },
+      "prevControl": {
+        "x": 5.856232855902778,
+        "y": 1.8276648582175925
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 1.500596968438538,
+      "maxWaypointRelativePos": 2.0,
+      "constraints": {
+        "maxVelocity": 1.5,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0.0,
+    "rotation": 105.00000000000001
+  },
+  "reversed": false,
+  "folder": "SPHAZ Autos",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 80.0
+  },
+  "useDefaultConstraints": false
+}

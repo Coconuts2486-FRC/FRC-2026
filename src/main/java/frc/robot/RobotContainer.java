@@ -436,7 +436,7 @@ public class RobotContainer {
         Commands.run(
             () -> {
               if (m_intake.isIntakeRollersRunning() || m_feeder.isFeederRunning()) {
-                m_indexer.setVelocity(-0.4);
+                m_indexer.setVelocity(-0.37);
               } else {
                 m_indexer.indexerStop();
               }
@@ -464,12 +464,13 @@ public class RobotContainer {
             },
             m_shooter));
 
-    m_turret.setDefaultCommand(
-        Commands.run(
-            () -> {
-              // Listen to the Coordinator, and set the angle based on the physics computation.
-            },
-            m_turret));
+    // m_turret.setDefaultCommand(
+    //     Commands.run(
+    //         () -> {
+    //           m_turret.rotateToPosition(m_turret.getTargetPosition());
+    //           // Listen to the Coordinator, and set the angle based on the physics computation.
+    //         },
+    //         m_turret));
     // ===============================================================================
     // ** Example Commands -- Remap, remove, or change as desired **
     // Press B button while driving --> ROBOT-CENTRIC
@@ -517,11 +518,10 @@ public class RobotContainer {
 
     // Testing functions
 
-    // driverController.povUp().whileTrue(Commands.run(() ->
-    // m_intake.setPivotPrimitiveSpeed(0.05)));
+    driverController.povUp().whileTrue(Commands.run(() -> m_intake.setPivotPrimitiveSpeed(0.05)));
     // reads out pivot position- useful for determining where exactly we need to tell it to pivot to
     // (pov left)
-    // driverController.povLeft().whileTrue(Commands.run(() -> m_intake.print()));
+    driverController.povLeft().whileTrue(Commands.run(() -> m_intake.print()));
     // checks magnetic switch (pov right)
     driverController
         .povRight()
@@ -530,9 +530,9 @@ public class RobotContainer {
                 () -> System.out.println("Magnetic switch state:" + m_turret.readTurretSwitch())));
 
     // prints the encoder position temporary testing function
-    // driverController
-    //     .a()
-    //     .whileTrue(Commands.run(() -> System.out.println(m_intake.getPivotPosition())));
+    driverController
+        .a()
+        .whileTrue(Commands.run(() -> System.out.println(m_intake.getPivotPosition())));
 
     // Press LEFT BUMPER --> Drive to a pose 10 feet closer to the BLUE ALLIANCE wall
     // driverController
@@ -558,17 +558,18 @@ public class RobotContainer {
     // Set.of(m_drivebase)));
 
     // Press POV buttons to nudge the robot in each direction
-    driverController
-        .povLeft()
-        .whileTrue(
-            Commands.startEnd(
-                () -> {
-                  m_drivebase.runVelocity(
-                      new ChassisSpeeds(Units.inchesToMeters(0.), Units.inchesToMeters(11.0), 0.));
-                },
-                // Stop when command ended
-                m_drivebase::stop,
-                m_drivebase));
+    // driverController
+    //     .povLeft()
+    //     .whileTrue(
+    //         Commands.startEnd(
+    //             () -> {
+    //               m_drivebase.runVelocity(
+    //                   new ChassisSpeeds(Units.inchesToMeters(0.), Units.inchesToMeters(11.0),
+    // 0.));
+    //             },
+    //             // Stop when command ended
+    //             m_drivebase::stop,
+    //             m_drivebase));
 
     driverController
         .povRight()
@@ -581,17 +582,16 @@ public class RobotContainer {
                 m_drivebase));
 
     driverController
-        .rightTrigger()
+        .a()
         .toggleOnTrue(
-            Commands.run(() -> m_shooter.runVelocity(-65.0))
-                .alongWith(Commands.run(() -> m_feeder.setFeederVelocity(0.4))))
+            Commands.run(() -> m_shooter.runVelocity(-10.0), m_shooter)
+                .alongWith(Commands.run(() -> m_feeder.setFeederVelocity(0.5), m_feeder)))
         .onFalse(
-            Commands.run(() -> m_shooter.stop())
+            Commands.run(() -> m_shooter.stop(), m_shooter)
                 .alongWith(
                     Commands.run(
-                        () ->
-                            m_feeder
-                                .stopFeeder()))); // ShooterConstants.kTestShooterSpeed.getAsDouble())));
+                        () -> m_feeder.stopFeeder(),
+                        m_feeder))); // ShooterConstants.kTestShooterSpeed.getAsDouble())));
 
     driverController
         .povUp()
@@ -612,6 +612,9 @@ public class RobotContainer {
                       new ChassisSpeeds(Units.inchesToMeters(11), Units.inchesToMeters(0), 0));
                 },
                 m_drivebase));
+
+    // driverController.leftTrigger().whileTrue(
+    // Commands.run(() -> m_turret.setVolts(2.0), m_turret));
 
     if (Constants.getMode() == Mode.SIM) {
       // IN SIMULATION ONLY:

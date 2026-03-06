@@ -4,7 +4,8 @@
   "holonomicMode": true,
   "pathFolders": [
     "Diplodocus Depot",
-    "Hadrosaruous Human Player"
+    "Hadrosaruous Human Player",
+    "SPHAZ Autos"
   ],
   "autoFolders": [],
   "defaultMaxVel": 3.0,
