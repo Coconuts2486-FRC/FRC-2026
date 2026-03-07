@@ -91,4 +91,10 @@ public class ShooterIOSim implements ShooterIO {
     ff.setKv(kV);
     ff.setKa(kA);
   }
+
+  /** Return the SIM power ports */
+  @Override
+  public int[] powerPorts() {
+    return new int[] {};
+  }
 }

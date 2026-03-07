@@ -46,7 +46,7 @@ public class IntakeIOTalonFX implements IntakeIO {
   private final TalonFX rollers =
       new TalonFX(INTAKE_ROLLER.getDeviceNumber(), INTAKE_ROLLER.getCANBus());
 
-  public final int[] powerPorts = {INTAKE_PIVOT.getPowerPort(), INTAKE_ROLLER.getPowerPort()};
+  public final int[] POWER_PORTS = {INTAKE_PIVOT.getPowerPort(), INTAKE_ROLLER.getPowerPort()};
 
   private final CANcoder pivotEncoder =
       new CANcoder(INTAKE_ENCODER.getDeviceNumber(), INTAKE_ENCODER.getCANBus());
@@ -58,6 +58,12 @@ public class IntakeIOTalonFX implements IntakeIO {
   private final StatusSignal<Voltage> rollersAppliedVolts = rollers.getMotorVoltage();
   private final StatusSignal<Current> pivotCurrent = pivot.getSupplyCurrent();
   private final StatusSignal<Current> rollersCurrent = rollers.getSupplyCurrent();
+
+  /** Return the power ports */
+  @Override
+  public int[] powerPorts() {
+    return POWER_PORTS;
+  }
 
   /** Constructor */
   public IntakeIOTalonFX() {

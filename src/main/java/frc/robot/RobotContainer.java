@@ -121,7 +121,9 @@ public class RobotContainer {
   private final Turret m_turret;
   private final Prematch m_prematch;
 
+  @SuppressWarnings("unused")
   private final Coordinator m_coordinator;
+
   // ... Add additional subsystems here (e.g., elevator, arm, etc.)
 
   // These are "Virtual Subsystems" that report information but have no motors

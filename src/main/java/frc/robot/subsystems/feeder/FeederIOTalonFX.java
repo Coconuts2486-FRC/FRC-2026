@@ -27,7 +27,7 @@ public class FeederIOTalonFX implements FeederIO {
 
   private final TalonFX feeder =
       new TalonFX(FEEDER_ROLLER.getDeviceNumber(), FEEDER_ROLLER.getCANBus());
-  public final int[] powerPorts = {FEEDER_ROLLER.getPowerPort()};
+  public final int[] POWER_PORTS = {FEEDER_ROLLER.getPowerPort()};
 
   private final StatusSignal<Angle> feederPosition = feeder.getPosition();
   private final StatusSignal<AngularVelocity> feederVelocity = feeder.getVelocity();
@@ -37,6 +37,13 @@ public class FeederIOTalonFX implements FeederIO {
   private final TalonFXConfiguration config = new TalonFXConfiguration();
   private final boolean isCTREPro = Constants.getPhoenixPro() == CTREPro.LICENSED;
 
+  /** Return the power ports */
+  @Override
+  public int[] powerPorts() {
+    return POWER_PORTS;
+  }
+
+  /** Constructor */
   public FeederIOTalonFX() {
     config.CurrentLimits.SupplyCurrentLimit = PowerConstants.kMotorPortMaxCurrent;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;

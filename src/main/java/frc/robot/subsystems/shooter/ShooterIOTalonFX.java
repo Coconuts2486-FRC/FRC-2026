@@ -41,6 +41,8 @@ public class ShooterIOTalonFX implements ShooterIO {
       new TalonFX(SHOOTER_LEADER.getDeviceNumber(), SHOOTER_LEADER.getCANBus());
   private final TalonFX follower =
       new TalonFX(SHOOTER_FOLLOWER.getDeviceNumber(), SHOOTER_FOLLOWER.getCANBus());
+
+  public final int[] POWER_PORTS = {SHOOTER_LEADER.getPowerPort(), SHOOTER_FOLLOWER.getPowerPort()};
   // IMPORTANT: Include here all devices listed above that are part of this mechanism!
 
   private final StatusSignal<Angle> leaderPosition = leader.getPosition();
@@ -52,6 +54,13 @@ public class ShooterIOTalonFX implements ShooterIO {
   private final TalonFXConfiguration config = new TalonFXConfiguration();
   private final boolean isCTREPro = Constants.getPhoenixPro() == CTREPro.LICENSED;
 
+  /** Return the power ports */
+  @Override
+  public int[] powerPorts() {
+    return POWER_PORTS;
+  }
+
+  /** Constructor */
   public ShooterIOTalonFX() {
     config.CurrentLimits.SupplyCurrentLimit = PowerConstants.kMotorPortMaxCurrent;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;

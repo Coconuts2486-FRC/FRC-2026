@@ -49,12 +49,22 @@ public class ShooterIOSpark implements ShooterIO {
       new SparkMax(SHOOTER_LEADER.getDeviceNumber(), MotorType.kBrushless);
   private final SparkMax follower =
       new SparkMax(SHOOTER_FOLLOWER.getDeviceNumber(), MotorType.kBrushless);
+
+  public final int[] POWER_PORTS = {SHOOTER_LEADER.getPowerPort(), SHOOTER_FOLLOWER.getPowerPort()};
+
   private final RelativeEncoder encoder = leader.getEncoder();
   private final SparkClosedLoopController pid = leader.getClosedLoopController();
   // IMPORTANT: Include here all devices listed above that are part of this mechanism!
   public final int[] powerPorts = {SHOOTER_LEADER.getPowerPort(), SHOOTER_FOLLOWER.getPowerPort()};
   private final SimpleMotorFeedforward ff = new SimpleMotorFeedforward(kSreal, kVreal, kAreal);
 
+  /** Return the power ports */
+  @Override
+  public int[] powerPorts() {
+    return POWER_PORTS;
+  }
+
+  /** Constructor */
   public ShooterIOSpark() {
 
     // Configure leader motor
