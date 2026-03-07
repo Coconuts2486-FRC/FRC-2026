@@ -1,6 +1,6 @@
 package frc.robot.subsystems.turret;
 
-import static frc.robot.Constants.RobotDevices.TURRET_ENCODER;
+import static frc.robot.Constants.RobotDevices.*;
 
 import com.ctre.phoenix6.hardware.CANcoder;
 import edu.wpi.first.wpilibj.DigitalInput;

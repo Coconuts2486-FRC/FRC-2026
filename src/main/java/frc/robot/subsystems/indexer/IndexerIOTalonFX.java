@@ -1,6 +1,6 @@
 package frc.robot.subsystems.indexer;
 
-import static frc.robot.Constants.RobotDevices.INDEXER_ROLLER;
+import static frc.robot.Constants.RobotDevices.*;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 

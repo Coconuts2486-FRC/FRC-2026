@@ -42,7 +42,6 @@ public class ShooterIOTalonFX implements ShooterIO {
   private final TalonFX follower =
       new TalonFX(SHOOTER_FOLLOWER.getDeviceNumber(), SHOOTER_FOLLOWER.getCANBus());
   // IMPORTANT: Include here all devices listed above that are part of this mechanism!
-  public final int[] powerPorts = {SHOOTER_LEADER.getPowerPort(), SHOOTER_FOLLOWER.getPowerPort()};
 
   private final StatusSignal<Angle> leaderPosition = leader.getPosition();
   private final StatusSignal<AngularVelocity> leaderVelocity = leader.getVelocity();

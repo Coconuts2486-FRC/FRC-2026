@@ -403,8 +403,8 @@ public final class Constants {
     // public static final AngularVelocity kMaxPivotSpeed = RotationsPerSecond.of(106.3);
 
     // Pivot angle positions
-    public static final double dropPostion = 0.44;
-    public static final double storedAngle = 0.76;
+    public static final double dropPostion = 0.55;
+    public static final double storedAngle = 0.87;
 
     // Pivot gear ratio
     public static final double kPivotGearRatio = 25.0 * 54.0 / 16.0;
@@ -422,7 +422,7 @@ public final class Constants {
     public static final double kRollerPrimitiveSpeed = 0.55; // 0.65
   }
 
-  public static final class climbConstants {
+  public static final class ClimbConstants {
 
     // magic configs
     public static final double mm_cruiseVelocity = 80;
@@ -438,7 +438,7 @@ public final class Constants {
     public static final double mm_kA = 0.25;
   }
 
-  public static final class pivotConstants {
+  public static final class IntakePivotConstants {
 
     // magic configs
     public static final double mm_cruiseVelocity = 80;
@@ -555,7 +555,7 @@ public final class Constants {
     // Example Cameras are mounted in the back corners, 18" up from the floor, facing sideways
     public static final CameraConfig[] ALL = {
       new CameraConfig(
-          "Photon_BW9",
+          "Photon_BW8",
           new Transform3d(
               Inches.of(-11.25),
               Inches.of(13.5),

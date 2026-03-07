@@ -70,7 +70,8 @@ public class Shooter extends RBSISubsystem {
   public void runVelocity(double metersPerSecond) {
     double velocity =
         (metersPerSecond / ShooterConstants.flywheelCircumfrence)
-            * ShooterConstants.kShooterGearRatio;
+            * ShooterConstants.kShooterGearRatio
+            * -1;
 
     io.setVelocity(velocity);
 

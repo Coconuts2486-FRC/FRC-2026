@@ -1,9 +1,7 @@
 package frc.robot.subsystems.feeder;
 
-import static frc.robot.Constants.RobotDevices.FEEDER_ROLLER;
-import static frc.robot.Constants.ShooterConstants.kShooterClosedLoopRampPeriod;
-import static frc.robot.Constants.ShooterConstants.kShooterIdleMode;
-import static frc.robot.Constants.ShooterConstants.kShooterOpenLoopRampPeriod;
+import static frc.robot.Constants.RobotDevices.*;
+import static frc.robot.Constants.ShooterConstants.*;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
