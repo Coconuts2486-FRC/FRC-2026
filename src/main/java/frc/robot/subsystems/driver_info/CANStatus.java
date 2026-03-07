@@ -22,7 +22,6 @@ public class CANStatus extends VirtualSubsystem {
   @Override
   public void rbsiPeriodic() {
 
-    
     // if () {
     //   mainCAN = true;
     // } else {

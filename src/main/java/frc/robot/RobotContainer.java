@@ -514,7 +514,9 @@ public class RobotContainer {
     that cancels the default and keeps the intake down with out the driver having to hold any button */
     driverController.leftBumper().toggleOnTrue(Commands.run(() -> m_intake.pivotDown()));
 
-    driverController.rightBumper().toggleOnTrue(Commands.run(() -> m_intake.runRollers()));
+    driverController
+        .rightBumper()
+        .toggleOnTrue(Commands.run(() -> m_intake.runRollers(), m_intake));
 
     // Testing functions
 
@@ -530,9 +532,9 @@ public class RobotContainer {
                 () -> System.out.println("Magnetic switch state:" + m_turret.readTurretSwitch())));
 
     // prints the encoder position temporary testing function
-    driverController
-        .a()
-        .whileTrue(Commands.run(() -> System.out.println(m_intake.getPivotPosition())));
+    // driverController
+    //     .a()
+    //     .whileTrue(Commands.run(() -> System.out.println(m_intake.getPivotPosition())));
 
     // Press LEFT BUMPER --> Drive to a pose 10 feet closer to the BLUE ALLIANCE wall
     // driverController
@@ -584,7 +586,7 @@ public class RobotContainer {
     driverController
         .a()
         .toggleOnTrue(
-            Commands.run(() -> m_shooter.runVelocity(20), m_shooter)
+            Commands.run(() -> m_shooter.runVelocity(14), m_shooter)
                 .alongWith(Commands.run(() -> m_feeder.setFeederVelocity(0.5), m_feeder)))
         .onFalse(
             Commands.run(() -> m_shooter.stop(), m_shooter)
