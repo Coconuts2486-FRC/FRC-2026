@@ -195,4 +195,9 @@ public class ImuIONavX implements ImuIO {
   //   navx.zeroYaw();
   // }
 
+  /** Dummy function to make things happy -- doesn't actually do anything */
+  @Override
+  public int[] powerPorts() {
+    return new int[] {};
+  }
 }

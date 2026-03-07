@@ -21,6 +21,9 @@ public class ClimbIOSim implements ClimbIO {
   private double ffVolts = 0.0;
   private double appliedVolts = 0.0;
 
+  /** Constructor */
+  public ClimbIOSim() {}
+
   @Override
   public void updateInputs(ClimbIOInputs inputs) {
     if (closedLoop) {
@@ -28,5 +31,11 @@ public class ClimbIOSim implements ClimbIO {
           MathUtil.clamp(pid.calculate(sim.getAngularVelocityRadPerSec()) + ffVolts, -12.0, 12.0);
       sim.setInputVoltage(appliedVolts);
     }
+  }
+
+  /** Return the SIM power ports */
+  @Override
+  public int[] powerPorts() {
+    return new int[] {};
   }
 }

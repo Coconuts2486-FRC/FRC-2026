@@ -176,4 +176,10 @@ public class ImuIOPigeon2 implements ImuIO {
     odomTsBuf = new double[newCap];
     odomYawRadBuf = new double[newCap];
   }
+
+  /** Dummy function to make things happy -- doesn't actually do anything */
+  @Override
+  public int[] powerPorts() {
+    return new int[] {};
+  }
 }
