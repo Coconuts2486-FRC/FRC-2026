@@ -14,6 +14,9 @@ public interface TurretIO extends RBSIIO {
     public double getTurretEncoderPosition = 0.0;
   }
 
+  /** Updates the set of loggable inputs. */
+  public default void updateInputs(TurretIOInputs inputs) {}
+
   public default void aimTarget() {}
 
   public default void setVolts(double volts) {}

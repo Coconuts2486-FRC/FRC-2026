@@ -422,7 +422,17 @@ public final class Constants {
     public static final double kRollerPrimitiveSpeed = 0.55; // 0.65
   }
 
+  /** Climb Mechanism Constants ******************************************** */
   public static final class ClimbConstants {
+
+    public static final double kClimbGearRatio = 1.0;
+    // Mechanism idle mode
+    public static final MotorIdleMode kClimbIdleMode = MotorIdleMode.COAST; // BRAKE, COAST
+
+    // Flywheel motor open-loop and closed-loop ramp periods for current smoothing
+    //   Time from from 0 -> full duty
+    public static final double kClimbClosedLoopRampPeriod = 0.15; // seconds
+    public static final double kClimbOpenLoopRampPeriod = 0.25; // seconds
 
     // magic configs
     public static final double mm_cruiseVelocity = 80;
@@ -438,6 +448,7 @@ public final class Constants {
     public static final double mm_kA = 0.25;
   }
 
+  /** Intake Mechanism Constants ******************************************* */
   public static final class IntakePivotConstants {
 
     // magic configs
