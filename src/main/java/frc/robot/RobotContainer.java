@@ -506,7 +506,7 @@ public class RobotContainer {
     that cancels the default and keeps the intake down with out the driver having to hold any button */
     driverController.y().toggleOnTrue(Commands.run(() -> m_intake.pivotDown()));
 
-    driverController.b().toggleOnTrue(Commands.run(() -> m_intake.runRollers()));
+    driverController.b().toggleOnTrue(Commands.run(() -> m_intake.runRollers(), m_intake));
 
     driverController.povUp().whileTrue(Commands.run(() -> m_intake.setPivotPrimitiveSpeed(0.05)));
     driverController
@@ -552,7 +552,7 @@ public class RobotContainer {
     driverController
         .rightTrigger()
         .toggleOnTrue(
-            Commands.run(() -> m_shooter.runVelocity(-10.0), m_shooter)
+            Commands.run(() -> m_shooter.runVelocity(10.0), m_shooter)
                 .alongWith(Commands.run(() -> m_feeder.setFeederVelocity(0.5), m_feeder)))
         .onFalse(
             Commands.run(() -> m_shooter.stop(), m_shooter)
