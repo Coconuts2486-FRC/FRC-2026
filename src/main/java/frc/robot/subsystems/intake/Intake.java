@@ -164,7 +164,7 @@ public class Intake extends RBSISubsystem {
    * @return rollersAlive boolean
    */
   public boolean rollersAlive() {
-    return true; // inputs.rollerConnected;
+    return inputs.rollerConnected;
   }
 
   /**
@@ -173,7 +173,7 @@ public class Intake extends RBSISubsystem {
    * @return pivotAlive boolean
    */
   public boolean pivotAlive() {
-    return true; // inputs.pivotConnected;
+    return inputs.pivotConnected;
   }
 
   @Override
