@@ -1,44 +1,48 @@
+Most used in a match:
+Drive, Rotate, Toggle rollers, Toggle pivot, X-drive, S-drive, 
 
 A map of all controls
 
 Change these controls based on how back buttons are bound
 
     Driver Controls:
-A:
-B:
-X:
-Y:
+A: Snake-Drive //Need to make
+B: Toggle intake roller
+X: X-Lock
+Y: Toggle intake pivot
 D-Pad Up/Down: Nudge robot forwards/backwards
 D-Pad Left/right: Nudge robot to left/right
-Right Bumper:
-Left Bumper:
-Right Trigger:
-Left Trigger: 
-Start: 
-Back:
-Right Stick:   Rotate or Strafe
-Left Stick:    Strafe or Rotate
+Right Bumper: 
+Left Bumper: Drive to Locked Shoot Position //Need to make
+Right Trigger: Lock Turret Straight and Manual Shoot //Need to adjust
+Left Trigger: Toggle Defense Drive //Need to Make/Fix
+Start: Climb Sequence //Need to Make
+Back: Manually re-zero gyro
+Right Stick: Rotate or Strafe //Depending on if it's on Kate or Regular mode
+Left Stick: Strafe or Rotate
 Right Stick Button:
-Left Stick Button: Toggle Snake
+Left Stick Button:
 
-Back Buttons: //Change these to actual
-A = Top Left
+Back Buttons:
+A = Bottom Right
 B = Top Right
-X = Bottom Left
-Y = Bottom Right
+X = Top Left
+Y = Bottom Left
 
+=================================================================================
     Co-Driver Controls:
-A:
+A: print out intake pivot position
 B:
 X:
-Y:
+Y: prematch update
 D-Pad Up/Down:
-D-Pad Left/Right:
+D-Pad Left: print intake position
+D-Pad Right:
 Right Bumper:
 Left Bumper:
 Right Trigger:
 Left Trigger:
-Start:
+Start: Switch Elastic Tabs
 Back:
 Right Stick:
 Left Stick:
