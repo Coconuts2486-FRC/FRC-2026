@@ -5,7 +5,6 @@ import static frc.robot.Constants.RobotDevices.*;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
-import frc.robot.Constants.TurretConstants;
 
 public class TurretIOTalonFX implements TurretIO {
 
@@ -26,7 +25,13 @@ public class TurretIOTalonFX implements TurretIO {
   /** Constructor */
   public TurretIOTalonFX() {
 
-    turretEncoder = new CANcoder(TurretConstants.encoderID);
+    // Do current smoothing and stuff
+
+  }
+
+  @Override
+  public void updateInputs(TurretIOInputs inputs) {
+    // Update stuff
   }
 
   @Override
