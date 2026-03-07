@@ -20,4 +20,9 @@ public class Climb extends RBSISubsystem {
   public void setPosition(double pos) {
     io.setPosition(pos);
   }
+
+  @Override
+  public int[] getPowerPorts() {
+    return io.getPowerPorts();
+  }
 }

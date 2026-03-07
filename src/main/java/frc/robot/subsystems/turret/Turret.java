@@ -108,4 +108,9 @@ public class Turret extends RBSISubsystem {
   public void stop() {
     io.stop();
   }
+
+  @Override
+  public int[] getPowerPorts() {
+    return io.getPowerPorts();
+  }
 }

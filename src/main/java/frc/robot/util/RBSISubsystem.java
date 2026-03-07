@@ -23,6 +23,7 @@ import org.littletonrobotics.junction.Logger;
  */
 public abstract class RBSISubsystem extends SubsystemBase {
   private final String name = getClass().getSimpleName();
+  private static final int[] NO_PORTS = new int[] {};
 
   /**
    * Guaranteed timing wrapper (cannot be bypassed by subclasses).
@@ -50,8 +51,5 @@ public abstract class RBSISubsystem extends SubsystemBase {
    *
    * @return Array of power distribution module ports
    */
-  public int[] getPowerPorts() {
-    int[] retval = {};
-    return retval;
-  }
+  protected abstract int[] getPowerPorts();
 }

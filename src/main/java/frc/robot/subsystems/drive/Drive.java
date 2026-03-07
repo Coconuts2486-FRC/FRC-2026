@@ -726,4 +726,10 @@ public class Drive extends RBSISubsystem {
 
     return allianceRelativeX > MIDFIELD_X;
   }
+
+  /** Dummy function to make things happy -- doesn't actually do anything */
+  @Override
+  public int[] getPowerPorts() {
+    return new int[] {};
+  }
 }

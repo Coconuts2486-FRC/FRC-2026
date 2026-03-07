@@ -175,4 +175,9 @@ public class Intake extends RBSISubsystem {
   public boolean pivotAlive() {
     return true; // inputs.pivotConnected;
   }
+
+  @Override
+  public int[] getPowerPorts() {
+    return io.getPowerPorts();
+  }
 }

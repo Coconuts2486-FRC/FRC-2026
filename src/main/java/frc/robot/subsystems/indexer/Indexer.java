@@ -24,4 +24,9 @@ public class Indexer extends RBSISubsystem {
 
   @Override
   public void simulationPeriodic() {}
+
+  @Override
+  public int[] getPowerPorts() {
+    return io.getPowerPorts();
+  }
 }
