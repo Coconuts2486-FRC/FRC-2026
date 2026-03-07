@@ -1,24 +1,65 @@
+// Copyright (c) 2026 FRC-2486
+// https://github.com/Coconuts2486-FRC
+//
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// version 3 as published by the Free Software Foundation or
+// available in the root directory of this project.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU General Public License for more details.
+//
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 package frc.robot.subsystems.climb;
 
 import static frc.robot.Constants.ClimbConstants.*;
 import static frc.robot.Constants.RobotDevices.*;
 
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Voltage;
+import frc.robot.Constants;
+import frc.robot.Constants.PowerConstants;
 import frc.robot.util.PhoenixUtil;
+import frc.robot.util.RBSIEnum.CTREPro;
 
 public class ClimbIOTalonFX implements ClimbIO {
-  private final TalonFX uppies =
+
+  // Declare Hardware
+  private final TalonFX climb_motor =
       new TalonFX(CLIMB_MOTOR.getDeviceNumber(), CLIMB_MOTOR.getCANBus());
   final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
   private final CANcoder climbEncoder =
       new CANcoder(CLIMB_ENCODER.getDeviceNumber(), CLIMB_ENCODER.getCANBus());
   public final int[] POWER_PORTS = {CLIMB_MOTOR.getPowerPort()};
+
+  // Define status signals
+  private final StatusSignal<Angle> climbPosition = climb_motor.getPosition();
+  private final StatusSignal<AngularVelocity> climbVelocity = climb_motor.getVelocity();
+  private final StatusSignal<Voltage> climbAppliedVolts = climb_motor.getMotorVoltage();
+  private final StatusSignal<Current> climbCurrent = climb_motor.getSupplyCurrent();
+
+  private final TalonFXConfiguration config = new TalonFXConfiguration();
+  private final boolean isCTREPro = Constants.getPhoenixPro() == CTREPro.LICENSED;
 
   /** Return the power ports */
   @Override
@@ -28,9 +69,8 @@ public class ClimbIOTalonFX implements ClimbIO {
 
   /** Constructor */
   public ClimbIOTalonFX() {
-    /** Motion Magic Configs */
-    TalonFXConfiguration uppiesConfig = new TalonFXConfiguration();
-    uppiesConfig.Slot0 =
+    // Motion Magic Configs
+    config.Slot0 =
         new Slot0Configs()
             .withKP(mm_kP)
             .withKI(mm_kI)
@@ -38,12 +78,32 @@ public class ClimbIOTalonFX implements ClimbIO {
             .withKS(mm_kS)
             .withKV(mm_kV)
             .withKA(mm_kA);
-
-    MotionMagicConfigs magicConfigs = uppiesConfig.MotionMagic;
+    MotionMagicConfigs magicConfigs = config.MotionMagic;
     magicConfigs.MotionMagicCruiseVelocity = mm_cruiseVelocity;
     magicConfigs.MotionMagicAcceleration = mm_acceleration;
     magicConfigs.MotionMagicJerk = mm_jerk;
-    uppies.getConfigurator().apply(uppiesConfig);
+
+    // Current-limiting section
+    config.CurrentLimits.SupplyCurrentLimit = PowerConstants.kMotorPortMaxCurrent;
+    config.CurrentLimits.SupplyCurrentLimitEnable = true;
+    config.MotorOutput.NeutralMode =
+        switch (kClimbIdleMode) {
+          case COAST -> NeutralModeValue.Coast;
+          case BRAKE -> NeutralModeValue.Brake;
+        };
+    // Build the OpenLoopRampsConfigs and ClosedLoopRampsConfigs for current smoothing
+    OpenLoopRampsConfigs openRamps = new OpenLoopRampsConfigs();
+    openRamps.DutyCycleOpenLoopRampPeriod = kClimbOpenLoopRampPeriod;
+    openRamps.VoltageOpenLoopRampPeriod = kClimbOpenLoopRampPeriod;
+    openRamps.TorqueOpenLoopRampPeriod = kClimbOpenLoopRampPeriod;
+    ClosedLoopRampsConfigs closedRamps = new ClosedLoopRampsConfigs();
+    closedRamps.DutyCycleClosedLoopRampPeriod = kClimbClosedLoopRampPeriod;
+    closedRamps.VoltageClosedLoopRampPeriod = kClimbClosedLoopRampPeriod;
+    closedRamps.TorqueClosedLoopRampPeriod = kClimbClosedLoopRampPeriod;
+    // Apply the open- and closed-loop ramp configuration for current smoothing
+    config.withClosedLoopRamps(closedRamps).withOpenLoopRamps(openRamps);
+    // Apply to motor
+    PhoenixUtil.tryUntilOk(5, () -> climb_motor.getConfigurator().apply(config));
 
     CANcoderConfiguration cancoderConfig = new CANcoderConfiguration();
     cancoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1.0;
@@ -51,8 +111,20 @@ public class ClimbIOTalonFX implements ClimbIO {
   }
 
   @Override
+  public void updateInputs(ClimbIOInputs inputs) {
+    BaseStatusSignal.refreshAll(climbPosition, climbVelocity, climbAppliedVolts, climbCurrent);
+    inputs.positionRad =
+        Units.rotationsToRadians(climbPosition.getValueAsDouble()) / kClimbGearRatio;
+    inputs.velocityRadPerSec =
+        Units.rotationsToRadians(climbVelocity.getValueAsDouble()) / kClimbGearRatio;
+    inputs.appliedVolts = climbAppliedVolts.getValueAsDouble();
+    inputs.currentAmps = new double[] {climbCurrent.getValueAsDouble()};
+  }
+
+  @Override
   public void setPosition(double rotations) {
-    uppies.setControl(m_request.withPosition(rotations));
+    // Can use TorqueFOC if isCTREPro is true
+    climb_motor.setControl(m_request.withPosition(rotations));
   }
 
   @Override

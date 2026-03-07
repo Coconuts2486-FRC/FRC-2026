@@ -1,3 +1,20 @@
+// Copyright (c) 2026 FRC-2486
+// https://github.com/Coconuts2486-FRC
+//
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// version 3 as published by the Free Software Foundation or
+// available in the root directory of this project.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU General Public License for more details.
+//
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 package frc.robot.subsystems.feeder;
 
 import static frc.robot.Constants.RobotDevices.*;
@@ -25,6 +42,7 @@ import frc.robot.util.RBSIEnum.CTREPro;
 
 public class FeederIOTalonFX implements FeederIO {
 
+  // Declare Hardware
   private final TalonFX feeder =
       new TalonFX(FEEDER_ROLLER.getDeviceNumber(), FEEDER_ROLLER.getCANBus());
   public final int[] POWER_PORTS = {FEEDER_ROLLER.getPowerPort()};
@@ -77,6 +95,7 @@ public class FeederIOTalonFX implements FeederIO {
     feeder.optimizeBusUtilization();
   }
 
+  /** Update Inputs */
   @Override
   public void updateInputs(FeederIOInputs inputs) {
     BaseStatusSignal.refreshAll(feederPosition, feederVelocity, feederAppliedVolts, feederCurrent);
@@ -88,6 +107,12 @@ public class FeederIOTalonFX implements FeederIO {
     inputs.currentAmps = new double[] {feederCurrent.getValueAsDouble()};
   }
 
+  /** Motor Control Functions ********************************************** */
+  /**
+   * Set the motor voltage
+   *
+   * @param volts Voltage to which to set the motor
+   */
   @Override
   public void setVoltage(double volts) {
     final MotionMagicVoltage m_request = new MotionMagicVoltage(volts);
@@ -95,6 +120,11 @@ public class FeederIOTalonFX implements FeederIO {
     feeder.setControl(m_request);
   }
 
+  /**
+   * Set the motor velocity
+   *
+   * @param velocityRadPerSec The velocity to which to set the motor
+   */
   @Override
   public void setVelocity(double velocityRadPerSec) {
     // create a Motion Magic Velocity request, voltage output
@@ -103,6 +133,11 @@ public class FeederIOTalonFX implements FeederIO {
     feeder.setControl(m_request.withVelocity(Units.radiansToRotations(velocityRadPerSec)));
   }
 
+  /**
+   * Set the motor percent
+   *
+   * @param percent The percent to which to set the motor
+   */
   @Override
   public void setPercent(double percent) {
     // create a Motion Magic DutyCycle request, voltage output
@@ -116,14 +151,17 @@ public class FeederIOTalonFX implements FeederIO {
     feeder.set(velocity);
   }
 
-  @Override
-  public boolean isFeederRunning() {
-    return (Math.abs(feeder.get()) > 0.1);
-  }
-
+  /** Stop the feeder */
   @Override
   public void stopFeeder() {
     feeder.stopMotor();
     feeder.setControl(new MotionMagicDutyCycle(0.));
+  }
+
+  /** Getter Functions ***************************************************** */
+  /** Get feeder running state */
+  @Override
+  public boolean isFeederRunning() {
+    return (Math.abs(feeder.get()) > 0.1);
   }
 }
