@@ -474,18 +474,17 @@ public class RobotContainer {
     // ===============================================================================
     // ** Example Commands -- Remap, remove, or change as desired **
     // Press B button while driving --> ROBOT-CENTRIC
-    driverController
-        .b()
-        .onTrue(
-            Commands.runOnce(
-                () ->
-                    DriveCommands.robotRelativeDrive(
-                        m_drivebase,
-                        () -> -driveStickY.value(),
-                        () -> -driveStickX.value(),
-                        () -> turnStickX.value())));
+    // driverController
+    //     .leftTrigger()
+    //     .onTrue(
+    //         Commands.runOnce(
+    //             () ->
+    //                 DriveCommands.robotRelativeDrive(
+    //                     m_drivebase,
+    //                     () -> -driveStickY.value(),
+    //                     () -> -driveStickX.value(),
+    //                     () -> turnStickX.value())));
 
-    driverController.y().onTrue(Commands.runOnce(() -> m_prematch.enableUpdate()));
     // Press A button -> BRAKE
     // driverController
     //     .a()
@@ -493,15 +492,6 @@ public class RobotContainer {
 
     // Press X button --> Stop with wheels in X-Lock position
     driverController.x().onTrue(Commands.runOnce(m_drivebase::stopWithX, m_drivebase));
-    // Press start button --> switch elastic tab
-    driverController
-        .start()
-        .onTrue(
-            Commands.runOnce(
-                () -> {
-                  elasticOnDriveTab = !elasticOnDriveTab;
-                  Elastic.selectTab(elasticOnDriveTab ? 2 : 0);
-                }));
 
     // Press Start button --> Manually Re-Zero the Gyro
     driverController
@@ -512,29 +502,67 @@ public class RobotContainer {
 
     /*there is a default command in intake that makes it go up this toggles a new command
     that cancels the default and keeps the intake down with out the driver having to hold any button */
-    driverController.leftBumper().toggleOnTrue(Commands.run(() -> m_intake.pivotDown()));
+    driverController.y().toggleOnTrue(Commands.run(() -> m_intake.pivotDown()));
 
-    driverController.rightBumper().toggleOnTrue(Commands.run(() -> m_intake.runRollers()));
-
-    // Testing functions
+    driverController.b().toggleOnTrue(Commands.run(() -> m_intake.runRollers()));
 
     driverController.povUp().whileTrue(Commands.run(() -> m_intake.setPivotPrimitiveSpeed(0.05)));
-    // reads out pivot position- useful for determining where exactly we need to tell it to pivot to
-    // (pov left)
-    driverController.povLeft().whileTrue(Commands.run(() -> m_intake.print()));
-    // checks magnetic switch (pov right)
+    driverController
+        .povUp()
+        .whileTrue(
+            Commands.run(
+                () -> {
+                  m_drivebase.runVelocity(
+                      new ChassisSpeeds(Units.inchesToMeters(-11), Units.inchesToMeters(0), 0));
+                },
+                m_drivebase));
+
+    driverController
+        .povDown()
+        .whileTrue(
+            Commands.run(
+                () -> {
+                  m_drivebase.runVelocity(
+                      new ChassisSpeeds(Units.inchesToMeters(11), Units.inchesToMeters(0), 0));
+                },
+                m_drivebase));
+    
     driverController
         .povRight()
         .whileTrue(
             Commands.run(
-                () -> System.out.println("Magnetic switch state:" + m_turret.readTurretSwitch())));
+                () -> {
+                  m_drivebase.runVelocity(
+                      new ChassisSpeeds(Units.inchesToMeters(0.), Units.inchesToMeters(-11.0), 0.));
+                },
+                m_drivebase));
 
-    // prints the encoder position temporary testing function
     driverController
-        .a()
-        .whileTrue(Commands.run(() -> System.out.println(m_intake.getPivotPosition())));
+        .povLeft()
+        .whileTrue(
+            Commands.run(
+                () -> {
+                  m_drivebase.runVelocity(
+                      new ChassisSpeeds(Units.inchesToMeters(0.), Units.inchesToMeters(11.0), 0.));
+                },
+                m_drivebase));
 
-    // Press LEFT BUMPER --> Drive to a pose 10 feet closer to the BLUE ALLIANCE wall
+    driverController
+        .rightTrigger()
+        .toggleOnTrue(
+            Commands.run(() -> m_shooter.runVelocity(-10.0), m_shooter)
+                .alongWith(Commands.run(() -> m_feeder.setFeederVelocity(0.5), m_feeder)))
+        .onFalse(
+            Commands.run(() -> m_shooter.stop(), m_shooter)
+                .alongWith(
+                    Commands.run(
+                        () -> m_feeder.stopFeeder(),
+                        m_feeder))); // ShooterConstants.kTestShooterSpeed.getAsDouble())));
+
+    // driverController.leftTrigger().whileTrue(
+    // Commands.run(() -> m_turret.setVolts(2.0), m_turret));
+
+        // Press LEFT BUMPER --> Drive to a pose 10 feet closer to the BLUE ALLIANCE wall
     // driverController
     //     .leftTrigger()
     //     .whileTrue(
@@ -557,64 +585,36 @@ public class RobotContainer {
     // },
     // Set.of(m_drivebase)));
 
-    // Press POV buttons to nudge the robot in each direction
-    // driverController
-    //     .povLeft()
-    //     .whileTrue(
-    //         Commands.startEnd(
-    //             () -> {
-    //               m_drivebase.runVelocity(
-    //                   new ChassisSpeeds(Units.inchesToMeters(0.), Units.inchesToMeters(11.0),
-    // 0.));
-    //             },
-    //             // Stop when command ended
-    //             m_drivebase::stop,
-    //             m_drivebase));
+    //
+    // ===============================================================================
 
+    // Testing functions
+    operatorController
+        .a()
+        .whileTrue(Commands.run(() -> System.out.println(m_intake.getPivotPosition())));
+
+    // reads out pivot position- useful for determining where exactly we need to tell it to pivot to
+    // (pov left)
+    operatorController.y().onTrue(Commands.runOnce(() -> m_prematch.enableUpdate()));
+
+        // Press start button --> switch elastic tab
+    operatorController
+        .start()
+        .onTrue(
+            Commands.runOnce(
+                () -> {
+                  elasticOnDriveTab = !elasticOnDriveTab;
+                  Elastic.selectTab(elasticOnDriveTab ? 2 : 0);
+                }));
+
+    operatorController.povLeft().whileTrue(Commands.run(() -> m_intake.print()));
+    
+    // checks magnetic switch (pov right)
     driverController
         .povRight()
         .whileTrue(
             Commands.run(
-                () -> {
-                  m_drivebase.runVelocity(
-                      new ChassisSpeeds(Units.inchesToMeters(0.), Units.inchesToMeters(-11.0), 0.));
-                },
-                m_drivebase));
-
-    driverController
-        .a()
-        .toggleOnTrue(
-            Commands.run(() -> m_shooter.runVelocity(-10.0), m_shooter)
-                .alongWith(Commands.run(() -> m_feeder.setFeederVelocity(0.5), m_feeder)))
-        .onFalse(
-            Commands.run(() -> m_shooter.stop(), m_shooter)
-                .alongWith(
-                    Commands.run(
-                        () -> m_feeder.stopFeeder(),
-                        m_feeder))); // ShooterConstants.kTestShooterSpeed.getAsDouble())));
-
-    driverController
-        .povUp()
-        .whileTrue(
-            Commands.run(
-                () -> {
-                  m_drivebase.runVelocity(
-                      new ChassisSpeeds(Units.inchesToMeters(-11), Units.inchesToMeters(0), 0));
-                },
-                m_drivebase));
-
-    driverController
-        .povDown()
-        .whileTrue(
-            Commands.run(
-                () -> {
-                  m_drivebase.runVelocity(
-                      new ChassisSpeeds(Units.inchesToMeters(11), Units.inchesToMeters(0), 0));
-                },
-                m_drivebase));
-
-    // driverController.leftTrigger().whileTrue(
-    // Commands.run(() -> m_turret.setVolts(2.0), m_turret));
+                () -> System.out.println("Magnetic switch state:" + m_turret.readTurretSwitch())));
 
     if (Constants.getMode() == Mode.SIM) {
       // IN SIMULATION ONLY:
