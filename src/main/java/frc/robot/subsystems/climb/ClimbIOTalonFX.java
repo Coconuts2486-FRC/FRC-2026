@@ -1,8 +1,7 @@
 package frc.robot.subsystems.climb;
 
-import static frc.robot.Constants.RobotDevices.CLIMB_ENCODER;
-import static frc.robot.Constants.RobotDevices.CLIMB_MOTOR;
-import static frc.robot.Constants.climbConstants.*;
+import static frc.robot.Constants.ClimbConstants.*;
+import static frc.robot.Constants.RobotDevices.*;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;

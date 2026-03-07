@@ -422,7 +422,7 @@ public final class Constants {
     public static final double kRollerPrimitiveSpeed = 0.55; // 0.65
   }
 
-  public static final class climbConstants {
+  public static final class ClimbConstants {
 
     // magic configs
     public static final double mm_cruiseVelocity = 80;
@@ -438,7 +438,7 @@ public final class Constants {
     public static final double mm_kA = 0.25;
   }
 
-  public static final class pivotConstants {
+  public static final class IntakePivotConstants {
 
     // magic configs
     public static final double mm_cruiseVelocity = 80;
