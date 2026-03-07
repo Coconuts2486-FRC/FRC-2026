@@ -12,6 +12,7 @@ public class Turret extends RBSISubsystem {
   public double solution2;
 
   private double turretPosition;
+  private boolean lastSwitch = false;
   private final TurretIOInputsAutoLogged inputs = new TurretIOInputsAutoLogged();
 
   // Constructor
@@ -20,16 +21,24 @@ public class Turret extends RBSISubsystem {
   }
 
   PIDController turretPIDController =
-      new PIDController(TurretConstants.kP, TurretConstants.kP, TurretConstants.kI);
+      new PIDController(TurretConstants.kP, TurretConstants.kI, TurretConstants.kD);
 
   @Override
   public void rbsiPeriodic() {
+
+    boolean current = readTurretSwitch();
 
     turretPosition =
         MathUtil.inputModulus(io.getTurretEncoderPosition(), 1, 10)
             / TurretConstants.kTurretGearRatio;
 
     Logger.recordOutput("Turret/Is In Position?", readTurretSwitch());
+
+    if (current && !lastSwitch) {
+      io.zeroEncoder();
+    }
+
+    lastSwitch = current;
   }
 
   @Override

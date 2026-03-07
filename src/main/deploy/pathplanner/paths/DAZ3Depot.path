@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.760784939236112,
-        "y": 7.590500361689815
+        "x": 3.4137052228009264,
+        "y": 7.517935112847221
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.4444408275462965,
-        "y": 7.594830656828703
+        "x": 2.097361111111111,
+        "y": 7.52226540798611
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "DAZ2-3"
     },
     {
       "anchor": {
-        "x": 1.500342939888295,
-        "y": 4.026542409674504
+        "x": 0.7463746383101857,
+        "y": 5.970117042824074
       },
       "prevControl": {
-        "x": 3.000302233199128,
-        "y": 4.037593129581677
+        "x": 3.2463746383101855,
+        "y": 5.970117042824074
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,10 +32,10 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.8456966362126256,
+      "minWaypointRelativePos": 0.8483450551044092,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
-        "maxVelocity": 1.0,
+        "maxVelocity": 0.75,
         "maxAcceleration": 1.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
@@ -44,18 +44,7 @@
       }
     }
   ],
-  "pointTowardsZones": [
-    {
-      "fieldPosition": {
-        "x": 4.62,
-        "y": 4.04
-      },
-      "rotationOffset": 0.0,
-      "minWaypointRelativePos": 0.20338455149501658,
-      "maxWaypointRelativePos": 0.6495795265780732,
-      "name": "Point Towards Zone"
-    }
-  ],
+  "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 1.5,
@@ -67,10 +56,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 180.0
   },
   "reversed": false,
-  "folder": "Ambopteryx Ascent",
+  "folder": "Diplodocus Depot",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -90.0

@@ -403,8 +403,8 @@ public final class Constants {
     // public static final AngularVelocity kMaxPivotSpeed = RotationsPerSecond.of(106.3);
 
     // Pivot angle positions
-    public static final double dropPostion = 0.44;
-    public static final double storedAngle = 0.76;
+    public static final double dropPostion = 0.55;
+    public static final double storedAngle = 0.87;
 
     // Pivot gear ratio
     public static final double kPivotGearRatio = 25.0 * 54.0 / 16.0;
@@ -419,7 +419,7 @@ public final class Constants {
         new LoggedTunableNumber("Intake/maxVel", 5);
 
     // Intake rollers constats
-    public static final double kRollerPrimitiveSpeed = 0.65;
+    public static final double kRollerPrimitiveSpeed = 0.55; // 0.65
   }
 
   public static final class climbConstants {

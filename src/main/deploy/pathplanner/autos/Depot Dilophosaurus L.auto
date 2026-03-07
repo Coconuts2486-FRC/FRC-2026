@@ -23,19 +23,19 @@
                                 {
                                   "type": "path",
                                   "data": {
-                                    "pathName": "AZ1"
+                                    "pathName": "DAZ1"
                                   }
                                 },
                                 {
                                   "type": "path",
                                   "data": {
-                                    "pathName": "AZ2"
+                                    "pathName": "DAZ2"
                                   }
                                 },
                                 {
                                   "type": "path",
                                   "data": {
-                                    "pathName": "AZ3Depot"
+                                    "pathName": "DAZ3Depot"
                                   }
                                 }
                               ]

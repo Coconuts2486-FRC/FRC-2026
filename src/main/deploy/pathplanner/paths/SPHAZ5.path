@@ -3,41 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.442215928819445,
-        "y": 7.146251446759258
+        "x": 3.263,
+        "y": 0.55
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.442215928819445,
-        "y": 7.146251446759258
+        "x": 2.230321146504587,
+        "y": 0.5757139800779633
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.19648046875,
-        "y": 7.146251446759258
+        "x": 0.5959952980324079,
+        "y": 0.6540236545138896
       },
       "prevControl": {
-        "x": 6.19648046875,
-        "y": 7.146251446759258
-      },
-      "nextControl": {
-        "x": 8.196480468750003,
-        "y": 7.146251446759258
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 8.092326678240742,
-        "y": 4.599972294560185
-      },
-      "prevControl": {
-        "x": 8.74280443431713,
-        "y": 7.20818778935185
+        "x": 1.8436767755813404,
+        "y": 0.6269949748723548
       },
       "nextControl": null,
       "isLocked": false,
@@ -49,7 +33,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.5,
+    "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -57,14 +41,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": -90.0
+    "velocity": 0.0,
+    "rotation": 180.0
   },
   "reversed": false,
-  "folder": "Ambopteryx Ascent",
+  "folder": "SPHAZ Autos",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": 180.0
   },
   "useDefaultConstraints": false
 }

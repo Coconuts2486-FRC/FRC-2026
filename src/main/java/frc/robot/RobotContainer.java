@@ -464,12 +464,13 @@ public class RobotContainer {
             },
             m_shooter));
 
-    m_turret.setDefaultCommand(
-        Commands.run(
-            () -> {
-              // Listen to the Coordinator, and set the angle based on the physics computation.
-            },
-            m_turret));
+    // m_turret.setDefaultCommand(
+    //     Commands.run(
+    //         () -> {
+    //           m_turret.rotateToPosition(m_turret.getTargetPosition());
+    //           // Listen to the Coordinator, and set the angle based on the physics computation.
+    //         },
+    //         m_turret));
     // ===============================================================================
     // ** Example Commands -- Remap, remove, or change as desired **
     // Press B button while driving --> ROBOT-CENTRIC
@@ -581,17 +582,17 @@ public class RobotContainer {
                 m_drivebase));
 
     driverController
-        .rightTrigger()
+        .a()
         .toggleOnTrue(
-            Commands.run(() -> m_shooter.runVelocity(-75.0))
-                .alongWith(Commands.run(() -> m_feeder.setFeederVelocity(0.4))))
+            Commands.run(() -> m_shooter.runVelocity(20), m_shooter)
+                .alongWith(Commands.run(() -> m_feeder.setFeederVelocity(0.5), m_feeder)))
         .onFalse(
-            Commands.run(() -> m_shooter.stop())
+            Commands.run(() -> m_shooter.stop(), m_shooter)
                 .alongWith(
                     Commands.run(
-                        () ->
-                            m_feeder
-                                .stopFeeder()))); // ShooterConstants.kTestShooterSpeed.getAsDouble())));
+                        () -> m_feeder.stopFeeder(),
+                        m_feeder))); // ShooterConstants.kTestShooterSpeed.getAsDouble())));
+    // 1.11125m meters to roof
 
     driverController
         .povUp()
@@ -612,6 +613,9 @@ public class RobotContainer {
                       new ChassisSpeeds(Units.inchesToMeters(11), Units.inchesToMeters(0), 0));
                 },
                 m_drivebase));
+
+    // driverController.leftTrigger().whileTrue(
+    // Commands.run(() -> m_turret.setVolts(2.0), m_turret));
 
     if (Constants.getMode() == Mode.SIM) {
       // IN SIMULATION ONLY:
