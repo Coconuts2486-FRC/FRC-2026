@@ -137,9 +137,9 @@ public class Robot extends LoggedRobot {
   public void robotPeriodic() {
     final long t0 = System.nanoTime();
 
-    if (isReal()) {
-      Threads.setCurrentThreadPriority(true, 99);
-    }
+    // if (isReal()) {
+    //   Threads.setCurrentThreadPriority(true, 99);
+    // }
     final long t1 = System.nanoTime();
 
     VirtualSubsystem.periodicAll();
@@ -148,7 +148,6 @@ public class Robot extends LoggedRobot {
     CommandScheduler.getInstance().run();
     final long t3 = System.nanoTime();
 
-    Threads.setCurrentThreadPriority(false, 10);
     final long t4 = System.nanoTime();
 
     Logger.recordOutput("Loop/RobotPeriodic_ms", (t4 - t0) / 1e6);
