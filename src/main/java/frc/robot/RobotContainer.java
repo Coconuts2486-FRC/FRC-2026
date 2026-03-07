@@ -592,7 +592,6 @@ public class RobotContainer {
                     Commands.run(
                         () -> m_feeder.stopFeeder(),
                         m_feeder))); // ShooterConstants.kTestShooterSpeed.getAsDouble())));
-    // 1.11125m meters to roof
 
     driverController
         .povUp()

@@ -22,15 +22,7 @@ public class CANStatus extends VirtualSubsystem {
   @Override
   public void rbsiPeriodic() {
 
-    // var testStatus =
-    //     BaseStatusSignal.refreshAll(
-    //         test.getStatorCurrent(),
-    //         test.getPosition(),
-    //         test.getVelocity(),
-    //         test.getMotorVoltage());
-    // System.out.println(testStatus.isOK());
-    // example code for checking if motor is good
-
+    
     // if () {
     //   mainCAN = true;
     // } else {
