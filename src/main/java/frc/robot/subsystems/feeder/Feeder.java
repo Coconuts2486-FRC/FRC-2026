@@ -31,6 +31,10 @@ public class Feeder extends RBSISubsystem {
     return io.isFeederRunning();
   }
 
+  public boolean isFeederAlive(){
+    return inputs.feederAlive;
+  }
+
   @Override
   public void rbsiPeriodic() {}
 

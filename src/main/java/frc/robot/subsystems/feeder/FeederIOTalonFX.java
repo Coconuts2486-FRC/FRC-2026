@@ -79,6 +79,12 @@ public class FeederIOTalonFX implements FeederIO {
 
   @Override
   public void updateInputs(FeederIOInputs inputs) {
+
+     var feederStatus =
+    BaseStatusSignal.refreshAll(feederCurrent, feederVelocity, feederAppliedVolts);
+
+    inputs.feederAlive = feederStatus.isOK();
+
     BaseStatusSignal.refreshAll(feederPosition, feederVelocity, feederAppliedVolts, feederCurrent);
     inputs.positionRad =
         Units.rotationsToRadians(feederPosition.getValueAsDouble()) / 1.0; // kShooterGearRatio;

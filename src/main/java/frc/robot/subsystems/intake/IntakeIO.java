@@ -24,8 +24,8 @@ public interface IntakeIO extends RBSIIO {
 
   @AutoLog
   public static class IntakeIOInputs {
-    // public boolean pivotConnected = false;
-    // public boolean rollerConnected = false;
+    public boolean pivotConnected = false;
+    public boolean rollerConnected = false;
     public double pivotPositionRot = 0.0;
     public double pivotAvAngularVelocity = 0.0;
     public double rollersAngularVelocity = 0.0;

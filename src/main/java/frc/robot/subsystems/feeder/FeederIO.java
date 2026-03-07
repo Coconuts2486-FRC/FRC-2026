@@ -7,6 +7,7 @@ public interface FeederIO extends RBSIIO {
 
   @AutoLog
   public static class FeederIOInputs {
+    public boolean feederAlive = false;
     public double positionRad = 0.0;
     public double velocityRadPerSec = 0.0;
     public double appliedVolts = 0.0;
