@@ -102,6 +102,7 @@ public class Intake extends RBSISubsystem {
       // io.setRollerVelocity(0.65);
     } else {
       io.stopPivot();
+      io.setCoast();
     }
   }
 
