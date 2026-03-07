@@ -121,7 +121,9 @@ public class RobotContainer {
   private final Turret m_turret;
   private final Prematch m_prematch;
 
+  @SuppressWarnings("unused")
   private final Coordinator m_coordinator;
+
   // ... Add additional subsystems here (e.g., elevator, arm, etc.)
 
   // These are "Virtual Subsystems" that report information but have no motors
@@ -526,7 +528,7 @@ public class RobotContainer {
                       new ChassisSpeeds(Units.inchesToMeters(11), Units.inchesToMeters(0), 0));
                 },
                 m_drivebase));
-    
+
     driverController
         .povRight()
         .whileTrue(
@@ -562,7 +564,7 @@ public class RobotContainer {
     // driverController.leftTrigger().whileTrue(
     // Commands.run(() -> m_turret.setVolts(2.0), m_turret));
 
-        // Press LEFT BUMPER --> Drive to a pose 10 feet closer to the BLUE ALLIANCE wall
+    // Press LEFT BUMPER --> Drive to a pose 10 feet closer to the BLUE ALLIANCE wall
     // driverController
     //     .leftTrigger()
     //     .whileTrue(
@@ -597,7 +599,7 @@ public class RobotContainer {
     // (pov left)
     operatorController.y().onTrue(Commands.runOnce(() -> m_prematch.enableUpdate()));
 
-        // Press start button --> switch elastic tab
+    // Press start button --> switch elastic tab
     operatorController
         .start()
         .onTrue(
@@ -608,7 +610,7 @@ public class RobotContainer {
                 }));
 
     operatorController.povLeft().whileTrue(Commands.run(() -> m_intake.print()));
-    
+
     // checks magnetic switch (pov right)
     driverController
         .povRight()

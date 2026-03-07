@@ -18,7 +18,15 @@ public class ClimbIOTalonFX implements ClimbIO {
   final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
   private final CANcoder climbEncoder =
       new CANcoder(CLIMB_ENCODER.getDeviceNumber(), CLIMB_ENCODER.getCANBus());
+  public final int[] POWER_PORTS = {CLIMB_MOTOR.getPowerPort()};
 
+  /** Return the power ports */
+  @Override
+  public int[] powerPorts() {
+    return POWER_PORTS;
+  }
+
+  /** Constructor */
   public ClimbIOTalonFX() {
     /** Motion Magic Configs */
     TalonFXConfiguration uppiesConfig = new TalonFXConfiguration();

@@ -15,7 +15,7 @@ public class Turret extends RBSISubsystem {
   private boolean lastSwitch = false;
   private final TurretIOInputsAutoLogged inputs = new TurretIOInputsAutoLogged();
 
-  // Constructor
+  /** Constructor */
   public Turret(TurretIO io) {
     this.io = io;
   }

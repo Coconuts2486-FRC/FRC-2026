@@ -19,5 +19,12 @@ package frc.robot.subsystems.intake;
 
 public class IntakeIOSim implements IntakeIO {
 
+  /** Constructor */
   public IntakeIOSim() {}
+
+  /** Return the SIM power ports */
+  @Override
+  public int[] powerPorts() {
+    return new int[] {};
+  }
 }

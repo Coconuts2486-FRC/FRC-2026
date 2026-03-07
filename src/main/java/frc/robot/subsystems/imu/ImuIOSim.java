@@ -36,6 +36,13 @@ public class ImuIOSim implements ImuIO {
   private int odomSize = 0;
   private int odomHead = 0; // next write index
 
+  /** Return the SIM power ports */
+  @Override
+  public int[] powerPorts() {
+    return new int[] {};
+  }
+
+  /** Constructor */
   public ImuIOSim() {}
 
   // ---------------- SIMULATION INPUTS (PUSH) ----------------
