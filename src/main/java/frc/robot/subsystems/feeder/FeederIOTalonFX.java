@@ -99,8 +99,8 @@ public class FeederIOTalonFX implements FeederIO {
   @Override
   public void updateInputs(FeederIOInputs inputs) {
 
-     var feederStatus =
-    BaseStatusSignal.refreshAll(feederCurrent, feederVelocity, feederAppliedVolts);
+    var feederStatus =
+        BaseStatusSignal.refreshAll(feederCurrent, feederVelocity, feederAppliedVolts);
 
     inputs.feederAlive = feederStatus.isOK();
 

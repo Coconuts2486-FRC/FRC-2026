@@ -148,7 +148,7 @@ public class Robot extends LoggedRobot {
     CommandScheduler.getInstance().run();
     final long t3 = System.nanoTime();
 
-        if (isReal()) {
+    if (isReal()) {
       Threads.setCurrentThreadPriority(false, 10);
     }
 
