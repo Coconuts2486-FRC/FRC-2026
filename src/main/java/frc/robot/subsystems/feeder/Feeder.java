@@ -48,7 +48,7 @@ public class Feeder extends RBSISubsystem {
     return io.isFeederRunning();
   }
 
-  public boolean isFeederAlive(){
+  public boolean isFeederAlive() {
     return inputs.feederAlive;
   }
 
