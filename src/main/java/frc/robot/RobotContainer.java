@@ -292,7 +292,7 @@ public class RobotContainer {
     // Init all CAN busses specified in the `Constants.CANBuses` class
     RBSICANBusRegistry.initReal(Constants.CANBuses.ALL);
     m_canHealth = Arrays.stream(Constants.CANBuses.ALL).map(RBSICANHealth::new).toList();
-    m_canStatus = new CANStatus(m_drivebase, m_imu);
+    m_canStatus = new CANStatus(m_drivebase, m_imu, m_intake, m_feeder);
 
     // In addition to the initial battery capacity from the Dashbaord, ``RBSIPowerMonitor`` takes
     // all the non-drivebase subsystems for which you wish to have power monitoring; DO NOT
@@ -504,7 +504,7 @@ public class RobotContainer {
 
     /*there is a default command in intake that makes it go up this toggles a new command
     that cancels the default and keeps the intake down with out the driver having to hold any button */
-    driverController.y().toggleOnTrue(Commands.run(() -> m_intake.pivotDown()));
+    driverController.a().toggleOnTrue(Commands.run(() -> m_intake.pivotDown()));
 
     driverController.b().toggleOnTrue(Commands.run(() -> m_intake.runRollers(), m_intake));
 
@@ -552,7 +552,7 @@ public class RobotContainer {
     driverController
         .rightTrigger()
         .toggleOnTrue(
-            Commands.run(() -> m_shooter.runVelocity(10.0), m_shooter)
+            Commands.run(() -> m_shooter.runVelocity(28.5), m_shooter)
                 .alongWith(Commands.run(() -> m_feeder.setFeederVelocity(0.5), m_feeder)))
         .onFalse(
             Commands.run(() -> m_shooter.stop(), m_shooter)

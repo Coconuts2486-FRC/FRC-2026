@@ -19,7 +19,7 @@ public class CANStatus extends VirtualSubsystem {
   Boolean mainCAN = false;
 
   /** Constructor */
-  public CANStatus(Drive drive, Imu imu, Intake intake, Feeder feeder ) {
+  public CANStatus(Drive drive, Imu imu, Intake intake, Feeder feeder) {
     this.drive = drive;
     this.imu = imu;
     this.intake = intake;
@@ -28,8 +28,6 @@ public class CANStatus extends VirtualSubsystem {
 
   @Override
   public void rbsiPeriodic() {
-
-    
 
     // figure out if the drive CAN network is alive
     var modules = drive.getModules();
@@ -58,7 +56,5 @@ public class CANStatus extends VirtualSubsystem {
     Logger.recordOutput("CAN/IntakePivotAlive", intake.pivotAlive());
     Logger.recordOutput("CAN/IntakeRollersAlive", intake.rollersAlive());
     Logger.recordOutput("CAN/FeederAlive", feeder.isFeederAlive());
-
-
   }
 }
