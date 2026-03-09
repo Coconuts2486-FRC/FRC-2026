@@ -25,6 +25,7 @@ public class Shooter extends RBSISubsystem {
   private final ShooterIO io;
   private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
   private final SysIdRoutine sysId;
+  private double targetMetersPerSecond = 0.0;
 
   /** Creates a new Shooter. */
   public Shooter(ShooterIO io) {
@@ -68,6 +69,8 @@ public class Shooter extends RBSISubsystem {
 
   /** Run closed loop at the specified velocity. */
   public void runVelocity(double metersPerSecond) {
+    targetMetersPerSecond = metersPerSecond;
+
     double velocity =
         (metersPerSecond / ShooterConstants.flywheelCircumfrence)
             * ShooterConstants.kShooterGearRatio
@@ -81,6 +84,7 @@ public class Shooter extends RBSISubsystem {
 
   /** Stops the Shooter. */
   public void stop() {
+    targetMetersPerSecond = 0.0;
     io.stop();
   }
 
@@ -104,6 +108,15 @@ public class Shooter extends RBSISubsystem {
   public double getCharacterizationVelocity() {
     return inputs.velocityRadPerSec;
   }
+
+public boolean shooterAtSpeed() {
+    if (targetMetersPerSecond == 0.0) return false;
+    double currentMetersPerSecond =
+        (Units.radiansPerSecondToRotationsPerMinute(inputs.velocityRadPerSec)
+            / ShooterConstants.kShooterGearRatio)
+            * ShooterConstants.flywheelCircumfrence;
+    return Math.abs(currentMetersPerSecond) >= targetMetersPerSecond * 0.75;
+}
 
   @Override
   public int[] getPowerPorts() {
