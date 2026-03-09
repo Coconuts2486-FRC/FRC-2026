@@ -510,7 +510,7 @@ public class RobotContainer {
 
     /*there is a default command in intake that makes it go up this toggles a new command
     that cancels the default and keeps the intake down with out the driver having to hold any button */
-    driverController.a().toggleOnTrue(Commands.run(() -> m_intake.pivotDown(), m_intake).alongWith(Commands.run(()-> m_rollers.runInverse())));
+    driverController.a().toggleOnTrue(Commands.run(() -> m_intake.pivotDown(), m_intake));
 
     driverController.b().toggleOnTrue(Commands.run(() -> m_rollers.runRollers(), m_rollers));
 
