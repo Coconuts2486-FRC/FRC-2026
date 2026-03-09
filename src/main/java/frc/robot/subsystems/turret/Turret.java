@@ -1,3 +1,20 @@
+// Copyright (c) 2026 FRC-2486
+// https://github.com/Coconuts2486-FRC
+//
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// version 3 as published by the Free Software Foundation or
+// available in the root directory of this project.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU General Public License for more details.
+//
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 package frc.robot.subsystems.turret;
 
 import edu.wpi.first.math.MathUtil;
@@ -20,63 +37,33 @@ public class Turret extends RBSISubsystem {
     this.io = io;
   }
 
+  // TODO: Should be a ProfiledPIDController!!!!
   PIDController turretPIDController =
       new PIDController(TurretConstants.kP, TurretConstants.kI, TurretConstants.kD);
 
   @Override
   public void rbsiPeriodic() {
+    io.updateInputs(inputs);
+    Logger.processInputs("Turret", inputs);
+    // // boolean current = readTurretSwitch();
 
-    // boolean current = readTurretSwitch();
+    // turretPosition =
+    //     MathUtil.inputModulus(io.getTurretEncoderPosition(), 1, 10)
+    //         / TurretConstants.kTurretGearRatio;
 
-    turretPosition =
-        MathUtil.inputModulus(io.getTurretEncoderPosition(), 1, 10)
-            / TurretConstants.kTurretGearRatio;
+    // Logger.recordOutput("Turret/Is In Position?", readTurretSwitch());
 
-    Logger.recordOutput("Turret/Is In Position?", readTurretSwitch());
+    // // if (current && !lastSwitch) {
+    // //   io.zeroEncoder();
+    // // }
 
-    // if (current && !lastSwitch) {
-    //   io.zeroEncoder();
-    // }
-
-    // lastSwitch = current;
+    // // lastSwitch = current;
   }
 
   @Override
   public void simulationPeriodic() {}
 
   public void aimTarget() {}
-
-  public double wantedVelocity(double robotSpeed, double z, double distance) {
-
-    solution1 =
-        (2 * A(z, distance, robotSpeed) * robotSpeed)
-            / (-B(z, distance)
-                + Math.sqrt(
-                    (B(z, distance) * B(z, distance))
-                        - 4 * A(z, distance, robotSpeed) * C(z, distance)));
-    solution2 =
-        (2 * A(z, distance, robotSpeed) * robotSpeed)
-            / (-B(z, distance)
-                - Math.sqrt(
-                    (B(z, distance) * B(z, distance))
-                        - 4 * A(z, distance, robotSpeed) * C(z, distance)));
-
-    return solution1; /*place holder */
-  }
-
-  public double A(double z, double distance, double robotSpeed) {
-    return z + ((9.8 * distance * distance) / (2 * robotSpeed * robotSpeed));
-  }
-
-  public double B(double z, double distance) {
-    return (2 * z * Math.cos(TurretConstants.kHoodAngle))
-        - (distance * Math.sin(TurretConstants.kHoodAngle));
-  }
-
-  public double C(double z, double distance) {
-    return (z * Math.cos(TurretConstants.kHoodAngle))
-        - (distance * Math.sin(TurretConstants.kHoodAngle) * Math.cos(TurretConstants.kHoodAngle));
-  }
 
   /** Functions***************** */
   public void setVolts(double volts) {
@@ -90,10 +77,6 @@ public class Turret extends RBSISubsystem {
   public double getTurretEncoderPosition() {
     return io.getTurretEncoderPosition();
   }
-
-  // public void print() {
-  //   System.out.println(io.getTurretEncoderPosition());
-  // }
 
   public double simplifiedTurretPosition() {
     return MathUtil.inputModulus(io.getTurretEncoderPosition(), 1, 10)
