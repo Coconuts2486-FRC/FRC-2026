@@ -31,6 +31,7 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants;
 import frc.robot.Constants.PowerConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.util.PhoenixUtil;
 import frc.robot.util.RBSIEnum.CTREPro;
 
@@ -106,7 +107,7 @@ public class ShooterIOTalonFX implements ShooterIO {
         Units.rotationsToRadians(leaderPosition.getValueAsDouble()) / kShooterGearRatio;
     inputs.velocityRadPerSec =
         Units.rotationsToRadians(leaderVelocity.getValueAsDouble()) / kShooterGearRatio;
-    inputs.appliedVolts = leaderAppliedVolts.getValueAsDouble();
+    inputs.velocityMetersPerSec = inputs.velocityRadPerSec * -ShooterConstants.flywheelCircumfrence;
     inputs.currentAmps =
         new double[] {leaderCurrent.getValueAsDouble(), followerCurrent.getValueAsDouble()};
   }
