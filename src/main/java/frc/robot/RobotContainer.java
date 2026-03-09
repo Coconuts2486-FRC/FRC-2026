@@ -60,6 +60,9 @@ import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.intake.IntakeIOTalonFX;
 import frc.robot.subsystems.prematch.Prematch;
+import frc.robot.subsystems.rollers.rollers;
+import frc.robot.subsystems.rollers.rollersIO;
+import frc.robot.subsystems.rollers.rollersIOTalonFX;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOSim;
@@ -116,6 +119,7 @@ public class RobotContainer {
   private final Indexer m_indexer;
   private final Feeder m_feeder;
   private final Shooter m_shooter;
+  private final rollers m_rollers;
 
   private boolean elasticOnDriveTab = true;
   private final Turret m_turret;
@@ -223,6 +227,7 @@ public class RobotContainer {
         m_shooter = new Shooter(new ShooterIOTalonFX());
         m_turret = new Turret(new TurretIOTalonFX());
         m_prematch = new Prematch(m_turret, m_intake);
+        m_rollers = new rollers(new rollersIOTalonFX());
         sweep = null;
 
         break;
@@ -241,6 +246,7 @@ public class RobotContainer {
         m_feeder = new Feeder(new FeederIOSim());
         m_shooter = new Shooter(new ShooterIOSim());
         m_turret = new Turret(new TurretIOSim());
+        m_rollers = new rollers(new rollersIOTalonFX());
         m_prematch = null;
 
         // ---------------- CameraSweepEvaluator (sim-only analysis) ----------------
@@ -285,6 +291,7 @@ public class RobotContainer {
         m_climb = new Climb(new ClimbIO() {});
         m_turret = new Turret(new TurretIO() {});
         m_prematch = new Prematch(m_turret, m_intake);
+        m_rollers = new rollers(new rollersIO() {});
 
         break;
     }
@@ -306,7 +313,7 @@ public class RobotContainer {
         new Coordinator(
             m_drivebase::getPose,
             m_drivebase::getFieldLinearVelocity,
-            m_intake::isIntakeRollersRunning,
+            m_rollers::isIntakeRollersRunning,
             m_intake::isIntakeExtended);
 
     // Set up the SmartDashboard Auto Chooser based on auto type
@@ -367,7 +374,7 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("IntakeDown", Commands.run(() -> m_intake.pivotDown()));
 
-    NamedCommands.registerCommand("Intake", Commands.run(() -> m_intake.runRollers()));
+    NamedCommands.registerCommand("Intake", Commands.run(() -> m_rollers.runRollers(0.5)));
 
     // NamedCommands.registerCommand(
     //   "ClimbPrepare",
@@ -437,7 +444,7 @@ public class RobotContainer {
         // either input is true.
         Commands.run(
             () -> {
-              if (m_intake.isIntakeRollersRunning() || m_feeder.isFeederRunning()) {
+              if (m_rollers.isIntakeRollersRunning() || m_feeder.isFeederRunning()) {
                 m_indexer.setVelocity(-0.37);
               } else {
                 m_indexer.indexerStop();
@@ -506,7 +513,10 @@ public class RobotContainer {
     that cancels the default and keeps the intake down with out the driver having to hold any button */
     driverController.a().toggleOnTrue(Commands.run(() -> m_intake.pivotDown()));
 
-    driverController.b().toggleOnTrue(Commands.run(() -> m_intake.runRollers(), m_intake));
+    driverController
+        .b()
+        .toggleOnTrue(Commands.run(() -> m_rollers.runRollers(0.5), m_intake))
+        .onFalse(Commands.run(() -> m_rollers.stop()));
 
     driverController.povUp().whileTrue(Commands.run(() -> m_intake.setPivotPrimitiveSpeed(0.05)));
     driverController

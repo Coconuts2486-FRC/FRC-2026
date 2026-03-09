@@ -25,21 +25,14 @@ public interface IntakeIO extends RBSIIO {
   @AutoLog
   public static class IntakeIOInputs {
     public boolean pivotConnected = false;
-    public boolean rollerConnected = false;
     public double pivotPositionRot = 0.0;
     public double pivotAvAngularVelocity = 0.0;
-    public double rollersAngularVelocity = 0.0;
     public double pivotAppliedVolts = 0.0;
-    public double rollersAppliedVolts = 0.0;
     public double[] currentAmps = new double[] {};
     // public boolean releaseButton = false;
   }
 
-  public default void setRollerPrimitiveSpeed(double velocity) {}
-
   public default void setPivotPrimitiveSpeed(double velocity) {}
-
-  public default void stopRoller() {}
 
   public default void stopPivot() {}
 
@@ -50,10 +43,6 @@ public interface IntakeIO extends RBSIIO {
   public default void pivotToPos(double pos) {}
 
   public default void updateInputs(IntakeIOInputs inputs) {}
-
-  public default boolean isIntakeRollersRunning() {
-    return false;
-  }
 
   public default boolean isIntakeExtended() {
     return false;

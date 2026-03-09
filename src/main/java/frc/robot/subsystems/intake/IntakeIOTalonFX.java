@@ -43,8 +43,6 @@ public class IntakeIOTalonFX implements IntakeIO {
   // Declare Hardware
   private final TalonFX pivot =
       new TalonFX(INTAKE_PIVOT.getDeviceNumber(), INTAKE_PIVOT.getCANBus());
-  private final TalonFX rollers =
-      new TalonFX(INTAKE_ROLLER.getDeviceNumber(), INTAKE_ROLLER.getCANBus());
 
   public final int[] POWER_PORTS = {INTAKE_PIVOT.getPowerPort(), INTAKE_ROLLER.getPowerPort()};
 
@@ -53,11 +51,10 @@ public class IntakeIOTalonFX implements IntakeIO {
 
   private final StatusSignal<Angle> pivotPosition = pivot.getPosition();
   private final StatusSignal<AngularVelocity> pivotVelocity = pivot.getVelocity();
-  private final StatusSignal<AngularVelocity> rollerVelocity = rollers.getVelocity();
+
   private final StatusSignal<Voltage> pivotAppliedVolts = pivot.getMotorVoltage();
-  private final StatusSignal<Voltage> rollersAppliedVolts = rollers.getMotorVoltage();
+
   private final StatusSignal<Current> pivotCurrent = pivot.getSupplyCurrent();
-  private final StatusSignal<Current> rollersCurrent = rollers.getSupplyCurrent();
 
   /** Return the power ports */
   @Override
@@ -106,20 +103,11 @@ public class IntakeIOTalonFX implements IntakeIO {
     cancoderConfig.MagnetSensor.MagnetOffset = -0.3;
 
     BaseStatusSignal.setUpdateFrequencyForAll(
-        50.0,
-        pivotCurrent,
-        pivotPosition,
-        pivotVelocity,
-        pivotAppliedVolts,
-        rollersCurrent,
-        rollerVelocity,
-        rollersAppliedVolts);
+        50.0, pivotCurrent, pivotPosition, pivotVelocity, pivotAppliedVolts);
 
     // applying
     PhoenixUtil.tryUntilOk(5, () -> pivotEncoder.getConfigurator().apply(cancoderConfig));
-    PhoenixUtil.tryUntilOk(5, () -> rollers.getConfigurator().apply(rollerConfig));
     pivot.optimizeBusUtilization();
-    rollers.optimizeBusUtilization();
   }
 
   @Override
@@ -129,33 +117,25 @@ public class IntakeIOTalonFX implements IntakeIO {
         BaseStatusSignal.refreshAll(pivotCurrent, pivotPosition, pivotVelocity, pivotAppliedVolts);
 
     // checks the status of roller
-    var rollerStatus =
-        BaseStatusSignal.refreshAll(rollersCurrent, rollerVelocity, rollersAppliedVolts);
 
     inputs.pivotConnected = pivotStatus.isOK();
-    inputs.rollerConnected = rollerStatus.isOK();
     inputs.pivotPositionRot = pivotPosition.getValueAsDouble();
     inputs.pivotAvAngularVelocity = pivotVelocity.getValueAsDouble();
-    inputs.rollersAngularVelocity = rollerVelocity.getValueAsDouble();
     // inputs.releaseButton = true; // getReleaseState();
-    inputs.rollersAppliedVolts = rollersAppliedVolts.getValueAsDouble();
     inputs.pivotAppliedVolts = pivotAppliedVolts.getValueAsDouble();
-    inputs.currentAmps =
-        new double[] {pivotCurrent.getValueAsDouble(), rollersCurrent.getValueAsDouble()};
+    inputs.currentAmps = new double[] {pivotCurrent.getValueAsDouble()};
   }
 
   /** Set the coast mode of the mechanism as COAST */
   @Override
   public void setCoast() {
     pivot.setNeutralMode(NeutralModeValue.Coast);
-    rollers.setNeutralMode(NeutralModeValue.Coast);
   }
 
   /** Set the coast mode of the mechanism as BRAKE */
   @Override
   public void setBrake() {
     pivot.setNeutralMode(NeutralModeValue.Brake);
-    rollers.setNeutralMode(NeutralModeValue.Brake);
   }
 
   /** Set the mechanism angular velocity in physical units ***************** */
@@ -175,18 +155,8 @@ public class IntakeIOTalonFX implements IntakeIO {
    * @param speed Primitive speed in the range -1.0 to 1.0
    */
   @Override
-  public void setRollerPrimitiveSpeed(double speed) {
-    rollers.set(speed);
-  }
-
-  @Override
   public void stopPivot() {
     pivot.stopMotor();
-  }
-
-  @Override
-  public void stopRoller() {
-    rollers.stopMotor();
   }
 
   /** Getter functions ***************************************************** */
@@ -195,14 +165,6 @@ public class IntakeIOTalonFX implements IntakeIO {
    *
    * @return Whether the rollers are running
    */
-  @Override
-  public boolean isIntakeRollersRunning() {
-    if (Math.abs(rollers.get()) > 0.02) {
-      return true;
-    } else {
-      return false;
-    }
-  }
 
   /**
    * Get the intake extended boolean
