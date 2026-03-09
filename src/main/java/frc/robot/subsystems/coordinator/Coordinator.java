@@ -49,7 +49,7 @@ public class Coordinator extends VirtualSubsystem {
   private double xpos;
   private double ypos;
   private Translation2d velocity;
-  private Alliance alliance;
+  private Alliance alliance = Alliance.Blue;
   private boolean allianceSet = false;
   boolean intakeRunning;
   boolean runOnceDisabled = true;
@@ -101,6 +101,7 @@ public class Coordinator extends VirtualSubsystem {
     if (!allianceSet && DriverStation.isEnabled()) {
       // Get the current alliance once when enabled
       alliance = DriverStation.getAlliance().get();
+      allianceSet = true;
     }
 
     // Determine whether we are in the HOME, NEUTRAL, or FOREIGN zone
