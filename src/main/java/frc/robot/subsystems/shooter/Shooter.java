@@ -136,7 +136,7 @@ public class Shooter extends RBSISubsystem {
         ((Units.radiansPerSecondToRotationsPerMinute(inputs.velocityRadPerSec) / 60)
                 / ShooterConstants.kShooterGearRatio)
             * ShooterConstants.flywheelCircumfrence;
-    return Math.abs(currentMetersPerSecond) >= Math.abs(targetMetersPerSecond * 0.5);
+    return Math.abs(currentMetersPerSecond) >= Math.abs(targetMetersPerSecond * 0.6);
   }
 
   @Override

@@ -557,7 +557,7 @@ public class RobotContainer {
 
     driverController
         .leftTrigger()
-        .toggleOnTrue(Commands.run(() -> m_shooter.runVelocity(10), m_shooter))
+        .toggleOnTrue(Commands.run(() -> m_shooter.runVelocity(11.5), m_shooter))
         // .alongWith(Commands.run(() -> m_feeder.setFeederVelocity(0.5), m_feeder)))
         .onFalse(
             Commands.run(() -> m_shooter.stop(), m_shooter)
