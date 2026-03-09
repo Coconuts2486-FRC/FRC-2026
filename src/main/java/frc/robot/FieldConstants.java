@@ -42,8 +42,10 @@ import lombok.Getter;
 public class FieldConstants {
 
   public static final Distance startingLineXBLue = Inches.of(157.06);
+  public static final double startingLineXBlueMeters = startingLineXBLue.in(Meters);
 
   public static final Distance startingLineXRed = Inches.of(493.06);
+  public static final double startingLineXRedMeters = startingLineXRed.in(Meters);
 
   public static final Translation2d towerCenterBlue =
       new Translation2d(Inches.of(43.8), Inches.of(169.78));
