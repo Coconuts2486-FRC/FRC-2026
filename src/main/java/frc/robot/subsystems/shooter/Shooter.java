@@ -12,11 +12,15 @@ package frc.robot.subsystems.shooter;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.ShooterConstants.*;
 
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.computations.FieldRelativeShooterSolver;
 import frc.robot.util.RBSISubsystem;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -26,6 +30,8 @@ public class Shooter extends RBSISubsystem {
   private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
   private final SysIdRoutine sysId;
   private double targetMetersPerSecond = 0.0;
+
+  FieldRelativeShooterSolver.FieldShotSolution solution;
 
   /** Creates a new Shooter. */
   public Shooter(ShooterIO io) {
@@ -65,6 +71,21 @@ public class Shooter extends RBSISubsystem {
   /** Run open loop at the specified voltage. */
   public void runVolts(double volts) {
     io.setVoltage(volts);
+  }
+
+  public void runTargetVelocity(
+      Pose3d robotPose,
+      Transform3d launcherTransform,
+      Pose3d targetPose,
+      Translation2d platformVelocity) {
+
+    solution =
+        FieldRelativeShooterSolver.solve(
+            robotPose, launcherTransform, targetPose, platformVelocity);
+
+    runVelocity(solution.v0());
+
+    System.out.println(solution.v0());
   }
 
   /** Run closed loop at the specified velocity. */

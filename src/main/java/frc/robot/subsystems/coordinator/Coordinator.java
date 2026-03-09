@@ -35,7 +35,7 @@ public class Coordinator extends VirtualSubsystem {
 
   // Internal variables
   private static boolean ok_to_shoot = false;
-  private Pose3d target = null;
+  public static Pose3d target = null;
   private static FieldShotSolution fuelSolution;
 
   private enum Zones {
