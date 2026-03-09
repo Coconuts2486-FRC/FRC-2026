@@ -87,7 +87,6 @@ public class Intake extends RBSISubsystem {
   public void pivotDown() {
     if (io.getPivotPosition() > IntakeConstants.dropPostion) {
       io.setPivotPrimitiveSpeed(-0.4);
-      // io.setRollerVelocity(0.65);
     } else {
       io.stopPivot();
       io.setCoast();
