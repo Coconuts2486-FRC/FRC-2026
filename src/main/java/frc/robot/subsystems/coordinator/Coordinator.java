@@ -1,3 +1,20 @@
+// Copyright (c) 2026 FRC-2486
+// https://github.com/Coconuts2486-FRC
+//
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// version 3 as published by the Free Software Foundation or
+// available in the root directory of this project.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU General Public License for more details.
+//
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 package frc.robot.subsystems.coordinator;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -35,11 +52,13 @@ public class Coordinator extends VirtualSubsystem {
   private Alliance alliance;
   private boolean allianceSet = false;
   boolean intakeRunning;
+  boolean runOnceDisabled = true;
 
   // Internal variables
   private static boolean ok_to_shoot = false;
   public static Pose3d target = null;
   private static FieldShotSolution fuelSolution;
+  private double midField = FieldConstants.aprilTagLayout.getFieldWidth() / 2.;
 
   private enum Zones {
     HOME_ZONE,
@@ -67,7 +86,9 @@ public class Coordinator extends VirtualSubsystem {
 
   @Override
   public void rbsiPeriodic() {
-    if (DriverStation.isDisabled()) {
+    if (DriverStation.isDisabled() && !runOnceDisabled) {
+      // Run the whole function once in disabled to init everything and make ENABLED startup faster
+      runOnceDisabled = false;
       // Always safe outputs
       return;
     }
@@ -120,13 +141,13 @@ public class Coordinator extends VirtualSubsystem {
         switch (alliance) {
           case Blue:
             target =
-                (ypos < FieldConstants.aprilTagLayout.getFieldWidth() / 2.)
+                (ypos < midField)
                     ? FieldConstants.passingOutpostBlue
                     : FieldConstants.passingDepotBlue;
 
           case Red:
             target =
-                (ypos > FieldConstants.aprilTagLayout.getFieldWidth() / 2.)
+                (ypos > midField)
                     ? FieldConstants.passingOutpostRed
                     : FieldConstants.passingDepotRed;
         }
