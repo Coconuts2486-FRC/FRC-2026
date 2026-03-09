@@ -514,26 +514,29 @@ public class RobotContainer {
 
     driverController.b().toggleOnTrue(Commands.run(() -> m_rollers.runRollers(), m_rollers));
 
-    driverController.povUp().whileTrue(Commands.run(() -> m_intake.setPivotPrimitiveSpeed(0.05)));
-    driverController
-        .povUp()
-        .whileTrue(
-            Commands.run(
-                () -> {
-                  m_drivebase.runVelocity(
-                      new ChassisSpeeds(Units.inchesToMeters(-11), Units.inchesToMeters(0), 0));
-                },
-                m_drivebase));
+    driverController.povUp().onTrue(Commands.run(() -> m_shooter.increaseSpeed()));
 
-    driverController
-        .povDown()
-        .whileTrue(
-            Commands.run(
-                () -> {
-                  m_drivebase.runVelocity(
-                      new ChassisSpeeds(Units.inchesToMeters(11), Units.inchesToMeters(0), 0));
-                },
-                m_drivebase));
+    driverController.povDown().onTrue(Commands.run(() -> m_shooter.decreaseSpeed()));
+
+    // driverController
+    //     .povUp()
+    //     .whileTrue(
+    //         Commands.run(
+    //             () -> {
+    //               m_drivebase.runVelocity(
+    //                   new ChassisSpeeds(Units.inchesToMeters(-11), Units.inchesToMeters(0), 0));
+    //             },
+    //             m_drivebase));
+
+    // driverController
+    //     .povDown()
+    //     .whileTrue(
+    //         Commands.run(
+    //             () -> {
+    //               m_drivebase.runVelocity(
+    //                   new ChassisSpeeds(Units.inchesToMeters(11), Units.inchesToMeters(0), 0));
+    //             },
+    //             m_drivebase));
 
     driverController
         .povRight()
