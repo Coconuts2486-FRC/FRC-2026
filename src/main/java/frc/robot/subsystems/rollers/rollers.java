@@ -16,7 +16,7 @@ public class rollers extends RBSISubsystem {
   public void rbsiPeriodic() {}
 
   public void runRollers() {
-    io.runRollers(0.5);
+    io.runRollers(0.65);
   }
 
   public void stop() {
