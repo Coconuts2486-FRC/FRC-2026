@@ -39,7 +39,7 @@ public class CANStatus extends VirtualSubsystem {
             && modules[3].isAlive()
             && imu.isConnected());
 
-    mainCAN = (intake.pivotAlive() && intake.rollersAlive() && feeder.isFeederAlive());
+    mainCAN = (intake.pivotAlive() && feeder.isFeederAlive());
 
     // Logger inputs for each CAN network
     Logger.recordOutput("CAN/DriveCAN", driveCAN);
@@ -54,7 +54,6 @@ public class CANStatus extends VirtualSubsystem {
 
     // logger inputs for each part of the main CAN network
     Logger.recordOutput("CAN/IntakePivotAlive", intake.pivotAlive());
-    Logger.recordOutput("CAN/IntakeRollersAlive", intake.rollersAlive());
     Logger.recordOutput("CAN/FeederAlive", feeder.isFeederAlive());
   }
 }

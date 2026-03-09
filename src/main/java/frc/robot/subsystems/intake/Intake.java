@@ -34,8 +34,7 @@ public class Intake extends RBSISubsystem {
   public Intake(IntakeIO io) {
     this.io = io;
 
-    setDefaultCommand(
-        Commands.run(() -> pivotUp(), this).alongWith(Commands.run(() -> stopRollers())));
+    setDefaultCommand(Commands.run(() -> pivotUp(), this));
   }
 
   /** Simulation periodic function */
@@ -63,9 +62,6 @@ public class Intake extends RBSISubsystem {
    *
    * @param speed Primitive speed value between -1.0 and 1.0
    */
-  public void setRollerPrimitiveSpeed(double speed) {
-    io.setRollerPrimitiveSpeed(speed);
-  }
 
   /**
    * Set the pivot primitive speed
@@ -77,14 +73,6 @@ public class Intake extends RBSISubsystem {
   }
 
   /** Run the rollers at a pre-determined primitive speed */
-  public void runRollers() {
-    io.setRollerPrimitiveSpeed(IntakeConstants.kRollerPrimitiveSpeed);
-  }
-
-  /** Stop the rollers */
-  public void stopRollers() {
-    io.stopRoller();
-  }
 
   /** Stop the pivot motion */
   public void stopPivot() {
@@ -145,9 +133,6 @@ public class Intake extends RBSISubsystem {
    *
    * @return Rollers running boolean
    */
-  public boolean isIntakeRollersRunning() {
-    return io.isIntakeRollersRunning();
-  }
 
   /**
    * Get whether the intake is extended
@@ -163,9 +148,6 @@ public class Intake extends RBSISubsystem {
    *
    * @return rollersAlive boolean
    */
-  public boolean rollersAlive() {
-    return inputs.rollerConnected;
-  }
 
   /**
    * Get whether the pivot is alive
