@@ -1,5 +1,6 @@
 package frc.robot.subsystems.rollers;
 
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.util.RBSISubsystem;
 
 public class rollers extends RBSISubsystem {
@@ -7,13 +8,15 @@ public class rollers extends RBSISubsystem {
 
   public rollers(rollersIO io) {
     this.io = io;
+
+    setDefaultCommand(Commands.run(() -> stop(), this));
   }
 
   @Override
   public void rbsiPeriodic() {}
 
-  public void runRollers(double speed) {
-    io.runRollers(speed);
+  public void runRollers() {
+    io.runRollers(0.5);
   }
 
   public void stop() {
