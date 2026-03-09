@@ -33,7 +33,7 @@ public class Feeder extends RBSISubsystem {
   }
 
   public void runFeeder() {
-    io.setFeederVelocity(0.15);
+    io.setFeederVelocity(0.5);
   }
 
   public void stopFeeder() {

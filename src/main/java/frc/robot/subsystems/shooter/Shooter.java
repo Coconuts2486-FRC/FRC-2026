@@ -98,6 +98,7 @@ public class Shooter extends RBSISubsystem {
             * -1;
 
     io.setVelocity(velocity);
+    System.out.println("shoot");
 
     // Log Shooter setpoint
     Logger.recordOutput("Shooter/SetpointMeters/Second", metersPerSecond);

@@ -568,7 +568,7 @@ public class RobotContainer {
             //         m_feeder))
             );
 
-    driverController
+    operatorController
         .rightTrigger()
         .toggleOnTrue(
             Commands.run(
@@ -581,7 +581,7 @@ public class RobotContainer {
                 m_shooter))
         // .alongWith(Commands.run(() -> m_feeder.setFeederVelocity(0.5), m_feeder)))
         .onFalse(
-            Commands.run(() -> m_shooter.stop(), m_shooter)
+            Commands.run(() -> m_shooter.stop())
             // .alongWith(
             //     Commands.run(
             //         () -> m_feeder.stopFeeder(),
