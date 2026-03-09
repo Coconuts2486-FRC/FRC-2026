@@ -374,7 +374,7 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("IntakeDown", Commands.run(() -> m_intake.pivotDown()));
 
-    NamedCommands.registerCommand("Intake", Commands.run(() -> m_rollers.runRollers(0.5)));
+    NamedCommands.registerCommand("Intake", Commands.run(() -> m_rollers.runRollers()));
 
     // NamedCommands.registerCommand(
     //   "ClimbPrepare",
@@ -510,12 +510,9 @@ public class RobotContainer {
 
     /*there is a default command in intake that makes it go up this toggles a new command
     that cancels the default and keeps the intake down with out the driver having to hold any button */
-    driverController.a().toggleOnTrue(Commands.run(() -> m_intake.pivotDown()));
+    driverController.a().toggleOnTrue(Commands.run(() -> m_intake.pivotDown(), m_intake));
 
-    driverController
-        .b()
-        .toggleOnTrue(Commands.run(() -> m_rollers.runRollers(0.5), m_rollers))
-        .onFalse(Commands.run(() -> m_rollers.stop()));
+    driverController.b().toggleOnTrue(Commands.run(() -> m_rollers.runRollers(), m_rollers));
 
     driverController.povUp().whileTrue(Commands.run(() -> m_intake.setPivotPrimitiveSpeed(0.05)));
     driverController
