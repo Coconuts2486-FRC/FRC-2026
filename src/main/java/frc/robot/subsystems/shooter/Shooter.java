@@ -33,7 +33,6 @@ public class Shooter extends RBSISubsystem {
 
   private final SysIdRoutine sysId;
   private double targetMetersPerSecond = 0.0;
-  private double shooterSpeed = 0;
 
   FieldRelativeShooterSolver.FieldShotSolution solution;
 
@@ -87,33 +86,24 @@ public class Shooter extends RBSISubsystem {
         FieldRelativeShooterSolver.solve(
             robotPose, launcherTransform, targetPose, platformVelocity);
 
-    runVelocity();
+    runVelocity(0);
 
     System.out.println(solution.v0());
   }
 
   /** Run closed loop at the specified velocity. */
-  public void runVelocity() {
+  public void runVelocity(double velocity) {
 
-    targetMetersPerSecond = shooterSpeed;
+    targetMetersPerSecond = velocity;
 
-    double velocity =
-        (shooterSpeed / ShooterConstants.flywheelCircumfrence)
+    double speed =
+        (velocity / ShooterConstants.flywheelCircumfrence)
             * ShooterConstants.kShooterGearRatio
             * -1;
 
-    io.setVelocity(velocity);
+    io.setVelocity(speed);
 
     // Log Shooter setpoint
-    Logger.recordOutput("Shooter/SetpointMeters", shooterSpeed);
-  }
-
-  public void increaseSpeed() {
-    shooterSpeed = shooterSpeed + 0.5;
-  }
-
-  public void decreaseSpeed() {
-    shooterSpeed = shooterSpeed - 0.5;
   }
 
   /** Stops the Shooter. */
