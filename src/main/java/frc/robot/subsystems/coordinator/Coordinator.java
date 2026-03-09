@@ -1,7 +1,5 @@
 package frc.robot.subsystems.coordinator;
 
-import static edu.wpi.first.units.Units.Meters;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -29,9 +27,14 @@ public class Coordinator extends VirtualSubsystem {
   private final Supplier<Boolean> intakeExtendedSupplier;
   private Mode mode = Mode.IDLE;
 
-  // latched "intent" flags (set by commands/buttons)
-  private boolean wantAutoAim = false;
-  private boolean wantScore = false;
+  // Instantiate loop variables
+  private Pose2d pose;
+  private double xpos;
+  private double ypos;
+  private Translation2d velocity;
+  private Alliance alliance;
+  private boolean allianceSet = false;
+  boolean intakeRunning;
 
   // Internal variables
   private static boolean ok_to_shoot = false;
@@ -62,14 +65,6 @@ public class Coordinator extends VirtualSubsystem {
     this.mode = mode;
   }
 
-  public void setWantAutoAim(boolean enabled) {
-    wantAutoAim = enabled;
-  }
-
-  public void requestScore() {
-    wantScore = true;
-  }
-
   @Override
   public void rbsiPeriodic() {
     if (DriverStation.isDisabled()) {
@@ -78,14 +73,17 @@ public class Coordinator extends VirtualSubsystem {
     }
 
     // Read in the current robot state “truth”
-    Pose2d pose = poseSupplier.get();
-    double xpos = pose.getX();
-    double ypos = pose.getY();
-    Translation2d velocity = velocitySupplier.get();
-    Alliance alliance = DriverStation.getAlliance().get();
+    pose = poseSupplier.get();
+    xpos = pose.getX();
+    ypos = pose.getY();
+    velocity = velocitySupplier.get();
+    if (!allianceSet && DriverStation.isEnabled()) {
+      // Get the current alliance once when enabled
+      alliance = DriverStation.getAlliance().get();
+    }
 
     // Determine whether we are in the HOME, NEUTRAL, or FOREIGN zone
-    if (xpos < FieldConstants.startingLineXBLue.in(Meters)) {
+    if (xpos < FieldConstants.startingLineXBlueMeters) {
       // On the BLUE side of the field
       zone =
           switch (alliance) {
@@ -93,7 +91,7 @@ public class Coordinator extends VirtualSubsystem {
             case Red -> Zones.FOREIGN_ZONE;
           };
 
-    } else if (xpos > FieldConstants.startingLineXRed.in(Meters)) {
+    } else if (xpos > FieldConstants.startingLineXRedMeters) {
       // On the RED side of the field
       zone =
           switch (alliance) {
@@ -145,7 +143,7 @@ public class Coordinator extends VirtualSubsystem {
     //     FieldRelativeShooterSolver.solve(new Pose3d(pose), Transform3d.kZero, target, velocity);
 
     // Check on intake roller running
-    boolean intakeRunning = intakeRollersRunningSupplier.get();
+    intakeRunning = intakeRollersRunningSupplier.get();
 
     // 2) State machine / mode logic
     switch (mode) {
@@ -166,12 +164,6 @@ public class Coordinator extends VirtualSubsystem {
 
       case SCORE -> {
         // Example: require "aimed + shooter ready" then feed
-        boolean ready = true; // shooter.atSetpoint(), etc
-
-        if (ready && wantScore) {
-          // feed
-          wantScore = false;
-        }
       }
 
       case INTAKE -> {
