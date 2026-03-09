@@ -510,12 +510,7 @@ public class RobotContainer {
 
     /*there is a default command in intake that makes it go up this toggles a new command
     that cancels the default and keeps the intake down with out the driver having to hold any button */
-    driverController
-        .a()
-        .toggleOnTrue(
-            Commands.run(() -> m_intake.pivotDown(), m_intake)
-                .alongWith(Commands.run(() -> m_rollers.runInverse()).withTimeout(1)))
-        .onFalse(Commands.run(() -> m_rollers.runInverse()).withTimeout(1));
+    driverController.a().toggleOnTrue(Commands.run(() -> m_intake.pivotDown(), m_intake).alongWith(Commands.run(()-> m_rollers.runInverse())));
 
     driverController.b().toggleOnTrue(Commands.run(() -> m_rollers.runRollers(), m_rollers));
 
@@ -562,7 +557,7 @@ public class RobotContainer {
 
     driverController
         .leftTrigger()
-        .toggleOnTrue(Commands.run(() -> m_shooter.runVelocity(11.5), m_shooter))
+        .toggleOnTrue(Commands.run(() -> m_shooter.runVelocity(), m_shooter))
         // .alongWith(Commands.run(() -> m_feeder.setFeederVelocity(0.5), m_feeder)))
         .onFalse(
             Commands.run(() -> m_shooter.stop(), m_shooter)
