@@ -35,11 +35,13 @@ public class Coordinator extends VirtualSubsystem {
   private Alliance alliance;
   private boolean allianceSet = false;
   boolean intakeRunning;
+  boolean runOnceDisabled = true;
 
   // Internal variables
   private static boolean ok_to_shoot = false;
   public static Pose3d target = null;
   private static FieldShotSolution fuelSolution;
+  private double midField = FieldConstants.aprilTagLayout.getFieldWidth() / 2.;
 
   private enum Zones {
     HOME_ZONE,
@@ -67,7 +69,9 @@ public class Coordinator extends VirtualSubsystem {
 
   @Override
   public void rbsiPeriodic() {
-    if (DriverStation.isDisabled()) {
+    if (DriverStation.isDisabled() && !runOnceDisabled) {
+      // Run the whole function once in disabled to init everything and make ENABLED startup faster
+      runOnceDisabled = false;
       // Always safe outputs
       return;
     }
@@ -120,13 +124,13 @@ public class Coordinator extends VirtualSubsystem {
         switch (alliance) {
           case Blue:
             target =
-                (ypos < FieldConstants.aprilTagLayout.getFieldWidth() / 2.)
+                (ypos < midField)
                     ? FieldConstants.passingOutpostBlue
                     : FieldConstants.passingDepotBlue;
 
           case Red:
             target =
-                (ypos > FieldConstants.aprilTagLayout.getFieldWidth() / 2.)
+                (ypos > midField)
                     ? FieldConstants.passingOutpostRed
                     : FieldConstants.passingDepotRed;
         }
