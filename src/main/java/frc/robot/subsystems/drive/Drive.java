@@ -27,6 +27,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -493,6 +494,12 @@ public class Drive extends RBSISubsystem {
       return simPhysics.getPose();
     }
     return m_PoseEstimator.getEstimatedPosition();
+  }
+
+  public Pose3d get3dPose() {
+
+    Pose3d newPose = new Pose3d(m_PoseEstimator.getEstimatedPosition());
+    return newPose;
   }
 
   /** Returns the current odometry rotation. */
