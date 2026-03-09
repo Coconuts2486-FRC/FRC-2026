@@ -350,10 +350,10 @@ public final class Constants {
   /** Example Flywheel Mechanism Constants ********************************* */
   public static final class ShooterConstants {
 
-    public static final Translation3d shooterTranslate = new Translation3d(0.0, 0.0, 0.0);
-    public static final Rotation3d shooterRotation = new Rotation3d(0.0, 0.0, 0.0);
-    public static final Transform3d shooterTransform =
-        new Transform3d(shooterTranslate, shooterRotation);
+    public static final Transform3d kShooterTransform =
+        new Transform3d(
+            new Translation3d(Units.inchesToMeters(-5.5), 0.0, Units.inchesToMeters(20.0)),
+            Rotation3d.kZero);
 
     // Mechanism idle mode
     public static final MotorIdleMode kShooterIdleMode = MotorIdleMode.COAST; // BRAKE, COAST
