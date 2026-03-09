@@ -17,6 +17,8 @@
 
 package frc.robot.subsystems.coordinator;
 
+import static frc.robot.Constants.ShooterConstants.kShooterTransform;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -24,7 +26,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.FieldConstants;
-import frc.robot.computations.FieldRelativeShooterSolver.FieldShotSolution;
+import frc.robot.computations.BasicRegression;
+import frc.robot.computations.BasicRegression.RegressionShotSolution;
 import frc.robot.util.VirtualSubsystem;
 import java.util.function.Supplier;
 
@@ -57,7 +60,8 @@ public class Coordinator extends VirtualSubsystem {
   // Internal variables
   private static boolean ok_to_shoot = false;
   public static Pose3d target = null;
-  private static FieldShotSolution fuelSolution;
+  // private static FieldShotSolution fuelSolution;
+  private static RegressionShotSolution fuelSolution;
   private double midField = FieldConstants.aprilTagLayout.getFieldWidth() / 2.;
 
   private enum Zones {
@@ -162,7 +166,8 @@ public class Coordinator extends VirtualSubsystem {
 
     // Using the target and the current pose, compute v0 and phi
     // fuelSolution =
-    //     FieldRelativeShooterSolver.solve(new Pose3d(pose), Transform3d.kZero, target, velocity);
+    //     FieldRelativeShooterSolver.solve(new Pose3d(pose), kShooterTransform, target, velocity);
+    fuelSolution = BasicRegression.solve(new Pose3d(pose), kShooterTransform, target);
 
     // Check on intake roller running
     intakeRunning = intakeRollersRunningSupplier.get();

@@ -18,6 +18,7 @@
 package frc.robot.subsystems.indexer;
 
 import frc.robot.util.RBSISubsystem;
+import org.littletonrobotics.junction.Logger;
 
 public class Indexer extends RBSISubsystem {
   private final IndexerIO io;
@@ -37,7 +38,10 @@ public class Indexer extends RBSISubsystem {
   }
 
   @Override
-  public void rbsiPeriodic() {}
+  public void rbsiPeriodic() {
+    io.updateInputs(inputs);
+    Logger.processInputs("Indexer", inputs);
+  }
 
   @Override
   public void simulationPeriodic() {}

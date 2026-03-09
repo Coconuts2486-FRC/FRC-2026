@@ -26,8 +26,11 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Shooter extends RBSISubsystem {
+
+  // Declare IO
   private final ShooterIO io;
   private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
+
   private final SysIdRoutine sysId;
   private double targetMetersPerSecond = 0.0;
   private double shooterSpeed = 0;
