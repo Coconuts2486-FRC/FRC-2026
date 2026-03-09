@@ -19,9 +19,13 @@ package frc.robot.subsystems.climb;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import frc.robot.util.RBSISubsystem;
+import org.littletonrobotics.junction.Logger;
 
 public class Climb extends RBSISubsystem {
+
+  // Declare IO
   private ClimbIO io;
+  private final ClimbIOInputsAutoLogged inputs = new ClimbIOInputsAutoLogged();
 
   private ElevatorFeedforward ffmodel;
 
@@ -32,7 +36,10 @@ public class Climb extends RBSISubsystem {
   }
 
   @Override
-  protected void rbsiPeriodic() {}
+  public void rbsiPeriodic() {
+    io.updateInputs(inputs);
+    Logger.processInputs("Climb", inputs);
+  }
 
   public void setPosition(double pos) {
     io.setPosition(pos);

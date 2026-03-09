@@ -18,8 +18,11 @@
 package frc.robot.subsystems.feeder;
 
 import frc.robot.util.RBSISubsystem;
+import org.littletonrobotics.junction.Logger;
 
 public class Feeder extends RBSISubsystem {
+
+  // Declare IO
   private final FeederIO io;
   private final FeederIOInputsAutoLogged inputs = new FeederIOInputsAutoLogged();
 
@@ -53,7 +56,10 @@ public class Feeder extends RBSISubsystem {
   }
 
   @Override
-  public void rbsiPeriodic() {}
+  public void rbsiPeriodic() {
+    io.updateInputs(inputs);
+    Logger.processInputs("Feeder", inputs);
+  }
 
   @Override
   public void simulationPeriodic() {}

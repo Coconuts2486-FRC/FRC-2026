@@ -166,7 +166,7 @@ public class Coordinator extends VirtualSubsystem {
 
     // Using the target and the current pose, compute v0 and phi
     // fuelSolution =
-    //     FieldRelativeShooterSolver.solve(new Pose3d(pose), Transform3d.kZero, target, velocity);
+    //     FieldRelativeShooterSolver.solve(new Pose3d(pose), kShooterTransform, target, velocity);
     fuelSolution = BasicRegression.solve(new Pose3d(pose), kShooterTransform, target);
 
     // Check on intake roller running
