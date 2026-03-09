@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.computations.FieldRelativeShooterSolver;
+import frc.robot.util.LoggedTunableNumber;
 import frc.robot.util.RBSISubsystem;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -30,6 +31,8 @@ public class Shooter extends RBSISubsystem {
   private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
   private final SysIdRoutine sysId;
   private double targetMetersPerSecond = 0.0;
+  public static final LoggedTunableNumber shooterSpeed =
+      new LoggedTunableNumber("Shooter/speed", 0);
 
   FieldRelativeShooterSolver.FieldShotSolution solution;
 
@@ -83,24 +86,23 @@ public class Shooter extends RBSISubsystem {
         FieldRelativeShooterSolver.solve(
             robotPose, launcherTransform, targetPose, platformVelocity);
 
-    runVelocity(solution.v0());
+    runVelocity();
 
     System.out.println(solution.v0());
   }
 
   /** Run closed loop at the specified velocity. */
-  public void runVelocity(double metersPerSecond) {
-    targetMetersPerSecond = metersPerSecond;
+  public void runVelocity() {
 
     double velocity =
-        (metersPerSecond / ShooterConstants.flywheelCircumfrence)
+        (shooterSpeed.getAsDouble() / ShooterConstants.flywheelCircumfrence)
             * ShooterConstants.kShooterGearRatio
             * -1;
 
     io.setVelocity(velocity);
 
     // Log Shooter setpoint
-    Logger.recordOutput("Shooter/SetpointMeters/Second", metersPerSecond);
+    Logger.recordOutput("Shooter/SetpointMeters/Second", shooterSpeed.getAsDouble());
   }
 
   /** Stops the Shooter. */
