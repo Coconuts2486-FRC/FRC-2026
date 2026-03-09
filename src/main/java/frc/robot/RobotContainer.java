@@ -515,7 +515,7 @@ public class RobotContainer {
 
     driverController
         .b()
-        .toggleOnTrue(Commands.run(() -> m_rollers.runRollers(0.5), m_intake))
+        .toggleOnTrue(Commands.run(() -> m_rollers.runRollers(0.5), m_rollers))
         .onFalse(Commands.run(() -> m_rollers.stop()));
 
     driverController.povUp().whileTrue(Commands.run(() -> m_intake.setPivotPrimitiveSpeed(0.05)));
