@@ -34,7 +34,6 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.CANBuses;
 import frc.robot.Constants.Cameras;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.Constants.ShooterConstants;
 import frc.robot.FieldConstants.AprilTagLayoutType;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.accelerometer.Accelerometer;
@@ -558,7 +557,7 @@ public class RobotContainer {
 
     driverController
         .leftTrigger()
-        .toggleOnTrue(Commands.run(() -> m_shooter.runVelocity(21), m_shooter))
+        .toggleOnTrue(Commands.run(() -> m_shooter.runVelocity(10), m_shooter))
         // .alongWith(Commands.run(() -> m_feeder.setFeederVelocity(0.5), m_feeder)))
         .onFalse(
             Commands.run(() -> m_shooter.stop(), m_shooter)
@@ -568,25 +567,24 @@ public class RobotContainer {
             //         m_feeder))
             );
 
-    operatorController
-        .rightTrigger()
-        .toggleOnTrue(
-            Commands.run(
-                () ->
-                    m_shooter.runTargetVelocity(
-                        m_drivebase.get3dPose(),
-                        ShooterConstants.shooterTransform,
-                        Coordinator.target,
-                        m_drivebase.getFieldLinearVelocity()),
-                m_shooter))
-        // .alongWith(Commands.run(() -> m_feeder.setFeederVelocity(0.5), m_feeder)))
-        .onFalse(
-            Commands.run(() -> m_shooter.stop())
-            // .alongWith(
-            //     Commands.run(
-            //         () -> m_feeder.stopFeeder(),
-            //         m_feeder))
-            );
+    // operatorController
+    //     .rightTrigger()
+    //     .toggleOnTrue(
+    //         Commands.run(
+    //             () ->
+    //                 m_shooter.runTargetVelocity(
+    //                     m_drivebase.get3dPose(),
+    //                     ShooterConstants.shooterTransform,
+    //                     Coordinator.target,
+    //                     m_drivebase.getFieldLinearVelocity())))
+    //     // .alongWith(Commands.run(() -> m_feeder.setFeederVelocity(0.5), m_feeder)))
+    //     .onFalse(
+    //         Commands.run(() -> m_shooter.stop())
+    //         // .alongWith(
+    //         //     Commands.run(
+    //         //         () -> m_feeder.stopFeeder(),
+    //         //         m_feeder))
+    //         );
     // ShooterConstants.kTestShooterSpeed.getAsDouble())));
 
     // driverController.leftTrigger().whileTrue(
@@ -634,7 +632,7 @@ public class RobotContainer {
                   Elastic.selectTab(elasticOnDriveTab ? 2 : 0);
                 }));
 
-    operatorController.povLeft().whileTrue(Commands.run(() -> m_turret.print()));
+    // operatorController.povLeft().whileTrue(Commands.run(() -> m_turret.print()));
 
     // checks magnetic switch (pov right)
     driverController

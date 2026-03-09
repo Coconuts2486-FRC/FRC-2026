@@ -26,7 +26,7 @@ public class Turret extends RBSISubsystem {
   @Override
   public void rbsiPeriodic() {
 
-    boolean current = readTurretSwitch();
+    // boolean current = readTurretSwitch();
 
     turretPosition =
         MathUtil.inputModulus(io.getTurretEncoderPosition(), 1, 10)
@@ -34,11 +34,11 @@ public class Turret extends RBSISubsystem {
 
     Logger.recordOutput("Turret/Is In Position?", readTurretSwitch());
 
-    if (current && !lastSwitch) {
-      io.zeroEncoder();
-    }
+    // if (current && !lastSwitch) {
+    //   io.zeroEncoder();
+    // }
 
-    lastSwitch = current;
+    // lastSwitch = current;
   }
 
   @Override
@@ -91,9 +91,9 @@ public class Turret extends RBSISubsystem {
     return io.getTurretEncoderPosition();
   }
 
-  public void print() {
-    System.out.println(io.getTurretEncoderPosition());
-  }
+  // public void print() {
+  //   System.out.println(io.getTurretEncoderPosition());
+  // }
 
   public double simplifiedTurretPosition() {
     return MathUtil.inputModulus(io.getTurretEncoderPosition(), 1, 10)
