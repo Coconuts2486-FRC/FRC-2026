@@ -109,14 +109,14 @@ public class Shooter extends RBSISubsystem {
     return inputs.velocityRadPerSec;
   }
 
-public boolean shooterAtSpeed() {
+  public boolean shooterAtSpeed() {
     if (targetMetersPerSecond == 0.0) return false;
     double currentMetersPerSecond =
-        (Units.radiansPerSecondToRotationsPerMinute(inputs.velocityRadPerSec)
-            / ShooterConstants.kShooterGearRatio)
+        ((Units.radiansPerSecondToRotationsPerMinute(inputs.velocityRadPerSec) / 60)
+                / ShooterConstants.kShooterGearRatio)
             * ShooterConstants.flywheelCircumfrence;
-    return Math.abs(currentMetersPerSecond) >= targetMetersPerSecond * 0.75;
-}
+    return Math.abs(currentMetersPerSecond) >= Math.abs(targetMetersPerSecond * 0.5);
+  }
 
   @Override
   public int[] getPowerPorts() {

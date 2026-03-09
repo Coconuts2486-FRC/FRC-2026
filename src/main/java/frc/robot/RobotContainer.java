@@ -452,16 +452,16 @@ public class RobotContainer {
             },
             m_indexer));
 
-  m_feeder.setDefaultCommand(
-    Commands.run(
-        () -> {
-            if (m_shooter.shooterAtSpeed()) {
+    m_feeder.setDefaultCommand(
+        Commands.run(
+            () -> {
+              if (m_shooter.shooterAtSpeed()) {
                 m_feeder.runFeeder();
-            } else {
+              } else {
                 m_feeder.stopFeeder();
-            }
-        },
-        m_feeder));
+              }
+            },
+            m_feeder));
 
     m_shooter.setDefaultCommand(
         Commands.run(
@@ -557,17 +557,16 @@ public class RobotContainer {
 
     driverController
         .rightTrigger()
-        .toggleOnTrue(
-            Commands.run(() -> m_shooter.runVelocity(21), m_shooter))
-                //.alongWith(Commands.run(() -> m_feeder.setFeederVelocity(0.5), m_feeder)))
+        .toggleOnTrue(Commands.run(() -> m_shooter.runVelocity(21), m_shooter))
+        // .alongWith(Commands.run(() -> m_feeder.setFeederVelocity(0.5), m_feeder)))
         .onFalse(
             Commands.run(() -> m_shooter.stop(), m_shooter)
-                // .alongWith(
-                //     Commands.run(
-                //         () -> m_feeder.stopFeeder(),
-                //         m_feeder))
-                      );
-                // ShooterConstants.kTestShooterSpeed.getAsDouble())));
+            // .alongWith(
+            //     Commands.run(
+            //         () -> m_feeder.stopFeeder(),
+            //         m_feeder))
+            );
+    // ShooterConstants.kTestShooterSpeed.getAsDouble())));
 
     // driverController.leftTrigger().whileTrue(
     // Commands.run(() -> m_turret.setVolts(2.0), m_turret));
