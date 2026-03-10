@@ -385,7 +385,7 @@ public class RobotContainer {
   }
 
   /** Use this method to define your Autonomous commands for use with PathPlanner / Choreo */
-  private void defineAutoCommands() {
+  public void defineAutoCommands() {
 
     NamedCommands.registerCommand("IntakeDown", Commands.run(() -> m_intake.pivotDown()));
 
@@ -414,7 +414,6 @@ public class RobotContainer {
     // NamedCommands.registerCommand(
     //   "Climb",
     //   Commands.runOnce(()));
-
   }
 
   /**
@@ -615,10 +614,10 @@ public class RobotContainer {
                 },
                 Set.of(m_drivebase)));
 
-  operatorController.povRight().whileTrue(Commands.run(() -> m_intake.printPos()));
-        
-// ==============================================================================================================================
-//sim controls
+    operatorController.povRight().whileTrue(Commands.run(() -> m_intake.printPos()));
+
+    // ==============================================================================================================================
+    // sim controls
     if (Constants.getMode() == Mode.SIM) {
       // IN SIMULATION ONLY:
       // Double-press the A button on Joystick3 to run the CameraSweepEvaluator
