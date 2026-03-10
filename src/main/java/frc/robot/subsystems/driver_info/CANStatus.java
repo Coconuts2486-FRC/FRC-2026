@@ -68,12 +68,12 @@ public class CANStatus extends VirtualSubsystem {
     mainCAN =
         (intake.pivotAlive()
             && feeder.isFeederAlive()
-            && intake.getPivotPosition() > 0.0
+            && Math.abs(intake.getPivotPosition()) > 0.0
             && rollers.isRollersAlive()
             && shooter.leaderAlive()
             && shooter.followerAlive()
             && turret.turretAlive()
-            && turret.getTurretEncoderPosition() > 0.0
+            && Math.abs(turret.getTurretEncoderPosition()) > 0.0
             && indexer.indexerAlive());
 
     // Logger inputs for each CAN network
