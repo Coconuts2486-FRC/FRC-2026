@@ -21,7 +21,6 @@ import frc.robot.util.RBSIEnum.CTREPro;
 
 public class FeederIOTalonFX implements FeederIO {
 
-  // Declare Hardware
   private final TalonFX feeder =
       new TalonFX(FEEDER_ROLLER.getDeviceNumber(), FEEDER_ROLLER.getCANBus());
 
@@ -32,6 +31,7 @@ public class FeederIOTalonFX implements FeederIO {
   private final StatusSignal<Voltage> feederAppliedVolts = feeder.getMotorVoltage();
   private final StatusSignal<Current> feederCurrent = feeder.getSupplyCurrent();
 
+  //configs 
   private final TalonFXConfiguration config = new TalonFXConfiguration();
   private final boolean isCTREPro = Constants.getPhoenixPro() == CTREPro.LICENSED;
 
@@ -49,7 +49,7 @@ public class FeederIOTalonFX implements FeederIO {
     feeder.optimizeBusUtilization();
   }
 
-  /** Update Inputs */
+  // Update Inputs 
   @Override
   public void updateInputs(FeederIOInputs inputs) {
     var status =
@@ -62,7 +62,7 @@ public class FeederIOTalonFX implements FeederIO {
     inputs.currentAmps = new double[] {feederCurrent.getValueAsDouble()};
   }
 
-  /** Return the power ports */
+  // Return the power ports 
   @Override
   public int[] powerPorts() {
     return POWER_PORTS;

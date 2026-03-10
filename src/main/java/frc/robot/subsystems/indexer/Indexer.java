@@ -29,6 +29,8 @@ public class Indexer extends RBSISubsystem {
     io.updateInputs(inputs);
   }
 
+//** periodic functions ************************************************************************************************** */
+
   @Override
   public void rbsiPeriodic() {
     io.updateInputs(inputs);
@@ -38,6 +40,8 @@ public class Indexer extends RBSISubsystem {
   @Override
   public void simulationPeriodic() {}
 
+//** base functions ******************************************************************************************************* */
+
   public void setVelocity(double velocity) {
     io.setVelocity(velocity);
   }
@@ -46,10 +50,13 @@ public class Indexer extends RBSISubsystem {
     io.indexerStop();
   }
 
+//** getter functions **************************************************************************************************** */
+
   public boolean indexerAlive() {
     return inputs.indexerAlive;
   }
 
+//* power port fucntion */
   @Override
   public int[] getPowerPorts() {
     return io.getPowerPorts();
