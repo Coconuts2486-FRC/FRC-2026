@@ -15,7 +15,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.indexer;
+package frc.robot.subsystems.Indexer;
 
 import static frc.robot.Constants.RobotDevices.*;
 import static frc.robot.Constants.ShooterConstants.*;
@@ -85,11 +85,9 @@ public class IndexerIOTalonFX implements IndexerIO {
     return POWER_PORTS;
   }
 
-
   public void setVelocity(double velocity) {
     indexer.set(velocity);
   }
-
 
   /** Stop the indexer */
   @Override

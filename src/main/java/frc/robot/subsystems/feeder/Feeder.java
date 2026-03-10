@@ -67,7 +67,7 @@ public class Feeder extends RBSISubsystem {
     return inputs.feederAlive;
   }
 
-//* power port function */
+  // * power port function */
   @Override
   public int[] getPowerPorts() {
     return io.getPowerPorts();

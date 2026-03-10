@@ -15,7 +15,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.indexer;
+package frc.robot.subsystems.Indexer;
 
 import frc.robot.util.RBSISubsystem;
 import org.littletonrobotics.junction.Logger;
@@ -29,7 +29,8 @@ public class Indexer extends RBSISubsystem {
     io.updateInputs(inputs);
   }
 
-//** periodic functions ************************************************************************************************** */
+  // ** periodic functions
+  // ************************************************************************************************** */
 
   @Override
   public void rbsiPeriodic() {
@@ -40,7 +41,8 @@ public class Indexer extends RBSISubsystem {
   @Override
   public void simulationPeriodic() {}
 
-//** base functions ******************************************************************************************************* */
+  // ** base functions
+  // ******************************************************************************************************* */
 
   public void setVelocity(double velocity) {
     io.setVelocity(velocity);
@@ -50,13 +52,14 @@ public class Indexer extends RBSISubsystem {
     io.indexerStop();
   }
 
-//** getter functions **************************************************************************************************** */
+  // ** getter functions
+  // **************************************************************************************************** */
 
   public boolean indexerAlive() {
     return inputs.indexerAlive;
   }
 
-//* power port fucntion */
+  // * power port fucntion */
   @Override
   public int[] getPowerPorts() {
     return io.getPowerPorts();

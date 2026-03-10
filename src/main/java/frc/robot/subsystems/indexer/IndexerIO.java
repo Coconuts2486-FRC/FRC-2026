@@ -15,7 +15,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.indexer;
+package frc.robot.subsystems.Indexer;
 
 import frc.robot.util.RBSIIO;
 import org.littletonrobotics.junction.AutoLog;
@@ -35,7 +35,8 @@ public interface IndexerIO extends RBSIIO {
 
   public default void updateInputs(IndexerIOInputs inputs) {}
 
-//* base functions *********************************************************************************************************** */
+  // * base functions
+  // *********************************************************************************************************** */
 
   public default void setVelocity(double velocity) {}
 

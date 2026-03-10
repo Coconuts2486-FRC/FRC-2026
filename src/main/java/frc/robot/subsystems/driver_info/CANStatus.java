@@ -1,10 +1,10 @@
 package frc.robot.subsystems.driver_info;
 
+import frc.robot.subsystems.Indexer.Indexer;
 import frc.robot.subsystems.climb.Climb;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.feeder.Feeder;
 import frc.robot.subsystems.imu.Imu;
-import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.rollers.rollers;
 import frc.robot.subsystems.shooter.Shooter;
@@ -23,7 +23,7 @@ public class CANStatus extends VirtualSubsystem {
   private final rollers rollers;
   private final Shooter shooter;
   private final Turret turret;
-  private final frc.robot.subsystems.indexer.Indexer indexer;
+  private final Indexer indexer;
 
   Boolean driveCAN = false;
   Boolean mainCAN = false;
