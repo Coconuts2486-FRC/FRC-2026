@@ -36,6 +36,7 @@ import frc.robot.Constants.Cameras;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.FieldConstants.AprilTagLayoutType;
 import frc.robot.commands.DriveCommands;
+import frc.robot.computations.BasicRegression;
 import frc.robot.subsystems.accelerometer.Accelerometer;
 import frc.robot.subsystems.climb.Climb;
 import frc.robot.subsystems.climb.ClimbIO;
@@ -556,7 +557,7 @@ public class RobotContainer {
 
     driverController
         .leftTrigger()
-        .toggleOnTrue(Commands.run(() -> m_shooter.runVelocity(14.375), m_shooter))
+        .toggleOnTrue(Commands.run(() -> m_shooter.runVelocity(1), m_shooter))
         // .alongWith(Commands.run(() -> m_feeder.setFeederVelocity(0.5), m_feeder)))
         .onFalse(
             Commands.run(() -> m_shooter.stop(), m_shooter)

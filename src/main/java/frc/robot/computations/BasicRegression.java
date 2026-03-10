@@ -34,10 +34,10 @@ public class BasicRegression {
    * @param distance Distance of the shot in meters
    */
   private static double computeRegression(double distance) {
-    double A = 31.61921; // Constant
-    double B = -7.53702; // Linear in distance
-    double C = 0.545803; // Quadratic in distance
-    double D = -0.0125413; // Cubic in distance
+    double A = -25.55419; // Constant
+    double B = 37.01029; // Linear in distance
+    double C = -12.04535; // Quadratic in distance
+    double D = 1.39996; // Cubic in distance
     //double E = 0.0; // Quartic in distance
 
     return A
