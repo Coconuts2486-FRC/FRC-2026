@@ -17,7 +17,6 @@
 
 package frc.robot.subsystems.climb;
 
-import edu.wpi.first.math.controller.ElevatorFeedforward;
 import frc.robot.util.RBSISubsystem;
 import org.littletonrobotics.junction.Logger;
 
@@ -26,12 +25,9 @@ public class Climb extends RBSISubsystem {
   // Declare IO
   private ClimbIO io;
   private final ClimbIOInputsAutoLogged inputs = new ClimbIOInputsAutoLogged();
-
-  private ElevatorFeedforward ffmodel;
-
+  
   /** Constructor */
   public Climb(ClimbIO io) {
-    // TODO Auto-generated constructor stub
     this.io = io;
   }
 
