@@ -108,5 +108,6 @@ public class CANStatus extends VirtualSubsystem {
     Logger.recordOutput("CAN/MatchTime", DriverStation.getMatchTime());
 
     Logger.recordOutput("CAN/intakePos", intake.getPivotPosition());
+    Logger.recordOutput("CAN/IntakeDeployed", intake.isIntakeExtended());
   }
 }
