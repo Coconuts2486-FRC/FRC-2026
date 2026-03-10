@@ -209,29 +209,10 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("Intake", Commands.run(() -> m_rollers.runRollers(), m_rollers));
 
-    // NamedCommands.registerCommand(
-    //   "ClimbPrepare",
-    //   Commands.runOnce(()));
-
-    // NamedCommands.registerCommand(
-    //   "Climb",
-    //   Commands.runOnce(()));
-
-    // NamedCommands.registerCommand(
-    //   "Shoot",
-    //   Commands.runOnce(()));
-
-    // NamedCommands.registerCommand(
-    //   "Pass",
-    //   Commands.runOnce(()));
-
-    // NamedCommands.registerCommand(
-    //   "ClimbPrepare",
-    //   Commands.runOnce(()));
-
-    // NamedCommands.registerCommand(
-    //   "Climb",
-    //   Commands.runOnce(()));
+    NamedCommands.registerCommand(
+        "Shoot",
+        Commands.runOnce(
+            () -> m_shooter.runVelocity(Coordinator.getShooterVelocity() - 0.15), m_shooter));
   }
 
   /**
@@ -518,7 +499,7 @@ public class RobotContainer {
         .leftTrigger()
         .whileTrue(
             Commands.run(
-                () -> m_shooter.runVelocity(Coordinator.getShooterVelocity() - 0.25), m_shooter))
+                () -> m_shooter.runVelocity(Coordinator.getShooterVelocity() - 0.15), m_shooter))
         .onFalse(Commands.runOnce(() -> m_shooter.stop()));
 
     // auto aim
