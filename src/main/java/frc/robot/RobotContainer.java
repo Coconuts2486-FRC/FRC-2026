@@ -512,26 +512,37 @@ public class RobotContainer {
 
     driverController.b().toggleOnTrue(Commands.run(() -> m_rollers.runRollers(), m_rollers));
 
-    // driverController
-    //     .povUp()
-    //     .whileTrue(
-    //         Commands.run(
-    //             () -> {
-    //               m_drivebase.runVelocity(
-    //                   new ChassisSpeeds(Units.inchesToMeters(-11), Units.inchesToMeters(0), 0));
-    //             },
-    //             m_drivebase));
+    //shooter control
+      driverController
+        .leftTrigger()
+        .toggleOnTrue(
+            Commands.run(
+                () -> m_shooter.runVelocity(Coordinator.getShooterVelocity() - 0.25), m_shooter))
+        .onFalse(
+            Commands.run(() -> m_shooter.stop(), m_shooter)
+            );
 
-    // driverController
-    //     .povDown()
-    //     .whileTrue(
-    //         Commands.run(
-    //             () -> {
-    //               m_drivebase.runVelocity(
-    //                   new ChassisSpeeds(Units.inchesToMeters(11), Units.inchesToMeters(0), 0));
-    //             },
-    //             m_drivebase));
+    driverController
+        .povUp()
+        .whileTrue(
+            Commands.run(
+                () -> {
+                  m_drivebase.runVelocity(
+                      new ChassisSpeeds(Units.inchesToMeters(-11), Units.inchesToMeters(0), 0));
+                },
+                m_drivebase));
 
+    driverController
+        .povDown()
+        .whileTrue(
+            Commands.run(
+                () -> {
+                  m_drivebase.runVelocity(
+                      new ChassisSpeeds(Units.inchesToMeters(11), Units.inchesToMeters(0), 0));
+                },
+                m_drivebase));
+
+    //micro driving controls
     driverController
         .povRight()
         .whileTrue(
@@ -552,67 +563,8 @@ public class RobotContainer {
                 },
                 m_drivebase));
 
-    driverController
-        .leftTrigger()
-        .toggleOnTrue(
-            Commands.run(
-                () -> m_shooter.runVelocity(Coordinator.getShooterVelocity() - 0.25), m_shooter))
-        // .alongWith(Commands.run(() -> m_feeder.setFeederVelocity(0.5), m_feeder)))
-        .onFalse(
-            Commands.run(() -> m_shooter.stop(), m_shooter)
-            // .alongWith(
-            //     Commands.run(
-            //         () -> m_feeder.stopFeeder(),
-            //         m_feeder))
-            );
-
-    // operatorController
-    //     .rightTrigger()
-    //     .toggleOnTrue(
-    //         Commands.run(
-    //             () ->
-    //                 m_shooter.runTargetVelocity(
-    //                     m_drivebase.get3dPose(),
-    //                     ShooterConstants.shooterTransform,
-    //                     Coordinator.target,
-    //                     m_drivebase.getFieldLinearVelocity())))
-    //     // .alongWith(Commands.run(() -> m_feeder.setFeederVelocity(0.5), m_feeder)))
-    //     .onFalse(
-    //         Commands.run(() -> m_shooter.stop())
-    //         // .alongWith(
-    //         //     Commands.run(
-    //         //         () -> m_feeder.stopFeeder(),
-    //         //         m_feeder))
-    //         );
-    // ShooterConstants.kTestShooterSpeed.getAsDouble())));
-
-    // driverController.leftTrigger().whileTrue(
-    // Commands.run(() -> m_turret.setVolts(2.0), m_turret));
-
-    // Press LEFT BUMPER --> Drive to a pose 10 feet closer to the BLUE ALLIANCE wall
-    // driverController
-    //     .rightTrigger()
-    //     .whileTrue(
-    //         Commands.defer(
-    //             () -> {
-    //               // New pose 2 feet closer to BLUE ALLIANCE wall
-    //               Pose2d pose =
-    //                   m_drivebase
-    //                       .getPose()
-    //                       .transformBy(
-    //                           new Transform2d(Units.feetToMeters(-20.0), 0.0, Rotation2d.kZero));
-
-    // Alternatively, you could define a pose in a separate module and call it here.
-    //
-    // Example from 2025 Reefscape:
-    // --------
-    // pose = ReefPoses.kBluePoleE;
-
-    // return AutopilotCommands.runAutopilot(m_drivebase, pose);
-    // },
-    // Set.of(m_drivebase)));
-
-    driverController
+  
+  driverController
         .rightTrigger()
         .whileTrue(
             Commands.defer(
@@ -631,10 +583,6 @@ public class RobotContainer {
 
     // Testing functions
 
-    // reads out pivot position- useful for determining where exactly we need to tell it to pivot to
-    // (pov left)
-    operatorController.y().onTrue(Commands.runOnce(() -> m_prematch.enableUpdate()));
-
     // Press start button --> switch elastic tab
     operatorController
         .start()
@@ -645,14 +593,18 @@ public class RobotContainer {
                   Elastic.selectTab(elasticOnDriveTab ? 2 : 0);
                 }));
 
-    // operatorController.povLeft().whileTrue(Commands.run(() -> m_turret.print()));
 
-    // checks magnetic switch (pov right)
-    driverController
-        .povRight()
-        .whileTrue(
-            Commands.run(
-                () -> System.out.println("Magnetic switch state:" + m_turret.readTurretSwitch())));
+
+
+
+
+
+
+
+
+
+
+                
 
     if (Constants.getMode() == Mode.SIM) {
       // IN SIMULATION ONLY:
