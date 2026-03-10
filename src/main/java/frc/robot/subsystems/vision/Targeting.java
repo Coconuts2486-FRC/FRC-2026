@@ -170,54 +170,58 @@ public class Targeting {
   /**
    * Call this once per loop from Coordinator (or from Targeting itself if it becomes a subsystem).
    */
-public void periodic() {
+  public void periodic() {
     Optional<CameraTargetSample> bestSample = chooseBestSampleForGoal();
 
     if (bestSample.isPresent() && bestSample.get().hasTarget) {
-        CameraTargetSample s = bestSample.get();
-        Pose2d poseAtSample =
-            poseSampler.getPoseAtTime(s.timestampSeconds).orElseGet(poseSampler::getPose);
-        Rotation2d desired = computeDesiredHeading(poseAtSample, s);
-        double confidence = s.bestTagId >= 0 ? 0.9 : 0.7;
-        lastSolution = Optional.of(
-            new TargetSolution(s.timestampSeconds, s.bestTagId, desired, confidence, s.tx, s.ty));
-        return;
+      CameraTargetSample s = bestSample.get();
+      Pose2d poseAtSample =
+          poseSampler.getPoseAtTime(s.timestampSeconds).orElseGet(poseSampler::getPose);
+      Rotation2d desired = computeDesiredHeading(poseAtSample, s);
+      double confidence = s.bestTagId >= 0 ? 0.9 : 0.7;
+      lastSolution =
+          Optional.of(
+              new TargetSolution(s.timestampSeconds, s.bestTagId, desired, confidence, s.tx, s.ty));
+      return;
     }
 
     // No tag visible — fall back to odometry
     Rotation2d odometryHeading = computeOdometryHeading();
     if (odometryHeading != null) {
-        lastSolution = Optional.of(
-            new TargetSolution(
-                Timer.getFPGATimestamp(),
-                -1,
-                odometryHeading,
-                0.8, 
-                Rotation2d.kZero,
-                Rotation2d.kZero));
+      lastSolution =
+          Optional.of(
+              new TargetSolution(
+                  Timer.getFPGATimestamp(),
+                  -1,
+                  odometryHeading,
+                  0.8,
+                  Rotation2d.kZero,
+                  Rotation2d.kZero));
     } else {
-        lastSolution = Optional.empty();
+      lastSolution = Optional.empty();
     }
-}
+  }
 
-private Rotation2d computeOdometryHeading() {
+  private Rotation2d computeOdometryHeading() {
     // Get the known hub position based on current goal mode
     edu.wpi.first.math.geometry.Translation2d hubTarget;
     if (goalMode == GoalMode.REDHUB) {
-        hubTarget = new edu.wpi.first.math.geometry.Translation2d(
-            frc.robot.FieldConstants.hubCenterRed.getX(),
-            frc.robot.FieldConstants.hubCenterRed.getY());
+      hubTarget =
+          new edu.wpi.first.math.geometry.Translation2d(
+              frc.robot.FieldConstants.hubCenterRed.getX(),
+              frc.robot.FieldConstants.hubCenterRed.getY());
     } else if (goalMode == GoalMode.BLUEHUB) {
-        hubTarget = new edu.wpi.first.math.geometry.Translation2d(
-            frc.robot.FieldConstants.hubCenterBlue.getX(),
-            frc.robot.FieldConstants.hubCenterBlue.getY());
+      hubTarget =
+          new edu.wpi.first.math.geometry.Translation2d(
+              frc.robot.FieldConstants.hubCenterBlue.getX(),
+              frc.robot.FieldConstants.hubCenterBlue.getY());
     } else {
-        return null; // No known target for other modes
+      return null; // No known target for other modes
     }
 
     Pose2d pose = poseSampler.getPose();
     return hubTarget.minus(pose.getTranslation()).getAngle();
-}
+  }
 
   // ------------------------------ Internals ------------------------------
 
