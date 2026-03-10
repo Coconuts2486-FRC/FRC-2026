@@ -517,20 +517,20 @@ public class RobotContainer {
         .onFalse(Commands.runOnce(() -> m_shooter.stop()));
 
     // auto aim
-    driverController
-        .rightTrigger()
-        .whileTrue(
-            Commands.defer(
-                () -> {
-                  Pose2d robotPose = m_drivebase.getPose();
-                  Translation2d hub = FieldConstants.hubCenterRed2d();
+    // driverController
+    //     .rightTrigger()
+    //     .whileTrue(
+    //         Commands.defer(
+    //             () -> {
+    //               Pose2d robotPose = m_drivebase.getPose();
+    //               Translation2d hub = FieldConstants.hubCenterRed2d();
 
-                  Rotation2d heading = hub.minus(robotPose.getTranslation()).getAngle();
+    //               Rotation2d heading = hub.minus(robotPose.getTranslation()).getAngle();
 
-                  return AutopilotCommands.runAutopilot(
-                      m_drivebase, new Pose2d(robotPose.getTranslation(), heading));
-                },
-                Set.of(m_drivebase)));
+    //               return AutopilotCommands.runAutopilot(
+    //                   m_drivebase, new Pose2d(robotPose.getTranslation(), heading));
+    //             },
+    //             Set.of(m_drivebase)));
 
     driverController
         .povUp()

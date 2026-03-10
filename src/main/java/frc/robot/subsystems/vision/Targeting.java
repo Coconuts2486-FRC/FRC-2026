@@ -171,7 +171,6 @@ public class Targeting {
    * Call this once per loop from Coordinator (or from Targeting itself if it becomes a subsystem).
    */
   public void periodic() {
-  public void periodic() {
     // 1) Choose the "best" camera sample for the current goal
     Optional<CameraTargetSample> bestSample = chooseBestSampleForGoal();
 
