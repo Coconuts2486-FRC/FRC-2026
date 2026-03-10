@@ -22,8 +22,6 @@ import static frc.robot.Constants.ShooterConstants.*;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
-import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -42,7 +40,7 @@ public class IndexerIOTalonFX implements IndexerIO {
   // Declare Hardware
   private final TalonFX indexer =
       new TalonFX(INDEXER_ROLLER.getDeviceNumber(), INDEXER_ROLLER.getCANBus());
-      
+
   public final int[] POWER_PORTS = {INDEXER_ROLLER.getPowerPort()};
 
   private final StatusSignal<Angle> indexerPosition = indexer.getPosition();
@@ -53,15 +51,11 @@ public class IndexerIOTalonFX implements IndexerIO {
   private final TalonFXConfiguration config = new TalonFXConfiguration();
   private final boolean isCTREPro = Constants.getPhoenixPro() == CTREPro.LICENSED;
 
-
-
   /** Constructor */
   public IndexerIOTalonFX() {
     config.CurrentLimits.SupplyCurrentLimit = PowerConstants.kMotorPortMaxCurrent;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-
-    
 
     // Apply the configurations to the Shooter motors
     PhoenixUtil.tryUntilOk(5, () -> indexer.getConfigurator().apply(config, 0.25));
@@ -79,10 +73,8 @@ public class IndexerIOTalonFX implements IndexerIO {
             indexerPosition, indexerVelocity, indexerAppliedVolts, indexerCurrent);
 
     inputs.indexerAlive = indexerStatus.isOK();
-    inputs.positionRad =
-        Units.rotationsToRadians(indexerPosition.getValueAsDouble()); 
-    inputs.velocityRadPerSec =
-        Units.rotationsToRadians(indexerVelocity.getValueAsDouble()); 
+    inputs.positionRad = Units.rotationsToRadians(indexerPosition.getValueAsDouble());
+    inputs.velocityRadPerSec = Units.rotationsToRadians(indexerVelocity.getValueAsDouble());
     inputs.appliedVolts = indexerAppliedVolts.getValueAsDouble();
     inputs.currentAmps = new double[] {indexerCurrent.getValueAsDouble()};
   }
@@ -92,7 +84,6 @@ public class IndexerIOTalonFX implements IndexerIO {
   public int[] powerPorts() {
     return POWER_PORTS;
   }
-
 
   public void setVelocity(double velocity) {
     indexer.set(velocity);

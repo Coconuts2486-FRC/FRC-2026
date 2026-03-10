@@ -25,7 +25,7 @@ public class Climb extends RBSISubsystem {
   // Declare IO
   private ClimbIO io;
   private final ClimbIOInputsAutoLogged inputs = new ClimbIOInputsAutoLogged();
-  
+
   /** Constructor */
   public Climb(ClimbIO io) {
     this.io = io;

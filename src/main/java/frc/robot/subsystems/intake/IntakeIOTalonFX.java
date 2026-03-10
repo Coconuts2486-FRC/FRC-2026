@@ -26,7 +26,6 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import edu.wpi.first.units.measure.Angle;
@@ -57,11 +56,9 @@ public class IntakeIOTalonFX implements IntakeIO {
   /** Constructor */
   public IntakeIOTalonFX() {
 
-    
     CANcoderConfiguration cancoderConfig = new CANcoderConfiguration();
     TalonFXConfiguration pivotConfig = new TalonFXConfiguration();
 
-    
     // pivot
     pivotConfig.CurrentLimits.SupplyCurrentLimit = PowerConstants.kMotorPortMaxCurrent;
     pivotConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
@@ -120,20 +117,17 @@ public class IntakeIOTalonFX implements IntakeIO {
     pivot.setNeutralMode(NeutralModeValue.Brake);
   }
 
-
   @Override
   public void setPivotPrimitiveSpeed(double speed) {
     pivot.set(speed);
   }
 
-  
   @Override
   public void stopPivot() {
     pivot.stopMotor();
   }
 
   /** Getter functions ***************************************************** */
-
   @Override
   public boolean isIntakeExtended() {
     return (pivotEncoder.getAbsolutePosition().getValueAsDouble()

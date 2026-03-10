@@ -39,5 +39,5 @@ public interface ClimbIO extends RBSIIO {
     return 0.0;
   }
 
-  public default void configure(){}
+  public default void configure() {}
 }
