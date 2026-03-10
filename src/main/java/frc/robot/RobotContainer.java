@@ -592,7 +592,7 @@ public class RobotContainer {
                   Elastic.selectTab(elasticOnDriveTab ? 2 : 0);
                 }));
 
-    driverController
+    operatorController
         .leftTrigger()
         .toggleOnTrue(
             Commands.run(
@@ -600,7 +600,7 @@ public class RobotContainer {
         .onFalse(Commands.run(() -> m_shooter.stop(), m_shooter));
 
     // auto aim
-    driverController
+    operatorController
         .rightTrigger()
         .whileTrue(
             Commands.defer(
@@ -615,6 +615,10 @@ public class RobotContainer {
                 },
                 Set.of(m_drivebase)));
 
+  operatorController.povRight().whileTrue(Commands.run(() -> m_intake.printPos()));
+        
+// ==============================================================================================================================
+//sim controls
     if (Constants.getMode() == Mode.SIM) {
       // IN SIMULATION ONLY:
       // Double-press the A button on Joystick3 to run the CameraSweepEvaluator
