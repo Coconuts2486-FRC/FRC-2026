@@ -203,6 +203,37 @@ public class RobotContainer {
     return new VisionIO[] {new VisionIO() {}};
   }
 
+  public void defineAutoCommands() {
+
+    NamedCommands.registerCommand("IntakeDown", Commands.run(() -> m_intake.pivotDown()));
+
+    NamedCommands.registerCommand("Intake", Commands.run(() -> m_rollers.runRollers()));
+
+    // NamedCommands.registerCommand(
+    //   "ClimbPrepare",
+    //   Commands.runOnce(()));
+
+    // NamedCommands.registerCommand(
+    //   "Climb",
+    //   Commands.runOnce(()));
+
+    // NamedCommands.registerCommand(
+    //   "Shoot",
+    //   Commands.runOnce(()));
+
+    // NamedCommands.registerCommand(
+    //   "Pass",
+    //   Commands.runOnce(()));
+
+    // NamedCommands.registerCommand(
+    //   "ClimbPrepare",
+    //   Commands.runOnce(()));
+
+    // NamedCommands.registerCommand(
+    //   "Climb",
+    //   Commands.runOnce(()));
+  }
+
   /**
    * Constructor for the Robot Container. This container holds subsystems, opertator interface
    * devices, and commands.
@@ -331,6 +362,9 @@ public class RobotContainer {
             m_rollers::isIntakeRollersRunning,
             m_intake::isIntakeExtended);
 
+    // Define Auto commands
+    defineAutoCommands();
+
     // Set up the SmartDashboard Auto Chooser based on auto type
     switch (Constants.getAutoType()) {
       case MANUAL:
@@ -376,8 +410,6 @@ public class RobotContainer {
     driveStyle.addDefaultOption("TANK", DriveStyle.TANK);
     driveStyle.addOption("GAMER", DriveStyle.GAMER);
 
-    // Define Auto commands
-    defineAutoCommands();
     // Define SysIs Routines
     definesysIdRoutines();
     // Configure the button and trigger bindings
@@ -385,36 +417,6 @@ public class RobotContainer {
   }
 
   /** Use this method to define your Autonomous commands for use with PathPlanner / Choreo */
-  public void defineAutoCommands() {
-
-    NamedCommands.registerCommand("IntakeDown", Commands.run(() -> m_intake.pivotDown()));
-
-    NamedCommands.registerCommand("Intake", Commands.run(() -> m_rollers.runRollers()));
-
-    // NamedCommands.registerCommand(
-    //   "ClimbPrepare",
-    //   Commands.runOnce(()));
-
-    // NamedCommands.registerCommand(
-    //   "Climb",
-    //   Commands.runOnce(()));
-
-    // NamedCommands.registerCommand(
-    //   "Shoot",
-    //   Commands.runOnce(()));
-
-    // NamedCommands.registerCommand(
-    //   "Pass",
-    //   Commands.runOnce(()));
-
-    // NamedCommands.registerCommand(
-    //   "ClimbPrepare",
-    //   Commands.runOnce(()));
-
-    // NamedCommands.registerCommand(
-    //   "Climb",
-    //   Commands.runOnce(()));
-  }
 
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
