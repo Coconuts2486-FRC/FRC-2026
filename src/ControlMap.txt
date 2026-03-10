@@ -37,7 +37,7 @@ X:
 Y: climb down
 D-Pad Up/Down:
 D-Pad Left: 
-D-Pad Right: print intake position
+D-Pad Right: 
 Right Bumper:
 Left Bumper:
 Right Trigger: back up aiming control

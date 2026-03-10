@@ -85,6 +85,12 @@ public class ShooterIOTalonFX implements ShooterIO {
     // Apply the open- and closed-loop ramp configuration for current smoothing
     config.withClosedLoopRamps(closedRamps).withOpenLoopRamps(openRamps);
 
+    // set Motion Magic Velocity settings
+    var motionMagicConfigs = config.MotionMagic;
+    motionMagicConfigs.MotionMagicAcceleration =
+        400; // Target acceleration of 400 rps/s (0.25 seconds to max)
+    motionMagicConfigs.MotionMagicJerk = 4000; // Target jerk of 4000 rps/s/s (0.1 seconds)
+
     // Apply the configurations to the Shooter motors
     PhoenixUtil.tryUntilOk(5, () -> leader.getConfigurator().apply(config, 0.25));
     PhoenixUtil.tryUntilOk(5, () -> follower.getConfigurator().apply(config, 0.25));
@@ -125,10 +131,28 @@ public class ShooterIOTalonFX implements ShooterIO {
     final VelocityVoltage m_request = new VelocityVoltage(0);
     m_request.withEnableFOC(isCTREPro);
     leader.setControl(m_request.withVelocity(velocityRotationsPerSecond));
+
+    System.out.println("I AM JUMPING CHRIS MOORE");
   }
 
   @Override
   public void stop() {
     leader.stopMotor();
+  }
+
+  /* @param kD Differential gain
+   * @param kS Static gain
+   * @param kV Velocity gain
+   * @param kA Acceleration gain
+   */
+  @Override
+  public void configureGains(double kP, double kI, double kD, double kS, double kV, double kA) {
+    config.Slot0.kP = kP;
+    config.Slot0.kI = kI;
+    config.Slot0.kD = kD;
+    config.Slot0.kS = kS;
+    config.Slot0.kV = kV;
+    config.Slot0.kA = kA;
+    PhoenixUtil.tryUntilOk(5, () -> leader.getConfigurator().apply(config, 0.25));
   }
 }
