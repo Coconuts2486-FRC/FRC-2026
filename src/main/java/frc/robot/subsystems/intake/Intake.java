@@ -34,12 +34,13 @@ public class Intake extends RBSISubsystem {
   public Intake(IntakeIO io) {
     this.io = io;
 
-    /*default command has intake always come up 
+    /*default command has intake always come up
     unles overided by toggle of intake down in robot container */
     setDefaultCommand(Commands.run(() -> pivotUp(), this));
   }
 
-   //** Periodic functions *************************************************************************************************** */
+  // ** Periodic functions
+  // *************************************************************************************************** */
   @Override
   public void rbsiPeriodic() {
     io.updateInputs(inputs);
@@ -49,13 +50,14 @@ public class Intake extends RBSISubsystem {
   @Override
   public void simulationPeriodic() {}
 
-  //** base functions ******************************************************************************************************** */
+  // ** base functions
+  // ******************************************************************************************************** */
 
   public void setPivotPrimitiveSpeed(double speed) {
     io.setPivotPrimitiveSpeed(speed);
   }
 
-  // Stop the pivot motion 
+  // Stop the pivot motion
   public void stopPivot() {
     io.stopPivot();
   }
@@ -78,11 +80,12 @@ public class Intake extends RBSISubsystem {
     io.setPivotPrimitiveSpeed(controller.calculate(io.getPivotPosition(), pos));
   }
 
-  public void printPos(){
+  public void printPos() {
     System.out.println(io.getPivotPosition());
   }
 
-  //** getter functions ************************************************************************************************** */
+  // ** getter functions
+  // ************************************************************************************************** */
 
   public double getPivotPosition() {
     return io.getPivotPosition();
@@ -96,7 +99,9 @@ public class Intake extends RBSISubsystem {
     return inputs.pivotConnected;
   }
 
-  //** power port function *********************************************************************************************** */
+  // ** power port function
+  // ***********************************************************************************************
+  // */
 
   @Override
   public int[] getPowerPorts() {
