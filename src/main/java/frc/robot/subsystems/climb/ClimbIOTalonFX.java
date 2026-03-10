@@ -24,20 +24,20 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
-import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
-import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants;
+import frc.robot.Constants.ClimbConstants;
 import frc.robot.Constants.PowerConstants;
 import frc.robot.util.PhoenixUtil;
 import frc.robot.util.RBSIEnum.CTREPro;
@@ -47,10 +47,12 @@ public class ClimbIOTalonFX implements ClimbIO {
   // Declare Hardware
   private final TalonFX climb_motor =
       new TalonFX(CLIMB_MOTOR.getDeviceNumber(), CLIMB_MOTOR.getCANBus());
-  final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
   private final CANcoder climbEncoder =
       new CANcoder(CLIMB_ENCODER.getDeviceNumber(), CLIMB_ENCODER.getCANBus());
   public final int[] POWER_PORTS = {CLIMB_MOTOR.getPowerPort()};
+  PIDController ClimbPID = new PIDController(ClimbConstants.kP, ClimbConstants.kI, ClimbConstants.kD);
+
+
 
   // Define status signals
   private final StatusSignal<Angle> climbPosition = climb_motor.getPosition();
@@ -70,19 +72,7 @@ public class ClimbIOTalonFX implements ClimbIO {
   /** Constructor */
   public ClimbIOTalonFX() {
     // Motion Magic Configs
-    config.Slot0 =
-        new Slot0Configs()
-            .withKP(mm_kP)
-            .withKI(mm_kI)
-            .withKD(mm_kD)
-            .withKS(mm_kS)
-            .withKV(mm_kV)
-            .withKA(mm_kA);
-    MotionMagicConfigs magicConfigs = config.MotionMagic;
-    magicConfigs.MotionMagicCruiseVelocity = mm_cruiseVelocity;
-    magicConfigs.MotionMagicAcceleration = mm_acceleration;
-    magicConfigs.MotionMagicJerk = mm_jerk;
-
+   
     // Current-limiting section
     config.CurrentLimits.SupplyCurrentLimit = PowerConstants.kMotorPortMaxCurrent;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
@@ -124,9 +114,9 @@ public class ClimbIOTalonFX implements ClimbIO {
   }
 
   @Override
-  public void setPosition(double rotations) {
+  public void setPosition(double pos) {
     // Can use TorqueFOC if isCTREPro is true
-    climb_motor.setControl(m_request.withPosition(rotations));
+    climb_motor.set(ClimbPID.calculate(pos,climbEncoder.getAbsolutePosition().getValueAsDouble()));
   }
 
   @Override
