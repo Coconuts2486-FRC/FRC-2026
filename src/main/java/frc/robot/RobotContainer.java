@@ -19,6 +19,9 @@ import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -35,6 +38,7 @@ import frc.robot.Constants.CANBuses;
 import frc.robot.Constants.Cameras;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.FieldConstants.AprilTagLayoutType;
+import frc.robot.commands.AutopilotCommands;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.accelerometer.Accelerometer;
 import frc.robot.subsystems.climb.Climb;
@@ -90,6 +94,7 @@ import frc.robot.util.RBSIEnum.Mode;
 import frc.robot.util.RBSIPowerMonitor;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.photonvision.PhotonCamera;
 import org.photonvision.simulation.PhotonCameraSim;
@@ -557,7 +562,8 @@ public class RobotContainer {
     driverController
         .leftTrigger()
         .toggleOnTrue(
-            Commands.run(() -> m_shooter.runVelocity(Coordinator.getShooterVelocity()), m_shooter))
+            Commands.run(
+                () -> m_shooter.runVelocity(Coordinator.getShooterVelocity() - 0.25), m_shooter))
         // .alongWith(Commands.run(() -> m_feeder.setFeederVelocity(0.5), m_feeder)))
         .onFalse(
             Commands.run(() -> m_shooter.stop(), m_shooter)
@@ -592,7 +598,7 @@ public class RobotContainer {
 
     // Press LEFT BUMPER --> Drive to a pose 10 feet closer to the BLUE ALLIANCE wall
     // driverController
-    //     .leftTrigger()
+    //     .rightTrigger()
     //     .whileTrue(
     //         Commands.defer(
     //             () -> {
@@ -609,10 +615,24 @@ public class RobotContainer {
     // --------
     // pose = ReefPoses.kBluePoleE;
 
-    //   return AutopilotCommands.runAutopilot(m_drivebase, pose);
+    // return AutopilotCommands.runAutopilot(m_drivebase, pose);
     // },
     // Set.of(m_drivebase)));
 
+    driverController
+        .rightTrigger()
+        .whileTrue(
+            Commands.defer(
+                () -> {
+                  Pose2d robotPose = m_drivebase.getPose();
+                  Translation2d hub = FieldConstants.hubCenterRed2d();
+
+                  Rotation2d heading = hub.minus(robotPose.getTranslation()).getAngle();
+
+                  return AutopilotCommands.runAutopilot(
+                      m_drivebase, new Pose2d(robotPose.getTranslation(), heading));
+                },
+                Set.of(m_drivebase)));
     //
     // ===============================================================================
 
