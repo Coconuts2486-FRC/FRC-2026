@@ -40,6 +40,10 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.FieldConstants.AprilTagLayoutType;
 import frc.robot.commands.AutopilotCommands;
 import frc.robot.commands.DriveCommands;
+import frc.robot.subsystems.Indexer.Indexer;
+import frc.robot.subsystems.Indexer.IndexerIO;
+import frc.robot.subsystems.Indexer.IndexerIOSim;
+import frc.robot.subsystems.Indexer.IndexerIOTalonFX;
 import frc.robot.subsystems.accelerometer.Accelerometer;
 import frc.robot.subsystems.climb.Climb;
 import frc.robot.subsystems.climb.ClimbIO;
@@ -55,10 +59,6 @@ import frc.robot.subsystems.feeder.FeederIOSim;
 import frc.robot.subsystems.feeder.FeederIOTalonFX;
 import frc.robot.subsystems.imu.Imu;
 import frc.robot.subsystems.imu.ImuIOSim;
-import frc.robot.subsystems.indexer.Indexer;
-import frc.robot.subsystems.indexer.IndexerIO;
-import frc.robot.subsystems.indexer.IndexerIOSim;
-import frc.robot.subsystems.indexer.IndexerIOTalonFX;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOSim;
@@ -304,7 +304,17 @@ public class RobotContainer {
     // Init all CAN busses specified in the `Constants.CANBuses` class
     RBSICANBusRegistry.initReal(Constants.CANBuses.ALL);
     m_canHealth = Arrays.stream(Constants.CANBuses.ALL).map(RBSICANHealth::new).toList();
-    m_canStatus = new CANStatus(m_drivebase, m_imu, m_intake, m_feeder);
+    m_canStatus =
+        new CANStatus(
+            m_drivebase,
+            m_imu,
+            m_intake,
+            m_feeder,
+            m_rollers,
+            m_shooter,
+            m_turret,
+            m_indexer,
+            m_climb);
 
     // In addition to the initial battery capacity from the Dashbaord, ``RBSIPowerMonitor`` takes
     // all the non-drivebase subsystems for which you wish to have power monitoring; DO NOT

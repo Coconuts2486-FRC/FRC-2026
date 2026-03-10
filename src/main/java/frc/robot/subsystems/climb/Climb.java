@@ -45,6 +45,10 @@ public class Climb extends RBSISubsystem {
     io.setPosition(pos);
   }
 
+  public boolean climbAlive() {
+    return inputs.climbAlive;
+  }
+
   @Override
   public int[] getPowerPorts() {
     return io.getPowerPorts();

@@ -53,6 +53,10 @@ public class rollers extends RBSISubsystem {
     return io.isIntakeRollersRunning();
   }
 
+  public boolean isRollersAlive() {
+    return inputs.rollersConnected;
+  }
+
   @Override
   public int[] getPowerPorts() {
     return io.getPowerPorts();

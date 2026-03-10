@@ -15,7 +15,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.indexer;
+package frc.robot.subsystems.Indexer;
 
 import static frc.robot.Constants.RobotDevices.*;
 import static frc.robot.Constants.ShooterConstants.*;
@@ -95,8 +95,11 @@ public class IndexerIOTalonFX implements IndexerIO {
   /** Update inputs */
   @Override
   public void updateInputs(IndexerIOInputs inputs) {
-    BaseStatusSignal.refreshAll(
-        indexerPosition, indexerVelocity, indexerAppliedVolts, indexerCurrent);
+    var indexerStatus =
+        BaseStatusSignal.refreshAll(
+            indexerPosition, indexerVelocity, indexerAppliedVolts, indexerCurrent);
+
+    inputs.indexerAlive = indexerStatus.isOK();
     inputs.positionRad =
         Units.rotationsToRadians(indexerPosition.getValueAsDouble()) / 1.0; // kShooterGearRatio;
     inputs.velocityRadPerSec =

@@ -26,6 +26,7 @@ public interface ClimbIO extends RBSIIO {
 
   @AutoLog
   public static class ClimbIOInputs {
+    public boolean climbAlive = false;
     public double positionRad = 0.0;
     public double velocityRadPerSec = 0.0;
     public double appliedVolts = 0.0;

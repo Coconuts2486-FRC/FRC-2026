@@ -45,8 +45,11 @@ public class rollersIOTalonFX implements rollersIO {
   /** Update inputs */
   @Override
   public void updateInputs(rollersIOInputs inputs) {
-    BaseStatusSignal.refreshAll(
-        rollersPosition, rollersVelocity, rollersAppliedVolts, rollersCurrent);
+    var rollerStatus =
+        BaseStatusSignal.refreshAll(
+            rollersPosition, rollersVelocity, rollersAppliedVolts, rollersCurrent);
+
+    inputs.rollersConnected = rollerStatus.isOK();
     inputs.positionRad =
         Units.rotationsToRadians(rollersPosition.getValueAsDouble()) / 1.0; // kShooterGearRatio;
     inputs.velocityRadPerSec =

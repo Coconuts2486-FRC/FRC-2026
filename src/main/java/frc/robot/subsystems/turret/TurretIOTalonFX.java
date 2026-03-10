@@ -19,8 +19,14 @@ package frc.robot.subsystems.turret;
 
 import static frc.robot.Constants.RobotDevices.*;
 
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
 
 public class TurretIOTalonFX implements TurretIO {
@@ -29,9 +35,15 @@ public class TurretIOTalonFX implements TurretIO {
   private final TalonFX turret =
       new TalonFX(TURRET_POINTER.getDeviceNumber(), TURRET_POINTER.getCANBus());
   private DigitalInput turretSwitch = new DigitalInput(0);
+
   private CANcoder turretEncoder =
       new CANcoder(TURRET_ENCODER.getDeviceNumber(), TURRET_ENCODER.getCANBus());
   public final int[] POWER_PORTS = {TURRET_POINTER.getPowerPort()};
+
+  private final StatusSignal<Angle> turretPosition = turret.getPosition();
+  private final StatusSignal<AngularVelocity> turretVelocity = turret.getVelocity();
+  private final StatusSignal<Voltage> turretAppliedVolts = turret.getMotorVoltage();
+  private final StatusSignal<Current> turretCurrent = turret.getSupplyCurrent();
 
   /** Return the power ports */
   @Override
@@ -40,15 +52,15 @@ public class TurretIOTalonFX implements TurretIO {
   }
 
   /** Constructor */
-  public TurretIOTalonFX() {
-
-    // Do current smoothing and stuff
-
-  }
+  public TurretIOTalonFX() {}
 
   @Override
   public void updateInputs(TurretIOInputs inputs) {
-    // Update stuff
+    var turretStatus =
+        BaseStatusSignal.refreshAll(
+            turretPosition, turretVelocity, turretAppliedVolts, turretCurrent);
+
+    inputs.turretAlive = turretStatus.isOK();
   }
 
   @Override
