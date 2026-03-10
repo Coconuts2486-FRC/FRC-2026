@@ -440,17 +440,21 @@ public final class Constants {
     public static final double kClimbOpenLoopRampPeriod = 0.25; // seconds
 
     // magic configs
-    public static final double mm_cruiseVelocity = 80;
-    public static final double mm_acceleration = 160;
-    public static final double mm_jerk = 1600;
+    //   public static final double mm_cruiseVelocity = 80;
+    //   public static final double mm_acceleration = 160;
+    //   public static final double mm_jerk = 1600;
 
-    // magic PIDSVA
-    public static final double mm_kP = 0.25;
-    public static final double mm_kI = 0.0;
-    public static final double mm_kD = 0.25;
-    public static final double mm_kS = 0.25;
-    public static final double mm_kV = 0.25;
-    public static final double mm_kA = 0.25;
+    //   // magic PIDSVA
+    //   public static final double mm_kP = 0.25;
+    //   public static final double mm_kI = 0.0;
+    //   public static final double mm_kD = 0.25;
+    //   public static final double mm_kS = 0.25;
+    //   public static final double mm_kV = 0.25;
+    //   public static final double mm_kA = 0.25;
+
+    public static final double kP = 6;
+    public static final double kI = 0;
+    public static final double kD = 0;
   }
 
   /** Intake Mechanism Constants ******************************************* */

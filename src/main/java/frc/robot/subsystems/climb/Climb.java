@@ -17,7 +17,6 @@
 
 package frc.robot.subsystems.climb;
 
-import edu.wpi.first.math.controller.ElevatorFeedforward;
 import frc.robot.util.RBSISubsystem;
 import org.littletonrobotics.junction.Logger;
 
@@ -27,22 +26,26 @@ public class Climb extends RBSISubsystem {
   private ClimbIO io;
   private final ClimbIOInputsAutoLogged inputs = new ClimbIOInputsAutoLogged();
 
-  private ElevatorFeedforward ffmodel;
-
   /** Constructor */
   public Climb(ClimbIO io) {
-    // TODO Auto-generated constructor stub
     this.io = io;
   }
 
+  // Periodic function- runs every 20ms (~50x/second)
   @Override
   public void rbsiPeriodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Climb", inputs);
   }
 
+  // Sets position using PID based off of desired position
   public void setPosition(double pos) {
     io.setPosition(pos);
+  }
+
+  // Checks if the climb is connected to the CAN network
+  public boolean climbAlive() {
+    return inputs.climbAlive;
   }
 
   @Override

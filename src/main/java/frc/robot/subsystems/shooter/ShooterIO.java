@@ -16,10 +16,16 @@ public interface ShooterIO extends RBSIIO {
 
   @AutoLog
   public static class ShooterIOInputs {
+    public boolean leaderAlive = false;
+    public boolean followerAlive = false;
     public double positionRad = 0.0;
     public double velocityRadPerSec = 0.0;
     public double velocityMetersPerSec = 0.0;
     public double appliedVolts = 0.0;
+    public double positionRadFollower = 0.0;
+    public double velocityRadPerSecFollower = 0.0;
+    public double velocityMetersPerSecFollower = 0.0;
+    public double appliedVoltsFollower = 0.0;
     public double[] currentAmps = new double[] {};
   }
 
@@ -29,10 +35,5 @@ public interface ShooterIO extends RBSIIO {
   /** Run closed loop at the specified velocity. */
   public default void setVelocity(double velocityRotationsPerSecond) {}
 
-  /** Set gain constants */
-  public default void configureGains(double kP, double kI, double kD, double kS, double kV) {}
-
-  /** Set gain constants */
-  public default void configureGains(
-      double kP, double kI, double kD, double kS, double kV, double kA) {}
+  public default void stop() {}
 }

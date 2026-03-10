@@ -24,6 +24,7 @@ public interface TurretIO extends RBSIIO {
 
   @AutoLog
   public static class TurretIOInputs {
+    public boolean turretAlive = false;
     public double positionRad = 0.0;
     public double velocityRadPerSec = 0.0;
     public double appliedVolts = 0.0;
@@ -35,6 +36,8 @@ public interface TurretIO extends RBSIIO {
   public default void updateInputs(TurretIOInputs inputs) {}
 
   public default void aimTarget() {}
+
+  public default void setBrake() {}
 
   public default void setVolts(double volts) {}
 

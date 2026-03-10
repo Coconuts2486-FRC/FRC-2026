@@ -40,6 +40,10 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.FieldConstants.AprilTagLayoutType;
 import frc.robot.commands.AutopilotCommands;
 import frc.robot.commands.DriveCommands;
+import frc.robot.subsystems.Indexer.Indexer;
+import frc.robot.subsystems.Indexer.IndexerIO;
+import frc.robot.subsystems.Indexer.IndexerIOSim;
+import frc.robot.subsystems.Indexer.IndexerIOTalonFX;
 import frc.robot.subsystems.accelerometer.Accelerometer;
 import frc.robot.subsystems.climb.Climb;
 import frc.robot.subsystems.climb.ClimbIO;
@@ -55,10 +59,6 @@ import frc.robot.subsystems.feeder.FeederIOSim;
 import frc.robot.subsystems.feeder.FeederIOTalonFX;
 import frc.robot.subsystems.imu.Imu;
 import frc.robot.subsystems.imu.ImuIOSim;
-import frc.robot.subsystems.indexer.Indexer;
-import frc.robot.subsystems.indexer.IndexerIO;
-import frc.robot.subsystems.indexer.IndexerIOSim;
-import frc.robot.subsystems.indexer.IndexerIOTalonFX;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOSim;
@@ -304,7 +304,17 @@ public class RobotContainer {
     // Init all CAN busses specified in the `Constants.CANBuses` class
     RBSICANBusRegistry.initReal(Constants.CANBuses.ALL);
     m_canHealth = Arrays.stream(Constants.CANBuses.ALL).map(RBSICANHealth::new).toList();
-    m_canStatus = new CANStatus(m_drivebase, m_imu, m_intake, m_feeder);
+    m_canStatus =
+        new CANStatus(
+            m_drivebase,
+            m_imu,
+            m_intake,
+            m_feeder,
+            m_rollers,
+            m_shooter,
+            m_turret,
+            m_indexer,
+            m_climb);
 
     // In addition to the initial battery capacity from the Dashbaord, ``RBSIPowerMonitor`` takes
     // all the non-drivebase subsystems for which you wish to have power monitoring; DO NOT
@@ -477,31 +487,14 @@ public class RobotContainer {
             },
             m_shooter));
 
-    // m_turret.setDefaultCommand(
-    //     Commands.run(
-    //         () -> {
-    //           m_turret.rotateToPosition(m_turret.getTargetPosition());
-    //           // Listen to the Coordinator, and set the angle based on the physics computation.
-    //         },
-    //         m_turret));
+    m_turret.setDefaultCommand(
+        Commands.run(
+            () -> {
+              m_turret.setBrake();
+            },
+            m_turret));
     // ===============================================================================
-    // ** Example Commands -- Remap, remove, or change as desired **
-    // Press B button while driving --> ROBOT-CENTRIC
-    // driverController
-    //     .leftTrigger()
-    //     .onTrue(
-    //         Commands.runOnce(
-    //             () ->
-    //                 DriveCommands.robotRelativeDrive(
-    //                     m_drivebase,
-    //                     () -> -driveStickY.value(),
-    //                     () -> -driveStickX.value(),
-    //                     () -> turnStickX.value())));
-
-    // Press A button -> BRAKE
-    // driverController
-    //     .a()
-    //     .whileTrue(Commands.runOnce(() -> m_drivebase.setMotorBrake(true), m_drivebase));
+    // driver controls
 
     // Press X button --> Stop with wheels in X-Lock position
     driverController.x().onTrue(Commands.runOnce(m_drivebase::stopWithX, m_drivebase));
@@ -519,26 +512,51 @@ public class RobotContainer {
 
     driverController.b().toggleOnTrue(Commands.run(() -> m_rollers.runRollers(), m_rollers));
 
-    // driverController
-    //     .povUp()
-    //     .whileTrue(
-    //         Commands.run(
-    //             () -> {
-    //               m_drivebase.runVelocity(
-    //                   new ChassisSpeeds(Units.inchesToMeters(-11), Units.inchesToMeters(0), 0));
-    //             },
-    //             m_drivebase));
+    // shooter control
+    driverController
+        .leftTrigger()
+        .toggleOnTrue(
+            Commands.run(
+                () -> m_shooter.runVelocity(Coordinator.getShooterVelocity() - 0.25), m_shooter))
+        .onFalse(Commands.run(() -> m_shooter.stop(), m_shooter));
 
-    // driverController
-    //     .povDown()
-    //     .whileTrue(
-    //         Commands.run(
-    //             () -> {
-    //               m_drivebase.runVelocity(
-    //                   new ChassisSpeeds(Units.inchesToMeters(11), Units.inchesToMeters(0), 0));
-    //             },
-    //             m_drivebase));
+    // auto aim
+    driverController
+        .rightTrigger()
+        .whileTrue(
+            Commands.defer(
+                () -> {
+                  Pose2d robotPose = m_drivebase.getPose();
+                  Translation2d hub = FieldConstants.hubCenterRed2d();
 
+                  Rotation2d heading = hub.minus(robotPose.getTranslation()).getAngle();
+
+                  return AutopilotCommands.runAutopilot(
+                      m_drivebase, new Pose2d(robotPose.getTranslation(), heading));
+                },
+                Set.of(m_drivebase)));
+
+    driverController
+        .povUp()
+        .whileTrue(
+            Commands.run(
+                () -> {
+                  m_drivebase.runVelocity(
+                      new ChassisSpeeds(Units.inchesToMeters(-11), Units.inchesToMeters(0), 0));
+                },
+                m_drivebase));
+
+    driverController
+        .povDown()
+        .whileTrue(
+            Commands.run(
+                () -> {
+                  m_drivebase.runVelocity(
+                      new ChassisSpeeds(Units.inchesToMeters(11), Units.inchesToMeters(0), 0));
+                },
+                m_drivebase));
+
+    // micro driving controls
     driverController
         .povRight()
         .whileTrue(
@@ -559,66 +577,29 @@ public class RobotContainer {
                 },
                 m_drivebase));
 
+    //
+    // ===============================================================================
+
+    // Co driver controls
+
+    // Press start button --> switch elastic tab
+    operatorController
+        .start()
+        .onTrue(
+            Commands.runOnce(
+                () -> {
+                  elasticOnDriveTab = !elasticOnDriveTab;
+                  Elastic.selectTab(elasticOnDriveTab ? 2 : 0);
+                }));
+
     driverController
         .leftTrigger()
         .toggleOnTrue(
             Commands.run(
                 () -> m_shooter.runVelocity(Coordinator.getShooterVelocity() - 0.25), m_shooter))
-        // .alongWith(Commands.run(() -> m_feeder.setFeederVelocity(0.5), m_feeder)))
-        .onFalse(
-            Commands.run(() -> m_shooter.stop(), m_shooter)
-            // .alongWith(
-            //     Commands.run(
-            //         () -> m_feeder.stopFeeder(),
-            //         m_feeder))
-            );
+        .onFalse(Commands.run(() -> m_shooter.stop(), m_shooter));
 
-    // operatorController
-    //     .rightTrigger()
-    //     .toggleOnTrue(
-    //         Commands.run(
-    //             () ->
-    //                 m_shooter.runTargetVelocity(
-    //                     m_drivebase.get3dPose(),
-    //                     ShooterConstants.shooterTransform,
-    //                     Coordinator.target,
-    //                     m_drivebase.getFieldLinearVelocity())))
-    //     // .alongWith(Commands.run(() -> m_feeder.setFeederVelocity(0.5), m_feeder)))
-    //     .onFalse(
-    //         Commands.run(() -> m_shooter.stop())
-    //         // .alongWith(
-    //         //     Commands.run(
-    //         //         () -> m_feeder.stopFeeder(),
-    //         //         m_feeder))
-    //         );
-    // ShooterConstants.kTestShooterSpeed.getAsDouble())));
-
-    // driverController.leftTrigger().whileTrue(
-    // Commands.run(() -> m_turret.setVolts(2.0), m_turret));
-
-    // Press LEFT BUMPER --> Drive to a pose 10 feet closer to the BLUE ALLIANCE wall
-    // driverController
-    //     .rightTrigger()
-    //     .whileTrue(
-    //         Commands.defer(
-    //             () -> {
-    //               // New pose 2 feet closer to BLUE ALLIANCE wall
-    //               Pose2d pose =
-    //                   m_drivebase
-    //                       .getPose()
-    //                       .transformBy(
-    //                           new Transform2d(Units.feetToMeters(-20.0), 0.0, Rotation2d.kZero));
-
-    // Alternatively, you could define a pose in a separate module and call it here.
-    //
-    // Example from 2025 Reefscape:
-    // --------
-    // pose = ReefPoses.kBluePoleE;
-
-    // return AutopilotCommands.runAutopilot(m_drivebase, pose);
-    // },
-    // Set.of(m_drivebase)));
-
+    // auto aim
     driverController
         .rightTrigger()
         .whileTrue(
@@ -633,33 +614,6 @@ public class RobotContainer {
                       m_drivebase, new Pose2d(robotPose.getTranslation(), heading));
                 },
                 Set.of(m_drivebase)));
-    //
-    // ===============================================================================
-
-    // Testing functions
-
-    // reads out pivot position- useful for determining where exactly we need to tell it to pivot to
-    // (pov left)
-    operatorController.y().onTrue(Commands.runOnce(() -> m_prematch.enableUpdate()));
-
-    // Press start button --> switch elastic tab
-    operatorController
-        .start()
-        .onTrue(
-            Commands.runOnce(
-                () -> {
-                  elasticOnDriveTab = !elasticOnDriveTab;
-                  Elastic.selectTab(elasticOnDriveTab ? 2 : 0);
-                }));
-
-    // operatorController.povLeft().whileTrue(Commands.run(() -> m_turret.print()));
-
-    // checks magnetic switch (pov right)
-    driverController
-        .povRight()
-        .whileTrue(
-            Commands.run(
-                () -> System.out.println("Magnetic switch state:" + m_turret.readTurretSwitch())));
 
     if (Constants.getMode() == Mode.SIM) {
       // IN SIMULATION ONLY:

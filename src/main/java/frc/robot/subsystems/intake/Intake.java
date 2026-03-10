@@ -49,43 +49,15 @@ public class Intake extends RBSISubsystem {
     Logger.processInputs("Intake", inputs);
   }
 
-  /**
-   * Prints the encoder position
-   *
-   * <p>temporary testing function
-   */
-  public void print() {
-    System.out.println(io.getPivotPosition());
-  }
-
-  /** Mechanism setting functions ****************************************** */
-  /**
-   * Set the roller primitive speed
-   *
-   * @param speed Primitive speed value between -1.0 and 1.0
-   */
-
-  /**
-   * Set the pivot primitive speed
-   *
-   * @param speed Primitive speed value between -1.0 and 1.0
-   */
   public void setPivotPrimitiveSpeed(double speed) {
     io.setPivotPrimitiveSpeed(speed);
   }
-
-  /** Run the rollers at a pre-determined primitive speed */
 
   /** Stop the pivot motion */
   public void stopPivot() {
     io.stopPivot();
   }
 
-  /**
-   * Put the pivot down
-   *
-   * <p>gives the intake a little push but then lets it fall down and be free while intaking
-   */
   public void pivotDown() {
     if (io.getPivotPosition() > IntakeConstants.dropPostion) {
       io.setPivotPrimitiveSpeed(-0.4);
@@ -95,66 +67,23 @@ public class Intake extends RBSISubsystem {
     }
   }
 
-  /**
-   * Bring the pivot back up
-   *
-   * <p>brings pivot up with pid while running intake motors still, stopping them when in position
-   */
   public void pivotUp() {
-    // if (io.getPivotPosition() < IntakeConstants.storedAngle + 0.05
-    //     && io.getPivotPosition() > IntakeConstants.storedAngle - 0.05) {
-    //   io.setPivotPrimitiveSpeed(
-    //       controller.calculate(io.getPivotPosition(), IntakeConstants.storedAngle));
-    // } else {
     io.setPivotPrimitiveSpeed(
         controller.calculate(io.getPivotPosition(), IntakeConstants.storedAngle));
   }
 
-  /**
-   * Move the pivot to a specific position
-   *
-   * @param pos Anglular position to which to move the pivot
-   */
   public void pivotGoToPosition(double pos) {
     io.setPivotPrimitiveSpeed(controller.calculate(io.getPivotPosition(), pos));
   }
 
-  /** Getter functions ***************************************************** */
-  /**
-   * Get the pivot position
-   *
-   * @return Pivot position (currently in rotations -- should change this to degrees!)
-   */
   public double getPivotPosition() {
     return io.getPivotPosition();
   }
 
-  /**
-   * Get whether the intake rollers are running
-   *
-   * @return Rollers running boolean
-   */
-
-  /**
-   * Get whether the intake is extended
-   *
-   * @return Intake extended boolean
-   */
   public boolean isIntakeExtended() {
     return io.isIntakeExtended();
   }
 
-  /**
-   * Get whether the rollers are alive
-   *
-   * @return rollersAlive boolean
-   */
-
-  /**
-   * Get whether the pivot is alive
-   *
-   * @return pivotAlive boolean
-   */
   public boolean pivotAlive() {
     return inputs.pivotConnected;
   }

@@ -29,14 +29,13 @@ public interface rollersIO extends RBSIIO {
     public double velocityRadPerSec = 0.0;
     public double appliedVolts = 0.0;
     public double[] currentAmps = new double[] {};
-    // public boolean releaseButton = false;
   }
+
+  public default void updateInputs(rollersIOInputs inputs) {}
 
   public default boolean isIntakeRollersRunning() {
     return false;
   }
-
-  public default void updateInputs(rollersIOInputs inputs) {}
 
   public default void runRollers(double speed) {}
 

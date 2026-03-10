@@ -41,16 +41,16 @@ public class rollers extends RBSISubsystem {
     io.runRollers(0.65);
   }
 
-  public void runInverse() {
-    io.runRollers(-0.5);
-  }
-
   public void stop() {
     io.stop();
   }
 
   public boolean isIntakeRollersRunning() {
     return io.isIntakeRollersRunning();
+  }
+
+  public boolean isRollersAlive() {
+    return inputs.rollersConnected;
   }
 
   @Override

@@ -17,8 +17,6 @@
 
 package frc.robot.subsystems.climb;
 
-import edu.wpi.first.units.measure.LinearAcceleration;
-import edu.wpi.first.units.measure.LinearVelocity;
 import frc.robot.util.RBSIIO;
 import org.littletonrobotics.junction.AutoLog;
 
@@ -26,6 +24,7 @@ public interface ClimbIO extends RBSIIO {
 
   @AutoLog
   public static class ClimbIOInputs {
+    public boolean climbAlive = false;
     public double positionRad = 0.0;
     public double velocityRadPerSec = 0.0;
     public double appliedVolts = 0.0;
@@ -40,15 +39,5 @@ public interface ClimbIO extends RBSIIO {
     return 0.0;
   }
 
-  public default void configure(
-      double Kg,
-      double Ks,
-      double Kv,
-      double Ka,
-      double Kp,
-      double Ki,
-      double Kd,
-      LinearVelocity velocity,
-      LinearAcceleration aceleration,
-      double jerk) {}
+  public default void configure() {}
 }

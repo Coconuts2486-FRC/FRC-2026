@@ -25,8 +25,6 @@ import org.littletonrobotics.junction.Logger;
 
 public class Turret extends RBSISubsystem {
   public TurretIO io;
-  public double solution1;
-  public double solution2;
 
   private double turretPosition;
   private boolean lastSwitch = false;
@@ -37,7 +35,6 @@ public class Turret extends RBSISubsystem {
     this.io = io;
   }
 
-  // TODO: Should be a ProfiledPIDController!!!!
   PIDController turretPIDController =
       new PIDController(TurretConstants.kP, TurretConstants.kI, TurretConstants.kD);
 
@@ -45,37 +42,40 @@ public class Turret extends RBSISubsystem {
   public void rbsiPeriodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Turret", inputs);
-    // // boolean current = readTurretSwitch();
-
-    // turretPosition =
-    //     MathUtil.inputModulus(io.getTurretEncoderPosition(), 1, 10)
-    //         / TurretConstants.kTurretGearRatio;
-
-    // Logger.recordOutput("Turret/Is In Position?", readTurretSwitch());
-
-    // // if (current && !lastSwitch) {
-    // //   io.zeroEncoder();
-    // // }
-
-    // // lastSwitch = current;
   }
 
   @Override
   public void simulationPeriodic() {}
-
-  public void aimTarget() {}
 
   /** Functions***************** */
   public void setVolts(double volts) {
     io.setVolts(volts);
   }
 
+  public void setBrake() {
+    io.setBrake();
+  }
+
+  public void rotateToPosition(double pos) {
+    io.setPosition(turretPIDController.calculate(io.getTurretEncoderPosition(), pos));
+  }
+
+  public void aimTarget() {}
+
   public void setPosition(double position) {
     io.setPosition(position);
   }
 
+  public void stop() {
+    io.stop();
+  }
+
   public double getTurretEncoderPosition() {
     return io.getTurretEncoderPosition();
+  }
+
+  public boolean turretAlive() {
+    return inputs.turretAlive;
   }
 
   public double simplifiedTurretPosition() {
@@ -83,17 +83,9 @@ public class Turret extends RBSISubsystem {
         / TurretConstants.kTurretGearRatio;
   }
 
-  public void rotateToPosition(double pos) {
-    io.setPosition(turretPIDController.calculate(io.getTurretEncoderPosition(), pos));
-  }
-
   public boolean readTurretSwitch() {
 
     return !io.readTurretSwitch();
-  }
-
-  public void stop() {
-    io.stop();
   }
 
   @Override
