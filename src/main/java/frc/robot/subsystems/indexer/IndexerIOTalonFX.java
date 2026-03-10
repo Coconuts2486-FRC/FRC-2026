@@ -51,7 +51,10 @@ public class IndexerIOTalonFX implements IndexerIO {
   private final TalonFXConfiguration config = new TalonFXConfiguration();
   private final boolean isCTREPro = Constants.getPhoenixPro() == CTREPro.LICENSED;
 
-  /** Constructor ************************************************************************************************************ */
+  /**
+   * Constructor
+   * ************************************************************************************************************
+   */
   public IndexerIOTalonFX() {
     config.CurrentLimits.SupplyCurrentLimit = PowerConstants.kMotorPortMaxCurrent;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
@@ -65,7 +68,10 @@ public class IndexerIOTalonFX implements IndexerIO {
     indexer.optimizeBusUtilization();
   }
 
-  /** Update inputs ******************************************************************************************************** */
+  /**
+   * Update inputs
+   * ********************************************************************************************************
+   */
   @Override
   public void updateInputs(IndexerIOInputs inputs) {
     var indexerStatus =
@@ -85,15 +91,16 @@ public class IndexerIOTalonFX implements IndexerIO {
     return POWER_PORTS;
   }
 
-//** base functions *********************************************************************************************************** */
+  // ** base functions
+  // *********************************************************************************************************** */
 
-  //sets velocity at value from -1 to 1 0 being off and 1 being max speed
+  // sets velocity at value from -1 to 1 0 being off and 1 being max speed
   @Override
   public void setVelocity(double velocity) {
     indexer.set(velocity);
   }
 
-  //stops indexer
+  // stops indexer
   @Override
   public void indexerStop() {
     indexer.stopMotor();

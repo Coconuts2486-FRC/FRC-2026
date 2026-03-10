@@ -35,7 +35,8 @@ public interface IndexerIO extends RBSIIO {
 
   public default void updateInputs(IndexerIOInputs inputs) {}
 
-// * base functions *********************************************************************************************************** */
+  // * base functions
+  // *********************************************************************************************************** */
 
   public default void setVelocity(double velocity) {}
 
