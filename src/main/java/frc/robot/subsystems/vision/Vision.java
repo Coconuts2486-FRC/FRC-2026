@@ -97,19 +97,19 @@ public class Vision extends VirtualSubsystem {
       disconnectedAlerts[i].set(!inputs[i].connected);
 
       if (targeting != null) {
-        var obs = inputs[i].latestTargetObservation;
-        boolean hasTarget = obs.tx().getRadians() != 0.0 || obs.ty().getRadians() != 0.0;
-        int bestTagId = inputs[i].tagIds.length > 0 ? inputs[i].tagIds[0] : -1;
-        targeting.updateCameraSample(
-            new Targeting.CameraTargetSample(
-                i,
-                edu.wpi.first.wpilibj.Timer.getFPGATimestamp(),
-                obs.tx(),
-                obs.ty(),
-                hasTarget,
-                bestTagId));
-      }
+    var obs = inputs[i].latestTargetObservation;
+    boolean hasTarget = obs.tx().getRadians() != 0.0 || obs.ty().getRadians() != 0.0;
+    int bestTagId = inputs[i].tagIds.length > 0 ? inputs[i].tagIds[0] : -1;
+    targeting.updateCameraSample(new Targeting.CameraTargetSample(
+        i,
+        edu.wpi.first.wpilibj.Timer.getFPGATimestamp(),
+        obs.tx(),
+        obs.ty(),
+        hasTarget,
+        bestTagId
+    ));
     }
+  }
 
     // 2) Clear summary buffers (reused)
     allTagPoses.clear();
