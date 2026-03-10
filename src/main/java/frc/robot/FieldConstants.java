@@ -60,7 +60,7 @@ public class FieldConstants {
   public static final Pose3d hubCenterRed =
       new Pose3d(
           new Translation3d(Inches.of(469.11), Inches.of(158.84), Inches.of(72)), Rotation3d.kZero);
-
+  // 11.915394m and 4.034536m
   public static final Pose3d passingOutpostBlue =
       new Pose3d(
           new Translation3d(Inches.of(78.03), Inches.of(49.32), Inches.of(0)), Rotation3d.kZero);
