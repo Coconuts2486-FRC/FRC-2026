@@ -66,6 +66,15 @@ public class IntakeIOTalonFX implements IntakeIO {
     pivotConfig.CurrentLimits.SupplyCurrentLimit = PowerConstants.kMotorPortMaxCurrent;
     pivotConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
     pivotConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    pivotConfig.Slot0 =
+        new Slot0Configs()
+            .withKP(DrivebaseConstants.kSteerP)
+            .withKI(0.0)
+            .withKD(DrivebaseConstants.kSteerD)
+            .withKS(0.0)
+            .withKV(0.0)
+            .withKA(0.0)
+            .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
 
     // cancoder
     cancoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1.0;
