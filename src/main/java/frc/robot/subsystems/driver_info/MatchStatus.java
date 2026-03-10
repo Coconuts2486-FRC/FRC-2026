@@ -3,10 +3,10 @@ package frc.robot.subsystems.driver_info;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.FieldState;
 import frc.robot.util.VirtualSubsystem;
+import org.littletonrobotics.junction.Logger;
 
 public class MatchStatus extends VirtualSubsystem {
 
@@ -32,8 +32,8 @@ public class MatchStatus extends VirtualSubsystem {
   @Override
   public void rbsiPeriodic() {
 
-    SmartDashboard.putBoolean("Hub active", FieldState.isHubActive());
-    SmartDashboard.putNumber("MatchTime", DriverStation.getMatchTime());
+    Logger.recordOutput("CAN/HubActive", FieldState.isHubActive());
+    Logger.recordOutput("CAN/MatchTime", DriverStation.getMatchTime());
 
     if (FieldState.wonAuto == alliance) {
       if (DriverStation.getMatchTime() < 133

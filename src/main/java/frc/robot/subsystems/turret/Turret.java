@@ -42,7 +42,6 @@ public class Turret extends RBSISubsystem {
   public void rbsiPeriodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Turret", inputs);
-    Logger.recordOutput("CAN/turretcoder", io.getTurretEncoderPosition());
   }
 
   @Override
