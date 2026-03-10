@@ -227,8 +227,8 @@ public final class Constants {
 
     public static final RobotDeviceId FEEDER_ROLLER = new RobotDeviceId(20, CANBuses.RIO, 13);
 
-    public static final RobotDeviceId TURRET_POINTER = new RobotDeviceId(30, CANBuses.RIO, 5);
-    public static final RobotDeviceId TURRET_ENCODER = new RobotDeviceId(31, CANBuses.RIO, null);
+    public static final RobotDeviceId TURRET_POINTER = new RobotDeviceId(31, CANBuses.RIO, 5);
+    public static final RobotDeviceId TURRET_ENCODER = new RobotDeviceId(42, CANBuses.RIO, null);
 
     public static final RobotDeviceId CLIMB_MOTOR = new RobotDeviceId(20, CANBuses.DRIVE, 16);
     public static final RobotDeviceId CLIMB_ENCODER = new RobotDeviceId(30, CANBuses.DRIVE, null);
