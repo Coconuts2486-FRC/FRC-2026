@@ -467,9 +467,7 @@ public class RobotContainer {
     m_shooter.setDefaultCommand(
         Commands.run(
             () -> {
-              // Listen to the Coordinator, and set the velocity based on physics computation.
-              // If
-              // in "Don't Shoot" status, set speed to some idle value.
+              m_shooter.stop();
             },
             m_shooter));
 
@@ -503,8 +501,7 @@ public class RobotContainer {
         .leftTrigger()
         .toggleOnTrue(
             Commands.run(
-                () -> m_shooter.runVelocity(Coordinator.getShooterVelocity() - 0.25), m_shooter))
-        .onFalse(Commands.run(() -> m_shooter.stop(), m_shooter));
+                () -> m_shooter.runVelocity(Coordinator.getShooterVelocity() - 0.25), m_shooter));
 
     // auto aim
     driverController
