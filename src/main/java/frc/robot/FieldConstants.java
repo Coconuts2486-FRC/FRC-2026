@@ -77,6 +77,10 @@ public class FieldConstants {
       new Pose3d(
           new Translation3d(Inches.of(573.19), Inches.of(49.32), Inches.of(0)), Rotation3d.kZero);
 
+  public static Translation2d hubCenterRed2d() {
+    return new Translation2d(hubCenterRed.getX(), hubCenterRed.getY());
+  }
+
   /** AprilTag Field Layout ************************************************ */
   public static final double aprilTagWidth = Inches.of(6.50).in(Meters);
 
