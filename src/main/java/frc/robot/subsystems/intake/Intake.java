@@ -27,33 +27,35 @@ public class Intake extends RBSISubsystem {
   private IntakeIO io;
   private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
 
-  // Max values are for rotations a second
+  // pid used for bringing intake up to stored pos
   PIDController controller =
       new PIDController(IntakeConstants.kp.get(), IntakeConstants.ki, IntakeConstants.kd);
 
-  /** Constructor */
   public Intake(IntakeIO io) {
     this.io = io;
 
+    /*default command has intake always come up 
+    unles overided by toggle of intake down in robot container */
     setDefaultCommand(Commands.run(() -> pivotUp(), this));
   }
 
-  /** Simulation periodic function */
-  @Override
-  public void simulationPeriodic() {}
-
-  /** Periodic function */
+   //** Periodic functions *************************************************************************************************** */
   @Override
   public void rbsiPeriodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Intake", inputs);
   }
 
+  @Override
+  public void simulationPeriodic() {}
+
+  //** base functions ******************************************************************************************************** */
+
   public void setPivotPrimitiveSpeed(double speed) {
     io.setPivotPrimitiveSpeed(speed);
   }
 
-  /** Stop the pivot motion */
+  // Stop the pivot motion 
   public void stopPivot() {
     io.stopPivot();
   }
@@ -80,6 +82,8 @@ public class Intake extends RBSISubsystem {
     System.out.println(io.getPivotPosition());
   }
 
+  //** getter functions ************************************************************************************************** */
+
   public double getPivotPosition() {
     return io.getPivotPosition();
   }
@@ -91,6 +95,8 @@ public class Intake extends RBSISubsystem {
   public boolean pivotAlive() {
     return inputs.pivotConnected;
   }
+
+  //** power port function *********************************************************************************************** */
 
   @Override
   public int[] getPowerPorts() {

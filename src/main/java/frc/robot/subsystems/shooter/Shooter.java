@@ -25,6 +25,7 @@ public class Shooter extends RBSISubsystem {
   private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
 
   private double targetMetersPerSecond = 0.0;
+  private double currentMetersPerSecond;
 
   FieldRelativeShooterSolver.FieldShotSolution solution;
 
@@ -37,6 +38,10 @@ public class Shooter extends RBSISubsystem {
   protected void rbsiPeriodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Shooter", inputs);
+
+    Logger.recordOutput("Shooter/TargetSpeed(m/s)", targetMetersPerSecond);
+
+    Logger.recordOutput("Shooter/CurrentSpeed(m/s)", currentMetersPerSecond);
   }
 
   /** Run closed loop at the specified velocity. */
@@ -66,7 +71,7 @@ public class Shooter extends RBSISubsystem {
 
   public boolean shooterAtSpeed() {
     if (targetMetersPerSecond == 0.0) return false;
-    double currentMetersPerSecond =
+    currentMetersPerSecond =
         ((Units.radiansPerSecondToRotationsPerMinute(inputs.velocityRadPerSec) / 60)
                 / ShooterConstants.kShooterGearRatio)
             * ShooterConstants.flywheelCircumfrence;
