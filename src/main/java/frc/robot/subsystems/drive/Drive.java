@@ -257,13 +257,13 @@ public class Drive extends RBSISubsystem {
       final int sampleCount = sampleTimestamps.length;
 
       for (int moduleIndex = 0; moduleIndex < 4; moduleIndex++) {
-       moduleSamples[moduleIndex] = modules[moduleIndex].getOdometryPositions();
+        moduleSamples[moduleIndex] = modules[moduleIndex].getOdometryPositions();
       }
 
-    for (int i = 0; i < sampleCount; i++) {
-      for (int moduleIndex = 0; moduleIndex < 4; moduleIndex++) {
-        modulePositions[moduleIndex] = moduleSamples[moduleIndex][i];
-      }
+      for (int i = 0; i < sampleCount; i++) {
+        for (int moduleIndex = 0; moduleIndex < 4; moduleIndex++) {
+          modulePositions[moduleIndex] = moduleSamples[moduleIndex][i];
+        }
 
         // Pick yaw sample if available; otherwise fall back to current yaw
         final double yawRad =
