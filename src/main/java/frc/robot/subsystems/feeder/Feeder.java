@@ -30,6 +30,8 @@ public class Feeder extends RBSISubsystem {
     io.updateInputs(inputs);
   }
 
+//** periodic functions **************************************************************************************************** */
+
   @Override
   public void rbsiPeriodic() {
     io.updateInputs(inputs);
@@ -39,22 +41,27 @@ public class Feeder extends RBSISubsystem {
   @Override
   public void simulationPeriodic() {}
 
+//** base functions ********************************************************************************************************** */
+
+  //runs feeder at set velocity, function accesed by default command directly what changes the speed
+  //remember changing this value will change the regression at time of az north regression speed 0.5
   public void runFeeder() {
     io.setFeederVelocity(0.5);
   }
 
+  //stops feeder motor completely
   public void stopFeeder() {
     io.stopFeeder();
   }
 
-  public double getFeederspeed() {
-    return io.getFeederspeed();
-  }
+//** getter functions **************************************************************************************************** */
 
+  //if speed is greater than 10% returns true
   public boolean isFeederRunning() {
     return io.isFeederRunning();
   }
 
+  //checks to make sure the feeder is returning data to make sure the can is good
   public boolean isFeederAlive() {
     return inputs.feederAlive;
   }
