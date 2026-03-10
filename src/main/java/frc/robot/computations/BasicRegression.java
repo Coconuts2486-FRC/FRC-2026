@@ -38,13 +38,10 @@ public class BasicRegression {
     double B = 37.01029; // Linear in distance
     double C = -12.04535; // Quadratic in distance
     double D = 1.39996; // Cubic in distance
-    //double E = 0.0; // Quartic in distance
+    // double E = 0.0; // Quartic in distance
 
-    return A
-        + B * distance
-        + C * distance * distance
-        + D * distance * distance * distance;
-  //      + E * distance * distance * distance * distance;
+    return A + B * distance + C * distance * distance + D * distance * distance * distance;
+    //      + E * distance * distance * distance * distance;
   }
 
   /**
