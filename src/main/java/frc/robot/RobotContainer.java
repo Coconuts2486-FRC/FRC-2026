@@ -214,7 +214,7 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Shoot",
         Commands.runOnce(
-            () -> m_shooter.runVelocity(Coordinator.getShooterVelocity() - 0.15), m_shooter));
+            () -> m_shooter.runVelocity(Coordinator.getShooterVelocity() - 0.2), m_shooter));
   }
 
   /**
