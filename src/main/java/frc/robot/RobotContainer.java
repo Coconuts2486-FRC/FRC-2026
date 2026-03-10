@@ -494,7 +494,7 @@ public class RobotContainer {
             },
             m_turret));
     // ===============================================================================
-    //
+    // driver controls
 
     // Press X button --> Stop with wheels in X-Lock position
     driverController.x().onTrue(Commands.runOnce(m_drivebase::stopWithX, m_drivebase));
@@ -512,15 +512,29 @@ public class RobotContainer {
 
     driverController.b().toggleOnTrue(Commands.run(() -> m_rollers.runRollers(), m_rollers));
 
-    //shooter control
-      driverController
+    // shooter control
+    driverController
         .leftTrigger()
         .toggleOnTrue(
             Commands.run(
                 () -> m_shooter.runVelocity(Coordinator.getShooterVelocity() - 0.25), m_shooter))
-        .onFalse(
-            Commands.run(() -> m_shooter.stop(), m_shooter)
-            );
+        .onFalse(Commands.run(() -> m_shooter.stop(), m_shooter));
+
+    // auto aim
+    driverController
+        .rightTrigger()
+        .whileTrue(
+            Commands.defer(
+                () -> {
+                  Pose2d robotPose = m_drivebase.getPose();
+                  Translation2d hub = FieldConstants.hubCenterRed2d();
+
+                  Rotation2d heading = hub.minus(robotPose.getTranslation()).getAngle();
+
+                  return AutopilotCommands.runAutopilot(
+                      m_drivebase, new Pose2d(robotPose.getTranslation(), heading));
+                },
+                Set.of(m_drivebase)));
 
     driverController
         .povUp()
@@ -542,7 +556,7 @@ public class RobotContainer {
                 },
                 m_drivebase));
 
-    //micro driving controls
+    // micro driving controls
     driverController
         .povRight()
         .whileTrue(
@@ -563,8 +577,30 @@ public class RobotContainer {
                 },
                 m_drivebase));
 
-  
-  driverController
+    //
+    // ===============================================================================
+
+    // Co driver controls
+
+    // Press start button --> switch elastic tab
+    operatorController
+        .start()
+        .onTrue(
+            Commands.runOnce(
+                () -> {
+                  elasticOnDriveTab = !elasticOnDriveTab;
+                  Elastic.selectTab(elasticOnDriveTab ? 2 : 0);
+                }));
+
+    driverController
+        .leftTrigger()
+        .toggleOnTrue(
+            Commands.run(
+                () -> m_shooter.runVelocity(Coordinator.getShooterVelocity() - 0.25), m_shooter))
+        .onFalse(Commands.run(() -> m_shooter.stop(), m_shooter));
+
+    // auto aim
+    driverController
         .rightTrigger()
         .whileTrue(
             Commands.defer(
@@ -578,33 +614,6 @@ public class RobotContainer {
                       m_drivebase, new Pose2d(robotPose.getTranslation(), heading));
                 },
                 Set.of(m_drivebase)));
-    //
-    // ===============================================================================
-
-    // Testing functions
-
-    // Press start button --> switch elastic tab
-    operatorController
-        .start()
-        .onTrue(
-            Commands.runOnce(
-                () -> {
-                  elasticOnDriveTab = !elasticOnDriveTab;
-                  Elastic.selectTab(elasticOnDriveTab ? 2 : 0);
-                }));
-
-
-
-
-
-
-
-
-
-
-
-
-                
 
     if (Constants.getMode() == Mode.SIM) {
       // IN SIMULATION ONLY:
