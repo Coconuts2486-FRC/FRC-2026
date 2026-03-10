@@ -51,52 +51,21 @@ public class IntakeIOTalonFX implements IntakeIO {
 
   private final StatusSignal<Angle> pivotPosition = pivot.getPosition();
   private final StatusSignal<AngularVelocity> pivotVelocity = pivot.getVelocity();
-
   private final StatusSignal<Voltage> pivotAppliedVolts = pivot.getMotorVoltage();
-
   private final StatusSignal<Current> pivotCurrent = pivot.getSupplyCurrent();
-
-  /** Return the power ports */
-  @Override
-  public int[] powerPorts() {
-    return POWER_PORTS;
-  }
 
   /** Constructor */
   public IntakeIOTalonFX() {
 
-    // Configure motors and encoders
-
-    // Current limiting
-
-    // FUSE cancoder onto pivot motor
-
+    
     CANcoderConfiguration cancoderConfig = new CANcoderConfiguration();
-    TalonFXConfiguration rollerConfig = new TalonFXConfiguration();
     TalonFXConfiguration pivotConfig = new TalonFXConfiguration();
 
-    // roller
-    rollerConfig.CurrentLimits.SupplyCurrentLimit = PowerConstants.kMotorPortMaxCurrent;
-    rollerConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-    rollerConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-
+    
     // pivot
     pivotConfig.CurrentLimits.SupplyCurrentLimit = PowerConstants.kMotorPortMaxCurrent;
     pivotConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
     pivotConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-    pivotConfig.Slot0 =
-        new Slot0Configs()
-            .withKP(DrivebaseConstants.kSteerP)
-            .withKI(0.0)
-            .withKD(DrivebaseConstants.kSteerD)
-            .withKS(0.0)
-            .withKV(0.0)
-            .withKA(0.0)
-            .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
-    pivotConfig.Feedback.FeedbackRemoteSensorID = pivotEncoder.getDeviceID();
-    // When not Pro-licensed, FusedCANcoder/SyncCANcoder automatically fall back to RemoteCANcoder
-    pivotConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
-    pivotConfig.Feedback.RotorToSensorRatio = 25.0 * (60.0 / 18.0); // Planetary -> chain sprocket
 
     // cancoder
     cancoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1.0;
@@ -117,13 +86,17 @@ public class IntakeIOTalonFX implements IntakeIO {
         BaseStatusSignal.refreshAll(pivotCurrent, pivotPosition, pivotVelocity, pivotAppliedVolts);
 
     // checks the status of roller
-
     inputs.pivotConnected = pivotStatus.isOK();
     inputs.pivotPositionRot = pivotPosition.getValueAsDouble();
     inputs.pivotAvAngularVelocity = pivotVelocity.getValueAsDouble();
-    // inputs.releaseButton = true; // getReleaseState();
     inputs.pivotAppliedVolts = pivotAppliedVolts.getValueAsDouble();
     inputs.currentAmps = new double[] {pivotCurrent.getValueAsDouble()};
+  }
+
+  /** Return the power ports */
+  @Override
+  public int[] powerPorts() {
+    return POWER_PORTS;
   }
 
   /** Set the coast mode of the mechanism as COAST */
@@ -138,39 +111,20 @@ public class IntakeIOTalonFX implements IntakeIO {
     pivot.setNeutralMode(NeutralModeValue.Brake);
   }
 
-  /** Set the mechanism angular velocity in physical units ***************** */
-  /**
-   * Set the primitive speed of the pivot
-   *
-   * @param speed Primitive speed in the range -1.0 to 1.0
-   */
+
   @Override
   public void setPivotPrimitiveSpeed(double speed) {
     pivot.set(speed);
   }
 
-  /**
-   * Set the primitive speed of the pivot
-   *
-   * @param speed Primitive speed in the range -1.0 to 1.0
-   */
+  
   @Override
   public void stopPivot() {
     pivot.stopMotor();
   }
 
   /** Getter functions ***************************************************** */
-  /**
-   * Get the intake rollers running boolean
-   *
-   * @return Whether the rollers are running
-   */
 
-  /**
-   * Get the intake extended boolean
-   *
-   * @return Whether the intake is extended
-   */
   @Override
   public boolean isIntakeExtended() {
     return (pivotEncoder.getAbsolutePosition().getValueAsDouble()
@@ -179,7 +133,6 @@ public class IntakeIOTalonFX implements IntakeIO {
 
   @Override
   public double getPivotPosition() {
-    // The encoder returns position in units of rotations
     return pivotEncoder.getAbsolutePosition().getValueAsDouble();
   }
 }

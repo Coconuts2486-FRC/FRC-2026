@@ -42,6 +42,7 @@ public class IndexerIOTalonFX implements IndexerIO {
   // Declare Hardware
   private final TalonFX indexer =
       new TalonFX(INDEXER_ROLLER.getDeviceNumber(), INDEXER_ROLLER.getCANBus());
+      
   public final int[] POWER_PORTS = {INDEXER_ROLLER.getPowerPort()};
 
   private final StatusSignal<Angle> indexerPosition = indexer.getPosition();
@@ -52,37 +53,15 @@ public class IndexerIOTalonFX implements IndexerIO {
   private final TalonFXConfiguration config = new TalonFXConfiguration();
   private final boolean isCTREPro = Constants.getPhoenixPro() == CTREPro.LICENSED;
 
-  /** Return the power ports */
-  @Override
-  public int[] powerPorts() {
-    return POWER_PORTS;
-  }
+
 
   /** Constructor */
   public IndexerIOTalonFX() {
     config.CurrentLimits.SupplyCurrentLimit = PowerConstants.kMotorPortMaxCurrent;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
-    config.MotorOutput.NeutralMode =
-        switch (kShooterIdleMode) {
-          case COAST -> NeutralModeValue.Coast;
-          case BRAKE -> NeutralModeValue.Brake;
-        };
-    // Build the OpenLoopRampsConfigs and ClosedLoopRampsConfigs for current smoothing
-    OpenLoopRampsConfigs openRamps = new OpenLoopRampsConfigs();
-    openRamps.DutyCycleOpenLoopRampPeriod = kShooterOpenLoopRampPeriod;
-    openRamps.VoltageOpenLoopRampPeriod = kShooterOpenLoopRampPeriod;
-    openRamps.TorqueOpenLoopRampPeriod = kShooterOpenLoopRampPeriod;
-    ClosedLoopRampsConfigs closedRamps = new ClosedLoopRampsConfigs();
-    closedRamps.DutyCycleClosedLoopRampPeriod = kShooterClosedLoopRampPeriod;
-    closedRamps.VoltageClosedLoopRampPeriod = kShooterClosedLoopRampPeriod;
-    closedRamps.TorqueClosedLoopRampPeriod = kShooterClosedLoopRampPeriod;
-    // Apply the open- and closed-loop ramp configuration for current smoothing
-    config.withClosedLoopRamps(closedRamps).withOpenLoopRamps(openRamps);
-    // set Motion Magic Velocity settings
-    var motionMagicConfigs = config.MotionMagic;
-    motionMagicConfigs.MotionMagicAcceleration =
-        400; // Target acceleration of 400 rps/s (0.25 seconds to max)
-    motionMagicConfigs.MotionMagicJerk = 4000; // Target jerk of 4000 rps/s/s (0.1 seconds)
+    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
+    
 
     // Apply the configurations to the Shooter motors
     PhoenixUtil.tryUntilOk(5, () -> indexer.getConfigurator().apply(config, 0.25));
@@ -101,21 +80,21 @@ public class IndexerIOTalonFX implements IndexerIO {
 
     inputs.indexerAlive = indexerStatus.isOK();
     inputs.positionRad =
-        Units.rotationsToRadians(indexerPosition.getValueAsDouble()) / 1.0; // kShooterGearRatio;
+        Units.rotationsToRadians(indexerPosition.getValueAsDouble()); 
     inputs.velocityRadPerSec =
-        Units.rotationsToRadians(indexerVelocity.getValueAsDouble()) / 1.0; // kShooterGearRatio;
+        Units.rotationsToRadians(indexerVelocity.getValueAsDouble()); 
     inputs.appliedVolts = indexerAppliedVolts.getValueAsDouble();
     inputs.currentAmps = new double[] {indexerCurrent.getValueAsDouble()};
   }
 
-  /**
-   * Set Velocity
-   *
-   * @param velocity Desired indexer velocity
-   */
+  /** Return the power ports */
   @Override
+  public int[] powerPorts() {
+    return POWER_PORTS;
+  }
+
+
   public void setVelocity(double velocity) {
-    // Can use Motion Magic and/or TorqueFOC control here!
     indexer.set(velocity);
   }
 

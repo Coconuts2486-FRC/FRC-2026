@@ -22,7 +22,6 @@ import org.littletonrobotics.junction.Logger;
 
 public class Feeder extends RBSISubsystem {
 
-  // Declare IO
   private final FeederIO io;
   private final FeederIOInputsAutoLogged inputs = new FeederIOInputsAutoLogged();
 
@@ -31,9 +30,14 @@ public class Feeder extends RBSISubsystem {
     io.updateInputs(inputs);
   }
 
-  public void setFeederVelocity(double velocity) {
-    io.setFeederVelocity(velocity);
+  @Override
+  public void rbsiPeriodic() {
+    io.updateInputs(inputs);
+    Logger.processInputs("Feeder", inputs);
   }
+
+  @Override
+  public void simulationPeriodic() {}
 
   public void runFeeder() {
     io.setFeederVelocity(0.5);
@@ -54,15 +58,6 @@ public class Feeder extends RBSISubsystem {
   public boolean isFeederAlive() {
     return inputs.feederAlive;
   }
-
-  @Override
-  public void rbsiPeriodic() {
-    io.updateInputs(inputs);
-    Logger.processInputs("Feeder", inputs);
-  }
-
-  @Override
-  public void simulationPeriodic() {}
 
   @Override
   public int[] getPowerPorts() {
