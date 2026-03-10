@@ -124,7 +124,4 @@ public class FieldConstants {
     private final AprilTagFieldLayout layout;
     private final String layoutString;
   }
-
-  public static final int[] REDHUB_TAG_IDS = {2, 3, 4, 5, 8, 9, 10, 11};
-  public static final int[] BLUEHUB_TAG_IDS = {2, 3, 4, 5, 8, 9, 10, 11};
 }

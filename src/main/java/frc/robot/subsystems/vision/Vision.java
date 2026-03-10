@@ -34,7 +34,6 @@ public class Vision extends VirtualSubsystem {
   private final VisionIO[] io;
   private final VisionIOInputsAutoLogged[] inputs;
   private final Alert[] disconnectedAlerts;
-  private Targeting targeting = null;
 
   // Camera configs (names, transforms, stddev multipliers, sim props)
   private final Constants.Cameras.CameraConfig[] camConfigs;
@@ -79,10 +78,6 @@ public class Vision extends VirtualSubsystem {
     }
   }
 
-  public void setTargeting(Targeting targeting) {
-    this.targeting = targeting;
-  }
-
   /** Returns the X angle to the best target, useful for simple servoing. */
   public Rotation2d getTargetX(int cameraIndex) {
     return inputs[cameraIndex].latestTargetObservation.tx();
@@ -95,21 +90,7 @@ public class Vision extends VirtualSubsystem {
       io[i].updateInputs(inputs[i]);
       Logger.processInputs("Vision/Camera" + i, inputs[i]);
       disconnectedAlerts[i].set(!inputs[i].connected);
-
-      if (targeting != null) {
-    var obs = inputs[i].latestTargetObservation;
-    boolean hasTarget = obs.tx().getRadians() != 0.0 || obs.ty().getRadians() != 0.0;
-    int bestTagId = inputs[i].tagIds.length > 0 ? inputs[i].tagIds[0] : -1;
-    targeting.updateCameraSample(new Targeting.CameraTargetSample(
-        i,
-        edu.wpi.first.wpilibj.Timer.getFPGATimestamp(),
-        obs.tx(),
-        obs.ty(),
-        hasTarget,
-        bestTagId
-    ));
     }
-  }
 
     // 2) Clear summary buffers (reused)
     allTagPoses.clear();
