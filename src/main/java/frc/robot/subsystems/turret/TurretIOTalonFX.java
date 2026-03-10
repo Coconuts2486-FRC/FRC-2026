@@ -23,6 +23,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -66,6 +67,11 @@ public class TurretIOTalonFX implements TurretIO {
   @Override
   public boolean readTurretSwitch() {
     return turretSwitch.get();
+  }
+
+  @Override
+  public void setBrake() {
+    turret.setNeutralMode(NeutralModeValue.Brake);
   }
 
   @Override
