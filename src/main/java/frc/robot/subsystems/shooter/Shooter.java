@@ -39,9 +39,9 @@ public class Shooter extends RBSISubsystem {
     io.updateInputs(inputs);
     Logger.processInputs("Shooter", inputs);
 
-    Logger.recordOutput("Shooter/TargetSpeed(m/s)", targetMetersPerSecond);
+    Logger.recordOutput("Shooter/TargetSpeed", targetMetersPerSecond);
 
-    Logger.recordOutput("Shooter/CurrentSpeed(m/s)", currentMetersPerSecond);
+    Logger.recordOutput("Shooter/CurrentSpeed", currentMetersPerSecond);
   }
 
   /** Run closed loop at the specified velocity. */

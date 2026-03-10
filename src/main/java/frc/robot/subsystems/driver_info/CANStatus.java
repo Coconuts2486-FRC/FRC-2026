@@ -1,5 +1,7 @@
 package frc.robot.subsystems.driver_info;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import frc.robot.FieldState;
 import frc.robot.subsystems.Indexer.Indexer;
 import frc.robot.subsystems.climb.Climb;
 import frc.robot.subsystems.drive.Drive;
@@ -63,7 +65,8 @@ public class CANStatus extends VirtualSubsystem {
             && modules[2].isAlive()
             && modules[3].isAlive()
             && imu.isConnected()
-            && climb.climbAlive());
+            && climb.climbAlive()
+            && Math.abs(climb.climbPosition()) > 0.0);
 
     mainCAN =
         (intake.pivotAlive()
@@ -87,6 +90,7 @@ public class CANStatus extends VirtualSubsystem {
     Logger.recordOutput("CAN/Module3Alive", modules[2].isAlive());
     Logger.recordOutput("CAN/Module4Alive", modules[3].isAlive());
     Logger.recordOutput("CAN/ClimbALive", climb.climbAlive());
+    Logger.recordOutput("CAN/ClimbEncoderAlive", Math.abs(climb.climbPosition()) > 0.0);
 
     // logger inputs for each part of the main CAN network
     Logger.recordOutput("CAN/IntakePivotAlive", intake.pivotAlive());
@@ -99,5 +103,10 @@ public class CANStatus extends VirtualSubsystem {
     Logger.recordOutput(
         "CAN/TurretCancoderAlive", Math.abs(turret.getTurretEncoderPosition()) > 0.0);
     Logger.recordOutput("CAN/IndexerAlive", indexer.indexerAlive());
+
+    Logger.recordOutput("CAN/HubActive", FieldState.isHubActive());
+    Logger.recordOutput("CAN/MatchTime", DriverStation.getMatchTime());
+
+    Logger.recordOutput("CAN/intakePos", intake.getPivotPosition());
   }
 }
