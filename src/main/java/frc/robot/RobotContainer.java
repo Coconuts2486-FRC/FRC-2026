@@ -615,10 +615,10 @@ public class RobotContainer {
                 },
                 Set.of(m_drivebase)));
 
-  operatorController.povRight().whileTrue(Commands.run(() -> m_intake.printPos()));
-        
-// ==============================================================================================================================
-//sim controls
+    operatorController.povRight().whileTrue(Commands.run(() -> m_intake.printPos()));
+
+    // ==============================================================================================================================
+    // sim controls
     if (Constants.getMode() == Mode.SIM) {
       // IN SIMULATION ONLY:
       // Double-press the A button on Joystick3 to run the CameraSweepEvaluator

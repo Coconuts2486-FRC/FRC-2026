@@ -29,7 +29,8 @@ public class Indexer extends RBSISubsystem {
     io.updateInputs(inputs);
   }
 
-  // ** periodic functions ************************************************************************************************** */
+  // ** periodic functions
+  // ************************************************************************************************** */
 
   @Override
   public void rbsiPeriodic() {
@@ -40,21 +41,23 @@ public class Indexer extends RBSISubsystem {
   @Override
   public void simulationPeriodic() {}
 
-  // ** base functions ******************************************************************************************************* */
+  // ** base functions
+  // ******************************************************************************************************* */
 
-  //sets velocity at value from -1 to 1 0 being off and 1 being max speed
+  // sets velocity at value from -1 to 1 0 being off and 1 being max speed
   public void setVelocity(double velocity) {
     io.setVelocity(velocity);
   }
 
-  //stops indexer motor
+  // stops indexer motor
   public void indexerStop() {
     io.indexerStop();
   }
 
-  // ** getter functions **************************************************************************************************** */
+  // ** getter functions
+  // **************************************************************************************************** */
 
-  //returns boolean checking whether the motor is being recieved on CAN
+  // returns boolean checking whether the motor is being recieved on CAN
   public boolean indexerAlive() {
     return inputs.indexerAlive;
   }

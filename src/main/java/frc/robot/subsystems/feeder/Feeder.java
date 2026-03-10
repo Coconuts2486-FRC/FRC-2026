@@ -31,7 +31,8 @@ public class Feeder extends RBSISubsystem {
     io.updateInputs(inputs);
   }
 
-//** periodic functions ***************************************************************************************************** */
+  // ** periodic functions
+  // ***************************************************************************************************** */
   @Override
   public void rbsiPeriodic() {
     io.updateInputs(inputs);
@@ -41,12 +42,12 @@ public class Feeder extends RBSISubsystem {
   @Override
   public void simulationPeriodic() {}
 
+  // ** base functions
+  // ********************************************************************************************************** */
 
-//** base functions ********************************************************************************************************** */
-  
- /* runs feeder at 50%, it is the main functionc called by robot container, remember changing this value changes the regression
-  * value 50% at time az north regression
-  */
+  /* runs feeder at 50%, it is the main functionc called by robot container, remember changing this value changes the regression
+   * value 50% at time az north regression
+   */
   public void runFeeder() {
     io.setFeederVelocity(0.5);
   }
@@ -56,7 +57,8 @@ public class Feeder extends RBSISubsystem {
     io.stopFeeder();
   }
 
-//** getter functions ******************************************************************************************************** */
+  // ** getter functions
+  // ******************************************************************************************************** */
 
   // Returns speed of feeder as a double
   public double getFeederspeed() {
@@ -73,7 +75,8 @@ public class Feeder extends RBSISubsystem {
     return inputs.feederAlive;
   }
 
-  // * power port function */
+  // ** power port function
+  // ******************************************************************************************** */
   @Override
   public int[] getPowerPorts() {
     return io.getPowerPorts();

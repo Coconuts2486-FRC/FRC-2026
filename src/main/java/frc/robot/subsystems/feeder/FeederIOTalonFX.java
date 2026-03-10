@@ -35,7 +35,10 @@ public class FeederIOTalonFX implements FeederIO {
   private final TalonFXConfiguration config = new TalonFXConfiguration();
   private final boolean isCTREPro = Constants.getPhoenixPro() == CTREPro.LICENSED;
 
-  /** Constructor ************************************************************************************************************* */
+  /**
+   * Constructor
+   * *************************************************************************************************************
+   */
   public FeederIOTalonFX() {
     config.CurrentLimits.SupplyCurrentLimit = PowerConstants.kMotorPortMaxCurrent;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
@@ -68,22 +71,28 @@ public class FeederIOTalonFX implements FeederIO {
     return POWER_PORTS;
   }
 
-  /** Base Functions ********************************************************************************************************* */
- 
- //controls motor with value between -1 and 1 0 being off and 1 being 100%
+  /**
+   * Base Functions
+   * *********************************************************************************************************
+   */
+
+  // controls motor with value between -1 and 1 0 being off and 1 being 100%
   @Override
   public void setFeederVelocity(double velocity) {
     feeder.set(velocity);
   }
 
-  //Stop the feeder
+  // Stop the feeder
   @Override
   public void stopFeeder() {
     feeder.stopMotor();
     feeder.setControl(new MotionMagicDutyCycle(0.));
   }
 
-  /** Getter Functions **************************************************************************************************** */
+  /**
+   * Getter Functions
+   * ****************************************************************************************************
+   */
 
   // returns true if feeder is going at above 10%
   @Override
