@@ -37,6 +37,8 @@ public interface TurretIO extends RBSIIO {
 
   public default void aimTarget() {}
 
+  public default void setBrake() {}
+
   public default void setVolts(double volts) {}
 
   public default void setPosition(double position) {}

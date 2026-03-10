@@ -487,31 +487,14 @@ public class RobotContainer {
             },
             m_shooter));
 
-    // m_turret.setDefaultCommand(
-    //     Commands.run(
-    //         () -> {
-    //           m_turret.rotateToPosition(m_turret.getTargetPosition());
-    //           // Listen to the Coordinator, and set the angle based on the physics computation.
-    //         },
-    //         m_turret));
+    m_turret.setDefaultCommand(
+        Commands.run(
+            () -> {
+              m_turret.setBrake();
+            },
+            m_turret));
     // ===============================================================================
-    // ** Example Commands -- Remap, remove, or change as desired **
-    // Press B button while driving --> ROBOT-CENTRIC
-    // driverController
-    //     .leftTrigger()
-    //     .onTrue(
-    //         Commands.runOnce(
-    //             () ->
-    //                 DriveCommands.robotRelativeDrive(
-    //                     m_drivebase,
-    //                     () -> -driveStickY.value(),
-    //                     () -> -driveStickX.value(),
-    //                     () -> turnStickX.value())));
-
-    // Press A button -> BRAKE
-    // driverController
-    //     .a()
-    //     .whileTrue(Commands.runOnce(() -> m_drivebase.setMotorBrake(true), m_drivebase));
+    //
 
     // Press X button --> Stop with wheels in X-Lock position
     driverController.x().onTrue(Commands.runOnce(m_drivebase::stopWithX, m_drivebase));
