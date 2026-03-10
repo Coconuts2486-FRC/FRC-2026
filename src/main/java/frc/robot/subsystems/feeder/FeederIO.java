@@ -37,11 +37,17 @@ public interface FeederIO extends RBSIIO {
 
   public default void updateInputs(FeederIOInputs inputs) {}
 
+//** base functions ********************************************************************************************************** */
+
   public default void setFeederVelocity(double velocity) {}
 
   public default void stopFeeder() {}
 
-//** getter functions ********************************************************************************************************* */
+//** getter functions ******************************************************************************************************** */
+
+  public default double getFeederspeed() {
+    return 0.0;
+  }
 
   public default boolean isFeederRunning() {
     return false;

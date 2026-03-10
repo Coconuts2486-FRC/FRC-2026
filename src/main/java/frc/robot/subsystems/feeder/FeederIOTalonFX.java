@@ -69,6 +69,8 @@ public class FeederIOTalonFX implements FeederIO {
   }
 
   /** Base Functions ********************************************************************************************************* */
+ 
+ //controls motor with value between -1 and 1 0 being off and 1 being 100%
   @Override
   public void setFeederVelocity(double velocity) {
     feeder.set(velocity);
