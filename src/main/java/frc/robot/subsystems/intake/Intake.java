@@ -76,6 +76,10 @@ public class Intake extends RBSISubsystem {
     io.setPivotPrimitiveSpeed(controller.calculate(io.getPivotPosition(), pos));
   }
 
+  public void printPos(){
+    System.out.println(io.getPivotPosition());
+  }
+
   public double getPivotPosition() {
     return io.getPivotPosition();
   }
