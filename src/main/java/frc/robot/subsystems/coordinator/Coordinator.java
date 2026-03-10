@@ -28,7 +28,10 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.FieldConstants;
 import frc.robot.computations.BasicRegression;
 import frc.robot.computations.BasicRegression.RegressionShotSolution;
+import frc.robot.subsystems.vision.Targeting;
 import frc.robot.util.VirtualSubsystem;
+
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public class Coordinator extends VirtualSubsystem {
@@ -54,6 +57,7 @@ public class Coordinator extends VirtualSubsystem {
   private Translation2d velocity;
   private Alliance alliance = Alliance.Blue;
   private boolean allianceSet = false;
+  private final Targeting targeting;
   boolean intakeRunning;
   boolean runOnceDisabled = true;
 
@@ -82,7 +86,14 @@ public class Coordinator extends VirtualSubsystem {
     this.velocitySupplier = velocitySupplier;
     this.intakeRollersRunningSupplier = intakeRollersRunningSupplier;
     this.intakeExtendedSupplier = intakeExtendedSupplier;
+    this.targeting = new Targeting(new Targeting.PoseSampler() {
+    public Pose2d getPose() { return poseSupplier.get(); }
+    public Optional<Pose2d> getPoseAtTime(double t) { return Optional.empty(); }
+}, 2);
+ 
   }
+
+  public Targeting getTargeting() { return targeting; }
 
   public void setMode(Mode mode) {
     this.mode = mode;
@@ -95,18 +106,26 @@ public class Coordinator extends VirtualSubsystem {
       runOnceDisabled = false;
       // Always safe outputs
       return;
+
+      
     }
+
+    targeting.periodic(); 
+    
+       if (!allianceSet && DriverStation.isEnabled()) {
+    alliance = DriverStation.getAlliance().get();
+    allianceSet = true;
+    targeting.setGoalMode(
+        alliance == Alliance.Red
+            ? Targeting.GoalMode.REDHUB
+            : Targeting.GoalMode.BLUEHUB);
+  }
 
     // Read in the current robot state “truth”
     pose = poseSupplier.get();
     xpos = pose.getX();
     ypos = pose.getY();
     velocity = velocitySupplier.get();
-    if (!allianceSet && DriverStation.isEnabled()) {
-      // Get the current alliance once when enabled
-      alliance = DriverStation.getAlliance().get();
-      allianceSet = true;
-    }
 
     // Determine whether we are in the HOME, NEUTRAL, or FOREIGN zone
     if (xpos < FieldConstants.startingLineXBlueMeters) {
@@ -149,12 +168,14 @@ public class Coordinator extends VirtualSubsystem {
                 (ypos < midField)
                     ? FieldConstants.passingOutpostBlue
                     : FieldConstants.passingDepotBlue;
+          break;
 
           case Red:
             target =
                 (ypos > midField)
                     ? FieldConstants.passingOutpostRed
                     : FieldConstants.passingDepotRed;
+          break;
         }
         break;
 
@@ -163,6 +184,17 @@ public class Coordinator extends VirtualSubsystem {
         target = Pose3d.kZero;
         break;
     }
+
+    if (!allianceSet && DriverStation.isEnabled()) {
+    alliance = DriverStation.getAlliance().get();
+    allianceSet = true;
+
+    // ← ADD THIS
+    targeting.setGoalMode(
+        alliance == Alliance.Red
+            ? Targeting.GoalMode.REDHUB
+            : Targeting.GoalMode.BLUEHUB);
+}
 
     // Using the target and the current pose, compute v0 and phi
     // fuelSolution =

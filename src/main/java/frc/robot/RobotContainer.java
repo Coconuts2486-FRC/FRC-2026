@@ -130,6 +130,8 @@ public class RobotContainer {
   private final Turret m_turret;
   private final Prematch m_prematch;
 
+  
+
   @SuppressWarnings("unused")
   private final Coordinator m_coordinator;
 
@@ -209,29 +211,11 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("Intake", Commands.run(() -> m_rollers.runRollers(), m_rollers));
 
-    // NamedCommands.registerCommand(
-    //   "ClimbPrepare",
-    //   Commands.runOnce(()));
+    NamedCommands.registerCommand("Shoot", Commands.run(() -> m_shooter.runVelocity(Coordinator.getShooterVelocity() - 0.25), m_shooter));
 
-    // NamedCommands.registerCommand(
-    //   "Climb",
-    //   Commands.runOnce(()));
+    NamedCommands.registerCommand("Align", Commands.run(() -> m_rollers.runRollers(), m_rollers));
 
-    // NamedCommands.registerCommand(
-    //   "Shoot",
-    //   Commands.runOnce(()));
 
-    // NamedCommands.registerCommand(
-    //   "Pass",
-    //   Commands.runOnce(()));
-
-    // NamedCommands.registerCommand(
-    //   "ClimbPrepare",
-    //   Commands.runOnce(()));
-
-    // NamedCommands.registerCommand(
-    //   "Climb",
-    //   Commands.runOnce(()));
   }
 
   /**
@@ -361,6 +345,7 @@ public class RobotContainer {
             m_drivebase::getFieldLinearVelocity,
             m_rollers::isIntakeRollersRunning,
             m_intake::isIntakeExtended);
+            m_vision.setTargeting(m_coordinator.getTargeting());
 
     // Define Auto commands
     defineAutoCommands();
@@ -523,19 +508,19 @@ public class RobotContainer {
 
     // auto aim
     driverController
-        .rightTrigger()
-        .whileTrue(
-            Commands.defer(
-                () -> {
-                  Pose2d robotPose = m_drivebase.getPose();
-                  Translation2d hub = FieldConstants.hubCenterRed2d();
+    .rightBumper()
+    .whileTrue(
+        Commands.run(() -> {
+          var target = m_coordinator.getTargeting().getBestTarget();
 
-                  Rotation2d heading = hub.minus(robotPose.getTranslation()).getAngle();
+          if (target.isPresent()) {
+            var speeds =
+                m_coordinator.getTargeting().buildAimingDriveRequest(
+                    target.get().desiredHeading().getRadians());
 
-                  return AutopilotCommands.runAutopilot(
-                      m_drivebase, new Pose2d(robotPose.getTranslation(), heading));
-                },
-                Set.of(m_drivebase)));
+            m_drivebase.runVelocity(speeds);
+          }
+        }, m_drivebase));
 
     driverController
         .povUp()

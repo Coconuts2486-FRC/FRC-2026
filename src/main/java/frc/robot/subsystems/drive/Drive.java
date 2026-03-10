@@ -90,6 +90,11 @@ public class Drive extends RBSISubsystem {
   private static final double FIELD_LENGTH_METERS = 16.54175; // official FRC 2026 field length
   private static final double MIDFIELD_X = /*FIELD_LENGTH_METERS / 3.0*/ 11.821474447275452;
 
+  // Reuse arrays to reduce GC (you likely already have lastModulePositions as a field)
+  private final SwerveModulePosition[] modulePositions = new SwerveModulePosition[4];
+  private final SwerveModulePosition[] moduleDeltas = new SwerveModulePosition[4];
+  private final SwerveModulePosition[][] moduleSamples = new SwerveModulePosition[4][];
+
   // Constructor
   public Drive(Imu imu) {
     this.imu = imu;
@@ -251,20 +256,14 @@ public class Drive extends RBSISubsystem {
       final double[] sampleTimestamps = modules[0].getOdometryTimestamps();
       final int sampleCount = sampleTimestamps.length;
 
-      // Reuse arrays to reduce GC (you likely already have lastModulePositions as a field)
-      final SwerveModulePosition[] modulePositions = new SwerveModulePosition[4];
-      final SwerveModulePosition[] moduleDeltas = new SwerveModulePosition[4];
+      for (int moduleIndex = 0; moduleIndex < 4; moduleIndex++) {
+       moduleSamples[moduleIndex] = modules[moduleIndex].getOdometryPositions();
+      }
 
-      for (int i = 0; i < sampleCount; i++) {
-        for (int moduleIndex = 0; moduleIndex < 4; moduleIndex++) {
-          modulePositions[moduleIndex] = modules[moduleIndex].getOdometryPositions()[i];
-          moduleDeltas[moduleIndex] =
-              new SwerveModulePosition(
-                  modulePositions[moduleIndex].distanceMeters
-                      - lastModulePositions[moduleIndex].distanceMeters,
-                  modulePositions[moduleIndex].angle);
-          lastModulePositions[moduleIndex] = modulePositions[moduleIndex];
-        }
+    for (int i = 0; i < sampleCount; i++) {
+      for (int moduleIndex = 0; moduleIndex < 4; moduleIndex++) {
+        modulePositions[moduleIndex] = moduleSamples[moduleIndex][i];
+      }
 
         // Pick yaw sample if available; otherwise fall back to current yaw
         final double yawRad =
