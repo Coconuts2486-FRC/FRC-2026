@@ -68,22 +68,25 @@ public class FeederIOTalonFX implements FeederIO {
     return POWER_PORTS;
   }
 
-  /** Motor Control Functions ********************************************** */
+
+  //** base functions **************************************************************************************************** */
+
+  //set feeder velocity 0 0% speed 1 100% -1 opposite direction 100%
   @Override
   public void setFeederVelocity(double velocity) {
     feeder.set(velocity);
   }
 
-  /** Stop the feeder */
+  // Stop the feeder 
   @Override
   public void stopFeeder() {
     feeder.stopMotor();
     feeder.setControl(new MotionMagicDutyCycle(0.));
   }
 
-  /** Getter Functions ***************************************************** */
+  //** Getter Functions ***************************************************************************************************** */
 
-  /** Get feeder running state */
+  // returns true if feeder is going at above 10%
   @Override
   public boolean isFeederRunning() {
     return (Math.abs(feeder.get()) > 0.1);
