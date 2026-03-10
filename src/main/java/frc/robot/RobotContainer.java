@@ -53,6 +53,7 @@ import frc.robot.subsystems.coordinator.Coordinator;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.SwerveConstants;
 import frc.robot.subsystems.driver_info.CANStatus;
+import frc.robot.subsystems.driver_info.MatchStatus;
 import frc.robot.subsystems.feeder.Feeder;
 import frc.robot.subsystems.feeder.FeederIO;
 import frc.robot.subsystems.feeder.FeederIOSim;
@@ -125,6 +126,7 @@ public class RobotContainer {
   private final Feeder m_feeder;
   private final Shooter m_shooter;
   private final rollers m_rollers;
+  private final MatchStatus m_matchstatus;
 
   private boolean elasticOnDriveTab = true;
   private final Turret m_turret;
@@ -245,6 +247,8 @@ public class RobotContainer {
         m_turret = new Turret(new TurretIOTalonFX());
         m_prematch = new Prematch(m_turret, m_intake);
         m_rollers = new rollers(new rollersIOTalonFX());
+        m_matchstatus = new MatchStatus(driverController, operatorController);
+
         sweep = null;
 
         break;
@@ -265,6 +269,7 @@ public class RobotContainer {
         m_turret = new Turret(new TurretIOSim());
         m_rollers = new rollers(new rollersIOTalonFX());
         m_prematch = null;
+        m_matchstatus = new MatchStatus(driverController, operatorController);
 
         // ---------------- CameraSweepEvaluator (sim-only analysis) ----------------
         var cams = Cameras.ALL;
@@ -309,6 +314,7 @@ public class RobotContainer {
         m_turret = new Turret(new TurretIO() {});
         m_prematch = new Prematch(m_turret, m_intake);
         m_rollers = new rollers(new rollersIO() {});
+        m_matchstatus = new MatchStatus(driverController, operatorController);
 
         break;
     }
