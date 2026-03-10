@@ -482,7 +482,7 @@ public class RobotContainer {
     m_shooter.setDefaultCommand(
         Commands.run(
             () -> {
-              m_shooter.stop();
+              // m_shooter.stop();
             },
             m_shooter));
 
@@ -516,7 +516,10 @@ public class RobotContainer {
         .leftTrigger()
         .toggleOnTrue(
             Commands.run(
-                () -> m_shooter.runVelocity(Coordinator.getShooterVelocity() - 0.25), m_shooter));
+                () -> m_shooter.runVelocity(Coordinator.getShooterVelocity() - 0.25), m_shooter))
+        .onFalse(Commands.run(() -> m_shooter.stop()));
+
+    driverController.rightBumper().whileTrue(Commands.run(() -> m_shooter.runVelocity(10)));
 
     // auto aim
     driverController
@@ -590,30 +593,28 @@ public class RobotContainer {
                   Elastic.selectTab(elasticOnDriveTab ? 2 : 0);
                 }));
 
-    operatorController
-        .leftTrigger()
-        .toggleOnTrue(
-            Commands.run(
-                () -> m_shooter.runVelocity(Coordinator.getShooterVelocity() - 0.25), m_shooter))
-        .onFalse(Commands.run(() -> m_shooter.stop(), m_shooter));
+    // operatorController
+    //     .leftTrigger()
+    //     .toggleOnTrue(
+    //         Commands.run(
+    //             () -> m_shooter.runVelocity(Coordinator.getShooterVelocity() - 0.25), m_shooter))
+    //     .onFalse(Commands.run(() -> m_shooter.stop(), m_shooter));
 
-    // auto aim
-    operatorController
-        .rightTrigger()
-        .whileTrue(
-            Commands.defer(
-                () -> {
-                  Pose2d robotPose = m_drivebase.getPose();
-                  Translation2d hub = FieldConstants.hubCenterRed2d();
+    // // auto aim
+    // operatorController
+    //     .rightTrigger()
+    //     .whileTrue(
+    //         Commands.defer(
+    //             () -> {
+    //               Pose2d robotPose = m_drivebase.getPose();
+    //               Translation2d hub = FieldConstants.hubCenterRed2d();
 
-                  Rotation2d heading = hub.minus(robotPose.getTranslation()).getAngle();
+    //               Rotation2d heading = hub.minus(robotPose.getTranslation()).getAngle();
 
-                  return AutopilotCommands.runAutopilot(
-                      m_drivebase, new Pose2d(robotPose.getTranslation(), heading));
-                },
-                Set.of(m_drivebase)));
-
-    operatorController.povRight().whileTrue(Commands.run(() -> m_intake.printPos()));
+    //               return AutopilotCommands.runAutopilot(
+    //                   m_drivebase, new Pose2d(robotPose.getTranslation(), heading));
+    //             },
+    //             Set.of(m_drivebase)));
 
     // ==============================================================================================================================
     // sim controls
