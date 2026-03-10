@@ -78,6 +78,10 @@ public class Turret extends RBSISubsystem {
     return io.getTurretEncoderPosition();
   }
 
+  public boolean turretAlive() {
+    return inputs.turretAlive;
+  }
+
   public double simplifiedTurretPosition() {
     return MathUtil.inputModulus(io.getTurretEncoderPosition(), 1, 10)
         / TurretConstants.kTurretGearRatio;

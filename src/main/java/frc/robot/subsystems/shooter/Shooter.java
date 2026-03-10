@@ -142,6 +142,14 @@ public class Shooter extends RBSISubsystem {
     return Math.abs(currentMetersPerSecond) >= Math.abs(targetMetersPerSecond * 0.6);
   }
 
+  public boolean leaderAlive() {
+    return inputs.leaderAlive;
+  }
+
+  public boolean followerAlive() {
+    return inputs.followerAlive;
+  }
+
   @Override
   public int[] getPowerPorts() {
     return io.getPowerPorts();

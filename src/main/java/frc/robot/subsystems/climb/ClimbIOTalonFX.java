@@ -112,7 +112,9 @@ public class ClimbIOTalonFX implements ClimbIO {
 
   @Override
   public void updateInputs(ClimbIOInputs inputs) {
-    BaseStatusSignal.refreshAll(climbPosition, climbVelocity, climbAppliedVolts, climbCurrent);
+    var climbStatus =
+        BaseStatusSignal.refreshAll(climbPosition, climbVelocity, climbAppliedVolts, climbCurrent);
+    inputs.climbAlive = climbStatus.isOK();
     inputs.positionRad =
         Units.rotationsToRadians(climbPosition.getValueAsDouble()) / kClimbGearRatio;
     inputs.velocityRadPerSec =

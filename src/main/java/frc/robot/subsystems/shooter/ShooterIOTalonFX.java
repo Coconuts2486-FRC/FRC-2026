@@ -49,6 +49,11 @@ public class ShooterIOTalonFX implements ShooterIO {
   private final StatusSignal<Angle> leaderPosition = leader.getPosition();
   private final StatusSignal<AngularVelocity> leaderVelocity = leader.getVelocity();
   private final StatusSignal<Voltage> leaderAppliedVolts = leader.getMotorVoltage();
+
+  private final StatusSignal<Angle> followerPosition = follower.getPosition();
+  private final StatusSignal<AngularVelocity> followerVelocity = follower.getVelocity();
+  private final StatusSignal<Voltage> followerAppliedVolts = follower.getMotorVoltage();
+
   private final StatusSignal<Current> leaderCurrent = leader.getSupplyCurrent();
   private final StatusSignal<Current> followerCurrent = follower.getSupplyCurrent();
 
@@ -101,8 +106,18 @@ public class ShooterIOTalonFX implements ShooterIO {
 
   @Override
   public void updateInputs(ShooterIOInputs inputs) {
-    BaseStatusSignal.refreshAll(
-        leaderPosition, leaderVelocity, leaderAppliedVolts, leaderCurrent, followerCurrent);
+
+    var followerStatus =
+        BaseStatusSignal.refreshAll(
+            followerPosition, followerVelocity, followerAppliedVolts, followerCurrent);
+
+    var leaderStatus =
+        BaseStatusSignal.refreshAll(
+            leaderPosition, leaderVelocity, leaderAppliedVolts, leaderCurrent);
+
+    inputs.leaderAlive = leaderStatus.isOK();
+    inputs.followerAlive = followerStatus.isOK();
+
     inputs.positionRad =
         Units.rotationsToRadians(leaderPosition.getValueAsDouble()) / kShooterGearRatio;
     inputs.velocityRadPerSec =
