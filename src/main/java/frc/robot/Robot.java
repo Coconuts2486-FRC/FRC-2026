@@ -235,18 +235,7 @@ public class Robot extends LoggedRobot {
 
     // In case this got set in sequential practice sessions or whatever
     FieldState.wonAuto = null;
-  }
 
-  /** This function is called periodically during operator control. */
-  @Override
-  public void teleopPeriodic() {
-
-    // For 2026 - REBUILT, the alliance will be provided as a single character
-    //   representing the color of the alliance whose goal will go inactive
-    //   first (i.e. 'R' = red, 'B' = blue). This alliance's goal will be
-    //   active in Shifts 2 and 4.
-    //
-    // https://docs.wpilib.org/en/stable/docs/yearly-overview/2026-game-data.html
     if (FieldState.wonAuto == null) {
       // Only call this code block if the signal from FMS has not yet arrived
       String gameData = DriverStation.getGameSpecificMessage();
@@ -266,6 +255,18 @@ public class Robot extends LoggedRobot {
         }
       }
     }
+  }
+
+  /** This function is called periodically during operator control. */
+  @Override
+  public void teleopPeriodic() {
+
+    // For 2026 - REBUILT, the alliance will be provided as a single character
+    //   representing the color of the alliance whose goal will go inactive
+    //   first (i.e. 'R' = red, 'B' = blue). This alliance's goal will be
+    //   active in Shifts 2 and 4.
+    //
+    // https://docs.wpilib.org/en/stable/docs/yearly-overview/2026-game-data.html
 
     // Anything else for the teleopPeriodic() function
 
