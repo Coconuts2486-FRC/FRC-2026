@@ -33,10 +33,9 @@ public interface FeederIO extends RBSIIO {
     public boolean feederConnected = false;
   }
 
-  public default void setFeederVelocity(double velocity) {}
+  public default void updateInputs(FeederIOInputs inputs) {}
 
-  /** Run closed loop at the specified velocity. */
-  public default void setVelocity(double velocityRadPerSec) {}
+  public default void setFeederVelocity(double velocity) {}
 
   public default void stopFeeder() {}
 
@@ -47,6 +46,4 @@ public interface FeederIO extends RBSIIO {
   public default boolean isFeederRunning() {
     return false;
   }
-
-  public default void updateInputs(FeederIOInputs inputs) {}
 }

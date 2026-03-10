@@ -29,7 +29,6 @@ public interface IntakeIO extends RBSIIO {
     public double pivotAvAngularVelocity = 0.0;
     public double pivotAppliedVolts = 0.0;
     public double[] currentAmps = new double[] {};
-    // public boolean releaseButton = false;
   }
 
   public default void setPivotPrimitiveSpeed(double velocity) {}
@@ -37,7 +36,7 @@ public interface IntakeIO extends RBSIIO {
   public default void stopPivot() {}
 
   public default double getPivotPosition() {
-    return 6.7;
+    return 0.0;
   }
 
   public default void pivotToPos(double pos) {}
@@ -48,7 +47,4 @@ public interface IntakeIO extends RBSIIO {
     return false;
   }
 
-  public default boolean getReleaseState() {
-    return false;
-  }
 }
