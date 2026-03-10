@@ -85,9 +85,11 @@ public class IndexerIOTalonFX implements IndexerIO {
     return POWER_PORTS;
   }
 
+
   public void setVelocity(double velocity) {
     indexer.set(velocity);
   }
+
 
   /** Stop the indexer */
   @Override
