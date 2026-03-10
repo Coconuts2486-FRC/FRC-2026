@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.218298900462964,
-        "y": 4.732768012152778
+        "x": 7.883488353587964,
+        "y": 4.39434888599537
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.53368872974537,
-        "y": 5.601057798032408
+        "x": 8.013265986689817,
+        "y": 5.33546636284722
       },
       "isLocked": false,
       "linkedName": "DAZ1-2"
@@ -20,45 +20,61 @@
         "y": 7.364734519675926
       },
       "prevControl": {
-        "x": 7.89531879478581,
-        "y": 7.244189822942883
+        "x": 7.4953844918716035,
+        "y": 7.301268787362532
       },
       "nextControl": {
-        "x": 6.027300781250001,
-        "y": 7.471023582175926
+        "x": 6.052035951967593,
+        "y": 7.455801938657407
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.4137052228009264,
-        "y": 7.517935112847221
+        "x": 3.257,
+        "y": 7.5
       },
       "prevControl": {
-        "x": 5.716438078703705,
-        "y": 7.670938874421295
+        "x": 5.55973285590278,
+        "y": 7.653003761574074
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "DAZ2-3"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.7641921397379905,
+      "rotationDegrees": -90.0
+    }
+  ],
   "constraintZones": [],
-  "pointTowardsZones": [],
+  "pointTowardsZones": [
+    {
+      "fieldPosition": {
+        "x": 4.63,
+        "y": 4.05
+      },
+      "rotationOffset": 0.0,
+      "minWaypointRelativePos": 1.8467595646437993,
+      "maxWaypointRelativePos": 2.0,
+      "name": "Point Towards Zone"
+    }
+  ],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.5,
+    "maxVelocity": 2.0,
     "maxAcceleration": 3.0,
-    "maxAngularVelocity": 540.0,
-    "maxAngularAcceleration": 720.0,
+    "maxAngularVelocity": 180.0,
+    "maxAngularAcceleration": 180.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 1.5,
-    "rotation": -90.0
+    "velocity": 0.0,
+    "rotation": -68.0
   },
   "reversed": false,
   "folder": "Diplodocus Depot",

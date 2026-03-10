@@ -3,45 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.123873625578704,
-        "y": 7.632228660300926
+        "x": 3.257,
+        "y": 7.5
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.115379991319444,
-        "y": 7.554939453125
+        "x": 4.808978804976853,
+        "y": 7.5903035300925925
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.926427517361111,
-        "y": 7.282918185763889
+        "x": 5.711779730902777,
+        "y": 7.299058376736111
       },
       "prevControl": {
-        "x": 6.26441756650388,
-        "y": 7.425880762262095
+        "x": 5.1528483344389,
+        "y": 7.681538660358598
       },
       "nextControl": {
-        "x": 7.564752387152778,
-        "y": 7.145070457175926
+        "x": 6.180435763888889,
+        "y": 6.978354094328704
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.883488353587964,
-        "y": 4.39434888599537
+        "x": 5.711779730902777,
+        "y": 5.150182219328704
       },
       "prevControl": {
-        "x": 7.840513454861112,
-        "y": 6.148643301504628
+        "x": 5.93570847800926,
+        "y": 6.651285590277777
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "DAZ1-2"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -51,20 +51,20 @@
   "globalConstraints": {
     "maxVelocity": 2.0,
     "maxAcceleration": 3.0,
-    "maxAngularVelocity": 180.0,
-    "maxAngularAcceleration": 180.0,
+    "maxAngularVelocity": 360.0,
+    "maxAngularAcceleration": 360.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -75.0
+    "rotation": -105.00000000000001
   },
   "reversed": false,
   "folder": "Diplodocus Depot",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -68.0
   },
   "useDefaultConstraints": false
 }
