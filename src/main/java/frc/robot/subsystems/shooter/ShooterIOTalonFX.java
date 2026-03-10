@@ -17,8 +17,10 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -84,7 +86,6 @@ public class ShooterIOTalonFX implements ShooterIO {
     closedRamps.TorqueClosedLoopRampPeriod = kShooterClosedLoopRampPeriod;
     // Apply the open- and closed-loop ramp configuration for current smoothing
     config.withClosedLoopRamps(closedRamps).withOpenLoopRamps(openRamps);
-
     // set Motion Magic Velocity settings
     var motionMagicConfigs = config.MotionMagic;
     motionMagicConfigs.MotionMagicAcceleration =
@@ -127,12 +128,21 @@ public class ShooterIOTalonFX implements ShooterIO {
   }
 
   @Override
+  public void setVoltage(double volts) {
+    leader.setControl(new VoltageOut(volts).withEnableFOC(isCTREPro));
+  }
+
+  @Override
   public void setVelocity(double velocityRotationsPerSecond) {
+    // create a Motion Magic Velocity request, voltage output
     final VelocityVoltage m_request = new VelocityVoltage(0);
     m_request.withEnableFOC(isCTREPro);
     leader.setControl(m_request.withVelocity(velocityRotationsPerSecond));
+  }
 
-    System.out.println("I AM JUMPING CHRIS MOORE");
+  @Override
+  public void setPercent(double percent) {
+    leader.setControl(new DutyCycleOut(percent).withEnableFOC(isCTREPro));
   }
 
   @Override
@@ -140,7 +150,32 @@ public class ShooterIOTalonFX implements ShooterIO {
     leader.stopMotor();
   }
 
-  /* @param kD Differential gain
+  /**
+   * Set the gains of the Slot0 closed-loop configuration
+   *
+   * @param kP Proportional gain
+   * @param kI Integral gain
+   * @param kD Differential gain
+   * @param kS Static gain
+   * @param kV Velocity gain
+   */
+  @Override
+  public void configureGains(double kP, double kI, double kD, double kS, double kV) {
+    config.Slot0.kP = kP;
+    config.Slot0.kI = kI;
+    config.Slot0.kD = kD;
+    config.Slot0.kS = kS;
+    config.Slot0.kV = kV;
+    config.Slot0.kA = 0.0;
+    PhoenixUtil.tryUntilOk(5, () -> leader.getConfigurator().apply(config, 0.25));
+  }
+
+  /**
+   * Set the gains of the Slot0 closed-loop configuration
+   *
+   * @param kP Proportional gain
+   * @param kI Integral gain
+   * @param kD Differential gain
    * @param kS Static gain
    * @param kV Velocity gain
    * @param kA Acceleration gain

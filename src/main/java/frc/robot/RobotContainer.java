@@ -19,9 +19,6 @@ import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -38,7 +35,6 @@ import frc.robot.Constants.CANBuses;
 import frc.robot.Constants.Cameras;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.FieldConstants.AprilTagLayoutType;
-import frc.robot.commands.AutopilotCommands;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.Indexer.Indexer;
 import frc.robot.subsystems.Indexer.IndexerIO;
@@ -94,7 +90,6 @@ import frc.robot.util.RBSIEnum.Mode;
 import frc.robot.util.RBSIPowerMonitor;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.photonvision.PhotonCamera;
 import org.photonvision.simulation.PhotonCameraSim;
@@ -463,12 +458,12 @@ public class RobotContainer {
             },
             m_feeder));
 
-    m_shooter.setDefaultCommand(
-        Commands.run(
-            () -> {
-              // m_shooter.stop();
-            },
-            m_shooter));
+    // m_shooter.setDefaultCommand(
+    //     Commands.run(
+    //         () -> {
+    //           // m_shooter.stop();
+    //         },
+    //         m_shooter));
 
     m_turret.setDefaultCommand(
         Commands.run(
@@ -498,12 +493,10 @@ public class RobotContainer {
     // shooter control
     driverController
         .leftTrigger()
-        .toggleOnTrue(
+        .whileTrue(
             Commands.run(
                 () -> m_shooter.runVelocity(Coordinator.getShooterVelocity() - 0.25), m_shooter))
-        .onFalse(Commands.run(() -> m_shooter.stop()));
-
-    driverController.rightBumper().whileTrue(Commands.run(() -> m_shooter.runVelocity(10)));
+        .onFalse(Commands.runOnce(() -> m_shooter.stop()));
 
     // auto aim
     driverController
