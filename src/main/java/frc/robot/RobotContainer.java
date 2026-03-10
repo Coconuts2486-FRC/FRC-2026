@@ -584,7 +584,7 @@ public class RobotContainer {
         .onTrue(
             Commands.runOnce(
                 () -> {
-                  Elastic.selectTab( 1);
+                  Elastic.selectTab(1);
                 }));
 
     operatorController
@@ -592,31 +592,8 @@ public class RobotContainer {
         .onTrue(
             Commands.runOnce(
                 () -> {
-                  Elastic.selectTab( 0);
+                  Elastic.selectTab(0);
                 }));
-
-    operatorController
-        .leftTrigger()
-        .toggleOnTrue(
-            Commands.run(
-                () -> m_shooter.runVelocity(Coordinator.getShooterVelocity() - 0.25), m_shooter))
-        .onFalse(Commands.run(() -> m_shooter.stop(), m_shooter));
-
-    // auto aim
-    operatorController
-        .rightTrigger()
-        .whileTrue(
-            Commands.defer(
-                () -> {
-                  Pose2d robotPose = m_drivebase.getPose();
-                  Translation2d hub = FieldConstants.hubCenterRed2d();
-
-                  Rotation2d heading = hub.minus(robotPose.getTranslation()).getAngle();
-
-                  return AutopilotCommands.runAutopilot(
-                      m_drivebase, new Pose2d(robotPose.getTranslation(), heading));
-                },
-                Set.of(m_drivebase)));
 
     // ==============================================================================================================================
     // sim controls
