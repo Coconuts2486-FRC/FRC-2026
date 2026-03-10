@@ -39,6 +39,7 @@ public class TurretIOTalonFX implements TurretIO {
 
   private CANcoder turretEncoder =
       new CANcoder(TURRET_ENCODER.getDeviceNumber(), TURRET_ENCODER.getCANBus());
+
   public final int[] POWER_PORTS = {TURRET_POINTER.getPowerPort()};
 
   private final StatusSignal<Angle> turretPosition = turret.getPosition();
