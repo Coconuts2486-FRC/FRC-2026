@@ -3,9 +3,7 @@
   "robotLength": 0.8128,
   "holonomicMode": true,
   "pathFolders": [
-    "Diplodocus Depot",
-    "Hadrosaruous Human Player",
-    "SPHAZ Autos"
+    "Diplodocus Depot"
   ],
   "autoFolders": [
     "New Folder"
