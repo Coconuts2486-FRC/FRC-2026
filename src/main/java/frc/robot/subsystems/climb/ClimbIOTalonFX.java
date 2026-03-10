@@ -98,8 +98,7 @@ public class ClimbIOTalonFX implements ClimbIO {
     PhoenixUtil.tryUntilOk(5, () -> climbEncoder.getConfigurator().apply(cancoderConfig));
   }
 
-
-  //Passes inputs for logging to the logger
+  // Passes inputs for logging to the logger
   @Override
   public void updateInputs(ClimbIOInputs inputs) {
     var climbStatus =
@@ -113,15 +112,14 @@ public class ClimbIOTalonFX implements ClimbIO {
     inputs.currentAmps = new double[] {climbCurrent.getValueAsDouble()};
   }
 
-  //Sets position with PID, calculating off of wanted position vs. current position
+  // Sets position with PID, calculating off of wanted position vs. current position
   @Override
   public void setPosition(double pos) {
     // Can use TorqueFOC if isCTREPro is true
     climb_motor.set(ClimbPID.calculate(pos, climbEncoder.getAbsolutePosition().getValueAsDouble()));
   }
 
-
-  //Returns position of climb encoder as double
+  // Returns position of climb encoder as double
   @Override
   public double getPosition() {
     return climbEncoder.getAbsolutePosition().getValueAsDouble();
