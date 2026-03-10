@@ -91,12 +91,13 @@ public class CANStatus extends VirtualSubsystem {
     // logger inputs for each part of the main CAN network
     Logger.recordOutput("CAN/IntakePivotAlive", intake.pivotAlive());
     Logger.recordOutput("CAN/FeederAlive", feeder.isFeederAlive());
-    Logger.recordOutput("CAN/IntakeCancoderAlive", intake.getPivotPosition() > 0.0);
+    Logger.recordOutput("CAN/IntakeCancoderAlive", Math.abs(intake.getPivotPosition()) > 0.0);
     Logger.recordOutput("CAN/IntakeRollersAlive", rollers.isRollersAlive());
     Logger.recordOutput("CAN/FlywheelLeaderAlive", shooter.leaderAlive());
     Logger.recordOutput("CAN/FlywheelFollowerAlive", shooter.followerAlive());
     Logger.recordOutput("CAN/TurretAlive", turret.turretAlive());
-    Logger.recordOutput("CAN/TurretCancoderAlive", turret.getTurretEncoderPosition() > 0.0);
+    Logger.recordOutput(
+        "CAN/TurretCancoderAlive", Math.abs(turret.getTurretEncoderPosition()) > 0.0);
     Logger.recordOutput("CAN/IndexerAlive", indexer.indexerAlive());
   }
 }

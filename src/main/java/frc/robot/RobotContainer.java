@@ -205,9 +205,15 @@ public class RobotContainer {
 
   public void defineAutoCommands() {
 
-    NamedCommands.registerCommand("IntakeDown", Commands.run(() -> m_intake.pivotDown(), m_intake).alongWith(Commands.print("NAMED COMMAND WORKED")));
+    NamedCommands.registerCommand(
+        "IntakeDown",
+        Commands.run(() -> m_intake.pivotDown(), m_intake)
+            .alongWith(Commands.print("NAMED COMMAND WORKED")));
 
-    NamedCommands.registerCommand("Intake", Commands.run(() -> m_rollers.runRollers(), m_rollers).alongWith(Commands.print("NAMED COMMAND WORKED")));
+    NamedCommands.registerCommand(
+        "Intake",
+        Commands.run(() -> m_rollers.runRollers(), m_rollers)
+            .alongWith(Commands.print("NAMED COMMAND WORKED")));
 
     // NamedCommands.registerCommand(
     //   "ClimbPrepare",
