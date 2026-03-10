@@ -15,7 +15,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.Indexer;
+package frc.robot.subsystems.indexer;
 
 import static frc.robot.Constants.RobotDevices.*;
 import static frc.robot.Constants.ShooterConstants.*;
