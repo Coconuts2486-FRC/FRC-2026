@@ -31,21 +31,19 @@ public class Climb extends RBSISubsystem {
     this.io = io;
   }
 
-
-  //Periodic function- runs every 20ms (~50x/second)
+  // Periodic function- runs every 20ms (~50x/second)
   @Override
   public void rbsiPeriodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Climb", inputs);
   }
 
-
-  //Sets position using PID based off of desired position
+  // Sets position using PID based off of desired position
   public void setPosition(double pos) {
     io.setPosition(pos);
   }
 
-  //Checks if the climb is connected to the CAN network
+  // Checks if the climb is connected to the CAN network
   public boolean climbAlive() {
     return inputs.climbAlive;
   }

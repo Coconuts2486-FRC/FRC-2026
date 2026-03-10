@@ -25,43 +25,44 @@ public class Feeder extends RBSISubsystem {
   private final FeederIO io;
   private final FeederIOInputsAutoLogged inputs = new FeederIOInputsAutoLogged();
 
+  // Defines IO
   public Feeder(FeederIO io) {
     this.io = io;
     io.updateInputs(inputs);
   }
 
-//** periodic functions **************************************************************************************************** */
-
+  // Periodic function that runs while the robot is enabled and physically active
   @Override
   public void rbsiPeriodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Feeder", inputs);
   }
 
+  // Periodic function to run while the robot is being simulated
   @Override
   public void simulationPeriodic() {}
 
-//** base functions ********************************************************************************************************** */
-
-  //runs feeder at set velocity, function accesed by default command directly what changes the speed
-  //remember changing this value will change the regression at time of az north regression speed 0.5
+  // Runs feeder at 50% speed
   public void runFeeder() {
     io.setFeederVelocity(0.5);
   }
 
-  //stops feeder motor completely
+  // Stops feeder
   public void stopFeeder() {
     io.stopFeeder();
   }
 
-//** getter functions **************************************************************************************************** */
+  // Returns speed of feeder as a double
+  public double getFeederspeed() {
+    return io.getFeederspeed();
+  }
 
-  //if speed is greater than 10% returns true
+  // Checks if feeder is running
   public boolean isFeederRunning() {
     return io.isFeederRunning();
   }
 
-  //checks to make sure the feeder is returning data to make sure the can is good
+  // Checks if feeder is alive and connected to CAN network
   public boolean isFeederAlive() {
     return inputs.feederAlive;
   }
