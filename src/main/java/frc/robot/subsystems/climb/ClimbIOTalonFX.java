@@ -29,7 +29,6 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
@@ -50,9 +49,8 @@ public class ClimbIOTalonFX implements ClimbIO {
   private final CANcoder climbEncoder =
       new CANcoder(CLIMB_ENCODER.getDeviceNumber(), CLIMB_ENCODER.getCANBus());
   public final int[] POWER_PORTS = {CLIMB_MOTOR.getPowerPort()};
-  PIDController ClimbPID = new PIDController(ClimbConstants.kP, ClimbConstants.kI, ClimbConstants.kD);
-
-
+  PIDController ClimbPID =
+      new PIDController(ClimbConstants.kP, ClimbConstants.kI, ClimbConstants.kD);
 
   // Define status signals
   private final StatusSignal<Angle> climbPosition = climb_motor.getPosition();
@@ -72,7 +70,7 @@ public class ClimbIOTalonFX implements ClimbIO {
   /** Constructor */
   public ClimbIOTalonFX() {
     // Motion Magic Configs
-   
+
     // Current-limiting section
     config.CurrentLimits.SupplyCurrentLimit = PowerConstants.kMotorPortMaxCurrent;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
@@ -116,7 +114,7 @@ public class ClimbIOTalonFX implements ClimbIO {
   @Override
   public void setPosition(double pos) {
     // Can use TorqueFOC if isCTREPro is true
-    climb_motor.set(ClimbPID.calculate(pos,climbEncoder.getAbsolutePosition().getValueAsDouble()));
+    climb_motor.set(ClimbPID.calculate(pos, climbEncoder.getAbsolutePosition().getValueAsDouble()));
   }
 
   @Override

@@ -46,5 +46,4 @@ public interface IntakeIO extends RBSIIO {
   public default boolean isIntakeExtended() {
     return false;
   }
-
 }

@@ -40,7 +40,6 @@ public class FeederIOTalonFX implements FeederIO {
     config.CurrentLimits.SupplyCurrentLimit = PowerConstants.kMotorPortMaxCurrent;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
     config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-        
 
     // Apply the configurations to the Shooter motors
     PhoenixUtil.tryUntilOk(5, () -> feeder.getConfigurator().apply(config, 0.25));
@@ -57,10 +56,8 @@ public class FeederIOTalonFX implements FeederIO {
         BaseStatusSignal.refreshAll(
             feederPosition, feederVelocity, feederAppliedVolts, feederCurrent);
     inputs.feederAlive = status.isOK();
-    inputs.positionRad =
-        Units.rotationsToRadians(feederPosition.getValueAsDouble());
-    inputs.velocityRadPerSec =
-        Units.rotationsToRadians(feederVelocity.getValueAsDouble());
+    inputs.positionRad = Units.rotationsToRadians(feederPosition.getValueAsDouble());
+    inputs.velocityRadPerSec = Units.rotationsToRadians(feederVelocity.getValueAsDouble());
     inputs.appliedVolts = feederAppliedVolts.getValueAsDouble();
     inputs.currentAmps = new double[] {feederCurrent.getValueAsDouble()};
   }
