@@ -5,7 +5,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.FieldConstants;
 import java.util.Optional;
 
 /**
@@ -22,8 +21,9 @@ public class Targeting {
   /** Which goal are we trying to aim at right now? */
   public enum GoalMode {
     NONE,
-    REDHUB,
-    BLUEHUB,
+    SPEAKER,
+    AMP,
+    REEF,
     SOURCE,
     CUSTOM_TAG
   }
@@ -171,56 +171,30 @@ public class Targeting {
    * Call this once per loop from Coordinator (or from Targeting itself if it becomes a subsystem).
    */
   public void periodic() {
+    // 1) Choose the "best" camera sample for the current goal
     Optional<CameraTargetSample> bestSample = chooseBestSampleForGoal();
 
-    if (bestSample.isPresent() && bestSample.get().hasTarget) {
-      CameraTargetSample s = bestSample.get();
-      Pose2d poseAtSample =
-          poseSampler.getPoseAtTime(s.timestampSeconds).orElseGet(poseSampler::getPose);
-      Rotation2d desired = computeDesiredHeading(poseAtSample, s);
-      double confidence = s.bestTagId >= 0 ? 0.9 : 0.7;
-      lastSolution =
-          Optional.of(
-              new TargetSolution(s.timestampSeconds, s.bestTagId, desired, confidence, s.tx, s.ty));
+    if (bestSample.isEmpty() || !bestSample.get().hasTarget) {
+      lastSolution = Optional.empty();
       return;
     }
 
-    // No tag visible — fall back to odometry
-    Rotation2d odometryHeading = computeOdometryHeading();
-    if (odometryHeading != null) {
-      lastSolution =
-          Optional.of(
-              new TargetSolution(
-                  Timer.getFPGATimestamp(),
-                  -1,
-                  odometryHeading,
-                  0.8,
-                  Rotation2d.kZero,
-                  Rotation2d.kZero));
-    } else {
-      lastSolution = Optional.empty();
-    }
-  }
+    CameraTargetSample s = bestSample.get();
 
-  private Rotation2d computeOdometryHeading() {
-    // Get the known hub position based on current goal mode
-    edu.wpi.first.math.geometry.Translation2d hubTarget;
-    if (goalMode == GoalMode.REDHUB) {
-      hubTarget =
-          new edu.wpi.first.math.geometry.Translation2d(
-              frc.robot.FieldConstants.hubCenterRed.getX(),
-              frc.robot.FieldConstants.hubCenterRed.getY());
-    } else if (goalMode == GoalMode.BLUEHUB) {
-      hubTarget =
-          new edu.wpi.first.math.geometry.Translation2d(
-              frc.robot.FieldConstants.hubCenterBlue.getX(),
-              frc.robot.FieldConstants.hubCenterBlue.getY());
-    } else {
-      return null; // No known target for other modes
-    }
+    // 2) Choose pose at sample time if available (latency-aware aiming)
+    Pose2d poseAtSample =
+        poseSampler.getPoseAtTime(s.timestampSeconds).orElseGet(poseSampler::getPose);
 
-    Pose2d pose = poseSampler.getPose();
-    return hubTarget.minus(pose.getTranslation()).getAngle();
+    // 3) Compute desired heading (sketch options below)
+    Rotation2d desired = computeDesiredHeading(poseAtSample, s);
+
+    // 4) Assign confidence (simple placeholder)
+    double confidence = s.hasTarget ? 0.7 : 0.0;
+    if (s.bestTagId >= 0) confidence = 0.9;
+
+    lastSolution =
+        Optional.of(
+            new TargetSolution(s.timestampSeconds, s.bestTagId, desired, confidence, s.tx, s.ty));
   }
 
   // ------------------------------ Internals ------------------------------
@@ -230,30 +204,6 @@ public class Targeting {
 
     for (var s : latestByCamera) {
       if (s == null || !s.hasTarget) continue;
-
-      if (goalMode == GoalMode.REDHUB) {
-        boolean isREDHUB = false;
-
-        for (int id : FieldConstants.REDHUB_TAG_IDS) {
-          if (s.bestTagId == id) {
-            isREDHUB = true;
-            break;
-          }
-        }
-
-        if (!isREDHUB) continue;
-      }
-
-      if (goalMode == GoalMode.BLUEHUB) {
-        boolean isBLUEHUB = false;
-        for (int id : FieldConstants.BLUEHUB_TAG_IDS) {
-          if (s.bestTagId == id) {
-            isBLUEHUB = true;
-            break;
-          }
-        }
-        if (!isBLUEHUB) continue;
-      }
 
       // If we’re in CUSTOM_TAG mode, require that tag (if we have tag IDs)
       if (goalMode == GoalMode.CUSTOM_TAG && customTagId >= 0) {
