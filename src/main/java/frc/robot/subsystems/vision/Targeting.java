@@ -5,8 +5,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.FieldConstants;
-
 import java.util.Optional;
 
 /**
@@ -23,8 +21,9 @@ public class Targeting {
   /** Which goal are we trying to aim at right now? */
   public enum GoalMode {
     NONE,
-    REDHUB,
-    BLUEHUB,
+    SPEAKER,
+    AMP,
+    REEF,
     SOURCE,
     CUSTOM_TAG
   }
@@ -229,30 +228,6 @@ private Rotation2d computeOdometryHeading() {
 
     for (var s : latestByCamera) {
       if (s == null || !s.hasTarget) continue;
-
-      if (goalMode == GoalMode.REDHUB) {
-  boolean isREDHUB = false;
-
-  for (int id : FieldConstants.REDHUB_TAG_IDS) {
-    if (s.bestTagId == id) {
-      isREDHUB = true;
-      break;
-    }
-  }
-
-  if (!isREDHUB) continue;
-}
-
-if (goalMode == GoalMode.BLUEHUB) {
-    boolean isBLUEHUB = false;
-    for (int id : FieldConstants.BLUEHUB_TAG_IDS) {
-        if (s.bestTagId == id) {
-            isBLUEHUB = true;
-            break;
-        }
-    }
-    if (!isBLUEHUB) continue;
-}
 
       // If we’re in CUSTOM_TAG mode, require that tag (if we have tag IDs)
       if (goalMode == GoalMode.CUSTOM_TAG && customTagId >= 0) {
