@@ -385,7 +385,7 @@ public class RobotContainer {
   }
 
   /** Use this method to define your Autonomous commands for use with PathPlanner / Choreo */
-  private void defineAutoCommands() {
+  public void defineAutoCommands() {
 
     NamedCommands.registerCommand("IntakeDown", Commands.run(() -> m_intake.pivotDown()));
 
@@ -414,7 +414,6 @@ public class RobotContainer {
     // NamedCommands.registerCommand(
     //   "Climb",
     //   Commands.runOnce(()));
-
   }
 
   /**
