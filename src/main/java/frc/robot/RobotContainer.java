@@ -542,7 +542,7 @@ public class RobotContainer {
             Commands.run(
                 () -> {
                   m_drivebase.runVelocity(
-                      new ChassisSpeeds(Units.inchesToMeters(-11), Units.inchesToMeters(0), 0));
+                      new ChassisSpeeds(Units.inchesToMeters(11), Units.inchesToMeters(0), 0));
                 },
                 m_drivebase));
 
@@ -552,7 +552,7 @@ public class RobotContainer {
             Commands.run(
                 () -> {
                   m_drivebase.runVelocity(
-                      new ChassisSpeeds(Units.inchesToMeters(11), Units.inchesToMeters(0), 0));
+                      new ChassisSpeeds(Units.inchesToMeters(-11), Units.inchesToMeters(0), 0));
                 },
                 m_drivebase));
 
