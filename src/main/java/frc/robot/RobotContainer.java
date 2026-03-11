@@ -52,6 +52,8 @@ import frc.robot.subsystems.climb.ClimbIOTalonFX;
 import frc.robot.subsystems.coordinator.Coordinator;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.SwerveConstants;
+import frc.robot.subsystems.driver_info.CANStatus;
+import frc.robot.subsystems.driver_info.MatchStatus;
 import frc.robot.subsystems.feeder.Feeder;
 import frc.robot.subsystems.feeder.FeederIO;
 import frc.robot.subsystems.feeder.FeederIOSim;
@@ -123,7 +125,8 @@ public class RobotContainer {
   private final Feeder m_feeder;
   private final Shooter m_shooter;
   private final rollers m_rollers;
-  // private final MatchStatus m_matchstatus;
+  private final MatchStatus m_matchstatus;
+  private final CANStatus m_canStatus;
 
   private boolean elasticOnDriveTab = true;
   private final Turret m_turret;
@@ -245,7 +248,7 @@ public class RobotContainer {
         m_turret = new Turret(new TurretIOTalonFX());
         // m_prematch = new Prematch(m_turret, m_intake);
         m_rollers = new rollers(new rollersIOTalonFX());
-        // m_matchstatus = new MatchStatus(driverController, operatorController);
+        m_matchstatus = new MatchStatus(driverController, operatorController);
 
         sweep = null;
 
@@ -267,7 +270,7 @@ public class RobotContainer {
         m_turret = new Turret(new TurretIOSim());
         m_rollers = new rollers(new rollersIOTalonFX());
         // m_prematch = null;
-        // m_matchstatus = new MatchStatus(driverController, operatorController);
+        m_matchstatus = new MatchStatus(driverController, operatorController);
 
         // ---------------- CameraSweepEvaluator (sim-only analysis) ----------------
         var cams = Cameras.ALL;
@@ -312,7 +315,7 @@ public class RobotContainer {
         m_turret = new Turret(new TurretIO() {});
         // m_prematch = new Prematch(m_turret, m_intake);
         m_rollers = new rollers(new rollersIO() {});
-        // m_matchstatus = new MatchStatus(driverController, operatorController);
+        m_matchstatus = new MatchStatus(driverController, operatorController);
 
         break;
     }
@@ -320,17 +323,17 @@ public class RobotContainer {
     // Init all CAN busses specified in the `Constants.CANBuses` class
     RBSICANBusRegistry.initReal(Constants.CANBuses.ALL);
     // m_canHealth = Arrays.stream(Constants.CANBuses.ALL).map(RBSICANHealth::new).toList();
-    // m_canStatus =
-    //     new CANStatus(
-    //         m_drivebase,
-    //         m_imu,
-    //         m_intake,
-    //         m_feeder,
-    //         m_rollers,
-    //         m_shooter,
-    //         m_turret,
-    //         m_indexer,
-    //         m_climb);
+    m_canStatus =
+        new CANStatus(
+            m_drivebase,
+            m_imu,
+            m_intake,
+            m_feeder,
+            m_rollers,
+            m_shooter,
+            m_turret,
+            m_indexer,
+            m_climb);
 
     // In addition to the initial battery capacity from the Dashbaord, ``RBSIPowerMonitor`` takes
     // all the non-drivebase subsystems for which you wish to have power monitoring; DO NOT
