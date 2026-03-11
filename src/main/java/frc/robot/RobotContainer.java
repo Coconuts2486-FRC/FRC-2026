@@ -53,7 +53,6 @@ import frc.robot.subsystems.coordinator.Coordinator;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.SwerveConstants;
 import frc.robot.subsystems.driver_info.CANStatus;
-import frc.robot.subsystems.driver_info.MatchStatus;
 import frc.robot.subsystems.feeder.Feeder;
 import frc.robot.subsystems.feeder.FeederIO;
 import frc.robot.subsystems.feeder.FeederIOSim;
@@ -64,7 +63,6 @@ import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.intake.IntakeIOTalonFX;
-import frc.robot.subsystems.prematch.Prematch;
 import frc.robot.subsystems.rollers.rollers;
 import frc.robot.subsystems.rollers.rollersIO;
 import frc.robot.subsystems.rollers.rollersIOTalonFX;
@@ -126,11 +124,12 @@ public class RobotContainer {
   private final Feeder m_feeder;
   private final Shooter m_shooter;
   private final rollers m_rollers;
-  private final MatchStatus m_matchstatus;
+  // private final MatchStatus m_matchstatus;
 
   private boolean elasticOnDriveTab = true;
   private final Turret m_turret;
-  private final Prematch m_prematch;
+
+  // private final Prematch m_prematch;
 
   @SuppressWarnings("unused")
   private final Coordinator m_coordinator;
@@ -214,7 +213,7 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Shoot",
         Commands.runOnce(
-            () -> m_shooter.runVelocity(Coordinator.getShooterVelocity() - 0.2), m_shooter));
+            () -> m_shooter.runVelocity(Coordinator.getShooterVelocity() - 0.15), m_shooter));
   }
 
   /**
@@ -245,9 +244,9 @@ public class RobotContainer {
         m_feeder = new Feeder(new FeederIOTalonFX());
         m_shooter = new Shooter(new ShooterIOTalonFX());
         m_turret = new Turret(new TurretIOTalonFX());
-        m_prematch = new Prematch(m_turret, m_intake);
+        // m_prematch = new Prematch(m_turret, m_intake);
         m_rollers = new rollers(new rollersIOTalonFX());
-        m_matchstatus = new MatchStatus(driverController, operatorController);
+        // m_matchstatus = new MatchStatus(driverController, operatorController);
 
         sweep = null;
 
@@ -268,8 +267,8 @@ public class RobotContainer {
         m_shooter = new Shooter(new ShooterIOSim());
         m_turret = new Turret(new TurretIOSim());
         m_rollers = new rollers(new rollersIOTalonFX());
-        m_prematch = null;
-        m_matchstatus = new MatchStatus(driverController, operatorController);
+        // m_prematch = null;
+        // m_matchstatus = new MatchStatus(driverController, operatorController);
 
         // ---------------- CameraSweepEvaluator (sim-only analysis) ----------------
         var cams = Cameras.ALL;
@@ -312,9 +311,9 @@ public class RobotContainer {
         m_shooter = new Shooter(new ShooterIO() {});
         m_climb = new Climb(new ClimbIO() {});
         m_turret = new Turret(new TurretIO() {});
-        m_prematch = new Prematch(m_turret, m_intake);
+        // m_prematch = new Prematch(m_turret, m_intake);
         m_rollers = new rollers(new rollersIO() {});
-        m_matchstatus = new MatchStatus(driverController, operatorController);
+        // m_matchstatus = new MatchStatus(driverController, operatorController);
 
         break;
     }

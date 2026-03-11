@@ -131,12 +131,6 @@ public class Drive extends RBSISubsystem {
               case 0b00010000: // Blended Talon Drive / NEO Steer
                 modules[i] = new Module(new ModuleIOBlended(i), i);
                 break;
-              case 0b01010000: // NEO motors + CANcoder
-                modules[i] = new Module(new ModuleIOSparkCANcoder(i), i);
-                break;
-              case 0b01010100: // NEO motors + analog encoder
-                modules[i] = new Module(new ModuleIOSpark(i), i);
-                break;
               default:
                 throw new RuntimeException("Invalid swerve module combination");
             }
