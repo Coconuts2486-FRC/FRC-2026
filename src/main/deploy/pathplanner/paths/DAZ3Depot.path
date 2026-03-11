@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.257,
-        "y": 7.5
+        "x": 2.8622486979166673,
+        "y": 7.021722656250001
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.9406558883101845,
-        "y": 7.504330295138889
+        "x": 1.5459045862268517,
+        "y": 7.026052951388889
       },
       "isLocked": false,
       "linkedName": "DAZ2-3"
@@ -62,7 +62,7 @@
   "folder": "Diplodocus Depot",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -68.0
+    "rotation": -62.003917909166034
   },
   "useDefaultConstraints": false
 }

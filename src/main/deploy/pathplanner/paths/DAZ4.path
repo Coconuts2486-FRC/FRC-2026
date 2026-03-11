@@ -32,19 +32,24 @@
     },
     {
       "anchor": {
-        "x": 3.0460894097222226,
-        "y": 7.3906506799768525
+        "x": 2.881144531250001,
+        "y": 6.8679315682870365
       },
       "prevControl": {
-        "x": 4.089258535881663,
-        "y": 7.519139539933217
+        "x": 2.9944539207175933,
+        "y": 7.866523871527779
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.4931597980349343,
+      "rotationDegrees": -90.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -58,7 +63,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -67.16418290099956
+    "rotation": -61.48258562071907
   },
   "reversed": false,
   "folder": "Diplodocus Depot",
