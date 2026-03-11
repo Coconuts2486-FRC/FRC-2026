@@ -30,6 +30,8 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Filesystem;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -77,9 +79,25 @@ public class FieldConstants {
       new Pose3d(
           new Translation3d(Inches.of(573.19), Inches.of(49.32), Inches.of(0)), Rotation3d.kZero);
 
-  public static Translation2d hubCenterRed2d() {
-    return new Translation2d(hubCenterRed.getX(), hubCenterRed.getY());
+  public static Translation2d hubCenter2d() {
+    if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
+      return new Translation2d(hubCenterRed.getX(), hubCenterRed.getY());
+    } else if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
+      return new Translation2d(hubCenterBlue.getX(), hubCenterBlue.getY());
+    } else {
+      return new Translation2d(hubCenterRed.getX(), hubCenterRed.getY());
+    }
   }
+
+  // public static Rotation2d targetAngle(Translation2d target, Pose2d robotPose) {
+  //   if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
+  //     return target.minus(robotPose.getTranslation()).getAngle();
+  //   } else if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
+  //     return target.minus(robotPose.getTranslation()).getAngle();
+  //   } else {
+  //     return target.minus(robotPose.getTranslation()).getAngle();
+  //   }
+  // }
 
   /** AprilTag Field Layout ************************************************ */
   public static final double aprilTagWidth = Inches.of(6.50).in(Meters);
