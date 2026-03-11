@@ -33,6 +33,7 @@ public class Intake extends RBSISubsystem {
 
   public Intake(IntakeIO io) {
     this.io = io;
+    io.setCoast();
 
     /*default command has intake always come up
     unles overided by toggle of intake down in robot container */
@@ -67,7 +68,6 @@ public class Intake extends RBSISubsystem {
       io.setPivotPrimitiveSpeed(-0.4);
     } else {
       io.stopPivot();
-      io.setCoast();
     }
   }
 

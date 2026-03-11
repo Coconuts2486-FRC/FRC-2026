@@ -471,12 +471,12 @@ public class RobotContainer {
             },
             m_shooter));
 
-    m_turret.setDefaultCommand(
-        Commands.run(
-            () -> {
-              m_turret.setBrake();
-            },
-            m_turret));
+    // m_turret.setDefaultCommand(
+    //     Commands.run(
+    //         () -> {
+    //           m_turret.setBrake();
+    //         },
+    //         m_turret));
     // ===============================================================================
     // driver controls
 
