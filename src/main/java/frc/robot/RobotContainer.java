@@ -521,20 +521,39 @@ public class RobotContainer {
                 () -> m_shooter.runVelocity(Coordinator.getShooterVelocity() - 0.15), m_shooter));
 
     // auto aim
+    // driverController
+    //     .rightTrigger()
+    //     .whileTrue(
+    //         Commands.defer(
+    //             () -> {
+    //               Pose2d robotPose = m_drivebase.getPose();
+    //               Translation2d hub = FieldConstants.hubCenter2d();
+
+    //               Rotation2d heading = hub.minus(robotPose.getTranslation()).getAngle();
+
+    //               return AutopilotCommands.runAutopilot(
+    //                   m_drivebase, new Pose2d(robotPose.getTranslation(), heading));
+    //             },
+    //             Set.of(m_drivebase)));
+
+    // auto aim - turn only, driver keeps translational control
     driverController
         .rightTrigger()
         .whileTrue(
-            Commands.defer(
+            DriveCommands.fieldRelativeDrive(
+                m_drivebase,
+                () -> -driveStickY.value(),
+                () -> -driveStickX.value(),
                 () -> {
+                  // Continuously recalculate heading to hub from current pose
                   Pose2d robotPose = m_drivebase.getPose();
-                  Translation2d hub = FieldConstants.hubCenter2d();
-
-                  Rotation2d heading = hub.minus(robotPose.getTranslation()).getAngle();
-
-                  return AutopilotCommands.runAutopilot(
-                      m_drivebase, new Pose2d(robotPose.getTranslation(), heading));
-                },
-                Set.of(m_drivebase)));
+                  Rotation2d targetHeading =
+                      FieldConstants.hubCenter2d().minus(robotPose.getTranslation()).getAngle();
+                  // Return the angular error so fieldRelativeDrive treats it
+                  // as a rotation rate input (normalize to [-1, 1])
+                  double errorRads = targetHeading.minus(robotPose.getRotation()).getRadians();
+                  return Math.max(-1.0, Math.min(1.0, errorRads * 1.5)); // tune the 1.5 gain
+                }));
 
     driverController
         .povUp()
