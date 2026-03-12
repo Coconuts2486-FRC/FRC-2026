@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "Zero"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Back N Shoot"

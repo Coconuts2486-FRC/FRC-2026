@@ -230,6 +230,8 @@ public class RobotContainer {
                   m_drivebase, new Pose2d(robotPose.getTranslation(), heading));
             },
             Set.of(m_drivebase)));
+
+    NamedCommands.registerCommand("Zero", Commands.runOnce(m_drivebase::zeroHeadingForAlliance, m_drivebase));
   }
 
   /**
