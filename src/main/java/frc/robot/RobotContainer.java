@@ -599,6 +599,12 @@ public class RobotContainer {
                   Elastic.selectTab(0);
                 }));
 
+    operatorController.a().whileTrue(Commands.run(() -> m_indexer.setVelocity(0.37), m_indexer));
+
+    operatorController.rightTrigger(0.1).whileTrue(Commands.run(() -> m_shooter.runVelocity(15)));
+
+    operatorController.b().toggleOnTrue(Commands.run(() -> m_intake.stopPivot()));
+
     // ==============================================================================================================================
     // sim controls
     if (Constants.getMode() == Mode.SIM) {

@@ -69,6 +69,12 @@ public class Shooter extends RBSISubsystem {
   protected void rbsiPeriodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Shooter", inputs);
+    Logger.recordOutput("Shooter/targetspeed", targetMetersPerSecond);
+    Logger.recordOutput(
+        "Shooter/currentSpeed",
+        ((Units.radiansPerSecondToRotationsPerMinute(inputs.velocityRadPerSec) / 60)
+                / ShooterConstants.kShooterGearRatio)
+            * ShooterConstants.flywheelCircumfrence);
   }
 
   /** Run open loop at the specified voltage. */
