@@ -231,7 +231,8 @@ public class RobotContainer {
             },
             Set.of(m_drivebase)));
 
-    NamedCommands.registerCommand("Zero", Commands.runOnce(m_drivebase::zeroHeadingForAlliance, m_drivebase));
+    NamedCommands.registerCommand(
+        "Zero", Commands.runOnce(m_drivebase::zeroHeadingForAlliance, m_drivebase));
   }
 
   /**
@@ -620,9 +621,11 @@ public class RobotContainer {
                   Elastic.selectTab(0);
                 }));
 
-    operatorController.a().whileTrue(Commands.run(() -> m_indexer.setVelocity(0.37), m_indexer));
+    driverController.y().whileTrue(Commands.run(() -> m_indexer.setVelocity(0.37), m_indexer));
 
-    operatorController.rightTrigger(0.1).whileTrue(Commands.run(() -> m_shooter.runVelocity(15)));
+    operatorController
+        .rightTrigger(0.1)
+        .whileTrue(Commands.run(() -> m_shooter.runVelocity(15), m_shooter));
 
     operatorController.b().toggleOnTrue(Commands.run(() -> m_intake.stopPivot()));
 

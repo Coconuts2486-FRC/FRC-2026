@@ -36,6 +36,7 @@ public class Indexer extends RBSISubsystem {
   public void rbsiPeriodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Indexer", inputs);
+    Logger.recordOutput("Indexer/stalling", (inputs.velocityRadPerSec > -40));
   }
 
   @Override
@@ -56,6 +57,10 @@ public class Indexer extends RBSISubsystem {
 
   // ** getter functions
   // **************************************************************************************************** */
+  /** Get the velocity of the indexer */
+  public double getVelocity() {
+    return inputs.velocityRadPerSec;
+  }
 
   // returns boolean checking whether the motor is being recieved on CAN
   public boolean indexerAlive() {
