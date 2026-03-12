@@ -222,7 +222,7 @@ public class RobotContainer {
         Commands.defer(
             () -> {
               Pose2d robotPose = m_drivebase.getPose();
-              Translation2d hub = FieldConstants.hubCenterRed2d();
+              Translation2d hub = FieldConstants.hubCenter2d();
 
               Rotation2d heading = hub.minus(robotPose.getTranslation()).getAngle();
 
