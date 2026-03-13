@@ -3,41 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.729,
-        "y": 4.746
-      },
-      "prevControl": null,
-      "nextControl": {
-        "x": 7.858777633101853,
-        "y": 5.68711747685185
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 4.678282624421297,
-        "y": 7.520231481481481
-      },
-      "prevControl": {
-        "x": 6.465920845155463,
-        "y": 7.519549111705458
-      },
-      "nextControl": {
-        "x": 3.303217086226852,
-        "y": 7.520756365740741
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
         "x": 2.89531640625,
         "y": 5.544107855902777
       },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.1272139033564823,
+        "y": 6.026870153356481
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 0.7183589409722226,
+        "y": 6.019718605324074
+      },
       "prevControl": {
-        "x": 2.614044053819445,
-        "y": 6.845623987268518
+        "x": 0.6758703549950299,
+        "y": 6.2660815896818285
+      },
+      "nextControl": {
+        "x": 0.7970915798611116,
+        "y": 5.563200520833334
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.525994719328704,
+        "y": 5.2127746672453705
+      },
+      "prevControl": {
+        "x": 1.283656181814153,
+        "y": 5.613200842436184
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,8 +46,8 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.1982464519650662,
-      "rotationDegrees": 0.0
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 180.0
     }
   ],
   "constraintZones": [],
@@ -63,13 +63,13 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": -48.20956406640731
+    "rotation": -31.071141081101036
   },
   "reversed": false,
-  "folder": "Diplodocus Depot",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -75.0
+    "rotation": -48.21
   },
   "useDefaultConstraints": false
 }
