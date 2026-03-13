@@ -72,9 +72,11 @@ public class Shooter extends RBSISubsystem {
     Logger.recordOutput("Shooter/targetspeed", targetMetersPerSecond);
     Logger.recordOutput(
         "Shooter/currentSpeed",
-        ((Units.radiansPerSecondToRotationsPerMinute(inputs.velocityRadPerSec) / 60)
-                / ShooterConstants.kShooterGearRatio)
-            * ShooterConstants.flywheelCircumfrence);
+        Math.abs(
+            ((Units.radiansPerSecondToRotationsPerMinute(inputs.velocityRadPerSec) / 60)
+                    / ShooterConstants.kShooterGearRatio)
+                * ShooterConstants.flywheelCircumfrence));
+    Logger.recordOutput("Shooter/atSpeed", shooterAtSpeed());
   }
 
   /** Run open loop at the specified voltage. */

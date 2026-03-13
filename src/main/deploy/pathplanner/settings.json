@@ -3,11 +3,10 @@
   "robotLength": 0.8128,
   "holonomicMode": true,
   "pathFolders": [
+    "Overaptor Outpost",
     "Diplodocus Depot"
   ],
-  "autoFolders": [
-    "New Folder"
-  ],
+  "autoFolders": [],
   "defaultMaxVel": 3.0,
   "defaultMaxAccel": 3.0,
   "defaultMaxAngVel": 540.0,

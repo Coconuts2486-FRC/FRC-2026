@@ -35,6 +35,7 @@ public class rollers extends RBSISubsystem {
   public void rbsiPeriodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Rollers", inputs);
+    Logger.recordOutput("Rollers/RollersRunning", (Math.abs(inputs.velocityRadPerSec) > 0));
   }
 
   public void runRollers() {
