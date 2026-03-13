@@ -293,7 +293,7 @@ public final class Constants {
 
     // Slip Current -- the current draw when the wheels start to slip
     // Measure this against a wall.  CHECK WITH THE CARPET AT AN ACTUAL EVENT!!!
-    public static final double kSlipCurrent = 17.0; // Amps
+    public static final double kSlipCurrent = 80; // Amps
 
     // Characterized Wheel Radius (using the "Drive Wheel Radius Characterization" auto routine)
     public static final double kWheelRadiusMeters = Inches.of(1.900).in(Meters);
@@ -337,8 +337,8 @@ public final class Constants {
     //             Adjust these downward until your modules behave correctly
     public static final double kDriveP = 50.0;
     public static final double kDriveD = 0.03;
-    public static final double kDriveV = 0.5;
-    public static final double kDriveA = 0.0;
+    public static final double kDriveV = 0.9;
+    public static final double kDriveA = 0.1;
     public static final double kDriveS = 3.5;
     public static final double kDriveT =
         SwerveConstants.kDriveGearRatio / DCMotor.getKrakenX60Foc(1).KtNMPerAmp;
