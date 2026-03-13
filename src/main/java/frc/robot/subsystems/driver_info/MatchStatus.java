@@ -12,6 +12,7 @@ public class MatchStatus extends VirtualSubsystem {
   private final CommandXboxController driver;
   private final CommandXboxController coDriver;
   Alliance alliance = DriverStation.getAlliance().orElse(Alliance.Blue);
+  private boolean isRumbling = false;
 
   /** Constructor */
   public MatchStatus(CommandXboxController driver, CommandXboxController coDriver) {
@@ -25,14 +26,20 @@ public class MatchStatus extends VirtualSubsystem {
    * @param strength Rumble strength
    */
   public void rumble(double strength) {
-    driver.setRumble(RumbleType.kBothRumble, strength);
-    coDriver.setRumble(RumbleType.kBothRumble, strength);
+    if (!isRumbling) {
+      driver.setRumble(RumbleType.kBothRumble, strength);
+      coDriver.setRumble(RumbleType.kBothRumble, strength);
+      isRumbling = true;
+    }
   }
 
   /** Make both controllers stop rumbling */
   public void stopRumble() {
-    driver.setRumble(RumbleType.kBothRumble, 0);
-    coDriver.setRumble(RumbleType.kBothRumble, 0);
+    if (isRumbling) {
+      driver.setRumble(RumbleType.kBothRumble, 0);
+      coDriver.setRumble(RumbleType.kBothRumble, 0);
+      isRumbling = false;
+    }
   }
 
   /** Periodic function */
