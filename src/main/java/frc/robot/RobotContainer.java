@@ -623,8 +623,8 @@ public class RobotContainer {
 
     driverController.y().whileTrue(Commands.run(() -> m_indexer.setVelocity(0.37), m_indexer));
 
-    operatorController
-        .rightTrigger(0.1)
+    driverController
+        .rightBumper()
         .whileTrue(Commands.run(() -> m_shooter.runVelocity(15), m_shooter));
 
     operatorController.b().toggleOnTrue(Commands.run(() -> m_intake.stopPivot()));

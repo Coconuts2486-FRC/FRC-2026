@@ -29,13 +29,13 @@
                                 {
                                   "type": "path",
                                   "data": {
-                                    "pathName": "Copy of DAZ1"
+                                    "pathName": "DAZ1"
                                   }
                                 },
                                 {
                                   "type": "path",
                                   "data": {
-                                    "pathName": "Copy of DAZ2"
+                                    "pathName": "DAZ2"
                                   }
                                 }
                               ]
@@ -70,7 +70,7 @@
                           {
                             "type": "wait",
                             "data": {
-                              "waitTime": 4.0
+                              "waitTime": 5.0
                             }
                           },
                           {
@@ -92,9 +92,22 @@
                 }
               },
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "IntakeDown"
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 1.0
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "IntakeDown"
+                      }
+                    }
+                  ]
                 }
               }
             ]
