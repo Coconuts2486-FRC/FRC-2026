@@ -97,7 +97,7 @@ public class Coordinator extends VirtualSubsystem {
       return;
     }
 
-    // Read in the current robot state “truth”
+    // Read in the current robot state "truth"
     pose = poseSupplier.get();
     xpos = pose.getX();
     ypos = pose.getY();
