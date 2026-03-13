@@ -132,7 +132,7 @@ public class RBSIPowerMonitor extends VirtualSubsystem {
     for (int port : ports) {
       sum += conduit.getPDPChannelCurrent(port);
     }
-    Logger.recordOutput("Power/Subsystems/" + name + "_Ports", ports);
+    // Logger.recordOutput("Power/Subsystems/" + name + "_Ports", ports);
     Logger.recordOutput("Power/Subsystems/" + name + "_Current", sum);
   }
 

@@ -9,7 +9,6 @@
         "sidebar": {
           "width": 300,
           "expanded": [
-            "/RealOutputs",
             "/RealOutputs/LoopSpike/Drive",
             "/RealOutputs/Drive/OdomThread",
             "/RealOutputs/CAN/DriveTrain",
@@ -33,12 +32,24 @@
             "/RealOutputs/Accel/IMU",
             "/RealOutputs/Accel/IMU/Accel_mps2",
             "/RealOutputs/Drive",
-            "/DriverStation",
-            "/RealOutputs/Loop/Virtual"
+            "/RealOutputs/Loop/Virtual",
+            "/RealOutputs/CAN",
+            "/Vision/Camera0",
+            "/Vision/Camera1",
+            "/RealOutputs/Vision/Summary/RobotPoses",
+            "/ReplayOutputs",
+            "/ReplayOutputs/Vision",
+            "/ReplayOutputs/Vision/Summary",
+            "/RealOutputs",
+            "/ReplayOutputs/Vision/Camera0",
+            "/RealOutputs/Vision/Camera0",
+            "/RealOutputs/Odometry",
+            "/ReplayOutputs/Odometry",
+            "/Feeder"
           ]
         },
         "tabs": {
-          "selected": 9,
+          "selected": 6,
           "tabs": [
             {
               "type": 0,
@@ -80,9 +91,9 @@
                     "type": "robot",
                     "logKey": "/RealOutputs/Odometry/Robot",
                     "logType": "Pose2d",
-                    "visible": false,
+                    "visible": true,
                     "options": {
-                      "bumpers": ""
+                      "bumpers": "#ff0000"
                     }
                   },
                   {
@@ -118,6 +129,79 @@
                 "size": "large"
               },
               "controllerUUID": "u9myuirzag5qydjp9nozn8qxpfqofuuq",
+              "renderer": null,
+              "controlsHeight": 200
+            },
+            {
+              "type": 2,
+              "title": "2D Field - Replay",
+              "controller": {
+                "sources": [
+                  {
+                    "type": "robot",
+                    "logKey": "/ReplayOutputs/Odometry/Robot",
+                    "logType": "Pose2d",
+                    "visible": true,
+                    "options": {
+                      "bumpers": "#ff0000"
+                    }
+                  },
+                  {
+                    "type": "arrow",
+                    "logKey": "/ReplayOutputs/Vision/Summary/TagPoses",
+                    "logType": "Pose3d[]",
+                    "visible": true,
+                    "options": {
+                      "position": "center"
+                    }
+                  },
+                  {
+                    "type": "ghost",
+                    "logKey": "/ReplayOutputs/Vision/Camera0/RobotPosesAccepted",
+                    "logType": "Pose3d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ff00"
+                    }
+                  }
+                ],
+                "field": "FRC:2026 Field",
+                "orientation": 0,
+                "size": "large"
+              },
+              "controllerUUID": "fcrb44yozcn5a3e1219jjhk9phytbtwd",
+              "renderer": null,
+              "controlsHeight": 200
+            },
+            {
+              "type": 2,
+              "title": "Real vs Replay",
+              "controller": {
+                "sources": [
+                  {
+                    "type": "robot",
+                    "logKey": "/RealOutputs/Odometry/Robot",
+                    "logType": "Pose2d",
+                    "visible": true,
+                    "options": {
+                      "bumpers": "#00ff00"
+                    }
+                  },
+                  {
+                    "type": "robot",
+                    "logKey": "/ReplayOutputs/Odometry/Robot",
+                    "logType": "Pose2d",
+                    "visible": true,
+                    "options": {
+                      "bumpers": "#ff8c00"
+                    }
+                  }
+                ],
+                "field": "FRC:2026 Field",
+                "orientation": 0,
+                "size": "medium"
+              },
+              "controllerUUID": "hu1n2uavzveg9lf1r5wtmeyuylvia62n",
               "renderer": null,
               "controlsHeight": 200
             },
@@ -179,7 +263,17 @@
                 "leftSources": [
                   {
                     "type": "stepped",
-                    "logKey": "/Shooter/VelocityRadPerSec",
+                    "logKey": "/Shooter/VelocityMetersPerSec",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e5b31b",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/Feeder/VelocityRadPerSec",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -361,7 +455,98 @@
                     }
                   }
                 ],
-                "discreteSources": [],
+                "discreteSources": [
+                  {
+                    "type": "stripes",
+                    "logKey": "/DriverStation/Enabled",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#3b875a"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "/RealOutputs/CAN/DriveCAN",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#858584"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "/Drive/Module0/DriveConnected",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#d993aa"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "/Drive/Module0/TurnConnected",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#5f4528"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "/Drive/Module1/DriveConnected",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#2b66a2"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "/Drive/Module1/TurnConnected",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#e5b31b"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "/Drive/Module2/DriveConnected",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#af2437"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "/Drive/Module2/TurnConnected",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#80588e"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "/Drive/Module3/DriveConnected",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#e48b32"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "/Drive/Module3/TurnConnected",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#c0b487"
+                    }
+                  }
+                ],
                 "leftLockedRange": null,
                 "rightLockedRange": null,
                 "leftUnitConversion": {
