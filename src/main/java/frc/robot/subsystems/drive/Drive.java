@@ -502,7 +502,8 @@ public class Drive extends RBSISubsystem {
     if (Constants.getMode() == Mode.SIM) {
       return simPhysics.getYaw();
     }
-    return imu.getYaw();
+    // return imu.getYaw();
+    return m_PoseEstimator.getEstimatedPosition().getRotation();
   }
 
   /** Returns an array of module translations. */
