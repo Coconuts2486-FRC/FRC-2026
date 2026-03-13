@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.729,
-        "y": 4.746
+        "x": 2.89531640625,
+        "y": 5.544107855902777
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.858777633101853,
-        "y": 5.68711747685185
+        "x": 2.7007811776620376,
+        "y": 6.604898943865741
       },
       "isLocked": false,
       "linkedName": null
@@ -20,24 +20,24 @@
         "y": 7.520231481481481
       },
       "prevControl": {
-        "x": 6.465920845155463,
-        "y": 7.519549111705458
+        "x": 2.891152162018022,
+        "y": 7.562841154190623
       },
       "nextControl": {
-        "x": 3.303217086226852,
-        "y": 7.520756365740741
+        "x": 6.477979528356482,
+        "y": 7.477322193287036
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.89531640625,
-        "y": 5.544107855902777
+        "x": 5.832896773726852,
+        "y": 5.10930685763889
       },
       "prevControl": {
-        "x": 2.614044053819445,
-        "y": 6.845623987268518
+        "x": 6.265467013888889,
+        "y": 6.438116970486111
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,7 +46,7 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.1982464519650662,
+      "waypointRelativePos": 0.8890702736318407,
       "rotationDegrees": 0.0
     }
   ],
@@ -63,13 +63,13 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": -48.20956406640731
+    "rotation": -105.00000000000001
   },
   "reversed": false,
-  "folder": "Diplodocus Depot",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -75.0
+    "rotation": -48.21
   },
   "useDefaultConstraints": false
 }
