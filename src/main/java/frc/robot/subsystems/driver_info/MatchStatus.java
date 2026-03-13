@@ -13,140 +13,110 @@ public class MatchStatus extends VirtualSubsystem {
   private final CommandXboxController coDriver;
   Alliance alliance = DriverStation.getAlliance().orElse(Alliance.Blue);
 
+  /** Constructor */
   public MatchStatus(CommandXboxController driver, CommandXboxController coDriver) {
     this.driver = driver;
     this.coDriver = coDriver;
   }
 
-  public void rumble(double strength) { // makes both controllers rumble
+  /**
+   * Make both controllers rumble
+   *
+   * @param strength Rumble strength
+   */
+  public void rumble(double strength) {
     driver.setRumble(RumbleType.kBothRumble, strength);
     coDriver.setRumble(RumbleType.kBothRumble, strength);
   }
 
-  public void stopRumble() { // stops both controllers rumbling
+  /** Make both controllers stop rumbling */
+  public void stopRumble() {
     driver.setRumble(RumbleType.kBothRumble, 0);
     coDriver.setRumble(RumbleType.kBothRumble, 0);
   }
 
+  /** Periodic function */
   @Override
   public void rbsiPeriodic() {
 
-    if (FieldState.wonAuto == alliance) {
-      if (DriverStation.getMatchTime() < 133
-          && DriverStation.getMatchTime() > 130 /*deactivating hub*/) {
-        rumble(0.5);
-      } else if (DriverStation.getMatchTime() < 108
-          && DriverStation.getMatchTime() > 105 /*activating hub*/) {
-        rumble(0.5);
-      } else if (DriverStation.getMatchTime() < 83
-          && DriverStation.getMatchTime() > 80 /*deactivating hub*/) {
-        rumble(0.5);
-      } else if (DriverStation.getMatchTime() < 58
-          && DriverStation.getMatchTime() > 55 /*activating hub*/) {
-        rumble(0.5);
-      } else if (DriverStation.getMatchTime() < 31 && DriverStation.getMatchTime() > 30) {
-        rumble(0.25);
-      } else if (DriverStation.getMatchTime() < 10
-          && DriverStation.getMatchTime() > 9.5
-          && !DriverStation.isAutonomous()) {
-        rumble(0.25);
-      } else if (DriverStation.getMatchTime() < 9
-          && DriverStation.getMatchTime() > 8.5
-          && !DriverStation.isAutonomous()) {
-        rumble(0.25);
-      } else if (DriverStation.getMatchTime() < 8
-          && DriverStation.getMatchTime() > 7.5
-          && !DriverStation.isAutonomous()) {
-        rumble(0.25);
-      } else if (DriverStation.getMatchTime() < 7
-          && DriverStation.getMatchTime() > 6.5
-          && !DriverStation.isAutonomous()) {
-        rumble(0.25);
-      } else if (DriverStation.getMatchTime() < 6
-          && DriverStation.getMatchTime() > 5.5
-          && !DriverStation.isAutonomous()) {
-        rumble(0.25);
-      } else if (DriverStation.getMatchTime() < 5
-          && DriverStation.getMatchTime() > 4.5
-          && !DriverStation.isAutonomous()) {
-        rumble(0.25);
-      } else if (DriverStation.getMatchTime() < 4
-          && DriverStation.getMatchTime() > 3.5
-          && !DriverStation.isAutonomous()) {
-        rumble(0.25);
-      } else if (DriverStation.getMatchTime() < 3
-          && DriverStation.getMatchTime() > 2.5
-          && !DriverStation.isAutonomous()) {
-        rumble(0.25);
-      } else if (DriverStation.getMatchTime() < 2
-          && DriverStation.getMatchTime() > 1.5
-          && !DriverStation.isAutonomous()) {
-        rumble(0.25);
-      } else if (DriverStation.getMatchTime() < 1
-          && DriverStation.getMatchTime() > 0.5
-          && !DriverStation.isAutonomous()) {
-        rumble(0.25);
-      } else {
-        stopRumble();
-      }
-    } else if (FieldState.wonAuto != alliance) {
-      if (DriverStation.getMatchTime() < 108
-          && DriverStation.getMatchTime() > 105 /*deactivating hub*/) {
-        rumble(0.5);
-      } else if (DriverStation.getMatchTime() < 83
-          && DriverStation.getMatchTime() > 80 /*activating hub*/) {
-        rumble(0.5);
-      } else if (DriverStation.getMatchTime() < 58
-          && DriverStation.getMatchTime() > 55 /*deactivating hub*/) {
-        rumble(0.5);
-      } else if (DriverStation.getMatchTime() < 33
-          && DriverStation.getMatchTime() > 30 /*activating hub*/) {
-        rumble(0.5);
-      } else if (DriverStation.getMatchTime() < 10
-          && DriverStation.getMatchTime() > 9.5
-          && !DriverStation.isAutonomous()) {
-        rumble(0.25);
-      } else if (DriverStation.getMatchTime() < 9
-          && DriverStation.getMatchTime() > 8.5
-          && !DriverStation.isAutonomous()) {
-        rumble(0.25);
-      } else if (DriverStation.getMatchTime() < 8
-          && DriverStation.getMatchTime() > 7.5
-          && !DriverStation.isAutonomous()) {
-        rumble(0.25);
-      } else if (DriverStation.getMatchTime() < 7
-          && DriverStation.getMatchTime() > 6.5
-          && !DriverStation.isAutonomous()) {
-        rumble(0.25);
-      } else if (DriverStation.getMatchTime() < 6
-          && DriverStation.getMatchTime() > 5.5
-          && !DriverStation.isAutonomous()) {
-        rumble(0.25);
-      } else if (DriverStation.getMatchTime() < 5
-          && DriverStation.getMatchTime() > 4.5
-          && !DriverStation.isAutonomous()) {
-        rumble(0.25);
-      } else if (DriverStation.getMatchTime() < 4
-          && DriverStation.getMatchTime() > 3.5
-          && !DriverStation.isAutonomous()) {
-        rumble(0.25);
-      } else if (DriverStation.getMatchTime() < 3
-          && DriverStation.getMatchTime() > 2.5
-          && !DriverStation.isAutonomous()) {
-        rumble(0.25);
-      } else if (DriverStation.getMatchTime() < 2
-          && DriverStation.getMatchTime() > 1.5
-          && !DriverStation.isAutonomous()) {
-        rumble(0.25);
-      } else if (DriverStation.getMatchTime() < 1
-          && DriverStation.getMatchTime() > 0.5
-          && !DriverStation.isAutonomous()) {
-        rumble(0.25);
-      } else {
-        stopRumble();
-      }
-    } else {
-      stopRumble(); // if no value won for who won auto the controllers will never vibrate
+    // Do these deeper calls once, and use the values for the rest of this loop
+    double matchTime = DriverStation.getMatchTime();
+    if (DriverStation.isAutonomous()) {
+      // If Auto, don't do anything for this
+      return;
     }
+
+    // Alliance-Specific HUB Activation / Deactivation
+    // Rumble & return
+    if (FieldState.wonAuto == alliance) {
+      if (matchTime < 133 && matchTime > 130) {
+        // Deactivating HUB
+        rumble(0.5);
+        return;
+      }
+      if (matchTime < 108 && matchTime > 105) {
+        // Activating HUB
+        rumble(0.5);
+        return;
+      }
+      if (matchTime < 83 && matchTime > 80) {
+        // Deactivating HUB
+        rumble(0.5);
+        return;
+      }
+      if (matchTime < 58 && matchTime > 55) {
+        // Activating HUB
+        rumble(0.5);
+        return;
+      }
+
+    } else if (FieldState.wonAuto != alliance) {
+      if (matchTime < 108 && matchTime > 105) {
+        // Deactivating HUB
+        rumble(0.5);
+        return;
+      }
+      if (matchTime < 83 && matchTime > 80) {
+        // Activating HUB
+        rumble(0.5);
+        return;
+      }
+      if (matchTime < 58 && matchTime > 55) {
+        // Deactivating HUB
+        rumble(0.5);
+        return;
+      }
+      if (matchTime < 33 && matchTime > 31) {
+        // Activating HUB
+        rumble(0.5);
+        return;
+      }
+    }
+
+    // Endgame Rumble -- same regardless
+    if (matchTime < 31 && matchTime > 30) {
+      rumble(0.25);
+      return;
+    }
+    // Rumble every second during the last 10 seconds of the match
+    if (matchTime < 10 && isUpperHalfSecond(matchTime)) {
+      rumble(0.25);
+      return;
+    }
+
+    // If we get all the way here, stop rumble!
+    stopRumble(); // if no value won for who won auto the controllers will never vibrate
+  }
+
+  /**
+   * Check that the time is in the "upper half" of the second
+   *
+   * @param time The matchTime
+   */
+  private boolean isUpperHalfSecond(double time) {
+
+    // The midpoint is halfway between the floor and ceiling
+    double midpoint = (double) (Math.floor(time) + Math.ceil(time)) / 2.0;
+    return time > midpoint;
   }
 }

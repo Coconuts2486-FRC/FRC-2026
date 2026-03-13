@@ -1,8 +1,8 @@
 {
   "hubs": [
     {
-      "x": 71,
-      "y": 33,
+      "x": 94,
+      "y": 63,
       "width": 1315,
       "height": 776,
       "state": {
@@ -26,15 +26,19 @@
             "/NetworkInputs/SmartDashboard",
             "/RealOutputs/Vision",
             "/RealOutputs/Vision/Summary",
-            "/Shooter",
             "/RealOutputs/Shooter",
             "/RealOutputs/Shooter/SetpointMeters",
             "/RealOutputs/Loop",
-            "/RealOutputs/Loop/Mech"
+            "/RealOutputs/Loop/Mech",
+            "/RealOutputs/Accel/IMU",
+            "/RealOutputs/Accel/IMU/Accel_mps2",
+            "/RealOutputs/Drive",
+            "/DriverStation",
+            "/RealOutputs/Loop/Virtual"
           ]
         },
         "tabs": {
-          "selected": 8,
+          "selected": 9,
           "tabs": [
             {
               "type": 0,
@@ -422,7 +426,17 @@
                     }
                   }
                 ],
-                "discreteSources": [],
+                "discreteSources": [
+                  {
+                    "type": "stripes",
+                    "logKey": "/DriverStation/Enabled",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#e48b32"
+                    }
+                  }
+                ],
                 "leftLockedRange": null,
                 "rightLockedRange": null,
                 "leftUnitConversion": {
@@ -527,7 +541,17 @@
                   }
                 ],
                 "rightSources": [],
-                "discreteSources": [],
+                "discreteSources": [
+                  {
+                    "type": "stripes",
+                    "logKey": "/DriverStation/Enabled",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#d993aa"
+                    }
+                  }
+                ],
                 "leftLockedRange": null,
                 "rightLockedRange": null,
                 "leftUnitConversion": {
@@ -592,21 +616,21 @@
                   },
                   {
                     "type": "stepped",
-                    "logKey": "/RealOutputs/Loop/Virtual/Prematch_ms",
-                    "logType": "Number",
-                    "visible": true,
-                    "options": {
-                      "color": "#e48b32",
-                      "size": "normal"
-                    }
-                  },
-                  {
-                    "type": "stepped",
                     "logKey": "/RealOutputs/Loop/Virtual/RBSICANHealth_ms",
                     "logType": "Number",
                     "visible": true,
                     "options": {
                       "color": "#c0b487",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/RealOutputs/Loop/Virtual/MatchStatus_ms",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e48b32",
                       "size": "normal"
                     }
                   },
@@ -632,7 +656,17 @@
                   }
                 ],
                 "rightSources": [],
-                "discreteSources": [],
+                "discreteSources": [
+                  {
+                    "type": "stripes",
+                    "logKey": "/DriverStation/Enabled",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#d993aa"
+                    }
+                  }
+                ],
                 "leftLockedRange": null,
                 "rightLockedRange": null,
                 "leftUnitConversion": {
@@ -656,12 +690,13 @@
               "controller": {
                 "sources": [
                   {
-                    "type": "robot",
+                    "type": "cone",
                     "logKey": "/RealOutputs/Vision/Summary/TagPoses",
                     "logType": "Pose3d[]",
                     "visible": true,
                     "options": {
-                      "model": "Crab Bot"
+                      "color": "#00ff00",
+                      "position": "center"
                     }
                   },
                   {
@@ -681,9 +716,9 @@
                 "cameraIndex": -1,
                 "orbitFov": 50,
                 "cameraPosition": [
-                  1.4695761589768238e-15,
-                  5.999999999999999,
-                  -12
+                  -0.059240934425391086,
+                  10.616071094115314,
+                  -8.48007052626881
                 ],
                 "cameraTarget": [
                   0,
@@ -692,6 +727,14 @@
                 ]
               },
               "controlsHeight": 200
+            },
+            {
+              "type": 7,
+              "title": "Video",
+              "controller": null,
+              "controllerUUID": "vnanjmnujfndic5ztjusxrarh2m76p4x",
+              "renderer": null,
+              "controlsHeight": 85
             }
           ]
         }
@@ -699,5 +742,5 @@
     }
   ],
   "satellites": [],
-  "version": "26.0.0"
+  "version": "26.0.1"
 }
