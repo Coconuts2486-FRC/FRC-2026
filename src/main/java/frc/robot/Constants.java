@@ -593,7 +593,7 @@ public final class Constants {
           }),
       //
       new CameraConfig(
-          "Photon_BW9",
+          "Photon_BW2",
           new Transform3d(
               Inches.of(-11.25),
               Inches.of(-13.5),
