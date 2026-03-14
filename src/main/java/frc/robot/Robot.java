@@ -113,9 +113,9 @@ public class Robot extends LoggedRobot {
 
     // NOTE: THIS IS INTENTIONAL TO PROVIDE SOME PRIORITY, BUT NOT SUPER-PRIORITY
     // Switch thread to medium priority to improve loop timing
-    if (isReal()) {
-      Threads.setCurrentThreadPriority(true, 30);
-    }
+    // if (isReal()) {
+    //   Threads.setCurrentThreadPriority(true, 30);
+    // }
   }
 
   // /** This function is called periodically during all modes. */
@@ -124,6 +124,11 @@ public class Robot extends LoggedRobot {
   public void robotPeriodic() {
     final long t0 = System.nanoTime();
 
+    if (isReal()) {
+      Threads.setCurrentThreadPriority(true, 99);
+    }
+    final long t1 = System.nanoTime();
+
     // Run the Virtual Subsystem periodic functions
     VirtualSubsystem.periodicAll();
     final long t2 = System.nanoTime();
@@ -131,6 +136,10 @@ public class Robot extends LoggedRobot {
     // Run the Mechanism periodic functions and scheduled commands
     CommandScheduler.getInstance().run();
     final long t3 = System.nanoTime();
+
+    if (isReal()) {
+      Threads.setCurrentThreadPriority(false, 10);
+    }
 
     Logger.recordOutput("Loop/RobotPeriodic_ms", (t3 - t0) / 1e6);
     Logger.recordOutput("Loop/Virtual_ms", (t2 - t0) / 1e6);

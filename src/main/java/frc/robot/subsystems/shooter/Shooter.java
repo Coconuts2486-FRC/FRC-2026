@@ -33,6 +33,7 @@ public class Shooter extends RBSISubsystem {
 
   private final SysIdRoutine sysId;
   private double targetMetersPerSecond = 0.0;
+  private double shooterOffset = -0.15;
 
   FieldRelativeShooterSolver.FieldShotSolution solution;
 
@@ -77,6 +78,7 @@ public class Shooter extends RBSISubsystem {
                     / ShooterConstants.kShooterGearRatio)
                 * ShooterConstants.flywheelCircumfrence));
     Logger.recordOutput("Shooter/atSpeed", shooterAtSpeed());
+    Logger.recordOutput("Shooter/ShooterOffset", shooterOffset);
   }
 
   /** Run open loop at the specified voltage. */
@@ -120,6 +122,10 @@ public class Shooter extends RBSISubsystem {
     io.stop();
   }
 
+  public void incrementOffset(double change) {
+    shooterOffset = shooterOffset + change;
+  }
+
   /** Returns a command to run a quasistatic test in the specified direction. */
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
     return sysId.quasistatic(direction);
@@ -156,6 +162,10 @@ public class Shooter extends RBSISubsystem {
 
   public boolean followerAlive() {
     return inputs.followerAlive;
+  }
+
+  public double shooterOffset() {
+    return shooterOffset;
   }
 
   @Override

@@ -40,6 +40,10 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.FieldConstants.AprilTagLayoutType;
 import frc.robot.commands.AutopilotCommands;
 import frc.robot.commands.DriveCommands;
+import frc.robot.subsystems.Indexer.Indexer;
+import frc.robot.subsystems.Indexer.IndexerIO;
+import frc.robot.subsystems.Indexer.IndexerIOSim;
+import frc.robot.subsystems.Indexer.IndexerIOTalonFX;
 import frc.robot.subsystems.accelerometer.Accelerometer;
 import frc.robot.subsystems.climb.Climb;
 import frc.robot.subsystems.climb.ClimbIO;
@@ -56,10 +60,6 @@ import frc.robot.subsystems.feeder.FeederIOSim;
 import frc.robot.subsystems.feeder.FeederIOTalonFX;
 import frc.robot.subsystems.imu.Imu;
 import frc.robot.subsystems.imu.ImuIOSim;
-import frc.robot.subsystems.indexer.Indexer;
-import frc.robot.subsystems.indexer.IndexerIO;
-import frc.robot.subsystems.indexer.IndexerIOSim;
-import frc.robot.subsystems.indexer.IndexerIOTalonFX;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOSim;
@@ -519,30 +519,17 @@ public class RobotContainer {
 
     // shooter control
     driverController
-        .leftTrigger()
+        .rightTrigger()
         .whileTrue(
             Commands.run(
-                () -> m_shooter.runVelocity(Coordinator.getShooterVelocity() - 0.15), m_shooter));
-
-    // auto aim
-    // driverController
-    //     .rightTrigger()
-    //     .whileTrue(
-    //         Commands.defer(
-    //             () -> {
-    //               Pose2d robotPose = m_drivebase.getPose();
-    //               Translation2d hub = FieldConstants.hubCenter2d();
-
-    //               Rotation2d heading = hub.minus(robotPose.getTranslation()).getAngle();
-
-    //               return AutopilotCommands.runAutopilot(
-    //                   m_drivebase, new Pose2d(robotPose.getTranslation(), heading));
-    //             },
-    //             Set.of(m_drivebase)));
+                () ->
+                    m_shooter.runVelocity(
+                        Coordinator.getShooterVelocity() - m_shooter.shooterOffset()),
+                m_shooter));
 
     // auto aim - turn only, driver keeps translational control
     driverController
-        .rightTrigger()
+        .leftTrigger()
         .whileTrue(
             DriveCommands.fieldRelativeDrive(
                 m_drivebase,
@@ -600,6 +587,12 @@ public class RobotContainer {
                 },
                 m_drivebase));
 
+    driverController.y().whileTrue(Commands.run(() -> m_indexer.setVelocity(0.37), m_indexer));
+
+    driverController
+        .rightBumper()
+        .whileTrue(Commands.run(() -> m_shooter.runVelocity(14), m_shooter));
+
     //
     // ===============================================================================
 
@@ -622,13 +615,12 @@ public class RobotContainer {
                   Elastic.selectTab(0);
                 }));
 
-    driverController.y().whileTrue(Commands.run(() -> m_indexer.setVelocity(0.37), m_indexer));
-
-    driverController
-        .rightBumper()
-        .whileTrue(Commands.run(() -> m_shooter.runVelocity(15), m_shooter));
+    operatorController.povUp().onTrue(Commands.runOnce(() -> m_shooter.incrementOffset(0.075)));
+    operatorController.povDown().onTrue(Commands.runOnce(() -> m_shooter.incrementOffset(-0.075)));
 
     operatorController.b().toggleOnTrue(Commands.run(() -> m_intake.stopPivot()));
+
+    operatorController.a().whileTrue(Commands.run(() -> m_indexer.setVelocity(0.37), m_indexer));
 
     // ==============================================================================================================================
     // sim controls
