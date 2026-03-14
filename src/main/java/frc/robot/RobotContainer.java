@@ -214,7 +214,7 @@ public class RobotContainer {
 
     NamedCommands.registerCommand(
         "Shoot",
-        Commands.runOnce(() -> m_shooter.runVelocity(Coordinator.getShooterVelocity()), m_shooter));
+        Commands.runOnce(() -> m_shooter.runVelocity(Coordinator.getShooterVelocity()+1.5), m_shooter));
 
     NamedCommands.registerCommand(
         "Align",
@@ -529,22 +529,23 @@ public class RobotContainer {
 
     // auto aim - turn only, driver keeps translational control
     driverController
-        .leftTrigger()
-        .whileTrue(
-            DriveCommands.fieldRelativeDrive(
-                m_drivebase,
-                () -> -driveStickY.value(),
-                () -> -driveStickX.value(),
-                () -> {
-                  // Continuously recalculate heading to hub from current pose
-                  Pose2d robotPose = m_drivebase.getPose();
-                  Rotation2d targetHeading =
-                      FieldConstants.hubCenter2d().minus(robotPose.getTranslation()).getAngle();
-                  // Return the angular error so fieldRelativeDrive treats it
-                  // as a rotation rate input (normalize to [-1, 1])
-                  double errorRads = targetHeading.minus(robotPose.getRotation()).getRadians();
-                  return Math.max(-1.0, Math.min(1.0, errorRads * 1.5)); // tune the 1.5 gain
-                }));
+    .leftTrigger()
+    .whileTrue(
+        Commands.defer(
+            () -> {
+              Translation2d hub = FieldConstants.hubCenter2d();
+              Translation2d hubToRobot =
+                  m_drivebase.getPose().getTranslation().minus(hub);
+
+              // Normalize to 4.5m from hub, on whichever side the robot is already on
+              Translation2d targetTranslation =
+                  hub.plus(new Translation2d(4, hubToRobot.getAngle()));
+
+              return AutopilotCommands.runAutopilot(
+                  m_drivebase,
+                  new Pose2d(targetTranslation, hubToRobot.getAngle()));
+            },
+            Set.of(m_drivebase)));
 
     driverController
         .povUp()

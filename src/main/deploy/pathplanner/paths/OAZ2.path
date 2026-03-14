@@ -66,7 +66,7 @@
     "rotation": 48.82827799519489
   },
   "reversed": false,
-  "folder": "Overaptor Outpost",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": 75.0
