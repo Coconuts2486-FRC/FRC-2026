@@ -29,7 +29,7 @@
                                 {
                                   "type": "path",
                                   "data": {
-                                    "pathName": "DAZ1"
+                                    "pathName": "Copy of DAZ1"
                                   }
                                 },
                                 {
@@ -122,6 +122,12 @@
                                   }
                                 }
                               ]
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "StopShoot"
                             }
                           }
                         ]

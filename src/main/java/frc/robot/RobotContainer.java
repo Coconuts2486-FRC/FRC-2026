@@ -214,8 +214,7 @@ public class RobotContainer {
 
     NamedCommands.registerCommand(
         "Shoot",
-        Commands.runOnce(
-            () -> m_shooter.runVelocity(Coordinator.getShooterVelocity() - 0.15), m_shooter));
+        Commands.runOnce(() -> m_shooter.runVelocity(Coordinator.getShooterVelocity()), m_shooter));
 
     NamedCommands.registerCommand(
         "Align",
@@ -233,6 +232,8 @@ public class RobotContainer {
 
     NamedCommands.registerCommand(
         "Zero", Commands.runOnce(m_drivebase::zeroHeadingForAlliance, m_drivebase));
+
+    NamedCommands.registerCommand("StopShoot", Commands.runOnce(() -> m_shooter.stop()));
   }
 
   /**
