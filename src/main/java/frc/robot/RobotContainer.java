@@ -518,30 +518,17 @@ public class RobotContainer {
 
     // shooter control
     driverController
-        .leftTrigger()
+        .rightTrigger()
         .whileTrue(
             Commands.run(
-                () -> m_shooter.runVelocity(Coordinator.getShooterVelocity() - 0.15), m_shooter));
-
-    // auto aim
-    // driverController
-    //     .rightTrigger()
-    //     .whileTrue(
-    //         Commands.defer(
-    //             () -> {
-    //               Pose2d robotPose = m_drivebase.getPose();
-    //               Translation2d hub = FieldConstants.hubCenter2d();
-
-    //               Rotation2d heading = hub.minus(robotPose.getTranslation()).getAngle();
-
-    //               return AutopilotCommands.runAutopilot(
-    //                   m_drivebase, new Pose2d(robotPose.getTranslation(), heading));
-    //             },
-    //             Set.of(m_drivebase)));
+                () ->
+                    m_shooter.runVelocity(
+                        Coordinator.getShooterVelocity() - m_shooter.shooterOffset()),
+                m_shooter));
 
     // auto aim - turn only, driver keeps translational control
     driverController
-        .rightTrigger()
+        .leftTrigger()
         .whileTrue(
             DriveCommands.fieldRelativeDrive(
                 m_drivebase,
@@ -599,6 +586,12 @@ public class RobotContainer {
                 },
                 m_drivebase));
 
+    driverController.y().whileTrue(Commands.run(() -> m_indexer.setVelocity(0.37), m_indexer));
+
+    driverController
+        .rightBumper()
+        .whileTrue(Commands.run(() -> m_shooter.runVelocity(14), m_shooter));
+
     //
     // ===============================================================================
 
@@ -621,11 +614,8 @@ public class RobotContainer {
                   Elastic.selectTab(0);
                 }));
 
-    driverController.y().whileTrue(Commands.run(() -> m_indexer.setVelocity(0.37), m_indexer));
-
-    driverController
-        .rightBumper()
-        .whileTrue(Commands.run(() -> m_shooter.runVelocity(15), m_shooter));
+    operatorController.povUp().onTrue(Commands.runOnce(() -> m_shooter.incrementOffset(0.075)));
+    operatorController.povDown().onTrue(Commands.runOnce(() -> m_shooter.incrementOffset(-0.075)));
 
     operatorController.b().toggleOnTrue(Commands.run(() -> m_intake.stopPivot()));
 

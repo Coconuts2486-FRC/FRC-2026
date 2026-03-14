@@ -76,7 +76,6 @@ public class CANStatus extends VirtualSubsystem {
             && shooter.leaderAlive()
             && shooter.followerAlive()
             && turret.turretAlive()
-            && Math.abs(turret.getTurretEncoderPosition()) > 0.0
             && indexer.indexerAlive());
 
     // Logger inputs for each CAN network
