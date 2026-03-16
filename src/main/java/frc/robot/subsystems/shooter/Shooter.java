@@ -33,7 +33,7 @@ public class Shooter extends RBSISubsystem {
 
   private final SysIdRoutine sysId;
   private double targetMetersPerSecond = 0.0;
-  private double shooterOffset = -0.15;
+  private double shooterOffset = 0.0;
 
   FieldRelativeShooterSolver.FieldShotSolution solution;
 
