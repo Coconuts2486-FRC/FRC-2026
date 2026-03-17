@@ -71,10 +71,6 @@ import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.subsystems.shooter.ShooterIOTalonFX;
-import frc.robot.subsystems.turret.Turret;
-import frc.robot.subsystems.turret.TurretIO;
-import frc.robot.subsystems.turret.TurretIOSim;
-import frc.robot.subsystems.turret.TurretIOTalonFX;
 import frc.robot.subsystems.vision.CameraSweepEvaluator;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
@@ -129,7 +125,6 @@ public class RobotContainer {
   private final CANStatus m_canStatus;
 
   private boolean elasticOnDriveTab = true;
-  private final Turret m_turret;
 
   // private final Prematch m_prematch;
 
@@ -262,7 +257,6 @@ public class RobotContainer {
         m_indexer = new Indexer(new IndexerIOTalonFX());
         m_feeder = new Feeder(new FeederIOTalonFX());
         m_shooter = new Shooter(new ShooterIOTalonFX());
-        m_turret = new Turret(new TurretIOTalonFX());
         // m_prematch = new Prematch(m_turret, m_intake);
         m_rollers = new rollers(new rollersIOTalonFX());
         m_matchstatus = new MatchStatus(driverController, operatorController);
@@ -284,7 +278,6 @@ public class RobotContainer {
         m_indexer = new Indexer(new IndexerIOSim());
         m_feeder = new Feeder(new FeederIOSim());
         m_shooter = new Shooter(new ShooterIOSim());
-        m_turret = new Turret(new TurretIOSim());
         m_rollers = new rollers(new rollersIOTalonFX());
         // m_prematch = null;
         m_matchstatus = new MatchStatus(driverController, operatorController);
@@ -329,7 +322,6 @@ public class RobotContainer {
         m_feeder = new Feeder(new FeederIO() {});
         m_shooter = new Shooter(new ShooterIO() {});
         m_climb = new Climb(new ClimbIO() {});
-        m_turret = new Turret(new TurretIO() {});
         // m_prematch = new Prematch(m_turret, m_intake);
         m_rollers = new rollers(new rollersIO() {});
         m_matchstatus = new MatchStatus(driverController, operatorController);
@@ -342,22 +334,13 @@ public class RobotContainer {
     m_canHealth = Arrays.stream(Constants.CANBuses.ALL).map(RBSICANHealth::new).toList();
     m_canStatus =
         new CANStatus(
-            m_drivebase,
-            m_imu,
-            m_intake,
-            m_feeder,
-            m_rollers,
-            m_shooter,
-            m_turret,
-            m_indexer,
-            m_climb);
+            m_drivebase, m_imu, m_intake, m_feeder, m_rollers, m_shooter, m_indexer, m_climb);
 
     // In addition to the initial battery capacity from the Dashbaord, ``RBSIPowerMonitor`` takes
     // all the non-drivebase subsystems for which you wish to have power monitoring; DO NOT
     // include ``m_drivebase``, as that is automatically monitored.
     m_power =
-        new RBSIPowerMonitor(
-            batteryCapacity, m_intake, m_indexer, m_feeder, m_shooter, m_turret, m_climb);
+        new RBSIPowerMonitor(batteryCapacity, m_intake, m_indexer, m_feeder, m_shooter, m_climb);
 
     // Build the coordinator
     m_coordinator =
