@@ -33,7 +33,8 @@ public interface FeederIO extends RBSIIO {
     public boolean feederConnected = false;
   }
 
-//** base functions *********************************************************************************************************** */
+  // ** base functions
+  // *********************************************************************************************************** */
 
   public default void updateInputs(FeederIOInputs inputs) {}
 
