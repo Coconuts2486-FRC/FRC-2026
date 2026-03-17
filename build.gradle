@@ -42,6 +42,14 @@ deploy {
                     // jvmArgs.add("-Xmx" + MAX_JAVA_HEAP_SIZE_MB + "M")
                     // jvmArgs.add("-Xms" + MAX_JAVA_HEAP_SIZE_MB + "M")
                     // jvmArgs.add("-XX:+AlwaysPreTouch")
+
+                    // // These allow for integration with VisualVM
+                    // jvmArgs.add("-Dcom.sun.management.jmxremote=true")
+                    // jvmArgs.add("-Dcom.sun.management.jmxremote.port=1198")
+                    // jvmArgs.add("-Dcom.sun.management.jmxremote.local.only=false")
+                    // jvmArgs.add("-Dcom.sun.management.jmxremote.ssl=false")
+                    // jvmArgs.add("-Dcom.sun.management.jmxremote.authenticate=false")
+                    // jvmArgs.add("-Djava.rmi.server.hostname=10.24.86.2")
                 }
 
                 // Static files artifact
@@ -91,6 +99,7 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
     def akitJson = new groovy.json.JsonSlurper().parseText(new File(projectDir.getAbsolutePath() + "/vendordeps/AdvantageKit.json").text)
+    implementation "org.littletonrobotics.akit:akit-java:$akitJson.version"
     annotationProcessor "org.littletonrobotics.akit:akit-autolog:$akitJson.version"
 }
 

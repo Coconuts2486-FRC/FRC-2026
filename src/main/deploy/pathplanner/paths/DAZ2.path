@@ -1,0 +1,75 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.729,
+        "y": 4.746
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 7.858777633101853,
+        "y": 5.68711747685185
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.678282624421297,
+        "y": 7.520231481481481
+      },
+      "prevControl": {
+        "x": 6.465920845155463,
+        "y": 7.519549111705458
+      },
+      "nextControl": {
+        "x": 3.303217086226852,
+        "y": 7.520756365740741
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.89531640625,
+        "y": 5.544107855902777
+      },
+      "prevControl": {
+        "x": 2.614044053819445,
+        "y": 6.845623987268518
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.1982464519650662,
+      "rotationDegrees": 0.0
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 1.5,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 180.0,
+    "maxAngularAcceleration": 180.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0.0,
+    "rotation": -48.20956406640731
+  },
+  "reversed": false,
+  "folder": "Diplodocus Depot",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -75.0
+  },
+  "useDefaultConstraints": false
+}

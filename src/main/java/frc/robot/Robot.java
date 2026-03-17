@@ -111,27 +111,14 @@ public class Robot extends LoggedRobot {
     // stop immediately when disabled, but then also let it be pushed more
     m_disabledTimer = new Timer();
 
-    // Switch thread to high priority to improve loop timing
-    if (isReal()) {
-      Threads.setCurrentThreadPriority(true, 99);
-    }
+    // NOTE: THIS IS INTENTIONAL TO PROVIDE SOME PRIORITY, BUT NOT SUPER-PRIORITY
+    // Switch thread to medium priority to improve loop timing
+    // if (isReal()) {
+    //   Threads.setCurrentThreadPriority(true, 30);
+    // }
   }
 
   // /** This function is called periodically during all modes. */
-  // @Override
-  // public void robotPeriodic() {
-
-  //   // Run all virtual subsystems each time through the loop
-  //   VirtualSubsystem.periodicAll();
-
-  //   // Runs the Scheduler. This is responsible for polling buttons, adding
-  //   // newly-scheduled commands, running already-scheduled commands, removing
-  //   // finished or interrupted commands, and running subsystem periodic() methods.
-  //   // This must be called from the robot's periodic block in order for anything in
-  //   // the Command-based framework to work.
-  //   CommandScheduler.getInstance().run();
-  // }
-
   /** TESTING VERSION OF ROBOTPERIODIC FOR OVERRUN SOURCES */
   @Override
   public void robotPeriodic() {
@@ -142,20 +129,21 @@ public class Robot extends LoggedRobot {
     }
     final long t1 = System.nanoTime();
 
+    // Run the Virtual Subsystem periodic functions
     VirtualSubsystem.periodicAll();
     final long t2 = System.nanoTime();
 
+    // Run the Mechanism periodic functions and scheduled commands
     CommandScheduler.getInstance().run();
     final long t3 = System.nanoTime();
 
-    Threads.setCurrentThreadPriority(false, 10);
-    final long t4 = System.nanoTime();
+    if (isReal()) {
+      Threads.setCurrentThreadPriority(false, 10);
+    }
 
-    Logger.recordOutput("Loop/RobotPeriodic_ms", (t4 - t0) / 1e6);
-    Logger.recordOutput("Loop/ThreadBoost_ms", (t1 - t0) / 1e6);
-    Logger.recordOutput("Loop/Virtual_ms", (t2 - t1) / 1e6);
+    Logger.recordOutput("Loop/RobotPeriodic_ms", (t3 - t0) / 1e6);
+    Logger.recordOutput("Loop/Virtual_ms", (t2 - t0) / 1e6);
     Logger.recordOutput("Loop/Scheduler_ms", (t3 - t2) / 1e6);
-    Logger.recordOutput("Loop/ThreadRestore_ms", (t4 - t3) / 1e6);
   }
 
   /** This function is called once when the robot is disabled. */
@@ -172,10 +160,10 @@ public class Robot extends LoggedRobot {
   @Override
   public void disabledPeriodic() {
     // After WHEEL_LOCK_TIME has elapsed, release the drive brakes
-    if (m_disabledTimer.hasElapsed(Constants.DrivebaseConstants.kWheelLockTime)) {
-      m_robotContainer.getDrivebase().setMotorBrake(false);
-      m_disabledTimer.stop();
-    }
+    // if (m_disabledTimer.hasElapsed(Constants.DrivebaseConstants.kWheelLockTime)) {
+    //   m_robotContainer.getDrivebase().setMotorBrake(false);
+    //   m_disabledTimer.stop();
+    // }
   }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
@@ -217,6 +205,7 @@ public class Robot extends LoggedRobot {
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
+    FieldState.wonAuto = null;
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -231,18 +220,7 @@ public class Robot extends LoggedRobot {
 
     // In case this got set in sequential practice sessions or whatever
     FieldState.wonAuto = null;
-  }
 
-  /** This function is called periodically during operator control. */
-  @Override
-  public void teleopPeriodic() {
-
-    // For 2026 - REBUILT, the alliance will be provided as a single character
-    //   representing the color of the alliance whose goal will go inactive
-    //   first (i.e. 'R' = red, 'B' = blue). This alliance's goal will be
-    //   active in Shifts 2 and 4.
-    //
-    // https://docs.wpilib.org/en/stable/docs/yearly-overview/2026-game-data.html
     if (FieldState.wonAuto == null) {
       // Only call this code block if the signal from FMS has not yet arrived
       String gameData = DriverStation.getGameSpecificMessage();
@@ -262,6 +240,19 @@ public class Robot extends LoggedRobot {
         }
       }
     }
+  }
+
+  /** This function is called periodically during operator control. */
+  @Override
+  public void teleopPeriodic() {
+
+    // For 2026 - REBUILT, the alliance will be provided as a single character
+    //   representing the color of the alliance whose goal will go inactive
+    //   first (i.e. 'R' = red, 'B' = blue). This alliance's goal will be
+    //   active in Shifts 2 and 4.
+    //
+    // https://docs.wpilib.org/en/stable/docs/yearly-overview/2026-game-data.html
+
     // Anything else for the teleopPeriodic() function
 
   }

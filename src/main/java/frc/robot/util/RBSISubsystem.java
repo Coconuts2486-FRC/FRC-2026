@@ -50,8 +50,5 @@ public abstract class RBSISubsystem extends SubsystemBase {
    *
    * @return Array of power distribution module ports
    */
-  public int[] getPowerPorts() {
-    int[] retval = {};
-    return retval;
-  }
+  protected abstract int[] getPowerPorts();
 }
