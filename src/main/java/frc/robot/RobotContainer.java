@@ -466,7 +466,7 @@ public class RobotContainer {
         Commands.run(
             () -> {
               if (m_rollers.isIntakeRollersRunning() || m_feeder.isFeederRunning()) {
-                m_indexer.setVelocity(-0.37);
+                m_indexer.setVelocity(-(2 / 3));
               } else {
                 m_indexer.indexerStop();
               }

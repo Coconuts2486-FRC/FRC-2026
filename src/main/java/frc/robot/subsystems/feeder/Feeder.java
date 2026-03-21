@@ -49,7 +49,7 @@ public class Feeder extends RBSISubsystem {
    * value 50% at time az north regression
    */
   public void runFeeder() {
-    io.setFeederVelocity(-0.5);
+    io.setFeederVelocity(-0.75);
   }
 
   // Stops feeder

@@ -155,7 +155,7 @@ public class Shooter extends RBSISubsystem {
   public boolean shooterAtSpeed() {
     if (targetMetersPerSecond == 0.0) return false;
     double currentSpeed = inputs.velocityRadPerSec / 425 * -1;
-    return currentSpeed > (targetMetersPerSecond * 0.9);
+    return currentSpeed > (targetMetersPerSecond * 0.8);
   }
 
   public boolean leaderAlive() {
