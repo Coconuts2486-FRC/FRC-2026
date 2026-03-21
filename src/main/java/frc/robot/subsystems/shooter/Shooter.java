@@ -86,6 +86,12 @@ public class Shooter extends RBSISubsystem {
     io.setVoltage(volts);
   }
 
+  public void set(double set) {
+    targetMetersPerSecond = 1;
+
+    io.set(set);
+  }
+
   public void runTargetVelocity(
       Pose3d robotPose,
       Transform3d launcherTransform,
@@ -153,7 +159,7 @@ public class Shooter extends RBSISubsystem {
         ((Units.radiansPerSecondToRotationsPerMinute(inputs.velocityRadPerSec) / 60)
                 / ShooterConstants.kShooterGearRatio)
             * ShooterConstants.flywheelCircumfrence;
-    return Math.abs(currentMetersPerSecond) >= Math.abs(targetMetersPerSecond * 0.6);
+    return true;
   }
 
   public boolean leaderAlive() {
