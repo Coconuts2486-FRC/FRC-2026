@@ -155,8 +155,6 @@ public class ShooterIOTalonFX implements ShooterIO {
     leader.stopMotor();
   }
 
-
-
   /**
    * Set the gains of the Slot0 closed-loop configuration
    *

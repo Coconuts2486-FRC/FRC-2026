@@ -87,8 +87,7 @@ public class Shooter extends RBSISubsystem {
   }
 
   public void set(double set) {
-    targetMetersPerSecond = 1;
-
+    targetMetersPerSecond = set;
     io.set(set);
   }
 
@@ -155,11 +154,8 @@ public class Shooter extends RBSISubsystem {
 
   public boolean shooterAtSpeed() {
     if (targetMetersPerSecond == 0.0) return false;
-    double currentMetersPerSecond =
-        ((Units.radiansPerSecondToRotationsPerMinute(inputs.velocityRadPerSec) / 60)
-                / ShooterConstants.kShooterGearRatio)
-            * ShooterConstants.flywheelCircumfrence;
-    return true;
+    double currentSpeed = inputs.velocityRadPerSec / 425 * -1;
+    return currentSpeed > (targetMetersPerSecond * 0.75);
   }
 
   public boolean leaderAlive() {

@@ -588,7 +588,7 @@ public class RobotContainer {
 
     driverController.y().whileTrue(Commands.run(() -> m_indexer.setVelocity(0.37), m_indexer));
 
-    driverController.rightBumper().whileTrue(Commands.run(() -> m_shooter.set(-0.75), m_shooter));
+    driverController.rightBumper().whileTrue(Commands.run(() -> m_shooter.set(-0.85), m_shooter));
 
     driverController.x().whileTrue(Commands.run(() -> m_intake.printPos()));
 
