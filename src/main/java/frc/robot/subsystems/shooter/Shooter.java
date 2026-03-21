@@ -71,12 +71,7 @@ public class Shooter extends RBSISubsystem {
     io.updateInputs(inputs);
     Logger.processInputs("Shooter", inputs);
     Logger.recordOutput("Shooter/targetspeed", targetMetersPerSecond);
-    Logger.recordOutput(
-        "Shooter/currentSpeed",
-        Math.abs(
-            ((Units.radiansPerSecondToRotationsPerMinute(inputs.velocityRadPerSec) / 60)
-                    / ShooterConstants.kShooterGearRatio)
-                * ShooterConstants.flywheelCircumfrence));
+    Logger.recordOutput("Shooter/currentSpeed", inputs.velocityRadPerSec / 425 * -1);
     Logger.recordOutput("Shooter/atSpeed", shooterAtSpeed());
     Logger.recordOutput("Shooter/ShooterOffset", shooterOffset);
   }
@@ -155,7 +150,7 @@ public class Shooter extends RBSISubsystem {
   public boolean shooterAtSpeed() {
     if (targetMetersPerSecond == 0.0) return false;
     double currentSpeed = inputs.velocityRadPerSec / 425 * -1;
-    return currentSpeed > (targetMetersPerSecond * 0.8);
+    return currentSpeed > (targetMetersPerSecond * 0.955);
   }
 
   public boolean leaderAlive() {
