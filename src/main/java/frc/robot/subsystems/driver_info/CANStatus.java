@@ -3,7 +3,6 @@ package frc.robot.subsystems.driver_info;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.FieldState;
 import frc.robot.subsystems.Indexer.Indexer;
-import frc.robot.subsystems.climb.Climb;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.feeder.Feeder;
 import frc.robot.subsystems.imu.Imu;
@@ -17,7 +16,6 @@ public class CANStatus extends VirtualSubsystem {
 
   private final Drive drive;
   private final Imu imu;
-  private final Climb climb;
 
   private final Intake intake;
   private final Feeder feeder;
@@ -36,11 +34,9 @@ public class CANStatus extends VirtualSubsystem {
       Feeder feeder,
       rollers rollers,
       Shooter shooter,
-      Indexer indexer,
-      Climb climb) {
+      Indexer indexer) {
     this.drive = drive;
     this.imu = imu;
-    this.climb = climb;
 
     this.intake = intake;
     this.feeder = feeder;
@@ -60,9 +56,7 @@ public class CANStatus extends VirtualSubsystem {
             && modules[1].isAlive()
             && modules[2].isAlive()
             && modules[3].isAlive()
-            && imu.isConnected()
-            && climb.climbAlive()
-            && Math.abs(climb.climbPosition()) > 0.0);
+            && imu.isConnected());
 
     mainCAN =
         (intake.pivotAlive()
@@ -83,8 +77,6 @@ public class CANStatus extends VirtualSubsystem {
     Logger.recordOutput("CAN/Module2Alive", modules[1].isAlive());
     Logger.recordOutput("CAN/Module3Alive", modules[2].isAlive());
     Logger.recordOutput("CAN/Module4Alive", modules[3].isAlive());
-    Logger.recordOutput("CAN/ClimbALive", climb.climbAlive());
-    Logger.recordOutput("CAN/ClimbEncoderAlive", Math.abs(climb.climbPosition()) > 0.0);
 
     // logger inputs for each part of the main CAN network
     Logger.recordOutput("CAN/IntakePivotAlive", intake.pivotAlive());

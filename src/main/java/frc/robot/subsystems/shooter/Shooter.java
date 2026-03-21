@@ -71,7 +71,7 @@ public class Shooter extends RBSISubsystem {
     io.updateInputs(inputs);
     Logger.processInputs("Shooter", inputs);
     Logger.recordOutput("Shooter/targetspeed", targetMetersPerSecond);
-    Logger.recordOutput("Shooter/currentSpeed", inputs.velocityRadPerSec / 425 * -1);
+    // Logger.recordOutput("Shooter/currentSpeed", inputs.velocityRadPerSec / 425 * -1);
     Logger.recordOutput("Shooter/atSpeed", shooterAtSpeed());
     Logger.recordOutput("Shooter/ShooterOffset", shooterOffset);
   }
