@@ -87,7 +87,7 @@ public class Shooter extends RBSISubsystem {
   }
 
   public void set(double set) {
-    targetMetersPerSecond = set;
+    targetMetersPerSecond = set * -1;
     io.set(set);
   }
 
@@ -109,7 +109,7 @@ public class Shooter extends RBSISubsystem {
   /** Run closed loop at the specified velocity. */
   public void runVelocity(double velocity) {
 
-    targetMetersPerSecond = velocity;
+    targetMetersPerSecond = velocity * -1;
 
     double speed =
         (velocity / ShooterConstants.flywheelCircumfrence)
@@ -155,7 +155,7 @@ public class Shooter extends RBSISubsystem {
   public boolean shooterAtSpeed() {
     if (targetMetersPerSecond == 0.0) return false;
     double currentSpeed = inputs.velocityRadPerSec / 425 * -1;
-    return currentSpeed > (targetMetersPerSecond * 0.75);
+    return currentSpeed > (targetMetersPerSecond * 0.9);
   }
 
   public boolean leaderAlive() {
