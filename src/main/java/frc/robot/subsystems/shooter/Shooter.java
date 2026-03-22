@@ -33,7 +33,7 @@ public class Shooter extends RBSISubsystem {
 
   private final SysIdRoutine sysId;
   private double targetMetersPerSecond = 0.0;
-  private double shooterOffset = 0.0;
+  // private double shooterOffset = 0.0;
 
   FieldRelativeShooterSolver.FieldShotSolution solution;
 
@@ -71,9 +71,9 @@ public class Shooter extends RBSISubsystem {
     io.updateInputs(inputs);
     Logger.processInputs("Shooter", inputs);
     Logger.recordOutput("Shooter/targetspeed", targetMetersPerSecond);
-    // Logger.recordOutput("Shooter/currentSpeed", inputs.velocityRadPerSec / 425 * -1);
+    Logger.recordOutput("Shooter/currentSpeed", io.get());
     Logger.recordOutput("Shooter/atSpeed", shooterAtSpeed());
-    Logger.recordOutput("Shooter/ShooterOffset", shooterOffset);
+    // Logger.recordOutput("Shooter/ShooterOffset", shooterOffset);
   }
 
   /** Run open loop at the specified voltage. */
@@ -82,7 +82,7 @@ public class Shooter extends RBSISubsystem {
   }
 
   public void set(double set) {
-    targetMetersPerSecond = set * -1;
+    targetMetersPerSecond = set;
     io.set(set);
   }
 
@@ -122,9 +122,9 @@ public class Shooter extends RBSISubsystem {
     io.stop();
   }
 
-  public void incrementOffset(double change) {
-    shooterOffset = shooterOffset + change;
-  }
+  // public void incrementOffset(double change) {
+  //   shooterOffset = shooterOffset + change;
+  // }
 
   /** Returns a command to run a quasistatic test in the specified direction. */
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
@@ -150,7 +150,7 @@ public class Shooter extends RBSISubsystem {
   public boolean shooterAtSpeed() {
     if (targetMetersPerSecond == 0.0) return false;
     double currentSpeed = inputs.velocityRadPerSec / 425 * -1;
-    return currentSpeed > (targetMetersPerSecond * 0.955);
+    return currentSpeed > (targetMetersPerSecond * 0.85);
   }
 
   public boolean leaderAlive() {
@@ -161,9 +161,9 @@ public class Shooter extends RBSISubsystem {
     return inputs.followerAlive;
   }
 
-  public double shooterOffset() {
-    return shooterOffset;
-  }
+  // public double shooterOffset() {
+  //   return shooterOffset;
+  // }
 
   @Override
   public int[] getPowerPorts() {

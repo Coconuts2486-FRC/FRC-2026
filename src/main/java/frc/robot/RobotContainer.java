@@ -439,7 +439,7 @@ public class RobotContainer {
         Commands.run(
             () -> {
               if (m_rollers.isIntakeRollersRunning() || m_feeder.isFeederRunning()) {
-                m_indexer.setVelocity(-0.67);
+                m_indexer.setVelocity(-0.5);
               } else {
                 m_indexer.indexerStop();
               }
@@ -494,10 +494,7 @@ public class RobotContainer {
         .rightTrigger()
         .whileTrue(
             Commands.run(
-                () ->
-                    m_shooter.runVelocity(
-                        Coordinator.getShooterVelocity() - m_shooter.shooterOffset()),
-                m_shooter));
+                () -> m_shooter.set(Math.abs(Coordinator.getShooterVelocity())), m_shooter));
 
     // auto aim - turn only, driver keeps translational control
     driverController
@@ -561,7 +558,7 @@ public class RobotContainer {
 
     driverController.y().whileTrue(Commands.run(() -> m_indexer.setVelocity(0.37), m_indexer));
 
-    driverController.rightBumper().whileTrue(Commands.run(() -> m_shooter.set(-0.64), m_shooter));
+    driverController.rightBumper().whileTrue(Commands.run(() -> m_shooter.set(-0.79), m_shooter));
 
     driverController.x().whileTrue(Commands.run(() -> m_intake.printPos()));
 
@@ -587,8 +584,9 @@ public class RobotContainer {
                   Elastic.selectTab(0);
                 }));
 
-    operatorController.povUp().onTrue(Commands.runOnce(() -> m_shooter.incrementOffset(0.075)));
-    operatorController.povDown().onTrue(Commands.runOnce(() -> m_shooter.incrementOffset(-0.075)));
+    // operatorController.povUp().onTrue(Commands.runOnce(() -> m_shooter.incrementOffset(0.075)));
+    // operatorController.povDown().onTrue(Commands.runOnce(() ->
+    // m_shooter.incrementOffset(-0.075)));
 
     operatorController.b().toggleOnTrue(Commands.run(() -> m_intake.stopPivot()));
 

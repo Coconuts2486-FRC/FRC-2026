@@ -45,4 +45,8 @@ public interface ShooterIO extends RBSIIO {
   /** Set gain constants */
   public default void configureGains(
       double kP, double kI, double kD, double kS, double kV, double kA) {}
+
+  public default double get() {
+    return 0.0;
+  }
 }

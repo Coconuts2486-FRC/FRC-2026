@@ -142,7 +142,7 @@ public class ShooterIOTalonFX implements ShooterIO {
 
   @Override
   public void set(double speed) {
-    leader.set(speed);
+    leader.set(speed * -1);
   }
 
   @Override
@@ -153,6 +153,11 @@ public class ShooterIOTalonFX implements ShooterIO {
   @Override
   public void stop() {
     leader.stopMotor();
+  }
+
+  @Override
+  public double get() {
+    return leader.get();
   }
 
   /**
