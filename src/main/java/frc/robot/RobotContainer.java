@@ -121,8 +121,6 @@ public class RobotContainer {
 
   private boolean elasticOnDriveTab = true;
 
-  // private final Prematch m_prematch;
-
   @SuppressWarnings("unused")
   private final Coordinator m_coordinator;
 
@@ -251,7 +249,6 @@ public class RobotContainer {
         m_indexer = new Indexer(new IndexerIOTalonFX());
         m_feeder = new Feeder(new FeederIOTalonFX());
         m_shooter = new Shooter(new ShooterIOTalonFX());
-        // m_prematch = new Prematch(m_turret, m_intake);
         m_rollers = new rollers(new rollersIOTalonFX());
         m_matchstatus = new MatchStatus(driverController, operatorController);
 
@@ -272,7 +269,6 @@ public class RobotContainer {
         m_feeder = new Feeder(new FeederIOSim());
         m_shooter = new Shooter(new ShooterIOSim());
         m_rollers = new rollers(new rollersIOTalonFX());
-        // m_prematch = null;
         m_matchstatus = new MatchStatus(driverController, operatorController);
 
         // ---------------- CameraSweepEvaluator (sim-only analysis) ----------------
@@ -314,7 +310,6 @@ public class RobotContainer {
         m_indexer = new Indexer(new IndexerIO() {});
         m_feeder = new Feeder(new FeederIO() {});
         m_shooter = new Shooter(new ShooterIO() {});
-        // m_prematch = new Prematch(m_turret, m_intake);
         m_rollers = new rollers(new rollersIO() {});
         m_matchstatus = new MatchStatus(driverController, operatorController);
 
