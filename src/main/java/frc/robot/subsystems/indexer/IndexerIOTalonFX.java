@@ -18,7 +18,6 @@
 package frc.robot.subsystems.indexer;
 
 import static frc.robot.Constants.RobotDevices.*;
-import static frc.robot.Constants.ShooterConstants.*;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;

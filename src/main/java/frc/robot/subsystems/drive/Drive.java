@@ -54,6 +54,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DrivebaseConstants;
 import frc.robot.Constants.RobotConstants;
+import frc.robot.Elastic;
 import frc.robot.subsystems.imu.Imu;
 import frc.robot.util.ConcurrentTimeInterpolatableBuffer;
 import frc.robot.util.LocalADStarAK;
@@ -278,6 +279,16 @@ public class Drive extends RBSISubsystem {
       for (var module : modules) module.stop();
       Logger.recordOutput("SwerveStates/Setpoints", new SwerveModuleState[] {});
       Logger.recordOutput("SwerveStates/SetpointsOptimized", new SwerveModuleState[] {});
+    }
+
+    m_field.setRobotPose(m_PoseEstimator.getEstimatedPosition());
+
+    boolean onOpponentHalf = onOpponentHalf();
+
+    // Only switch tabs when the value CHANGES
+    if (onOpponentHalf != lastOnOpponentHalf) {
+      Elastic.selectTab(onOpponentHalf ? 2 : 0);
+      lastOnOpponentHalf = onOpponentHalf;
     }
   }
 

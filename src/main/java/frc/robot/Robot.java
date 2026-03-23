@@ -129,7 +129,6 @@ public class Robot extends LoggedRobot {
       // Switch thread to high priority to improve loop timing
       Threads.setCurrentThreadPriority(true, 99);
     }
-    final long t1 = System.nanoTime();
 
     // Run the Virtual Subsystem periodic functions
     VirtualSubsystem.periodicAll();
@@ -147,7 +146,6 @@ public class Robot extends LoggedRobot {
       // Return thread to normal priority
       Threads.setCurrentThreadPriority(false, 10);
     }
-    final long t4 = System.nanoTime();
 
     Logger.recordOutput("Loop/RobotPeriodic_ms", (t3 - t0) / 1e6);
     Logger.recordOutput("Loop/Virtual_ms", (t2 - t0) / 1e6);

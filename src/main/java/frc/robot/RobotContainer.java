@@ -124,7 +124,6 @@ public class RobotContainer {
   private final Shooter m_shooter;
   private final Rollers m_rollers;
   private final MatchStatus m_matchstatus;
-  private final CANStatus m_canStatus;
 
   private boolean elasticOnDriveTab = true;
 
@@ -149,8 +148,8 @@ public class RobotContainer {
   @SuppressWarnings("unused")
   private List<RBSICANHealth> m_canHealth;
 
-  // @SuppressWarnings("unused")
-  // private final CANStatus m_canStatus;
+  @SuppressWarnings("unused")
+  private final CANStatus m_canStatus;
 
   /** Dashboard inputs ***************************************************** */
   // AutoChoosers for both supported path planning types
