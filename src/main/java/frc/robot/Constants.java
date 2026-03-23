@@ -47,6 +47,8 @@ import frc.robot.util.RBSIEnum.MotorIdleMode;
 import frc.robot.util.RBSIEnum.SwerveType;
 import frc.robot.util.RBSIEnum.VisionType;
 import frc.robot.util.RobotDeviceId;
+import java.util.Set;
+import org.littletonrobotics.junction.Logger;
 import org.photonvision.simulation.SimCameraProperties;
 import swervelib.math.Matter;
 
@@ -108,6 +110,8 @@ public final class Constants {
 
   public static final boolean tuningMode = true;
 
+  public static final double G_TO_MPS2 = 9.80665; // Gravitational acceleration in m/s/s
+
   /************************************************************************* */
   /** Physical Constants for Robot Operation ******************************* */
   public static final class RobotConstants {
@@ -129,19 +133,18 @@ public final class Constants {
     // Insert here the orientation (CCW == +) of the Rio and IMU from the robot
     // An angle of "0." means the x-y-z markings on the device match the robot's intrinsic reference
     //   frame.
-    // NOTE: It is assumed that both the Rio and the IMU are mounted such that +Z is UP
-    public static final Rotation2d kRioOrientation =
+    public static final Rotation3d kRioOrientation =
         switch (getRobot()) {
-          case COMPBOT -> Rotation2d.fromDegrees(-90.);
-          case GEORGE -> Rotation2d.fromDegrees(0.);
-          default -> Rotation2d.fromDegrees(0.);
+          case COMPBOT -> new Rotation3d(0, 0, -90);
+          case GEORGE -> Rotation3d.kZero;
+          default -> Rotation3d.kZero;
         };
     // IMU can be one of Pigeon2 or NavX
-    public static final Rotation2d kIMUOrientation =
+    public static final Rotation3d kIMUOrientation =
         switch (getRobot()) {
-          case COMPBOT -> Rotation2d.fromDegrees(0.);
-          case GEORGE -> Rotation2d.fromDegrees(0.);
-          default -> Rotation2d.fromDegrees(0.);
+          case COMPBOT -> Rotation3d.kZero;
+          case GEORGE -> Rotation3d.kZero;
+          default -> Rotation3d.kZero;
         };
   }
 
@@ -167,7 +170,7 @@ public final class Constants {
   /************************************************************************* */
   /** List of Robot CAN Busses ********************************************* */
   public static final class CANBuses {
-    public static final String RIO = "";
+    public static final String RIO = "rio";
     public static final String DRIVE = "DriveTrain";
 
     public static final String[] ALL = {RIO, DRIVE};
@@ -344,6 +347,26 @@ public final class Constants {
         SwerveConstants.kDriveGearRatio / DCMotor.getKrakenX60Foc(1).KtNMPerAmp;
     public static final double kSteerP = 500.0;
     public static final double kSteerD = 20.0;
+    public static final double kSteerS = 2.0;
+
+    // Odometry-related constants ==================================
+    public static final double kHistorySize = 1.5; // seconds
+    // How aggressively to pull pose toward vision while DISABLED.
+    // 0.10 = gentle, 0.25 = fairly quick, 1.0 = full snap.
+    public static final double kDisabledVisionBlendAlpha = 0.15;
+    // Optional: ignore obviously insane measurements while disabled.
+    public static final double kDisabledVisionMaxJumpM = 2.0; // meters
+    public static final double kDisabledVisionMaxJumpRad = Units.degreesToRadians(20.0);
+    public static final double kDisabledVisionStale = 0.75; // seconds
+
+    // Coast window config
+    public static final double kDisabledCoastSeconds = 5.0;
+
+    // "Stationary" detection config (tune)
+    public static final double kStationaryMaxWheelDeltaM = 0.002; // 2mm per loop
+    public static final double kStationaryMaxYawRateRadPerSec = 0.05; // ~3 deg/s
+    public static final int kStationaryLoopsToEndCoast = 10; // ~0.20s @ 20ms
+    public static final double kDisabledVisionIgnoreAfterDisableSec = 0.25; // 250ms
   }
 
   /************************************************************************* */
@@ -538,6 +561,16 @@ public final class Constants {
   /** Vision Constants (Assuming PhotonVision) ***************************** */
   public static class VisionConstants {
 
+    public static final Set<Integer> kTrustedTags =
+        Set.of(2, 3, 4, 5, 8, 9, 10, 11, 18, 19, 20, 21, 24, 25, 26, 27); // HUB AprilTags
+
+    // Noise scaling factors (lower = more trusted)
+    public static final double kTrustedTagStdDevScale = 0.6; // 40% more weight
+    public static final double kUntrustedTagStdDevScale = 1.3; // 30% less weight
+
+    // Optional: if true, reject observations that contain no trusted tags
+    public static final boolean kRequireTrustedTag = false;
+
     // AprilTag Identification Constants
     public static final double kAmbiguityThreshold = 0.4;
     public static final double kTargetLogTimeSecs = 0.1;
@@ -642,6 +675,12 @@ public final class Constants {
       case GEORGE, PINCHY, COMPBOT -> RobotBase.isReal() ? Mode.REAL : Mode.REPLAY;
       case SIMBOT -> Mode.SIM;
     };
+  }
+
+  /** Return whether this is pure simulation */
+  public static boolean isPureSim() {
+    boolean isReplay = Logger.hasReplaySource();
+    return getMode() == Mode.SIM && !isReplay;
   }
 
   /** Get the current swerve drive type */
