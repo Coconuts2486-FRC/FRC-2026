@@ -52,10 +52,16 @@ public class Accelerometer extends VirtualSubsystem {
     this.rio = new RioAccelIORoboRIO(200.0); // 200 Hz is a good start
   }
 
-  // Priority value for this virtual subsystem
+  /**
+   * Priority value for this virtual subsystem
+   *
+   * <p>See `frc.robot.util.VirtualSubsystem` for a description of the suggested values for various
+   * virtual subsystems.
+   */
   @Override
   protected int getPeriodPriority() {
-    return +10;
+    // Low-priority status system
+    return 10;
   }
 
   @Override
