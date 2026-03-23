@@ -3,14 +3,12 @@ package frc.robot.subsystems.driver_info;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.FieldState;
 import frc.robot.subsystems.Indexer.Indexer;
-import frc.robot.subsystems.climb.Climb;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.feeder.Feeder;
 import frc.robot.subsystems.imu.Imu;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.rollers.rollers;
 import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.turret.Turret;
 import frc.robot.util.VirtualSubsystem;
 import org.littletonrobotics.junction.Logger;
 
@@ -18,13 +16,11 @@ public class CANStatus extends VirtualSubsystem {
 
   private final Drive drive;
   private final Imu imu;
-  private final Climb climb;
 
   private final Intake intake;
   private final Feeder feeder;
   private final rollers rollers;
   private final Shooter shooter;
-  private final Turret turret;
   private final Indexer indexer;
 
   Boolean driveCAN = false;
@@ -38,18 +34,14 @@ public class CANStatus extends VirtualSubsystem {
       Feeder feeder,
       rollers rollers,
       Shooter shooter,
-      Turret turret,
-      Indexer indexer,
-      Climb climb) {
+      Indexer indexer) {
     this.drive = drive;
     this.imu = imu;
-    this.climb = climb;
 
     this.intake = intake;
     this.feeder = feeder;
     this.rollers = rollers;
     this.shooter = shooter;
-    this.turret = turret;
     this.indexer = indexer;
   }
 
@@ -64,9 +56,7 @@ public class CANStatus extends VirtualSubsystem {
             && modules[1].isAlive()
             && modules[2].isAlive()
             && modules[3].isAlive()
-            && imu.isConnected()
-            && climb.climbAlive()
-            && Math.abs(climb.climbPosition()) > 0.0);
+            && imu.isConnected());
 
     mainCAN =
         (intake.pivotAlive()
@@ -75,7 +65,6 @@ public class CANStatus extends VirtualSubsystem {
             && rollers.isRollersAlive()
             && shooter.leaderAlive()
             && shooter.followerAlive()
-            && turret.turretAlive()
             && indexer.indexerAlive());
 
     // Logger inputs for each CAN network
@@ -88,8 +77,6 @@ public class CANStatus extends VirtualSubsystem {
     Logger.recordOutput("CAN/Module2Alive", modules[1].isAlive());
     Logger.recordOutput("CAN/Module3Alive", modules[2].isAlive());
     Logger.recordOutput("CAN/Module4Alive", modules[3].isAlive());
-    Logger.recordOutput("CAN/ClimbALive", climb.climbAlive());
-    Logger.recordOutput("CAN/ClimbEncoderAlive", Math.abs(climb.climbPosition()) > 0.0);
 
     // logger inputs for each part of the main CAN network
     Logger.recordOutput("CAN/IntakePivotAlive", intake.pivotAlive());
@@ -98,9 +85,6 @@ public class CANStatus extends VirtualSubsystem {
     Logger.recordOutput("CAN/IntakeRollersAlive", rollers.isRollersAlive());
     Logger.recordOutput("CAN/FlywheelLeaderAlive", shooter.leaderAlive());
     Logger.recordOutput("CAN/FlywheelFollowerAlive", shooter.followerAlive());
-    Logger.recordOutput("CAN/TurretAlive", turret.turretAlive());
-    Logger.recordOutput(
-        "CAN/TurretCancoderAlive", Math.abs(turret.getTurretEncoderPosition()) > 0.0);
     Logger.recordOutput("CAN/IndexerAlive", indexer.indexerAlive());
 
     Logger.recordOutput("CAN/HubActive", FieldState.isHubActive());

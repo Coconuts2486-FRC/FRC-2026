@@ -141,6 +141,11 @@ public class ShooterIOTalonFX implements ShooterIO {
   }
 
   @Override
+  public void set(double speed) {
+    leader.set(speed * -1);
+  }
+
+  @Override
   public void setPercent(double percent) {
     leader.setControl(new DutyCycleOut(percent).withEnableFOC(isCTREPro));
   }
@@ -148,6 +153,11 @@ public class ShooterIOTalonFX implements ShooterIO {
   @Override
   public void stop() {
     leader.stopMotor();
+  }
+
+  @Override
+  public double get() {
+    return leader.get();
   }
 
   /**

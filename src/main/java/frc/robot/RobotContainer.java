@@ -45,10 +45,6 @@ import frc.robot.subsystems.Indexer.IndexerIO;
 import frc.robot.subsystems.Indexer.IndexerIOSim;
 import frc.robot.subsystems.Indexer.IndexerIOTalonFX;
 import frc.robot.subsystems.accelerometer.Accelerometer;
-import frc.robot.subsystems.climb.Climb;
-import frc.robot.subsystems.climb.ClimbIO;
-import frc.robot.subsystems.climb.ClimbIOSim;
-import frc.robot.subsystems.climb.ClimbIOTalonFX;
 import frc.robot.subsystems.coordinator.Coordinator;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.SwerveConstants;
@@ -71,10 +67,6 @@ import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.subsystems.shooter.ShooterIOTalonFX;
-import frc.robot.subsystems.turret.Turret;
-import frc.robot.subsystems.turret.TurretIO;
-import frc.robot.subsystems.turret.TurretIOSim;
-import frc.robot.subsystems.turret.TurretIOTalonFX;
 import frc.robot.subsystems.vision.CameraSweepEvaluator;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
@@ -120,7 +112,6 @@ public class RobotContainer {
 
   // private final Flywheel m_flywheel;
   private final Intake m_intake;
-  private final Climb m_climb;
   private final Indexer m_indexer;
   private final Feeder m_feeder;
   private final Shooter m_shooter;
@@ -129,9 +120,6 @@ public class RobotContainer {
   private final CANStatus m_canStatus;
 
   private boolean elasticOnDriveTab = true;
-  private final Turret m_turret;
-
-  // private final Prematch m_prematch;
 
   @SuppressWarnings("unused")
   private final Coordinator m_coordinator;
@@ -257,13 +245,10 @@ public class RobotContainer {
         // m_flywheel = new Flywheel(new FlywheelIOSim()); // new Flywheel(new FlywheelIOTalonFX());
         m_vision = new Vision(m_drivebase::addVisionMeasurement, buildVisionIOsReal(m_drivebase));
         m_accel = new Accelerometer(m_imu);
-        m_climb = new Climb(new ClimbIOTalonFX());
         m_intake = new Intake(new IntakeIOTalonFX());
         m_indexer = new Indexer(new IndexerIOTalonFX());
         m_feeder = new Feeder(new FeederIOTalonFX());
         m_shooter = new Shooter(new ShooterIOTalonFX());
-        m_turret = new Turret(new TurretIOTalonFX());
-        // m_prematch = new Prematch(m_turret, m_intake);
         m_rollers = new rollers(new rollersIOTalonFX());
         m_matchstatus = new MatchStatus(driverController, operatorController);
 
@@ -279,14 +264,11 @@ public class RobotContainer {
         // m_flywheel = new Flywheel(new FlywheelIOSim() {});
         m_vision = new Vision(m_drivebase::addVisionMeasurement, buildVisionIOsSim(m_drivebase));
         m_accel = new Accelerometer(m_imu);
-        m_climb = new Climb(new ClimbIOSim());
         m_intake = new Intake(new IntakeIOSim());
         m_indexer = new Indexer(new IndexerIOSim());
         m_feeder = new Feeder(new FeederIOSim());
         m_shooter = new Shooter(new ShooterIOSim());
-        m_turret = new Turret(new TurretIOSim());
         m_rollers = new rollers(new rollersIOTalonFX());
-        // m_prematch = null;
         m_matchstatus = new MatchStatus(driverController, operatorController);
 
         // ---------------- CameraSweepEvaluator (sim-only analysis) ----------------
@@ -328,9 +310,6 @@ public class RobotContainer {
         m_indexer = new Indexer(new IndexerIO() {});
         m_feeder = new Feeder(new FeederIO() {});
         m_shooter = new Shooter(new ShooterIO() {});
-        m_climb = new Climb(new ClimbIO() {});
-        m_turret = new Turret(new TurretIO() {});
-        // m_prematch = new Prematch(m_turret, m_intake);
         m_rollers = new rollers(new rollersIO() {});
         m_matchstatus = new MatchStatus(driverController, operatorController);
 
@@ -341,23 +320,12 @@ public class RobotContainer {
     RBSICANBusRegistry.initReal(Constants.CANBuses.ALL);
     m_canHealth = Arrays.stream(Constants.CANBuses.ALL).map(RBSICANHealth::new).toList();
     m_canStatus =
-        new CANStatus(
-            m_drivebase,
-            m_imu,
-            m_intake,
-            m_feeder,
-            m_rollers,
-            m_shooter,
-            m_turret,
-            m_indexer,
-            m_climb);
+        new CANStatus(m_drivebase, m_imu, m_intake, m_feeder, m_rollers, m_shooter, m_indexer);
 
     // In addition to the initial battery capacity from the Dashbaord, ``RBSIPowerMonitor`` takes
     // all the non-drivebase subsystems for which you wish to have power monitoring; DO NOT
     // include ``m_drivebase``, as that is automatically monitored.
-    m_power =
-        new RBSIPowerMonitor(
-            batteryCapacity, m_intake, m_indexer, m_feeder, m_shooter, m_turret, m_climb);
+    m_power = new RBSIPowerMonitor(batteryCapacity, m_intake, m_indexer, m_feeder, m_shooter);
 
     // Build the coordinator
     m_coordinator =
@@ -466,7 +434,7 @@ public class RobotContainer {
         Commands.run(
             () -> {
               if (m_rollers.isIntakeRollersRunning() || m_feeder.isFeederRunning()) {
-                m_indexer.setVelocity(-0.37);
+                m_indexer.setVelocity(-0.5);
               } else {
                 m_indexer.indexerStop();
               }
@@ -521,10 +489,7 @@ public class RobotContainer {
         .rightTrigger()
         .whileTrue(
             Commands.run(
-                () ->
-                    m_shooter.runVelocity(
-                        Coordinator.getShooterVelocity() - m_shooter.shooterOffset()),
-                m_shooter));
+                () -> m_shooter.set(Math.abs(Coordinator.getShooterVelocity())), m_shooter));
 
     // auto aim - turn only, driver keeps translational control
     driverController
@@ -588,9 +553,9 @@ public class RobotContainer {
 
     driverController.y().whileTrue(Commands.run(() -> m_indexer.setVelocity(0.37), m_indexer));
 
-    driverController
-        .rightBumper()
-        .whileTrue(Commands.run(() -> m_shooter.runVelocity(14), m_shooter));
+    driverController.rightBumper().whileTrue(Commands.run(() -> m_shooter.set(-0.79), m_shooter));
+
+    driverController.x().whileTrue(Commands.run(() -> m_intake.printPos()));
 
     //
     // ===============================================================================
@@ -614,8 +579,9 @@ public class RobotContainer {
                   Elastic.selectTab(0);
                 }));
 
-    operatorController.povUp().onTrue(Commands.runOnce(() -> m_shooter.incrementOffset(0.075)));
-    operatorController.povDown().onTrue(Commands.runOnce(() -> m_shooter.incrementOffset(-0.075)));
+    // operatorController.povUp().onTrue(Commands.runOnce(() -> m_shooter.incrementOffset(0.075)));
+    // operatorController.povDown().onTrue(Commands.runOnce(() ->
+    // m_shooter.incrementOffset(-0.075)));
 
     operatorController.b().toggleOnTrue(Commands.run(() -> m_intake.stopPivot()));
 
