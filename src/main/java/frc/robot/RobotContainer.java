@@ -214,7 +214,10 @@ public class RobotContainer {
               Pose2d robotPose = m_drivebase.getPose();
               Translation2d hub = FieldConstants.hubCenter2d();
 
-              Rotation2d heading = hub.minus(robotPose.getTranslation()).getAngle();
+              Rotation2d heading =
+                  hub.minus(robotPose.getTranslation())
+                      .getAngle()
+                      .plus(Rotation2d.fromDegrees(180));
 
               return AutopilotCommands.runAutopilot(
                   m_drivebase, new Pose2d(robotPose.getTranslation(), heading));
@@ -522,7 +525,10 @@ public class RobotContainer {
                   // Continuously recalculate heading to hub from current pose
                   Pose2d robotPose = m_drivebase.getPose();
                   Rotation2d targetHeading =
-                      FieldConstants.hubCenter2d().minus(robotPose.getTranslation()).getAngle();
+                      FieldConstants.hubCenter2d()
+                          .minus(robotPose.getTranslation())
+                          .getAngle()
+                          .plus(Rotation2d.fromDegrees(180));
                   // Return the angular error so fieldRelativeDrive treats it
                   // as a rotation rate input (normalize to [-1, 1])
                   double errorRads = targetHeading.minus(robotPose.getRotation()).getRadians();

@@ -33,11 +33,11 @@
     {
       "anchor": {
         "x": 2.89531640625,
-        "y": 5.544107855902777
+        "y": 5.544
       },
       "prevControl": {
         "x": 2.614044053819445,
-        "y": 6.845623987268518
+        "y": 6.84551613136574
       },
       "nextControl": null,
       "isLocked": false,
@@ -66,7 +66,7 @@
     "rotation": -48.20956406640731
   },
   "reversed": false,
-  "folder": "Diplodocus Depot",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": -75.0
