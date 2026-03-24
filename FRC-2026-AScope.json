@@ -1,10 +1,10 @@
 {
   "hubs": [
     {
-      "x": 94,
-      "y": 63,
+      "x": 93,
+      "y": 62,
       "width": 1315,
-      "height": 776,
+      "height": 826,
       "state": {
         "sidebar": {
           "width": 300,
@@ -33,23 +33,21 @@
             "/RealOutputs/Accel/IMU/Accel_mps2",
             "/RealOutputs/Drive",
             "/RealOutputs/Loop/Virtual",
-            "/RealOutputs/CAN",
             "/Vision/Camera0",
             "/Vision/Camera1",
             "/RealOutputs/Vision/Summary/RobotPoses",
             "/ReplayOutputs",
             "/ReplayOutputs/Vision",
             "/ReplayOutputs/Vision/Summary",
-            "/RealOutputs",
             "/ReplayOutputs/Vision/Camera0",
-            "/RealOutputs/Vision/Camera0",
             "/RealOutputs/Odometry",
             "/ReplayOutputs/Odometry",
-            "/Feeder"
+            "/RealOutputs",
+            "/RealOutputs/PathPlanner"
           ]
         },
         "tabs": {
-          "selected": 6,
+          "selected": 2,
           "tabs": [
             {
               "type": 0,
@@ -75,7 +73,7 @@
                   }
                 ],
                 "field": "FRC:2026 Field",
-                "orientation": 0,
+                "orientation": 2,
                 "size": "large"
               },
               "controllerUUID": "ibthfkqod1n0vovjoxhcg2d9954wcpe4",
@@ -107,8 +105,8 @@
                   },
                   {
                     "type": "ghost",
-                    "logKey": "/RealOutputs/Vision/Camera0/RobotPosesAccepted",
-                    "logType": "Pose3d[]",
+                    "logKey": "/RealOutputs/Vision/SmoothedPose",
+                    "logType": "Pose2d",
                     "visible": true,
                     "options": {
                       "color": "#00ff00"
@@ -116,8 +114,8 @@
                   },
                   {
                     "type": "ghost",
-                    "logKey": "/RealOutputs/Vision/Camera1/RobotPosesAccepted",
-                    "logType": "Pose3d[]",
+                    "logKey": "/RealOutputs/Vision/FusedPose",
+                    "logType": "Pose2d",
                     "visible": true,
                     "options": {
                       "color": "#ffff00"
@@ -125,12 +123,12 @@
                   }
                 ],
                 "field": "FRC:2026 Field",
-                "orientation": 0,
-                "size": "large"
+                "orientation": 2,
+                "size": "medium"
               },
               "controllerUUID": "u9myuirzag5qydjp9nozn8qxpfqofuuq",
               "renderer": null,
-              "controlsHeight": 200
+              "controlsHeight": 214
             },
             {
               "type": 2,
@@ -166,8 +164,8 @@
                   }
                 ],
                 "field": "FRC:2026 Field",
-                "orientation": 0,
-                "size": "large"
+                "orientation": 2,
+                "size": "medium"
               },
               "controllerUUID": "fcrb44yozcn5a3e1219jjhk9phytbtwd",
               "renderer": null,
@@ -280,10 +278,40 @@
                       "color": "#2b66a2",
                       "size": "normal"
                     }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/RealOutputs/Shooter/currentSpeed",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#80588e",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/RealOutputs/Shooter/targetspeed",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e48b32",
+                      "size": "normal"
+                    }
                   }
                 ],
                 "rightSources": [],
-                "discreteSources": [],
+                "discreteSources": [
+                  {
+                    "type": "stripes",
+                    "logKey": "/RealOutputs/Shooter/atSpeed",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#af2437"
+                    }
+                  }
+                ],
                 "leftLockedRange": null,
                 "rightLockedRange": null,
                 "leftUnitConversion": {
@@ -330,7 +358,7 @@
                   },
                   {
                     "type": "stepped",
-                    "logKey": "/RealOutputs/Power/Subsystems/DriveCurrent",
+                    "logKey": "/RealOutputs/Power/Subsystems/Drive_Current",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -340,7 +368,7 @@
                   },
                   {
                     "type": "stepped",
-                    "logKey": "/RealOutputs/Power/Subsystems/SteerCurrent",
+                    "logKey": "/RealOutputs/Power/Subsystems/Steer_Current",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -350,11 +378,41 @@
                   },
                   {
                     "type": "stepped",
-                    "logKey": "/RealOutputs/Power/Subsystems/FlywheelCurrent",
+                    "logKey": "/RealOutputs/Power/Subsystems/Intake_Current",
                     "logType": "Number",
                     "visible": true,
                     "options": {
                       "color": "#c0b487",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/RealOutputs/Power/Subsystems/Indexer_Current",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#858584",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/RealOutputs/Power/Subsystems/Feeder_Current",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#3b875a",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/RealOutputs/Power/Subsystems/Shooter_Current",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#d993aa",
                       "size": "normal"
                     }
                   }
@@ -901,9 +959,9 @@
                 "cameraIndex": -1,
                 "orbitFov": 50,
                 "cameraPosition": [
-                  -0.059240934425391086,
+                  -0.05924093442537227,
                   10.616071094115314,
-                  -8.48007052626881
+                  -8.480070526268811
                 ],
                 "cameraTarget": [
                   0,
