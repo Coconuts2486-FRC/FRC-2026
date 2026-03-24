@@ -149,7 +149,8 @@ public class Shooter extends RBSISubsystem {
 
   public boolean shooterAtSpeed() {
     if (targetMetersPerSecond == 0.0) return false;
-    double currentSpeed = inputs.velocityRadPerSec / 425 * -1;
+    double currentSpeed = Math.abs(io.get());
+    // inputs.velocityRadPerSec / 425 * -1;
     return currentSpeed > (targetMetersPerSecond * 0.85);
   }
 
