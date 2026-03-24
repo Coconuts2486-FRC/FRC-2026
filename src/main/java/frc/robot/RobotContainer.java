@@ -19,6 +19,7 @@ import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.util.PathPlannerLogging;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -87,6 +88,7 @@ import frc.robot.util.RBSIPowerMonitor;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.photonvision.PhotonCamera;
 import org.photonvision.simulation.PhotonCameraSim;
@@ -355,6 +357,23 @@ public class RobotContainer {
         // Set the others to null
         autoChooserChoreo = null;
         autoFactoryChoreo = null;
+
+        // Set up the logging callback
+        PathPlannerLogging.setLogActivePathCallback(
+            (List<Pose2d> activePath) -> {
+              Logger.recordOutput("PathPlanner/ActivePath", activePath.toArray(new Pose2d[0]));
+            });
+
+        PathPlannerLogging.setLogCurrentPoseCallback(
+            (Pose2d currentPose) -> {
+              Logger.recordOutput("PathPlanner/CurrentPose", currentPose);
+            });
+
+        PathPlannerLogging.setLogTargetPoseCallback(
+            (Pose2d targetPose) -> {
+              Logger.recordOutput("PathPlanner/TargetPose", targetPose);
+            });
+
         break;
 
       case CHOREO:
