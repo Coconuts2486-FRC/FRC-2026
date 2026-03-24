@@ -183,7 +183,7 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Shoot",
         Commands.runOnce(
-            () -> m_shooter.set(Math.abs(Coordinator.getShooterVelocity())), m_shooter));
+            () -> m_shooter.set(Math.abs(Coordinator.getShooterVelocity())), m_shooter).finallyDo(()->m_shooter.stop()));
 
     NamedCommands.registerCommand(
         "Align",
