@@ -544,13 +544,13 @@ public final class Constants {
 
     // Acceleration and Jerk to be applied
     private static final APConstraints kAPConstraints =
-        new APConstraints().withAcceleration(5.0).withJerk(2.0);
+        new APConstraints().withAcceleration(2.0).withJerk(2.0);
 
     // Motion profile for drive to pose
     private static final APProfile kAPProfile =
         new APProfile(kAPConstraints)
             .withErrorXY(Centimeters.of(1))
-            .withErrorTheta(Degrees.of(0.5))
+            .withErrorTheta(Degrees.of(0.2))
             .withBeelineRadius(Centimeters.of(8));
 
     // Autopilot object to be used for specific commands
