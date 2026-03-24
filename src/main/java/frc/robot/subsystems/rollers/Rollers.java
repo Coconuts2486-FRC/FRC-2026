@@ -21,11 +21,11 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.util.RBSISubsystem;
 import org.littletonrobotics.junction.Logger;
 
-public class rollers extends RBSISubsystem {
-  private rollersIO io;
-  private final rollersIOInputsAutoLogged inputs = new rollersIOInputsAutoLogged();
+public class Rollers extends RBSISubsystem {
+  private RollersIO io;
+  private final RollersIOInputsAutoLogged inputs = new RollersIOInputsAutoLogged();
 
-  public rollers(rollersIO io) {
+  public Rollers(RollersIO io) {
     this.io = io;
 
     setDefaultCommand(Commands.run(() -> stop(), this));

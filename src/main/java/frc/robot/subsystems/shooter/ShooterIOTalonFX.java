@@ -160,6 +160,11 @@ public class ShooterIOTalonFX implements ShooterIO {
     return leader.get();
   }
 
+  @Override
+  public double getVelocityRPM() {
+    return leader.getVelocity().getValueAsDouble() * 60.;
+  }
+
   /**
    * Set the gains of the Slot0 closed-loop configuration
    *

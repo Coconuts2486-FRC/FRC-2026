@@ -2,12 +2,12 @@ package frc.robot.subsystems.driver_info;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.FieldState;
-import frc.robot.subsystems.Indexer.Indexer;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.feeder.Feeder;
 import frc.robot.subsystems.imu.Imu;
+import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.intake.Intake;
-import frc.robot.subsystems.rollers.rollers;
+import frc.robot.subsystems.rollers.Rollers;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.util.VirtualSubsystem;
 import org.littletonrobotics.junction.Logger;
@@ -19,7 +19,7 @@ public class CANStatus extends VirtualSubsystem {
 
   private final Intake intake;
   private final Feeder feeder;
-  private final rollers rollers;
+  private final Rollers rollers;
   private final Shooter shooter;
   private final Indexer indexer;
 
@@ -32,7 +32,7 @@ public class CANStatus extends VirtualSubsystem {
       Imu imu,
       Intake intake,
       Feeder feeder,
-      rollers rollers,
+      Rollers rollers,
       Shooter shooter,
       Indexer indexer) {
     this.drive = drive;
@@ -43,6 +43,18 @@ public class CANStatus extends VirtualSubsystem {
     this.rollers = rollers;
     this.shooter = shooter;
     this.indexer = indexer;
+  }
+
+  /**
+   * Priority value for this virtual subsystem
+   *
+   * <p>See `frc.robot.util.VirtualSubsystem` for a description of the suggested values for various
+   * virtual subsystems.
+   */
+  @Override
+  protected int getPeriodPriority() {
+    // Low-priority status system
+    return 10;
   }
 
   @Override

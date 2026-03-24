@@ -82,7 +82,7 @@ public class CameraSweepEvaluator {
     return new Quaternion(c, ax * s, ay * s, az * s);
   }
 
-  // Hamilton product: q = a x b
+  // Hamilton product: q = a x b (cross-product)
   private static Quaternion quatMul(Quaternion a, Quaternion b) {
     double aw = a.getW(), ax = a.getX(), ay = a.getY(), az = a.getZ();
     double bw = b.getW(), bx = b.getX(), by = b.getY(), bz = b.getZ();

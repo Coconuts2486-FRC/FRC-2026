@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.PowerConstants;
+import frc.robot.util.TimeUtil;
 import frc.robot.util.VirtualSubsystem;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedPowerDistribution;
@@ -127,19 +128,24 @@ public class Robot extends LoggedRobot {
     final long t0 = System.nanoTime();
 
     if (isReal()) {
+      // Switch thread to high priority to improve loop timing
       Threads.setCurrentThreadPriority(true, 99);
     }
-    final long t1 = System.nanoTime();
 
     // Run the Virtual Subsystem periodic functions
     VirtualSubsystem.periodicAll();
     final long t2 = System.nanoTime();
 
-    // Run the Mechanism periodic functions and scheduled commands
+    // Runs the Scheduler. This is responsible for polling buttons, adding
+    // newly-scheduled commands, running already-scheduled commands, removing
+    // finished or interrupted commands, and running subsystem periodic() methods.
+    // This must be called from the robot's periodic block in order for anything in
+    // the Command-based framework to work.
     CommandScheduler.getInstance().run();
     final long t3 = System.nanoTime();
 
     if (isReal()) {
+      // Return thread to normal priority
       Threads.setCurrentThreadPriority(false, 10);
     }
 
@@ -176,6 +182,7 @@ public class Robot extends LoggedRobot {
     CommandScheduler.getInstance().cancelAll();
     m_robotContainer.getDrivebase().setMotorBrake(true);
     m_robotContainer.getDrivebase().resetHeadingController();
+    m_robotContainer.getVision().resetPoseGate(TimeUtil.now());
 
     // TODO: Make sure Gyro inits here with whatever is in the path planning thingie
     switch (Constants.getAutoType()) {
@@ -186,6 +193,7 @@ public class Robot extends LoggedRobot {
       case PATHPLANNER:
         m_autoCommandPathPlanner = m_robotContainer.getAutonomousCommandPathPlanner();
 
+        // Reset pose estimator based on PathPlanner starting pose
         if (m_autoCommandPathPlanner != null) {
           Pose2d startingPose = getSelectedAutoStartingPosePathPlanner();
           if (startingPose != null) {

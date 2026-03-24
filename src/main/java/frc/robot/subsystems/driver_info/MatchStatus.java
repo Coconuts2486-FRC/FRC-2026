@@ -42,6 +42,18 @@ public class MatchStatus extends VirtualSubsystem {
     }
   }
 
+  /**
+   * Priority value for this virtual subsystem
+   *
+   * <p>See `frc.robot.util.VirtualSubsystem` for a description of the suggested values for various
+   * virtual subsystems.
+   */
+  @Override
+  protected int getPeriodPriority() {
+    // Low-priority status system
+    return 10;
+  }
+
   /** Periodic function */
   @Override
   public void rbsiPeriodic() {

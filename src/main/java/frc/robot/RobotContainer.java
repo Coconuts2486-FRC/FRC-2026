@@ -3,9 +3,15 @@
 // Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
-// Use of this source code is governed by a BSD
-// license that can be found in the AdvantageKit-License.md file
-// at the root directory of this project.
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// version 3 as published by the Free Software Foundation or
+// available in the root directory of this project.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU General Public License for more details.
 //
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
@@ -41,13 +47,10 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.FieldConstants.AprilTagLayoutType;
 import frc.robot.commands.AutopilotCommands;
 import frc.robot.commands.DriveCommands;
-import frc.robot.subsystems.Indexer.Indexer;
-import frc.robot.subsystems.Indexer.IndexerIO;
-import frc.robot.subsystems.Indexer.IndexerIOSim;
-import frc.robot.subsystems.Indexer.IndexerIOTalonFX;
 import frc.robot.subsystems.accelerometer.Accelerometer;
 import frc.robot.subsystems.coordinator.Coordinator;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.drive.DriveOdometry;
 import frc.robot.subsystems.drive.SwerveConstants;
 import frc.robot.subsystems.driver_info.CANStatus;
 import frc.robot.subsystems.driver_info.MatchStatus;
@@ -57,13 +60,17 @@ import frc.robot.subsystems.feeder.FeederIOSim;
 import frc.robot.subsystems.feeder.FeederIOTalonFX;
 import frc.robot.subsystems.imu.Imu;
 import frc.robot.subsystems.imu.ImuIOSim;
+import frc.robot.subsystems.indexer.Indexer;
+import frc.robot.subsystems.indexer.IndexerIO;
+import frc.robot.subsystems.indexer.IndexerIOSim;
+import frc.robot.subsystems.indexer.IndexerIOTalonFX;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.intake.IntakeIOTalonFX;
-import frc.robot.subsystems.rollers.rollers;
-import frc.robot.subsystems.rollers.rollersIO;
-import frc.robot.subsystems.rollers.rollersIOTalonFX;
+import frc.robot.subsystems.rollers.Rollers;
+import frc.robot.subsystems.rollers.RollersIO;
+import frc.robot.subsystems.rollers.RollersIOTalonFX;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOSim;
@@ -117,9 +124,8 @@ public class RobotContainer {
   private final Indexer m_indexer;
   private final Feeder m_feeder;
   private final Shooter m_shooter;
-  private final rollers m_rollers;
+  private final Rollers m_rollers;
   private final MatchStatus m_matchstatus;
-  private final CANStatus m_canStatus;
 
   private boolean elasticOnDriveTab = true;
 
@@ -130,6 +136,10 @@ public class RobotContainer {
 
   // These are "Virtual Subsystems" that report information but have no motors
   private final Imu m_imu;
+  private final Vision m_vision;
+
+  @SuppressWarnings("unused")
+  private final DriveOdometry m_driveOdometry;
 
   @SuppressWarnings("unused")
   private final Accelerometer m_accel;
@@ -138,13 +148,10 @@ public class RobotContainer {
   private final RBSIPowerMonitor m_power;
 
   @SuppressWarnings("unused")
-  private final Vision m_vision;
-
-  @SuppressWarnings("unused")
   private List<RBSICANHealth> m_canHealth;
 
-  // @SuppressWarnings("unused")
-  // private final CANStatus m_canStatus;
+  @SuppressWarnings("unused")
+  private final CANStatus m_canStatus;
 
   /** Dashboard inputs ***************************************************** */
   // AutoChoosers for both supported path planning types
@@ -165,41 +172,9 @@ public class RobotContainer {
   // Alerts
   private final Alert aprilTagLayoutAlert = new Alert("", AlertType.INFO);
 
-  // Vision Factories
-  private VisionIO[] buildVisionIOsReal(Drive drive) {
-    return switch (Constants.getVisionType()) {
-      case PHOTON ->
-          Arrays.stream(Cameras.ALL)
-              .map(c -> (VisionIO) new VisionIOPhotonVision(c.name(), c.robotToCamera()))
-              .toArray(VisionIO[]::new);
-
-      case LIMELIGHT ->
-          Arrays.stream(Cameras.ALL)
-              .map(c -> (VisionIO) new VisionIOLimelight(c.name(), drive::getHeading))
-              .toArray(VisionIO[]::new);
-
-      case NONE -> new VisionIO[] {new VisionIO() {}};
-    };
-  }
-
-  private static VisionIO[] buildVisionIOsSim(Drive drive) {
-    var cams = Constants.Cameras.ALL;
-    VisionIO[] ios = new VisionIO[cams.length];
-    for (int i = 0; i < cams.length; i++) {
-      var cfg = cams[i];
-      ios[i] = new VisionIOPhotonVisionSim(cfg.name(), cfg.robotToCamera(), drive::getPose);
-    }
-    return ios;
-  }
-
-  private VisionIO[] buildVisionIOsReplay() {
-    return new VisionIO[] {new VisionIO() {}};
-  }
-
   public void defineAutoCommands() {
 
-    NamedCommands.registerCommand("IntakeDown", Commands.run(() -> m_intake.pivotDown(), m_intake));\
-    
+    NamedCommands.registerCommand("IntakeDown", Commands.run(() -> m_intake.pivotDown(), m_intake));
 
     NamedCommands.registerCommand(
         "Intake",
@@ -250,14 +225,17 @@ public class RobotContainer {
         m_imu = new Imu(SwerveConstants.kImu.factory.get());
 
         m_drivebase = new Drive(m_imu);
+        m_driveOdometry = new DriveOdometry(m_drivebase, m_imu, m_drivebase.getModules());
+        m_vision =
+            new Vision(
+                m_drivebase, m_drivebase::addVisionMeasurement, buildVisionIOsReal(m_drivebase));
         // m_flywheel = new Flywheel(new FlywheelIOSim()); // new Flywheel(new FlywheelIOTalonFX());
-        m_vision = new Vision(m_drivebase::addVisionMeasurement, buildVisionIOsReal(m_drivebase));
         m_accel = new Accelerometer(m_imu);
         m_intake = new Intake(new IntakeIOTalonFX());
         m_indexer = new Indexer(new IndexerIOTalonFX());
         m_feeder = new Feeder(new FeederIOTalonFX());
         m_shooter = new Shooter(new ShooterIOTalonFX());
-        m_rollers = new rollers(new rollersIOTalonFX());
+        m_rollers = new Rollers(new RollersIOTalonFX());
         m_matchstatus = new MatchStatus(driverController, operatorController);
 
         sweep = null;
@@ -269,29 +247,28 @@ public class RobotContainer {
 
         m_imu = new Imu(new ImuIOSim());
         m_drivebase = new Drive(m_imu);
+        m_driveOdometry = new DriveOdometry(m_drivebase, m_imu, m_drivebase.getModules());
+        m_vision =
+            new Vision(
+                m_drivebase, m_drivebase::addVisionMeasurement, buildVisionIOsSim(m_drivebase));
         // m_flywheel = new Flywheel(new FlywheelIOSim() {});
-        m_vision = new Vision(m_drivebase::addVisionMeasurement, buildVisionIOsSim(m_drivebase));
         m_accel = new Accelerometer(m_imu);
         m_intake = new Intake(new IntakeIOSim());
         m_indexer = new Indexer(new IndexerIOSim());
         m_feeder = new Feeder(new FeederIOSim());
         m_shooter = new Shooter(new ShooterIOSim());
-        m_rollers = new rollers(new rollersIOTalonFX());
+        m_rollers = new Rollers(new RollersIOTalonFX());
         m_matchstatus = new MatchStatus(driverController, operatorController);
 
-        // ---------------- CameraSweepEvaluator (sim-only analysis) ----------------
-        var cams = Cameras.ALL;
+        // CameraSweepEvaluator (sim-only analysis)
         VisionSystemSim visionSim = new VisionSystemSim("CameraSweepWorld");
         visionSim.addAprilTags(FieldConstants.aprilTagLayout);
-
+        var cams = Cameras.ALL;
         PhotonCameraSim[] simCams = new PhotonCameraSim[cams.length];
-
         for (int i = 0; i < cams.length; i++) {
           var cfg = cams[i];
-
           PhotonCamera photonCam = new PhotonCamera(cfg.name());
           PhotonCameraSim camSim = new PhotonCameraSim(photonCam, cfg.simProps());
-
           visionSim.addCamera(camSim, cfg.robotToCamera());
           simCams[i] = camSim;
         }
@@ -310,15 +287,19 @@ public class RobotContainer {
         RBSICANBusRegistry.initSim(CANBuses.RIO, CANBuses.DRIVE);
         m_imu = new Imu(new ImuIOSim() {});
         m_drivebase = new Drive(m_imu);
+        m_driveOdometry = new DriveOdometry(m_drivebase, m_imu, m_drivebase.getModules());
+        m_vision =
+            new Vision(
+                m_drivebase, m_drivebase::addVisionMeasurement, buildVisionIOsReplay(m_drivebase));
+
         // m_flywheel = new Flywheel(new FlywheelIO() {});
-        m_vision = new Vision(m_drivebase::addVisionMeasurement, buildVisionIOsReplay());
         m_accel = new Accelerometer(m_imu);
         sweep = null;
         m_intake = new Intake(new IntakeIO() {});
         m_indexer = new Indexer(new IndexerIO() {});
         m_feeder = new Feeder(new FeederIO() {});
         m_shooter = new Shooter(new ShooterIO() {});
-        m_rollers = new rollers(new rollersIO() {});
+        m_rollers = new Rollers(new RollersIO() {});
         m_matchstatus = new MatchStatus(driverController, operatorController);
 
         break;
@@ -581,7 +562,7 @@ public class RobotContainer {
 
     driverController.y().whileTrue(Commands.run(() -> m_indexer.setVelocity(0.37), m_indexer));
 
-    driverController.rightBumper().whileTrue(Commands.run(() -> m_shooter.set(-0.79), m_shooter));
+    driverController.rightBumper().whileTrue(Commands.run(() -> m_shooter.set(0.79), m_shooter));
 
     driverController.x().whileTrue(Commands.run(() -> m_intake.printPos()));
 
@@ -682,7 +663,8 @@ public class RobotContainer {
   /** Updates the alerts. */
   public void updateAlerts() {
     // AprilTag layout alert
-    boolean aprilTagAlertActive = Constants.getAprilTagLayoutType() != AprilTagLayoutType.OFFICIAL;
+    boolean aprilTagAlertActive =
+        Constants.getAprilTagLayoutType() != AprilTagLayoutType.REBUILT_WELDED;
     aprilTagLayoutAlert.set(aprilTagAlertActive);
     if (aprilTagAlertActive) {
       aprilTagLayoutAlert.setText(
@@ -695,6 +677,11 @@ public class RobotContainer {
   /** Drivetrain getter method for use with Robot.java */
   public Drive getDrivebase() {
     return m_drivebase;
+  }
+
+  /** Vision getter method for use with Robot.java */
+  public Vision getVision() {
+    return m_vision;
   }
 
   /**
@@ -738,6 +725,53 @@ public class RobotContainer {
       //     "Flywheel SysId (Dynamic Reverse)",
       //     m_flywheel.sysIdDynamic(SysIdRoutine.Direction.kReverse));
     }
+  }
+
+  // Vision Factories
+  // Vision Factories (REAL)
+  private VisionIO[] buildVisionIOsReal(Drive drive) {
+    return switch (Constants.getVisionType()) {
+      case PHOTON ->
+          Arrays.stream(Constants.Cameras.ALL)
+              .map(c -> (VisionIO) new VisionIOPhotonVision(c.name(), c.robotToCamera()))
+              .toArray(VisionIO[]::new);
+
+      case LIMELIGHT ->
+          Arrays.stream(Constants.Cameras.ALL)
+              .map(c -> (VisionIO) new VisionIOLimelight(c.name(), drive::getHeading))
+              .toArray(VisionIO[]::new);
+
+      case NONE -> new VisionIO[] {}; // recommended: no cameras
+    };
+  }
+
+  // Vision Factories (SIM)
+  private VisionIO[] buildVisionIOsSim(Drive drive) {
+    var cams = Constants.Cameras.ALL;
+    VisionIO[] ios = new VisionIO[cams.length];
+    for (int i = 0; i < cams.length; i++) {
+      var cfg = cams[i];
+      ios[i] = new VisionIOPhotonVisionSim(cfg.name(), cfg.robotToCamera(), drive::getPose);
+    }
+    return ios;
+  }
+
+  // Vision Factories (REPLAY)
+  private VisionIO[] buildVisionIOsReplay(Drive drive) {
+    var cams = Constants.Cameras.ALL;
+
+    VisionIO[] ios = new VisionIO[cams.length];
+    for (int i = 0; i < cams.length; i++) {
+      ios[i] =
+          new VisionIO() {
+            @Override
+            public void updateInputs(VisionIOInputs inputs) {
+              // Intentionally empty.
+              // Logger.processInputs("Vision/Camera" + i, inputs) will populate these from the log.
+            }
+          };
+    }
+    return ios;
   }
 
   /**
