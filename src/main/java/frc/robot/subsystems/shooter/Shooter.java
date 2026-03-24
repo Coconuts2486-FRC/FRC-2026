@@ -32,7 +32,8 @@ public class Shooter extends RBSISubsystem {
   private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
 
   private final SysIdRoutine sysId;
-  private double targetMetersPerSecond = 0.0;
+  private double targetDutyCycle = 0.0;
+  private double targetRpm = 0.0;
   // private double shooterOffset = 0.0;
 
   FieldRelativeShooterSolver.FieldShotSolution solution;
@@ -70,8 +71,9 @@ public class Shooter extends RBSISubsystem {
   protected void rbsiPeriodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Shooter", inputs);
-    Logger.recordOutput("Shooter/targetspeed", targetMetersPerSecond);
+    Logger.recordOutput("Shooter/targetspeed", targetDutyCycle);
     Logger.recordOutput("Shooter/currentSpeed", io.get());
+    Logger.recordOutput("Shooter/currentSpeedRPM", io.getVelocityRPM());
     Logger.recordOutput("Shooter/atSpeed", shooterAtSpeed());
     // Logger.recordOutput("Shooter/ShooterOffset", shooterOffset);
   }
@@ -82,7 +84,9 @@ public class Shooter extends RBSISubsystem {
   }
 
   public void set(double set) {
-    targetMetersPerSecond = set;
+    targetDutyCycle = set;
+    // Simple 3-point regression to convert DutyCycle to RPM
+    targetRpm = 4960 * targetDutyCycle + 130;
     io.set(set);
   }
 
@@ -104,7 +108,7 @@ public class Shooter extends RBSISubsystem {
   /** Run closed loop at the specified velocity. */
   public void runVelocity(double velocity) {
 
-    targetMetersPerSecond = velocity * -1;
+    targetDutyCycle = velocity * -1;
 
     double speed =
         (velocity / ShooterConstants.flywheelCircumfrence)
@@ -118,7 +122,7 @@ public class Shooter extends RBSISubsystem {
 
   /** Stops the Shooter. */
   public void stop() {
-    targetMetersPerSecond = 0.0;
+    targetDutyCycle = 0.0;
     io.stop();
   }
 
@@ -148,10 +152,10 @@ public class Shooter extends RBSISubsystem {
   }
 
   public boolean shooterAtSpeed() {
-    if (targetMetersPerSecond == 0.0) return false;
-    double currentSpeed = Math.abs(io.get());
+    if (targetDutyCycle == 0.0) return false;
+    double currentSpeed = Math.abs(io.getVelocityRPM());
     // inputs.velocityRadPerSec / 425 * -1;
-    return currentSpeed > (targetMetersPerSecond * 0.85);
+    return currentSpeed > (targetRpm * 0.85);
   }
 
   public boolean leaderAlive() {

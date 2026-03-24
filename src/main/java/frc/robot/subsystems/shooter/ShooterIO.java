@@ -49,4 +49,8 @@ public interface ShooterIO extends RBSIIO {
   public default double get() {
     return 0.0;
   }
+
+  public default double getVelocityRPM() {
+    return 0.0;
+  }
 }
