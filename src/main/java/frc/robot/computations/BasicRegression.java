@@ -40,7 +40,7 @@ public class BasicRegression {
     // double D = 1.39996; // Cubic in distance
     // double E = 0.0; // Quartic in distance
 
-    return 0.110143 * distance + 0.377065 + 0.05;
+    return 0.110143 * distance + 0.377065 + 0.1;
     //      + E * distance * distance * distance * distance;
   }
 
