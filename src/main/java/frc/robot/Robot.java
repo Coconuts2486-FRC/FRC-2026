@@ -193,6 +193,7 @@ public class Robot extends LoggedRobot {
       case PATHPLANNER:
         m_autoCommandPathPlanner = m_robotContainer.getAutonomousCommandPathPlanner();
 
+        // Reset pose estimator based on PathPlanner starting pose
         if (m_autoCommandPathPlanner != null) {
           Pose2d startingPose = getSelectedAutoStartingPosePathPlanner();
           if (startingPose != null) {
