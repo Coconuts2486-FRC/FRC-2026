@@ -174,8 +174,7 @@ public class RobotContainer {
 
   public void defineAutoCommands() {
 
-    NamedCommands.registerCommand("IntakeDown", Commands.run(() -> m_intake.pivotDown(), m_intake));\
-    
+    NamedCommands.registerCommand("IntakeDown", Commands.run(() -> m_intake.pivotDown(), m_intake));
 
     NamedCommands.registerCommand(
         "Intake",

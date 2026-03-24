@@ -21,17 +21,13 @@
             "/RealOutputs/Vision/Summary/TagPoses",
             "/RealOutputs/Vision/Camera1/RobotPosesAccepted",
             "/RealOutputs/Vision/Camera0/RobotPosesAccepted",
-            "/RealOutputs/Power",
             "/NetworkInputs/SmartDashboard",
             "/RealOutputs/Vision",
             "/RealOutputs/Vision/Summary",
-            "/RealOutputs/Shooter",
             "/RealOutputs/Shooter/SetpointMeters",
-            "/RealOutputs/Loop",
             "/RealOutputs/Loop/Mech",
             "/RealOutputs/Accel/IMU",
             "/RealOutputs/Accel/IMU/Accel_mps2",
-            "/RealOutputs/Drive",
             "/RealOutputs/Loop/Virtual",
             "/Vision/Camera0",
             "/Vision/Camera1",
@@ -40,10 +36,8 @@
             "/ReplayOutputs/Vision",
             "/ReplayOutputs/Vision/Summary",
             "/ReplayOutputs/Vision/Camera0",
-            "/RealOutputs/Odometry",
             "/ReplayOutputs/Odometry",
-            "/RealOutputs",
-            "/RealOutputs/PathPlanner"
+            "/RealOutputs"
           ]
         },
         "tabs": {
@@ -96,7 +90,7 @@
                   },
                   {
                     "type": "arrow",
-                    "logKey": "/RealOutputs/Vision/Summary/TagPoses",
+                    "logKey": "/RealOutputs/Vision/TagsSeenThisLoop",
                     "logType": "Pose3d[]",
                     "visible": true,
                     "options": {
