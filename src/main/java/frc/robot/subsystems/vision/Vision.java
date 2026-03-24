@@ -37,6 +37,7 @@ import frc.robot.util.VirtualSubsystem;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.Set;
@@ -131,13 +132,20 @@ public class Vision extends VirtualSubsystem {
   @Override
   public void rbsiPeriodic() {
 
-    // Debugging values
     boolean hasAcceptedThisLoop = false;
     boolean hasFusedThisLoop = false;
     boolean hasSmoothedThisLoop = false;
 
-    try {
+    // Deduplicated set of tag IDs seen across all cameras this loop
+    final LinkedHashSet<Integer> tagIdsSeenThisLoop = new LinkedHashSet<>();
 
+    // // Default debug outputs (so keys exist even if we return early)
+    // double dbgAlignDt = Double.NaN;
+    // double dbgDeltaTranslation = Double.NaN;
+    // double dbgDeltaRotation = Double.NaN;
+    // boolean dbgAlignFinite = false;
+
+    try {
       lastAlignDbg.reset();
       // Pose reset gate (clears smoothing state, resets per-cam monotonic gates)
       long epoch = drive.getPoseResetEpoch();
@@ -156,12 +164,12 @@ public class Vision extends VirtualSubsystem {
       }
 
       // Always-on “health” debug -- may consider removing this
-      Logger.recordOutput("Vision/Debug/ioLength", io.length);
-      int totalObs = 0;
-      for (int i = 0; i < io.length; i++) {
-        totalObs += (inputs[i].poseObservations != null) ? inputs[i].poseObservations.length : 0;
-      }
-      Logger.recordOutput("Vision/Debug/totalObsThisLoop", totalObs);
+      // Logger.recordOutput("Vision/Debug/ioLength", io.length);
+      // int totalObs = 0;
+      // for (int i = 0; i < io.length; i++) {
+      //   totalObs += (inputs[i].poseObservations != null) ? inputs[i].poseObservations.length : 0;
+      // }
+      // Logger.recordOutput("Vision/Debug/totalObsThisLoop", totalObs);
 
       // Choose best observation per camera for THIS loop
       final ArrayList<TimedPose> perCamAccepted = new ArrayList<>(io.length);
@@ -191,6 +199,13 @@ public class Vision extends VirtualSubsystem {
         for (var obs : obsArr) {
           seen++;
 
+          int[] tagIds = obs.usedTagIds();
+          if (tagIds != null && tagIds.length > 0) {
+            for (int tagId : tagIds) {
+              tagIdsSeenThisLoop.add(tagId); // deduplicated automatically
+            }
+          }
+
           GateResult gate = passesScrutiny(cam, obs);
           Logger.recordOutput("Vision/Camera" + cam + "/GateFail", gate.reason);
           if (!gate.accepted) {
@@ -198,6 +213,7 @@ public class Vision extends VirtualSubsystem {
             continue;
           }
 
+          // Build the estimate
           BuiltEstimate built = buildEstimate(cam, obs);
           if (built == null) {
             rejected++;
@@ -236,7 +252,7 @@ public class Vision extends VirtualSubsystem {
         Logger.recordOutput("Vision/Camera" + cam + "/ObsRejected", rejected);
       }
 
-      Logger.recordOutput("Vision/Debug/perCamAcceptedSize", perCamAccepted.size());
+      // Logger.recordOutput("Vision/Debug/perCamAcceptedSize", perCamAccepted.size());
 
       if (perCamAccepted.isEmpty()) {
         // No new vision accepted this loop; we still log cached outputs below (in finally).
@@ -285,6 +301,22 @@ public class Vision extends VirtualSubsystem {
       Logger.recordOutput("Vision/HasAcceptedThisLoop", hasAcceptedThisLoop);
       Logger.recordOutput("Vision/HasFusedThisLoop", hasFusedThisLoop);
       Logger.recordOutput("Vision/HasSmoothedThisLoop", hasSmoothedThisLoop);
+
+      Logger.recordOutput("Vision/TagCountThisLoop", tagIdsSeenThisLoop.size());
+
+      // Convert deduplicated tag IDs → Pose3d[]
+      Pose3d[] tagsSeenThisLoop =
+          tagIdsSeenThisLoop.stream()
+              .map(FieldConstants.aprilTagLayout::getTagPose)
+              .filter(Optional::isPresent)
+              .map(Optional::get)
+              .toArray(Pose3d[]::new);
+
+      // Log results
+      Logger.recordOutput("Vision/TagsSeenThisLoop", tagsSeenThisLoop);
+      Logger.recordOutput(
+          "Vision/TagIdsSeenThisLoop",
+          tagIdsSeenThisLoop.stream().mapToInt(Integer::intValue).toArray());
     }
   }
 
