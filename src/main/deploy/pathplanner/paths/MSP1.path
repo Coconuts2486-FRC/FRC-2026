@@ -3,57 +3,73 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.4,
-        "y": 7.64
+        "x": 3.55,
+        "y": 0.4697892795138887
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.3915063657407405,
-        "y": 7.562710792824073
+        "x": 4.436726345486114,
+        "y": 0.39938917824074127
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.926427517361111,
-        "y": 7.282918185763889
+        "x": 5.7917589699074075,
+        "y": 0.6718041087962967
       },
       "prevControl": {
-        "x": 6.25392699266615,
-        "y": 7.363158559628927
+        "x": 5.458708651690069,
+        "y": 0.523677155858421
       },
       "nextControl": {
-        "x": 8.001456090856482,
-        "y": 7.154649594907408
+        "x": 6.047115162037038,
+        "y": 0.785375940393519
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.548087311921297,
-        "y": 4.508117549189815
+        "x": 5.938070457175926,
+        "y": 1.8545651765046296
       },
       "prevControl": {
-        "x": 8.20471752025463,
-        "y": 4.522355034722222
+        "x": 5.9301413022424105,
+        "y": 1.511306121299083
       },
       "nextControl": {
-        "x": 6.490466862033918,
-        "y": 4.485185531041778
+        "x": 5.952964048032408,
+        "y": 2.4993198784722224
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.645023943865741,
-        "y": 5.846638020833334
+        "x": 5.938070457175926,
+        "y": 5.976546875
       },
       "prevControl": {
-        "x": 6.574164568865741,
-        "y": 5.47547923900463
+        "x": 5.930435563010515,
+        "y": 4.952651491924425
+      },
+      "nextControl": {
+        "x": 5.949683521412037,
+        "y": 7.53394408275463
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.8275225694444455,
+        "y": 4.51835279224537
+      },
+      "prevControl": {
+        "x": 8.194744719328703,
+        "y": 7.565633969907408
       },
       "nextControl": null,
       "isLocked": false,
@@ -62,8 +78,20 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.4998544254658384,
-      "rotationDegrees": -91.0
+      "waypointRelativePos": 0.49932065217391375,
+      "rotationDegrees": 0.0
+    },
+    {
+      "waypointRelativePos": 2.1979813664596297,
+      "rotationDegrees": 100.0
+    },
+    {
+      "waypointRelativePos": 2.995923913043478,
+      "rotationDegrees": 100.0
+    },
+    {
+      "waypointRelativePos": 3.7251229296066253,
+      "rotationDegrees": -59.99999999999999
     }
   ],
   "constraintZones": [
@@ -84,7 +112,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 2.5,
+    "maxVelocity": 2.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 360.0,
     "maxAngularAcceleration": 360.0,
@@ -93,10 +121,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": -90.0
   },
   "reversed": false,
-  "folder": "DID Depot",
+  "folder": "Molokai Sweet Potato",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0
