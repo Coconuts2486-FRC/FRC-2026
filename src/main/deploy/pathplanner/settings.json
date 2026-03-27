@@ -4,9 +4,8 @@
   "holonomicMode": true,
   "pathFolders": [
     "DID Depot",
-    "DID Double",
     "Molokai Sweet Potato",
-    "OID Double"
+    "OID"
   ],
   "autoFolders": [],
   "defaultMaxVel": 3.0,

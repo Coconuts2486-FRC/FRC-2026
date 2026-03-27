@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 7.0
+          }
+        },
+        {
           "type": "deadline",
           "data": {
             "commands": [
@@ -23,19 +29,7 @@
                                 {
                                   "type": "path",
                                   "data": {
-                                    "pathName": "DID1"
-                                  }
-                                },
-                                {
-                                  "type": "path",
-                                  "data": {
-                                    "pathName": "DID2"
-                                  }
-                                },
-                                {
-                                  "type": "path",
-                                  "data": {
-                                    "pathName": "DIDepot3"
+                                    "pathName": "Copy of MSP1"
                                   }
                                 }
                               ]
@@ -48,7 +42,7 @@
                                 {
                                   "type": "wait",
                                   "data": {
-                                    "waitTime": 2.0
+                                    "waitTime": 1.5
                                   }
                                 },
                                 {
@@ -98,7 +92,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.75
+                        "waitTime": 1.0
                       }
                     },
                     {
@@ -116,7 +110,7 @@
       ]
     }
   },
-  "resetOdom": false,
+  "resetOdom": true,
   "folder": null,
   "choreoAuto": false
 }

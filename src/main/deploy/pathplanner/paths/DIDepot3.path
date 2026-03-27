@@ -8,47 +8,54 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.3472716290509266,
-        "y": 5.58531127025463
+        "x": 2.5625236105669704,
+        "y": 5.614700106742358
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.1472907262731487,
-        "y": 4.936947989004629
+        "x": 0.7238046151620374,
+        "y": 5.934687355324074
       },
       "prevControl": {
-        "x": 2.0236148726851857,
-        "y": 5.318998119212963
+        "x": 0.9779142071759264,
+        "y": 5.804712890625001
+      },
+      "nextControl": {
+        "x": 0.43547678759276254,
+        "y": 6.082164098524367
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.261715494791667,
+        "y": 4.998687500000001
+      },
+      "prevControl": {
+        "x": 0.9884439338508524,
+        "y": 5.1451115013484445
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
-  "constraintZones": [
+  "rotationTargets": [
     {
-      "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.2,
-      "maxWaypointRelativePos": 0.25,
-      "constraints": {
-        "maxVelocity": 2.0,
-        "maxAcceleration": 3.0,
-        "maxAngularVelocity": 360.0,
-        "maxAngularAcceleration": 360.0,
-        "nominalVoltage": 12.0,
-        "unlimited": false
-      }
+      "waypointRelativePos": 0.9912109374999999,
+      "rotationDegrees": 180.0
     }
   ],
+  "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 4.0,
+    "maxVelocity": 1.5,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 360.0,
     "maxAngularAcceleration": 360.0,
     "nominalVoltage": 12.0,
@@ -56,7 +63,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 160.0
+    "rotation": 156.015
   },
   "reversed": false,
   "folder": "DID Depot",

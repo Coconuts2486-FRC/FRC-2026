@@ -308,7 +308,7 @@ public final class Constants {
     // For Profiled PID Motion -- NEED TUNING!
     // Used in a variety of contexts, including PathPlanner and AutoPilot
     // Chassis (not module) across-the-field strafing motion
-    public static final double kPStrafe = 9.5; // 12.5
+    public static final double kPStrafe = 8; // 12.5
     public static final double kIStrafe = 0.0;
     public static final double kDStrafe = 0.0;
     // Chassis (not module) solid-body rotation
