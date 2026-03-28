@@ -39,7 +39,7 @@ public class Rollers extends RBSISubsystem {
   }
 
   public void runRollers() {
-    io.runRollers(1);
+    io.runRollers(0.9);
   }
 
   public void stop() {

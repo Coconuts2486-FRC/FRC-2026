@@ -432,7 +432,7 @@ public final class Constants {
 
     // Pivot angle positions
     public static final double dropPostion = 0.77;
-    public static final double storedAngle = 0.965;
+    public static final double storedAngle = 0.97;
 
     // Pivot gear ratio
     public static final double kPivotGearRatio = 25.0 * 54.0 / 16.0;
