@@ -71,12 +71,13 @@ public class BasicRegression {
     double yaw = fieldLauncherPose.getRotation().getZ();
     double psiFieldRad = MathUtil.angleModulus(psi + yaw);
 
-
-    if(Math.sqrt(Math.pow(Math.abs((fieldRobotPose.getY() - fieldTargetPose.getY())), 2) + Math.pow(Math.abs((fieldRobotPose.getX() - fieldTargetPose.getX())), 2)) > 2.5){
-          return new RegressionShotSolution(v0, Rotation2d.fromRadians(psiFieldRad));
-    } else{
-          return new RegressionShotSolution(v0 + 0.05, Rotation2d.fromRadians(psiFieldRad));
-
+    if (Math.sqrt(
+            Math.pow(Math.abs((fieldRobotPose.getY() - fieldTargetPose.getY())), 2)
+                + Math.pow(Math.abs((fieldRobotPose.getX() - fieldTargetPose.getX())), 2))
+        > 1.5) {
+      return new RegressionShotSolution(v0, Rotation2d.fromRadians(psiFieldRad));
+    } else {
+      return new RegressionShotSolution(v0 + 0.05, Rotation2d.fromRadians(psiFieldRad));
     }
   }
 }

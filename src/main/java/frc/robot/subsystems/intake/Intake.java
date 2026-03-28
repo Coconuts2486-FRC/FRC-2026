@@ -37,7 +37,7 @@ public class Intake extends RBSISubsystem {
 
     /*default command has intake always come up
     unles overided by toggle of intake down in robot container */
-    setDefaultCommand(Commands.run(() -> pivotUp(), this));
+    //setDefaultCommand(Commands.run(() -> pivotUp(), this));
   }
 
   // ** Periodic functions
@@ -64,6 +64,7 @@ public class Intake extends RBSISubsystem {
   }
 
   public void pivotDown() {
+
     if (io.getPivotPosition() > IntakeConstants.dropPostion) {
       io.setPivotPrimitiveSpeed(-0.4);
     } else {
