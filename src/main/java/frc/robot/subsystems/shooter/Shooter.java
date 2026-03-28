@@ -75,6 +75,7 @@ public class Shooter extends RBSISubsystem {
     Logger.recordOutput("Shooter/currentSpeed", io.get());
     Logger.recordOutput("Shooter/currentSpeedRPM", io.getVelocityRPM());
     Logger.recordOutput("Shooter/atSpeed", shooterAtSpeed());
+    Logger.recordOutput("Shooter/flywheelGoing", Math.abs(io.get()) > 0);
     // Logger.recordOutput("Shooter/ShooterOffset", shooterOffset);
   }
 

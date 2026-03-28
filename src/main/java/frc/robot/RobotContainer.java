@@ -588,6 +588,8 @@ public class RobotContainer {
                   Elastic.selectTab(0);
                 }));
 
+    operatorController.povDown().whileTrue(Commands.run(() -> m_intake.printPos()));
+
     // operatorController.povUp().onTrue(Commands.runOnce(() -> m_shooter.incrementOffset(0.075)));
     // operatorController.povDown().onTrue(Commands.runOnce(() ->
     // m_shooter.incrementOffset(-0.075)));
