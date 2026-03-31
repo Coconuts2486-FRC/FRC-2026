@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.3958487874465044,
-        "y": 5.64586305278174
+        "x": 2.6582236313371137,
+        "y": 5.805421060600562
       },
       "isLocked": false,
       "linkedName": null
@@ -20,12 +20,12 @@
         "y": 5.183
       },
       "prevControl": {
-        "x": 2.438216833095578,
-        "y": 5.6070470756062765
+        "x": 2.065912811344662,
+        "y": 5.034460636332679
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "depot"
     }
   ],
   "rotationTargets": [],
