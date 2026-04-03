@@ -19,6 +19,7 @@ import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -135,7 +136,8 @@ public class ShooterIOTalonFX implements ShooterIO {
   @Override
   public void setVelocity(double velocityRotationsPerSecond) {
     // create a Motion Magic Velocity request, voltage output
-    final VelocityVoltage m_request = new VelocityVoltage(0);
+    final MotionMagicVelocityVoltage m_request = new MotionMagicVelocityVoltage(0);
+    // final VelocityVoltage m_request = new VelocityVoltage(0);
     m_request.withEnableFOC(isCTREPro);
     leader.setControl(m_request.withVelocity(velocityRotationsPerSecond));
   }

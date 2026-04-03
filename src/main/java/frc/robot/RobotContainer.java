@@ -714,18 +714,18 @@ public class RobotContainer {
           m_drivebase.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
       // Example Flywheel SysId Characterization
-      // autoChooserPathPlanner.addOption(
-      //     "Flywheel SysId (Quasistatic Forward)",
-      //     m_flywheel.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-      // autoChooserPathPlanner.addOption(
-      //     "Flywheel SysId (Quasistatic Reverse)",
-      //     m_flywheel.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-      // autoChooserPathPlanner.addOption(
-      //     "Flywheel SysId (Dynamic Forward)",
-      //     m_flywheel.sysIdDynamic(SysIdRoutine.Direction.kForward));
-      // autoChooserPathPlanner.addOption(
-      //     "Flywheel SysId (Dynamic Reverse)",
-      //     m_flywheel.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+      autoChooserPathPlanner.addOption(
+          "Flywheel SysId (Quasistatic Forward)",
+          m_shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+      autoChooserPathPlanner.addOption(
+          "Flywheel SysId (Quasistatic Reverse)",
+          m_flywheel.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+      autoChooserPathPlanner.addOption(
+          "Flywheel SysId (Dynamic Forward)",
+          m_shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
+      autoChooserPathPlanner.addOption(
+          "Flywheel SysId (Dynamic Reverse)",
+          m_flywheel.sysIdDynamic(SysIdRoutine.Direction.kReverse));
     }
   }
 
