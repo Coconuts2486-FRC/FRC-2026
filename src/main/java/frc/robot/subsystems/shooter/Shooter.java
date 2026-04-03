@@ -84,11 +84,27 @@ public class Shooter extends RBSISubsystem {
     io.setVoltage(volts);
   }
 
+  /**
+   * Set a duty cycle percentage
+   *
+   * @param set Set point
+   */
   public void set(double set) {
     targetDutyCycle = set;
     // Simple 3-point regression to convert DutyCycle to RPM
     targetRpm = 4960 * targetDutyCycle + 130;
     io.set(set);
+  }
+
+  /**
+   * Run the motor in closed-loop RPM mode
+   *
+   * @param velocityRPM The motor speed in RPM
+   */
+  public void runVelocityRPM(double velocityRPM) {
+
+    double speed = velocityRPM / 60.;
+    io.setVelocity(speed);
   }
 
   public void runTargetVelocity(
