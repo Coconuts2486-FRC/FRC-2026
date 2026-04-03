@@ -613,7 +613,7 @@ public final class Constants {
               Inches.of(-11.25),
               Inches.of(13.5),
               Inches.of(15.5),
-              new Rotation3d(0.0, 0.0, Math.PI / 2)),
+              new Rotation3d(0.0, Units.degreesToRadians(10.), Math.PI / 2)),
           1.0,
           new SimCameraProperties() {
             {
@@ -631,7 +631,7 @@ public final class Constants {
               Inches.of(-11.25),
               Inches.of(-13.5),
               Inches.of(15.5),
-              new Rotation3d(0.0, 0.0, -Math.PI / 2)),
+              new Rotation3d(0.0, Units.degreesToRadians(10.), -Math.PI / 2)),
           1.0,
           new SimCameraProperties() {
             {
