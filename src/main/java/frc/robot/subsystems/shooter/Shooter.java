@@ -63,7 +63,15 @@ public class Shooter extends RBSISubsystem {
                 null,
                 null,
                 (state) -> Logger.recordOutput("Shooter/SysIdState", state.toString())),
-            new SysIdRoutine.Mechanism((voltage) -> runVolts(voltage.in(Volts)), null, this));
+            new SysIdRoutine.Mechanism(
+                (voltage) -> runVolts(voltage.in(Volts)),
+                log -> {
+                  log.motor("Shooter/leader")
+                      .voltage(io.getMotorVoltage()) // Log voltage
+                      .angularPosition(io.getPositionRot()) // Radians
+                      .angularVelocity(io.getVelocityRotPerSec()); // Radians/sec
+                },
+                this));
   }
 
   /** Periodic function -- inherits timing logic from RBSISubsystem */

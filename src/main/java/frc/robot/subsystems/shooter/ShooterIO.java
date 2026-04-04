@@ -9,6 +9,11 @@
 
 package frc.robot.subsystems.shooter;
 
+import static edu.wpi.first.units.Units.*;
+
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Voltage;
 import frc.robot.util.RBSIIO;
 import org.littletonrobotics.junction.AutoLog;
 
@@ -48,6 +53,18 @@ public interface ShooterIO extends RBSIIO {
 
   public default double get() {
     return 0.0;
+  }
+
+  public default Angle getPositionRot() {
+    return Rotations.of(0.0);
+  }
+
+  public default AngularVelocity getVelocityRotPerSec() {
+    return RotationsPerSecond.of(0.0);
+  }
+
+  public default Voltage getMotorVoltage() {
+    return Volts.of(0.0);
   }
 
   public default double getVelocityRPM() {

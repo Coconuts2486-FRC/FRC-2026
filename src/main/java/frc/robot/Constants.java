@@ -396,7 +396,7 @@ public final class Constants {
     public static final double kVreal = 0.05;
     public static final double kAreal = 0.0;
     // Feedback (PID) constants
-    public static final double kPreal = 1.0;
+    public static final double kPreal = 1.7;
     public static final double kDreal = 0.0;
 
     // MODE == SIM
