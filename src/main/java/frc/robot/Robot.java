@@ -18,6 +18,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.util.FlippingUtil;
 import com.revrobotics.util.StatusLogger;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -197,7 +198,14 @@ public class Robot extends LoggedRobot {
         if (m_autoCommandPathPlanner != null) {
           Pose2d startingPose = getSelectedAutoStartingPosePathPlanner();
           if (startingPose != null) {
-            m_robotContainer.getDrivebase().resetPose(startingPose);
+            // NOTE: All Paths are written w.r.t. the BLUE ALLIANCE.  If RED, flip to the other side
+            //       of the field!!!
+            m_robotContainer
+                .getDrivebase()
+                .resetPose(
+                    (DriverStation.getAlliance().get() == DriverStation.Alliance.Red)
+                        ? FlippingUtil.flipFieldPose(startingPose)
+                        : startingPose);
             Logger.recordOutput("Auto/StartingPose", startingPose);
           }
 
