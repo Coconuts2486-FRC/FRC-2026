@@ -7,7 +7,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 7.0
+            "waitTime": 2.0
           }
         },
         {
@@ -29,7 +29,7 @@
                                 {
                                   "type": "path",
                                   "data": {
-                                    "pathName": "Copy of MSP1"
+                                    "pathName": "TCC1"
                                   }
                                 }
                               ]
@@ -42,13 +42,20 @@
                                 {
                                   "type": "wait",
                                   "data": {
-                                    "waitTime": 1.5
+                                    "waitTime": 1.9
                                   }
                                 },
                                 {
-                                  "type": "named",
+                                  "type": "deadline",
                                   "data": {
-                                    "name": "Intake"
+                                    "commands": [
+                                      {
+                                        "type": "named",
+                                        "data": {
+                                          "name": "Intake"
+                                        }
+                                      }
+                                    ]
                                   }
                                 }
                               ]
@@ -64,7 +71,7 @@
                           {
                             "type": "wait",
                             "data": {
-                              "waitTime": 5.0
+                              "waitTime": 3.25
                             }
                           },
                           {
@@ -92,7 +99,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 1.0
+                        "waitTime": 0.75
                       }
                     },
                     {
@@ -110,7 +117,7 @@
       ]
     }
   },
-  "resetOdom": true,
+  "resetOdom": false,
   "folder": null,
   "choreoAuto": false
 }
