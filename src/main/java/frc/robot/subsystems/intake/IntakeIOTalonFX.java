@@ -133,7 +133,7 @@ public class IntakeIOTalonFX implements IntakeIO {
   @Override
   public boolean isIntakeExtended() {
     return (pivotEncoder.getAbsolutePosition().getValueAsDouble()
-        > (IntakeConstants.dropPostion - 0.05));
+        > (IntakeConstants.dropPosition - 0.05));
   }
 
   @Override
