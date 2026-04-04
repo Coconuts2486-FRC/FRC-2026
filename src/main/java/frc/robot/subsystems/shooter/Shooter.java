@@ -66,7 +66,7 @@ public class Shooter extends RBSISubsystem {
             new SysIdRoutine.Mechanism(
                 (voltage) -> runVolts(voltage.in(Volts)),
                 log -> {
-                  log.motor("Shooter/leader")
+                  log.motor("shotleader")
                       .voltage(io.getMotorVoltage()) // Log voltage
                       .angularPosition(io.getPositionRot()) // Radians
                       .angularVelocity(io.getVelocityRotPerSec()); // Radians/sec

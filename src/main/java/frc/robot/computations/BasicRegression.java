@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import org.littletonrobotics.junction.Logger;
 
 public class BasicRegression {
 
@@ -63,6 +64,8 @@ public class BasicRegression {
     translation = hub2d.relativeTo(shooter2d).getTranslation();
     double distance = translation.getNorm();
     double psi = translation.getAngle().getRadians();
+
+    Logger.recordOutput("Coordinator/Dist2Hub", distance);
 
     // Compute the velocity from the regression
     v0 = computeRegression(distance);
