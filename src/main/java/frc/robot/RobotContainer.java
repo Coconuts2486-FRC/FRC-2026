@@ -439,8 +439,10 @@ public class RobotContainer {
         // either input is true.
         Commands.run(
             () -> {
-              if (m_rollers.isIntakeRollersRunning() || m_feeder.isFeederRunning()) {
-                m_indexer.setVelocity(-0.5);
+              if (m_feeder.isFeederRunning()) {
+                m_indexer.setVelocity(-0.6);
+              } else if (m_rollers.isIntakeRollersRunning()) {
+                m_indexer.setVelocity(-0.2);
               } else {
                 m_indexer.indexerStop();
               }
@@ -496,6 +498,10 @@ public class RobotContainer {
         .whileTrue(
             Commands.run(
                 () -> m_shooter.set(Math.abs(Coordinator.getShooterVelocity())), m_shooter));
+
+    driverController
+        .rightBumper()
+        .whileTrue(Commands.run(() -> m_shooter.runVelocityRPM(-4000), m_shooter));
 
     // auto aim - turn only, driver keeps translational control
     driverController
@@ -561,8 +567,6 @@ public class RobotContainer {
                 m_drivebase));
 
     driverController.y().whileTrue(Commands.run(() -> m_indexer.setVelocity(0.37), m_indexer));
-
-    driverController.rightBumper().whileTrue(Commands.run(() -> m_shooter.set(0.79), m_shooter));
 
     driverController.x().whileTrue(Commands.run(() -> m_intake.printPos()));
 
