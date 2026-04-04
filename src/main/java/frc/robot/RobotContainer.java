@@ -182,7 +182,8 @@ public class RobotContainer {
 
     NamedCommands.registerCommand(
         "Shoot",
-        Commands.run(() -> m_shooter.set(Math.abs(Coordinator.getShooterVelocity())), m_shooter)
+        Commands.run(
+                () -> m_shooter.runVelocityRPM((Coordinator.getShooterVelocity() * -1)), m_shooter)
             .finallyDo(() -> m_shooter.stop()));
 
     NamedCommands.registerCommand(
@@ -440,7 +441,7 @@ public class RobotContainer {
         Commands.run(
             () -> {
               if (m_feeder.isFeederRunning()) {
-                m_indexer.setVelocity(-0.6);
+                m_indexer.setVelocity(-0.7);
               } else if (m_rollers.isIntakeRollersRunning()) {
                 m_indexer.setVelocity(-0.2);
               } else {
