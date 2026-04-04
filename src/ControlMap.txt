@@ -12,10 +12,10 @@ X: X-Lock
 Y: nothing for now
 D-Pad Up/Down: Nudge robot forwards/backwards
 D-Pad Left/right: Nudge robot to left/right
-Right Bumper: auto points robot at hub
-Left Bumper: Drive to Locked Shoot Position //Need to make
-Right Trigger: 
-Left Trigger: activates shooter to fire
+Right Bumper: Passing shot
+Left Bumper: 
+Right Trigger: activates shooter to fire
+Left Trigger: auto points robot at hub
 Start: manualy re zero gyro
 Back: 
 Right Stick: Rotate or Strafe //Depending on if it's on Kate or Regular mode
