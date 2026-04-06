@@ -443,7 +443,7 @@ public class RobotContainer {
               if (m_feeder.isFeederRunning()) {
                 m_indexer.setVelocity(-0.7);
               } else if (m_rollers.isIntakeRollersRunning()) {
-                m_indexer.setVelocity(-0.2);
+                m_indexer.setVelocity(-0.1);
               } else {
                 m_indexer.indexerStop();
               }
@@ -498,12 +498,15 @@ public class RobotContainer {
         .rightTrigger()
         .whileTrue(
             Commands.run(
-                () -> m_shooter.runVelocityRPM((Coordinator.getShooterVelocity() * -1)),
-                m_shooter));
+                    () -> m_shooter.runVelocityRPM((Coordinator.getShooterVelocity() * -1)),
+                    m_shooter)
+                .alongWith(Commands.run(() -> m_rollers.feedRollers(), m_rollers)));
 
     driverController
         .rightBumper()
-        .whileTrue(Commands.run(() -> m_shooter.runVelocityRPM(-4500), m_shooter));
+        .whileTrue(
+            Commands.run(() -> m_shooter.runVelocityRPM(-4500), m_shooter)
+                .alongWith(Commands.run(() -> m_rollers.feedRollers(), m_rollers)));
 
     // auto aim - turn only, driver keeps translational control
     driverController
@@ -524,7 +527,7 @@ public class RobotContainer {
                   // Return the angular error so fieldRelativeDrive treats it
                   // as a rotation rate input (normalize to [-1, 1])
                   double errorRads = targetHeading.minus(robotPose.getRotation()).getRadians();
-                  return Math.max(-1.0, Math.min(1.0, errorRads * 1.5)); // tune the 1.5 gain
+                  return Math.max(-0.5, Math.min(0.5, errorRads * 1.5)); // tune the 1.5 gain
                 }));
 
     driverController

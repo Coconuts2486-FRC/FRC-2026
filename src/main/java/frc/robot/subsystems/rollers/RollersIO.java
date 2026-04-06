@@ -39,5 +39,7 @@ public interface RollersIO extends RBSIIO {
 
   public default void runRollers(double speed) {}
 
+  public default void feedRollers(double speed) {}
+
   public default void stop() {}
 }

@@ -63,6 +63,11 @@ public class RollersIOTalonFX implements RollersIO {
   }
 
   @Override
+  public void feedRollers(double speed) {
+    rollers.set(speed);
+  }
+
+  @Override
   public void stop() {
     rollers.stopMotor();
   }
