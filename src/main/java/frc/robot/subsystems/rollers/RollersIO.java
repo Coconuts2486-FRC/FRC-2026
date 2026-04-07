@@ -20,10 +20,10 @@ package frc.robot.subsystems.rollers;
 import frc.robot.util.RBSIIO;
 import org.littletonrobotics.junction.AutoLog;
 
-public interface rollersIO extends RBSIIO {
+public interface RollersIO extends RBSIIO {
 
   @AutoLog
-  public static class rollersIOInputs {
+  public static class RollersIOInputs {
     public boolean rollersConnected = false;
     public double positionRad = 0.0;
     public double velocityRadPerSec = 0.0;
@@ -31,13 +31,15 @@ public interface rollersIO extends RBSIIO {
     public double[] currentAmps = new double[] {};
   }
 
-  public default void updateInputs(rollersIOInputs inputs) {}
+  public default void updateInputs(RollersIOInputs inputs) {}
 
   public default boolean isIntakeRollersRunning() {
     return false;
   }
 
   public default void runRollers(double speed) {}
+
+  public default void feedRollers(double speed) {}
 
   public default void stop() {}
 }

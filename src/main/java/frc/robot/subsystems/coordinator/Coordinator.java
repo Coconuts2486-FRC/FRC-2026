@@ -212,6 +212,11 @@ public class Coordinator extends VirtualSubsystem {
     // Based on field position, HUB active, turret in position, flywheel at speed, override not set,
     // "DON'T SHOOT" button not pressed...
     ok_to_shoot = true;
+
+    // double dist2hub = pose.minus(pose)
+
+    // Logger.recordOutput("Coordinator/DistHub", null);
+
   }
 
   // Getter functions

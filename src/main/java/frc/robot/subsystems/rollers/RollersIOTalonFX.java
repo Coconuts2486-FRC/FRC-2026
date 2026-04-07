@@ -27,9 +27,8 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
-import frc.robot.subsystems.rollers.rollersIO.rollersIOInputs;
 
-public class rollersIOTalonFX implements rollersIO {
+public class RollersIOTalonFX implements RollersIO {
 
   private final TalonFX rollers =
       new TalonFX(INTAKE_ROLLER.getDeviceNumber(), INTAKE_ROLLER.getCANBus());
@@ -40,11 +39,11 @@ public class rollersIOTalonFX implements rollersIO {
   private final StatusSignal<Current> rollersCurrent = rollers.getSupplyCurrent();
 
   /** Constructor */
-  public rollersIOTalonFX() {}
+  public RollersIOTalonFX() {}
 
   /** Update inputs */
   @Override
-  public void updateInputs(rollersIOInputs inputs) {
+  public void updateInputs(RollersIOInputs inputs) {
     var rollerStatus =
         BaseStatusSignal.refreshAll(
             rollersPosition, rollersVelocity, rollersAppliedVolts, rollersCurrent);
@@ -60,6 +59,11 @@ public class rollersIOTalonFX implements rollersIO {
 
   @Override
   public void runRollers(double speed) {
+    rollers.set(speed);
+  }
+
+  @Override
+  public void feedRollers(double speed) {
     rollers.set(speed);
   }
 

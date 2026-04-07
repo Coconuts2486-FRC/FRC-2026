@@ -3,41 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.123873625578704,
-        "y": 7.632228660300926
+        "x": 3.1,
+        "y": 5.461
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.115379991319444,
-        "y": 7.554939453125
+        "x": 2.6959766059859986,
+        "y": 5.799578114382827
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.926427517361111,
-        "y": 7.282918185763889
+        "x": 2.7766269531250005,
+        "y": 5.822
       },
       "prevControl": {
-        "x": 6.26441756650388,
-        "y": 7.425880762262095
-      },
-      "nextControl": {
-        "x": 7.564752387152778,
-        "y": 7.145070457175926
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 7.729,
-        "y": 4.763211299189816
-      },
-      "prevControl": {
-        "x": 7.686025101273148,
-        "y": 6.517505714699074
+        "x": 3.0136389978564573,
+        "y": 5.59301263382243
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,12 +29,26 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.1,
+      "maxWaypointRelativePos": 0.15,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 360.0,
+        "maxAngularAcceleration": 360.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 1.5,
-    "maxAcceleration": 3.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 360.0,
     "maxAngularAcceleration": 360.0,
     "nominalVoltage": 12.0,
@@ -58,13 +56,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -75.0
+    "rotation": 127.40799999999999
   },
   "reversed": false,
-  "folder": "Diplodocus Depot",
+  "folder": "Potato O",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 90.0
   },
   "useDefaultConstraints": false
 }

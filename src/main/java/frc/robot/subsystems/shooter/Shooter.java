@@ -32,7 +32,8 @@ public class Shooter extends RBSISubsystem {
   private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
 
   private final SysIdRoutine sysId;
-  private double targetMetersPerSecond = 0.0;
+  private double targetDutyCycle = 0.0;
+  private double targetRpm = 0.0;
   // private double shooterOffset = 0.0;
 
   FieldRelativeShooterSolver.FieldShotSolution solution;
@@ -62,7 +63,15 @@ public class Shooter extends RBSISubsystem {
                 null,
                 null,
                 (state) -> Logger.recordOutput("Shooter/SysIdState", state.toString())),
-            new SysIdRoutine.Mechanism((voltage) -> runVolts(voltage.in(Volts)), null, this));
+            new SysIdRoutine.Mechanism(
+                (voltage) -> runVolts(voltage.in(Volts)),
+                log -> {
+                  log.motor("shotleader")
+                      .voltage(io.getMotorVoltage()) // Log voltage
+                      .angularPosition(io.getPositionRot()) // Radians
+                      .angularVelocity(io.getVelocityRotPerSec()); // Radians/sec
+                },
+                this));
   }
 
   /** Periodic function -- inherits timing logic from RBSISubsystem */
@@ -70,9 +79,11 @@ public class Shooter extends RBSISubsystem {
   protected void rbsiPeriodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Shooter", inputs);
-    Logger.recordOutput("Shooter/targetspeed", targetMetersPerSecond);
+    Logger.recordOutput("Shooter/targetspeed", targetRpm);
     Logger.recordOutput("Shooter/currentSpeed", io.get());
+    Logger.recordOutput("Shooter/currentSpeedRPM", io.getVelocityRPM());
     Logger.recordOutput("Shooter/atSpeed", shooterAtSpeed());
+    Logger.recordOutput("Shooter/flywheelGoing", Math.abs(io.get()) > 0);
     // Logger.recordOutput("Shooter/ShooterOffset", shooterOffset);
   }
 
@@ -81,9 +92,27 @@ public class Shooter extends RBSISubsystem {
     io.setVoltage(volts);
   }
 
+  /**
+   * Set a duty cycle percentage
+   *
+   * @param set Set point
+   */
   public void set(double set) {
-    targetMetersPerSecond = set;
+    targetDutyCycle = set;
+    // Simple 3-point regression to convert DutyCycle to RPM
     io.set(set);
+  }
+
+  /**
+   * Run the motor in closed-loop RPM mode
+   *
+   * @param velocityRPM The motor speed in RPM
+   */
+  public void runVelocityRPM(double velocityRPM) {
+
+    double speed = velocityRPM / 60.;
+    targetRpm = velocityRPM;
+    io.setVelocity(speed);
   }
 
   public void runTargetVelocity(
@@ -104,12 +133,14 @@ public class Shooter extends RBSISubsystem {
   /** Run closed loop at the specified velocity. */
   public void runVelocity(double velocity) {
 
-    targetMetersPerSecond = velocity * -1;
+    targetDutyCycle = velocity * -1;
 
     double speed =
         (velocity / ShooterConstants.flywheelCircumfrence)
             * ShooterConstants.kShooterGearRatio
             * -1;
+
+    targetRpm = speed * 60.0;
 
     io.setVelocity(speed);
 
@@ -118,7 +149,7 @@ public class Shooter extends RBSISubsystem {
 
   /** Stops the Shooter. */
   public void stop() {
-    targetMetersPerSecond = 0.0;
+    targetDutyCycle = 0.0;
     io.stop();
   }
 
@@ -148,9 +179,10 @@ public class Shooter extends RBSISubsystem {
   }
 
   public boolean shooterAtSpeed() {
-    if (targetMetersPerSecond == 0.0) return false;
-    double currentSpeed = inputs.velocityRadPerSec / 425 * -1;
-    return currentSpeed > (targetMetersPerSecond * 0.85);
+    if (targetRpm == 0.0) return false;
+    double currentSpeed = Math.abs(io.getVelocityRPM());
+    // inputs.velocityRadPerSec / 425 * -1;
+    return currentSpeed >= Math.abs(targetRpm) * 0.9;
   }
 
   public boolean leaderAlive() {

@@ -21,11 +21,11 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.util.RBSISubsystem;
 import org.littletonrobotics.junction.Logger;
 
-public class rollers extends RBSISubsystem {
-  private rollersIO io;
-  private final rollersIOInputsAutoLogged inputs = new rollersIOInputsAutoLogged();
+public class Rollers extends RBSISubsystem {
+  private RollersIO io;
+  private final RollersIOInputsAutoLogged inputs = new RollersIOInputsAutoLogged();
 
-  public rollers(rollersIO io) {
+  public Rollers(RollersIO io) {
     this.io = io;
 
     setDefaultCommand(Commands.run(() -> stop(), this));
@@ -35,11 +35,15 @@ public class rollers extends RBSISubsystem {
   public void rbsiPeriodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Rollers", inputs);
-    Logger.recordOutput("Rollers/RollersRunning", (Math.abs(inputs.velocityRadPerSec) > 0));
+    Logger.recordOutput("Rollers/RollersRunning", (Math.abs(inputs.velocityRadPerSec) > 100));
   }
 
   public void runRollers() {
-    io.runRollers(0.80);
+    io.runRollers(1.5);
+  }
+
+  public void feedRollers() {
+    io.runRollers(0.33);
   }
 
   public void stop() {

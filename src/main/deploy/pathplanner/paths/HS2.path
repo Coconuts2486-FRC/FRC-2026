@@ -3,41 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.123873625578704,
-        "y": 0.44
+        "x": 3.1,
+        "y": 5.461
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.160848090277779,
-        "y": 0.558757161458334
+        "x": 2.959106049099224,
+        "y": 5.254483912007879
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.0046352719907405,
-        "y": 0.7012632378472221
+        "x": 3.1,
+        "y": 5.461
       },
       "prevControl": {
-        "x": 6.316249565972222,
-        "y": 0.5379586226851847
-      },
-      "nextControl": {
-        "x": 7.682312135873026,
-        "y": 0.8620274119039333
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 7.903630787037038,
-        "y": 3.3578993055555553
-      },
-      "prevControl": {
-        "x": 7.946596734058059,
-        "y": 1.6036046707794758
+        "x": 3.0503388519049146,
+        "y": 5.796388811057142
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,12 +29,26 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.1,
+      "maxWaypointRelativePos": 0.15,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 360.0,
+        "maxAngularAcceleration": 360.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 1.5,
-    "maxAcceleration": 3.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 360.0,
     "maxAngularAcceleration": 360.0,
     "nominalVoltage": 12.0,
@@ -58,13 +56,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 75.0
+    "rotation": 127.40799999999999
   },
   "reversed": false,
-  "folder": "Overaptor Outpost",
+  "folder": "Potato O",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 90.0
   },
   "useDefaultConstraints": false
 }

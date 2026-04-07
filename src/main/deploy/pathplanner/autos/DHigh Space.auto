@@ -5,9 +5,9 @@
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "Zero"
+            "waitTime": 6.0
           }
         },
         {
@@ -29,35 +29,22 @@
                                 {
                                   "type": "path",
                                   "data": {
-                                    "pathName": "OAZ1"
+                                    "pathName": "HSD1"
                                   }
                                 },
                                 {
                                   "type": "path",
                                   "data": {
-                                    "pathName": "OAZ2"
+                                    "pathName": "HSD2"
                                   }
                                 }
                               ]
                             }
                           },
                           {
-                            "type": "sequential",
+                            "type": "named",
                             "data": {
-                              "commands": [
-                                {
-                                  "type": "wait",
-                                  "data": {
-                                    "waitTime": 1.6
-                                  }
-                                },
-                                {
-                                  "type": "named",
-                                  "data": {
-                                    "name": "Intake"
-                                  }
-                                }
-                              ]
+                              "name": "Intake"
                             }
                           }
                         ]
@@ -92,15 +79,22 @@
                 }
               },
               {
-                "type": "wait",
+                "type": "sequential",
                 "data": {
-                  "waitTime": 1.0
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "IntakeDown"
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.25
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "IntakeDown"
+                      }
+                    }
+                  ]
                 }
               }
             ]

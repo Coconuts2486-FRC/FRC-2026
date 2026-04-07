@@ -5,9 +5,9 @@
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "Zero"
+            "waitTime": 0.25
           }
         },
         {
@@ -29,13 +29,7 @@
                                 {
                                   "type": "path",
                                   "data": {
-                                    "pathName": "DAZ1"
-                                  }
-                                },
-                                {
-                                  "type": "path",
-                                  "data": {
-                                    "pathName": "DAZ2"
+                                    "pathName": "CCO1"
                                   }
                                 }
                               ]
@@ -48,13 +42,20 @@
                                 {
                                   "type": "wait",
                                   "data": {
-                                    "waitTime": 1.6
+                                    "waitTime": 1.5
                                   }
                                 },
                                 {
-                                  "type": "named",
+                                  "type": "deadline",
                                   "data": {
-                                    "name": "Intake"
+                                    "commands": [
+                                      {
+                                        "type": "named",
+                                        "data": {
+                                          "name": "Intake"
+                                        }
+                                      }
+                                    ]
                                   }
                                 }
                               ]
@@ -70,19 +71,19 @@
                           {
                             "type": "wait",
                             "data": {
-                              "waitTime": 5.0
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "Shoot"
+                              "waitTime": 3.25
                             }
                           },
                           {
                             "type": "named",
                             "data": {
                               "name": "Align"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Shoot"
                             }
                           }
                         ]
@@ -99,7 +100,7 @@
                                 {
                                   "type": "path",
                                   "data": {
-                                    "pathName": "DAZ3"
+                                    "pathName": "CCO2A"
                                   }
                                 }
                               ]
@@ -112,16 +113,48 @@
                                 {
                                   "type": "wait",
                                   "data": {
-                                    "waitTime": 1.6
+                                    "waitTime": 1.0
                                   }
                                 },
                                 {
-                                  "type": "named",
+                                  "type": "deadline",
                                   "data": {
-                                    "name": "Intake"
+                                    "commands": [
+                                      {
+                                        "type": "named",
+                                        "data": {
+                                          "name": "Intake"
+                                        }
+                                      }
+                                    ]
                                   }
                                 }
                               ]
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "deadline",
+                      "data": {
+                        "commands": [
+                          {
+                            "type": "wait",
+                            "data": {
+                              "waitTime": 3.25
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Align"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Shoot"
                             }
                           }
                         ]
@@ -137,7 +170,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.6
+                        "waitTime": 0.75
                       }
                     },
                     {
@@ -155,7 +188,7 @@
       ]
     }
   },
-  "resetOdom": true,
+  "resetOdom": false,
   "folder": null,
   "choreoAuto": false
 }

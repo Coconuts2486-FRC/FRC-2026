@@ -47,6 +47,8 @@ import frc.robot.util.RBSIEnum.MotorIdleMode;
 import frc.robot.util.RBSIEnum.SwerveType;
 import frc.robot.util.RBSIEnum.VisionType;
 import frc.robot.util.RobotDeviceId;
+import java.util.Set;
+import org.littletonrobotics.junction.Logger;
 import org.photonvision.simulation.SimCameraProperties;
 import swervelib.math.Matter;
 
@@ -108,6 +110,8 @@ public final class Constants {
 
   public static final boolean tuningMode = true;
 
+  public static final double G_TO_MPS2 = 9.80665; // Gravitational acceleration in m/s/s
+
   /************************************************************************* */
   /** Physical Constants for Robot Operation ******************************* */
   public static final class RobotConstants {
@@ -129,19 +133,18 @@ public final class Constants {
     // Insert here the orientation (CCW == +) of the Rio and IMU from the robot
     // An angle of "0." means the x-y-z markings on the device match the robot's intrinsic reference
     //   frame.
-    // NOTE: It is assumed that both the Rio and the IMU are mounted such that +Z is UP
-    public static final Rotation2d kRioOrientation =
+    public static final Rotation3d kRioOrientation =
         switch (getRobot()) {
-          case COMPBOT -> Rotation2d.fromDegrees(-90.);
-          case GEORGE -> Rotation2d.fromDegrees(0.);
-          default -> Rotation2d.fromDegrees(0.);
+          case COMPBOT -> new Rotation3d(0, 0, -90);
+          case GEORGE -> Rotation3d.kZero;
+          default -> Rotation3d.kZero;
         };
     // IMU can be one of Pigeon2 or NavX
-    public static final Rotation2d kIMUOrientation =
+    public static final Rotation3d kIMUOrientation =
         switch (getRobot()) {
-          case COMPBOT -> Rotation2d.fromDegrees(0.);
-          case GEORGE -> Rotation2d.fromDegrees(0.);
-          default -> Rotation2d.fromDegrees(0.);
+          case COMPBOT -> Rotation3d.kZero;
+          case GEORGE -> Rotation3d.kZero;
+          default -> Rotation3d.kZero;
         };
   }
 
@@ -167,7 +170,7 @@ public final class Constants {
   /************************************************************************* */
   /** List of Robot CAN Busses ********************************************* */
   public static final class CANBuses {
-    public static final String RIO = "";
+    public static final String RIO = "rio";
     public static final String DRIVE = "DriveTrain";
 
     public static final String[] ALL = {RIO, DRIVE};
@@ -305,7 +308,7 @@ public final class Constants {
     // For Profiled PID Motion -- NEED TUNING!
     // Used in a variety of contexts, including PathPlanner and AutoPilot
     // Chassis (not module) across-the-field strafing motion
-    public static final double kPStrafe = 9.5; // 12.5
+    public static final double kPStrafe = 8; // 12.5
     public static final double kIStrafe = 0.0;
     public static final double kDStrafe = 0.0;
     // Chassis (not module) solid-body rotation
@@ -344,6 +347,26 @@ public final class Constants {
         SwerveConstants.kDriveGearRatio / DCMotor.getKrakenX60Foc(1).KtNMPerAmp;
     public static final double kSteerP = 500.0;
     public static final double kSteerD = 20.0;
+    public static final double kSteerS = 2.0;
+
+    // Odometry-related constants ==================================
+    public static final double kHistorySize = 1.5; // seconds
+    // How aggressively to pull pose toward vision while DISABLED.
+    // 0.10 = gentle, 0.25 = fairly quick, 1.0 = full snap.
+    public static final double kDisabledVisionBlendAlpha = 0.15;
+    // Optional: ignore obviously insane measurements while disabled.
+    public static final double kDisabledVisionMaxJumpM = 2.0; // meters
+    public static final double kDisabledVisionMaxJumpRad = Units.degreesToRadians(20.0);
+    public static final double kDisabledVisionStale = 0.75; // seconds
+
+    // Coast window config
+    public static final double kDisabledCoastSeconds = 5.0;
+
+    // "Stationary" detection config (tune)
+    public static final double kStationaryMaxWheelDeltaM = 0.002; // 2mm per loop
+    public static final double kStationaryMaxYawRateRadPerSec = 0.05; // ~3 deg/s
+    public static final int kStationaryLoopsToEndCoast = 10; // ~0.20s @ 20ms
+    public static final double kDisabledVisionIgnoreAfterDisableSec = 0.25; // 250ms
   }
 
   /************************************************************************* */
@@ -373,7 +396,7 @@ public final class Constants {
     public static final double kVreal = 0.05;
     public static final double kAreal = 0.0;
     // Feedback (PID) constants
-    public static final double kPreal = 1.0;
+    public static final double kPreal = 1.7;
     public static final double kDreal = 0.0;
 
     // MODE == SIM
@@ -408,8 +431,9 @@ public final class Constants {
     // public static final AngularVelocity kMaxPivotSpeed = RotationsPerSecond.of(106.3);
 
     // Pivot angle positions
-    public static final double dropPostion = 0.4;
-    public static final double storedAngle = 0.625;
+    public static final double dropPosition = 0.67;
+    public static final double storedAngle = 0.97;
+    public static final double lowerPosition = 0.63;
 
     // Pivot gear ratio
     public static final double kPivotGearRatio = 25.0 * 54.0 / 16.0;
@@ -521,13 +545,13 @@ public final class Constants {
 
     // Acceleration and Jerk to be applied
     private static final APConstraints kAPConstraints =
-        new APConstraints().withAcceleration(5.0).withJerk(2.0);
+        new APConstraints().withAcceleration(2.0).withJerk(2.0);
 
     // Motion profile for drive to pose
     private static final APProfile kAPProfile =
         new APProfile(kAPConstraints)
             .withErrorXY(Centimeters.of(1))
-            .withErrorTheta(Degrees.of(0.5))
+            .withErrorTheta(Degrees.of(0.2))
             .withBeelineRadius(Centimeters.of(8));
 
     // Autopilot object to be used for specific commands
@@ -537,6 +561,16 @@ public final class Constants {
   /************************************************************************* */
   /** Vision Constants (Assuming PhotonVision) ***************************** */
   public static class VisionConstants {
+
+    public static final Set<Integer> kTrustedTags =
+        Set.of(2, 3, 4, 5, 8, 9, 10, 11, 18, 19, 20, 21, 24, 25, 26, 27); // HUB AprilTags
+
+    // Noise scaling factors (lower = more trusted)
+    public static final double kTrustedTagStdDevScale = 0.6; // 40% more weight
+    public static final double kUntrustedTagStdDevScale = 1.3; // 30% less weight
+
+    // Optional: if true, reject observations that contain no trusted tags
+    public static final boolean kRequireTrustedTag = false;
 
     // AprilTag Identification Constants
     public static final double kAmbiguityThreshold = 0.4;
@@ -575,12 +609,12 @@ public final class Constants {
     // Example Cameras are mounted in the back corners, 18" up from the floor, facing sideways
     public static final CameraConfig[] ALL = {
       new CameraConfig(
-          "Photon_BW8",
+          "Photon_BW7",
           new Transform3d(
               Inches.of(-11.25),
               Inches.of(13.5),
               Inches.of(15.5),
-              new Rotation3d(0.0, 0.0, Math.PI / 2)),
+              new Rotation3d(0.0, Units.degreesToRadians(10.), Math.PI / 2)),
           1.0,
           new SimCameraProperties() {
             {
@@ -593,12 +627,12 @@ public final class Constants {
           }),
       //
       new CameraConfig(
-          "Photon_BW2",
+          "Photon_BW8",
           new Transform3d(
               Inches.of(-11.25),
               Inches.of(-13.5),
               Inches.of(15.5),
-              new Rotation3d(0.0, 0.0, -Math.PI / 2)),
+              new Rotation3d(0.0, Units.degreesToRadians(10.), -Math.PI / 2)),
           1.0,
           new SimCameraProperties() {
             {
@@ -642,6 +676,12 @@ public final class Constants {
       case GEORGE, PINCHY, COMPBOT -> RobotBase.isReal() ? Mode.REAL : Mode.REPLAY;
       case SIMBOT -> Mode.SIM;
     };
+  }
+
+  /** Return whether this is pure simulation */
+  public static boolean isPureSim() {
+    boolean isReplay = Logger.hasReplaySource();
+    return getMode() == Mode.SIM && !isReplay;
   }
 
   /** Get the current swerve drive type */
