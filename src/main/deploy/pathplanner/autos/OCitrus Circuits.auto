@@ -7,7 +7,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 0.25
           }
         },
         {
@@ -29,7 +29,7 @@
                                 {
                                   "type": "path",
                                   "data": {
-                                    "pathName": "TCC1"
+                                    "pathName": "CCO1"
                                   }
                                 }
                               ]
@@ -100,7 +100,7 @@
                                 {
                                   "type": "path",
                                   "data": {
-                                    "pathName": "TCC2A"
+                                    "pathName": "CCO2A"
                                   }
                                 }
                               ]

@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.032558484240754,
-        "y": 5.156443855151785
+        "x": 6.887374349857735,
+        "y": 4.854785204150604
       },
       "isLocked": false,
       "linkedName": null
@@ -20,12 +20,12 @@
         "y": 5.554277488425925
       },
       "prevControl": {
-        "x": 7.2780699182521875,
-        "y": 5.4179616496097935
+        "x": 7.164457517986059,
+        "y": 5.5366551440386385
       },
       "nextControl": {
-        "x": 4.45687844784324,
-        "y": 5.674552920163726
+        "x": 5.402819733796297,
+        "y": 5.559067057291667
       },
       "isLocked": false,
       "linkedName": null
@@ -36,8 +36,8 @@
         "y": 5.554277488425925
       },
       "prevControl": {
-        "x": 3.2869817212543655,
-        "y": 5.540471754254836
+        "x": 3.513039568865741,
+        "y": 5.534200665509259
       },
       "nextControl": null,
       "isLocked": false,
@@ -47,7 +47,7 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 1.0,
-      "rotationDegrees": 0.0
+      "rotationDegrees": 180.0
     }
   ],
   "constraintZones": [
@@ -77,10 +77,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 180.0
   },
   "reversed": false,
-  "folder": "Molokai Sweet Potato",
+  "folder": "Potato O",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -90.0

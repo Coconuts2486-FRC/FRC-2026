@@ -3,41 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.575035663338087,
-        "y": 5.555292439372327
+        "x": 3.037363208912037,
+        "y": 5.554277488425925
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.178481085341384,
-        "y": 5.563283701217292
+        "x": 2.860270446937591,
+        "y": 5.377817425929444
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.438315031828704,
-        "y": 5.603550998263888
+        "x": 3.037363208912037,
+        "y": 6.057182219328704
       },
       "prevControl": {
-        "x": 5.793200367786381,
-        "y": 5.5944236278033435
-      },
-      "nextControl": {
-        "x": 5.188397675550726,
-        "y": 5.609978675217947
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 2.8442058015046303,
-        "y": 5.603550998263888
-      },
-      "prevControl": {
-        "x": 3.9434519507246226,
-        "y": 5.584991195701231
+        "x": 2.8390960415596482,
+        "y": 5.904899159371071
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,11 +29,25 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.1,
+      "maxWaypointRelativePos": 0.15,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 360.0,
+        "maxAngularAcceleration": 360.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 2.0,
+    "maxVelocity": 1.5,
     "maxAcceleration": 2.0,
     "maxAngularVelocity": 360.0,
     "maxAngularAcceleration": 360.0,
@@ -58,13 +56,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": 127.40799999999999
   },
   "reversed": false,
-  "folder": "DID Depot",
+  "folder": "Potato O",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": 180.0
   },
   "useDefaultConstraints": false
 }
