@@ -58,13 +58,15 @@ public class Blinkin {
 
   public enum LEDState {
     CLIMB(0),
-    HUB_CHANGE_RED(50),
-    HUB_CHANGE_BLUE(50),
+    DEACTIVE(60),
+    ACTIVE(60),
     // READY_TO_SHOOT(40),
-    ENDGAME(30),
-    INTAKE(20),
-    TELEOP(20),
-    AUTONOMOUS(15),
+    ENDGAME(50),
+    INTAKE(40),
+    TELEOP_BLUE(30),
+    TELEOP_RED(30),
+
+    AUTONOMOUS(20),
     // ERROR(10),
     DISABLED(0),
     IDLE(0);
@@ -90,11 +92,11 @@ public class Blinkin {
         LEDDriver.set(Pattern.LIGHT_CHASE_GRAY.value);
         break;
 
-      // case READY_TO_SHOOT:
-      //   LEDDriver.set(Pattern.LIGHT_CHASE_GRAY.value);
-      //   break;
+      case ACTIVE:
+        LEDDriver.set(Pattern.RAINBOW_GLITTER.value);
+        break;
 
-      case TELEOP:
+      case DEACTIVE:
         LEDDriver.set(Pattern.FIRE_LARGE.value);
         break;
 
@@ -106,21 +108,13 @@ public class Blinkin {
         LEDDriver.set(Pattern.BREATH_CHASE_GRAY.value);
         break;
 
-      case HUB_CHANGE_BLUE:
+      case TELEOP_BLUE:
         LEDDriver.set(Pattern.LIGHT_CHASE_BLUE.value);
         break;
 
-      case HUB_CHANGE_RED:
+      case TELEOP_RED:
         LEDDriver.set(Pattern.LIGHT_CHASE_RED.value);
         break;
-
-      // case CAN_ERROR:
-      //   LEDDriver.set(Pattern.SOLID_COLOR_YELLOW.value);
-      //   break;
-
-      // case ERROR:
-      //   LEDDriver.set(Pattern.STROBE_RED.value);
-      //   break;
 
       default:
         LEDDriver.set(Pattern.SOLID_COLOR_BLACK.value);

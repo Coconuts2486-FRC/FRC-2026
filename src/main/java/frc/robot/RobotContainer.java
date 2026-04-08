@@ -52,6 +52,7 @@ import frc.robot.subsystems.coordinator.Coordinator;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveOdometry;
 import frc.robot.subsystems.drive.SwerveConstants;
+import frc.robot.subsystems.driver_info.Blinkin;
 import frc.robot.subsystems.driver_info.CANStatus;
 import frc.robot.subsystems.driver_info.MatchStatus;
 import frc.robot.subsystems.feeder.Feeder;
@@ -108,6 +109,7 @@ public class RobotContainer {
   // Replace with ``CommandPS4Controller`` or ``CommandJoystick`` if needed
   final CommandXboxController driverController = new CommandXboxController(0); // Main Driver
 
+  final Blinkin blinkin = new Blinkin(9);
   final CommandXboxController operatorController = new CommandXboxController(1); // Second Operator
   final OverrideSwitches overrides = new OverrideSwitches(2); // Console toggle switches
 
@@ -237,7 +239,7 @@ public class RobotContainer {
         m_feeder = new Feeder(new FeederIOTalonFX());
         m_shooter = new Shooter(new ShooterIOTalonFX());
         m_rollers = new Rollers(new RollersIOTalonFX());
-        m_matchstatus = new MatchStatus(driverController, operatorController);
+        m_matchstatus = new MatchStatus(driverController, operatorController, blinkin);
 
         sweep = null;
 
@@ -259,7 +261,7 @@ public class RobotContainer {
         m_feeder = new Feeder(new FeederIOSim());
         m_shooter = new Shooter(new ShooterIOSim());
         m_rollers = new Rollers(new RollersIOTalonFX());
-        m_matchstatus = new MatchStatus(driverController, operatorController);
+        m_matchstatus = new MatchStatus(driverController, operatorController, blinkin);
 
         // CameraSweepEvaluator (sim-only analysis)
         VisionSystemSim visionSim = new VisionSystemSim("CameraSweepWorld");
@@ -301,7 +303,7 @@ public class RobotContainer {
         m_feeder = new Feeder(new FeederIO() {});
         m_shooter = new Shooter(new ShooterIO() {});
         m_rollers = new Rollers(new RollersIO() {});
-        m_matchstatus = new MatchStatus(driverController, operatorController);
+        m_matchstatus = new MatchStatus(driverController, operatorController, blinkin);
 
         break;
     }

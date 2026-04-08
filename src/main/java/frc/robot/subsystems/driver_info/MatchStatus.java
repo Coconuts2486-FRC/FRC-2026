@@ -5,19 +5,23 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.FieldState;
+import frc.robot.subsystems.driver_info.Blinkin.LEDState;
 import frc.robot.util.VirtualSubsystem;
 
 public class MatchStatus extends VirtualSubsystem {
 
   private final CommandXboxController driver;
   private final CommandXboxController coDriver;
+  private final Blinkin blinkin;
   Alliance alliance = DriverStation.getAlliance().orElse(Alliance.Blue);
   private boolean isRumbling = false;
 
   /** Constructor */
-  public MatchStatus(CommandXboxController driver, CommandXboxController coDriver) {
+  public MatchStatus(
+      CommandXboxController driver, CommandXboxController coDriver, Blinkin blinkin) {
     this.driver = driver;
     this.coDriver = coDriver;
+    this.blinkin = blinkin;
   }
 
   /**
@@ -62,51 +66,64 @@ public class MatchStatus extends VirtualSubsystem {
     double matchTime = DriverStation.getMatchTime();
     if (DriverStation.isAutonomous()) {
       // If Auto, don't do anything for this
+      blinkin.setState(LEDState.AUTONOMOUS);
       return;
     }
 
     // Alliance-Specific HUB Activation / Deactivation
     // Rumble & return
     if (FieldState.wonAuto == alliance) {
+
+      blinkin.setState(LEDState.TELEOP_RED);
       if (matchTime < 133 && matchTime > 130) {
         // Deactivating HUB
         rumble(0.5);
+        blinkin.setState(LEDState.DEACTIVE);
         return;
       }
       if (matchTime < 108 && matchTime > 105) {
         // Activating HUB
         rumble(0.5);
+        blinkin.setState(LEDState.ACTIVE);
         return;
       }
       if (matchTime < 83 && matchTime > 80) {
         // Deactivating HUB
+        blinkin.setState(LEDState.DEACTIVE);
         rumble(0.5);
         return;
       }
       if (matchTime < 58 && matchTime > 55) {
         // Activating HUB
         rumble(0.5);
+        blinkin.setState(LEDState.ACTIVE);
         return;
       }
 
     } else if (FieldState.wonAuto != alliance) {
+
+      blinkin.setState(LEDState.TELEOP_BLUE);
       if (matchTime < 108 && matchTime > 105) {
         // Deactivating HUB
+        blinkin.setState(LEDState.DEACTIVE);
         rumble(0.5);
         return;
       }
       if (matchTime < 83 && matchTime > 80) {
         // Activating HUB
+        blinkin.setState(LEDState.ACTIVE);
         rumble(0.5);
         return;
       }
       if (matchTime < 58 && matchTime > 55) {
         // Deactivating HUB
+        blinkin.setState(LEDState.DEACTIVE);
         rumble(0.5);
         return;
       }
       if (matchTime < 33 && matchTime > 31) {
         // Activating HUB
+        blinkin.setState(LEDState.ACTIVE);
         rumble(0.5);
         return;
       }
@@ -115,6 +132,7 @@ public class MatchStatus extends VirtualSubsystem {
     // Endgame Rumble -- same regardless
     if (matchTime < 31 && matchTime > 30) {
       rumble(0.25);
+      blinkin.setState(LEDState.ENDGAME);
       return;
     }
     // Rumble every second during the last 10 seconds of the match
