@@ -787,6 +787,10 @@ public class RobotContainer {
     return ios;
   }
 
+  public Blinkin getBlinkin() {
+  return blinkin;
+}
+
   /**
    * Example Choreo auto command
    *

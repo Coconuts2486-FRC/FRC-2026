@@ -61,12 +61,11 @@ public class MatchStatus extends VirtualSubsystem {
   /** Periodic function */
   @Override
   public void rbsiPeriodic() {
-
     // Do these deeper calls once, and use the values for the rest of this loop
     double matchTime = DriverStation.getMatchTime();
     if (DriverStation.isAutonomous()) {
       // If Auto, don't do anything for this
-      blinkin.setState(LEDState.AUTONOMOUS);
+      blinkin.requestState(LEDState.AUTONOMOUS);
       return;
     }
 
@@ -74,56 +73,56 @@ public class MatchStatus extends VirtualSubsystem {
     // Rumble & return
     if (FieldState.wonAuto == alliance) {
 
-      blinkin.setState(LEDState.TELEOP_RED);
+      blinkin.requestState(LEDState.TELEOP_RED);
       if (matchTime < 133 && matchTime > 130) {
         // Deactivating HUB
         rumble(0.5);
-        blinkin.setState(LEDState.DEACTIVE);
+        blinkin.requestState(LEDState.DEACTIVE);
         return;
       }
       if (matchTime < 108 && matchTime > 105) {
         // Activating HUB
         rumble(0.5);
-        blinkin.setState(LEDState.ACTIVE);
+        blinkin.requestState(LEDState.ACTIVE);
         return;
       }
       if (matchTime < 83 && matchTime > 80) {
         // Deactivating HUB
-        blinkin.setState(LEDState.DEACTIVE);
+        blinkin.requestState(LEDState.DEACTIVE);
         rumble(0.5);
         return;
       }
       if (matchTime < 58 && matchTime > 55) {
         // Activating HUB
         rumble(0.5);
-        blinkin.setState(LEDState.ACTIVE);
+        blinkin.requestState(LEDState.ACTIVE);
         return;
       }
 
     } else if (FieldState.wonAuto != alliance) {
 
-      blinkin.setState(LEDState.TELEOP_BLUE);
+      blinkin.requestState(LEDState.TELEOP_BLUE);
       if (matchTime < 108 && matchTime > 105) {
         // Deactivating HUB
-        blinkin.setState(LEDState.DEACTIVE);
+        blinkin.requestState(LEDState.DEACTIVE);
         rumble(0.5);
         return;
       }
       if (matchTime < 83 && matchTime > 80) {
         // Activating HUB
-        blinkin.setState(LEDState.ACTIVE);
+        blinkin.requestState(LEDState.ACTIVE);
         rumble(0.5);
         return;
       }
       if (matchTime < 58 && matchTime > 55) {
         // Deactivating HUB
-        blinkin.setState(LEDState.DEACTIVE);
+        blinkin.requestState(LEDState.DEACTIVE);
         rumble(0.5);
         return;
       }
       if (matchTime < 33 && matchTime > 31) {
         // Activating HUB
-        blinkin.setState(LEDState.ACTIVE);
+        blinkin.requestState(LEDState.ACTIVE);
         rumble(0.5);
         return;
       }
@@ -132,7 +131,7 @@ public class MatchStatus extends VirtualSubsystem {
     // Endgame Rumble -- same regardless
     if (matchTime < 31 && matchTime > 30) {
       rumble(0.25);
-      blinkin.setState(LEDState.ENDGAME);
+      blinkin.requestState(LEDState.ENDGAME);
       return;
     }
     // Rumble every second during the last 10 seconds of the match
