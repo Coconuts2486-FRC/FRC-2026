@@ -125,30 +125,36 @@ public class Robot extends LoggedRobot {
   // /** This function is called periodically during all modes. */
   /** TESTING VERSION OF ROBOTPERIODIC FOR OVERRUN SOURCES */
   @Override
-public void robotPeriodic() {
-  final long t0 = System.nanoTime();
+  public void robotPeriodic() {
+    final long t0 = System.nanoTime();
 
-  if (isReal()) {
-    Threads.setCurrentThreadPriority(true, 99);
+    if (isReal()) {
+      // Switch thread to high priority to improve loop timing
+      Threads.setCurrentThreadPriority(true, 99);
+    }
+
+    // Run the Virtual Subsystem periodic functions
+    VirtualSubsystem.periodicAll();
+    final long t2 = System.nanoTime();
+
+    // Runs the Scheduler. This is responsible for polling buttons, adding
+    // newly-scheduled commands, running already-scheduled commands, removing
+    // finished or interrupted commands, and running subsystem periodic() methods.
+    // This must be called from the robot's periodic block in order for anything in
+    // the Command-based framework to work.
+    CommandScheduler.getInstance().run();
+    final long t3 = System.nanoTime();
+
+    if (isReal()) {
+      // Return thread to normal priority
+      Threads.setCurrentThreadPriority(false, 10);
+    }
+
+    Logger.recordOutput("Loop/RobotPeriodic_ms", (t3 - t0) / 1e6);
+    Logger.recordOutput("Loop/Virtual_ms", (t2 - t0) / 1e6);
+    Logger.recordOutput("Loop/Scheduler_ms", (t3 - t2) / 1e6);
   }
 
-  VirtualSubsystem.periodicAll();
-  final long t2 = System.nanoTime();
-
-  CommandScheduler.getInstance().run();
-  final long t3 = System.nanoTime();
-
-  m_robotContainer.getBlinkin().resolve();
-  m_robotContainer.getBlinkin().clearRequests();
-
-  if (isReal()) {
-    Threads.setCurrentThreadPriority(false, 10);
-  }
-
-  Logger.recordOutput("Loop/RobotPeriodic_ms", (t3 - t0) / 1e6);
-  Logger.recordOutput("Loop/Virtual_ms", (t2 - t0) / 1e6);
-  Logger.recordOutput("Loop/Scheduler_ms", (t3 - t2) / 1e6);
-}
   /** This function is called once when the robot is disabled. */
   @Override
   public void disabledInit() {
