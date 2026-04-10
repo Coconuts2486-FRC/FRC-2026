@@ -9,7 +9,7 @@
       "prevControl": null,
       "nextControl": {
         "x": 3.1329577546296297,
-        "y": 0.5796869212962958
+        "y": 0.579686921296296
       },
       "isLocked": false,
       "linkedName": "HCWO1"
@@ -128,7 +128,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 2.5,
+    "maxVelocity": 2.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 360.0,
     "maxAngularAcceleration": 360.0,
