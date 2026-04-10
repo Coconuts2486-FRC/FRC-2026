@@ -75,25 +75,25 @@ public class MatchStatus extends VirtualSubsystem {
     if (FieldState.wonAuto == alliance) {
 
       blinkin.setState(LEDState.TELEOP_RED);
-      if (matchTime < 133 && matchTime > 130) {
+      if (matchTime < 135 && matchTime > 130) {
         // Deactivating HUB
         rumble(0.5);
         blinkin.setState(LEDState.DEACTIVE);
         return;
       }
-      if (matchTime < 108 && matchTime > 105) {
+      if (matchTime < 110 && matchTime > 105) {
         // Activating HUB
         rumble(0.5);
         blinkin.setState(LEDState.ACTIVE);
         return;
       }
-      if (matchTime < 83 && matchTime > 80) {
+      if (matchTime < 85 && matchTime > 80) {
         // Deactivating HUB
         blinkin.setState(LEDState.DEACTIVE);
         rumble(0.5);
         return;
       }
-      if (matchTime < 58 && matchTime > 55) {
+      if (matchTime < 60 && matchTime > 55) {
         // Activating HUB
         rumble(0.5);
         blinkin.setState(LEDState.ACTIVE);
@@ -103,25 +103,25 @@ public class MatchStatus extends VirtualSubsystem {
     } else if (FieldState.wonAuto != alliance) {
 
       blinkin.setState(LEDState.TELEOP_BLUE);
-      if (matchTime < 108 && matchTime > 105) {
+      if (matchTime < 110 && matchTime > 105) {
         // Deactivating HUB
         blinkin.setState(LEDState.DEACTIVE);
         rumble(0.5);
         return;
       }
-      if (matchTime < 83 && matchTime > 80) {
+      if (matchTime < 85 && matchTime > 80) {
         // Activating HUB
         blinkin.setState(LEDState.ACTIVE);
         rumble(0.5);
         return;
       }
-      if (matchTime < 58 && matchTime > 55) {
+      if (matchTime < 60 && matchTime > 55) {
         // Deactivating HUB
         blinkin.setState(LEDState.DEACTIVE);
         rumble(0.5);
         return;
       }
-      if (matchTime < 33 && matchTime > 31) {
+      if (matchTime < 35 && matchTime > 31) {
         // Activating HUB
         blinkin.setState(LEDState.ACTIVE);
         rumble(0.5);

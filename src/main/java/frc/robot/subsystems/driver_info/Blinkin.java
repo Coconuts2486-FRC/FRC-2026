@@ -93,11 +93,11 @@ public class Blinkin {
         break;
 
       case ACTIVE:
-        LEDDriver.set(Pattern.RAINBOW_GLITTER.value);
+        LEDDriver.set(Pattern.SOLID_COLOR_WHITE.value);
         break;
 
       case DEACTIVE:
-        LEDDriver.set(Pattern.FIRE_LARGE.value);
+        LEDDriver.set(Pattern.SOLID_COLOR_DARK_GRAY.value);
         break;
 
       case ENDGAME:

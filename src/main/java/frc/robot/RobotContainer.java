@@ -109,7 +109,7 @@ public class RobotContainer {
   // Replace with ``CommandPS4Controller`` or ``CommandJoystick`` if needed
   final CommandXboxController driverController = new CommandXboxController(0); // Main Driver
 
-  final Blinkin blinkin = new Blinkin(9);
+  final Blinkin blinkin = new Blinkin(0);
   final CommandXboxController operatorController = new CommandXboxController(1); // Second Operator
   final OverrideSwitches overrides = new OverrideSwitches(2); // Console toggle switches
 
@@ -444,8 +444,6 @@ public class RobotContainer {
             () -> {
               if (m_feeder.isFeederRunning()) {
                 m_indexer.setVelocity(-0.7);
-              } else if (m_rollers.isIntakeRollersRunning()) {
-                m_indexer.setVelocity(-0.1);
               } else {
                 m_indexer.indexerStop();
               }
@@ -529,8 +527,26 @@ public class RobotContainer {
                   // Return the angular error so fieldRelativeDrive treats it
                   // as a rotation rate input (normalize to [-1, 1])
                   double errorRads = targetHeading.minus(robotPose.getRotation()).getRadians();
-                  return Math.max(-0.5, Math.min(0.5, errorRads * 1.5)); // tune the 1.5 gain
+                  return Math.max(-0.25, Math.min(0.25, errorRads * 1.5)); // tune the 1.5 gain
                 }));
+
+    driverController
+        .leftBumper()
+        .whileTrue(
+            Commands.defer(
+                () -> {
+                  Pose2d robotPose = m_drivebase.getPose();
+                  Translation2d hub = FieldConstants.hubCenter2d();
+
+                  Rotation2d heading =
+                      hub.minus(robotPose.getTranslation())
+                          .getAngle()
+                          .plus(Rotation2d.fromDegrees(180));
+
+                  return AutopilotCommands.runAutopilot(
+                      m_drivebase, new Pose2d(robotPose.getTranslation(), heading));
+                },
+                Set.of(m_drivebase)));
 
     driverController
         .povUp()
