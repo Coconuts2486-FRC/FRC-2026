@@ -1,0 +1,75 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.783,
+        "y": 6.85
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.4195539904082297,
+        "y": 7.185971844646665
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.0605178674768525,
+        "y": 7.216454716435185
+      },
+      "prevControl": {
+        "x": 1.6561031345230273,
+        "y": 7.496034918239878
+      },
+      "nextControl": {
+        "x": 0.052083984375000725,
+        "y": 6.743074725115742
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.7393244357638893,
+        "y": 5.412755570023148
+      },
+      "prevControl": {
+        "x": 0.5389141348379634,
+        "y": 5.000262152777777
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.4412109374999995,
+      "rotationDegrees": -100.0
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 2.5,
+    "maxAcceleration": 2.5,
+    "maxAngularVelocity": 360.0,
+    "maxAngularAcceleration": 360.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 143.93845816790162
+  },
+  "reversed": false,
+  "folder": "Highlanders Gone Wired",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 123.00000000000001
+  },
+  "useDefaultConstraints": false
+}
