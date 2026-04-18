@@ -444,6 +444,8 @@ public class RobotContainer {
             () -> {
               if (m_feeder.isFeederRunning()) {
                 m_indexer.setVelocity(-0.7);
+              } else if(m_shooter.shooterAlmostAtSpeed()) {
+                m_indexer.setVelocity(-0.35);
               } else {
                 m_indexer.indexerStop();
               }
@@ -468,13 +470,6 @@ public class RobotContainer {
             },
             m_shooter));
 
-    // m_turret.setDefaultCommand(
-    //     Commands.run(
-    //         () -> {
-    //           m_turret.setBrake();
-    //         },
-    //         m_turret));
-    // ===============================================================================
     // driver controls
 
     // Press X button --> Stop with wheels in X-Lock position
