@@ -92,13 +92,13 @@ public class FieldConstants {
     }
   }
 
-    public static Translation2d shootingSpot() {
-  if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
-    return new Translation2d(hubCenterRed.getX()+134, hubCenterRed.getY());
-  } else {
-    return new Translation2d(hubCenterBlue.getX()-134, hubCenterBlue.getY());
+  public static Translation2d shootingSpot() {
+    if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
+      return new Translation2d(hubCenterRed.getX() + 134, hubCenterRed.getY());
+    } else {
+      return new Translation2d(hubCenterBlue.getX() - 134, hubCenterBlue.getY());
+    }
   }
-}
 
   // public static Rotation2d targetAngle(Translation2d target, Pose2d robotPose) {
   //   if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
