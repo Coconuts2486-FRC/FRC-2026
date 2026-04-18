@@ -525,25 +525,22 @@ public class RobotContainer {
                   return Math.max(-0.25, Math.min(0.25, errorRads * 1.5)); // tune the 1.5 gain
                 }));
 
-driverController
-    .leftBumper()
-    .whileTrue(
-        Commands.defer(
-            () -> {
-              Translation2d shootingSpot = FieldConstants.shootingSpot();
-              Translation2d hub = FieldConstants.hubCenter2d();
+    driverController
+        .leftBumper()
+        .whileTrue(
+            Commands.defer(
+                () -> {
+                  Translation2d shootingSpot = FieldConstants.shootingSpot();
+                  Translation2d hub = FieldConstants.hubCenter2d();
 
-              Rotation2d heading =
-                  hub.minus(shootingSpot)
-                      .getAngle()
-                      .plus(Rotation2d.fromDegrees(180));
+                  Rotation2d heading =
+                      hub.minus(shootingSpot).getAngle().plus(Rotation2d.fromDegrees(180));
 
-              Pose2d targetPose = new Pose2d(shootingSpot, heading);
+                  Pose2d targetPose = new Pose2d(shootingSpot, heading);
 
-              return AutopilotCommands.runAutopilot(
-                  m_drivebase, targetPose, heading);
-            },
-            Set.of(m_drivebase)));
+                  return AutopilotCommands.runAutopilot(m_drivebase, targetPose, heading);
+                },
+                Set.of(m_drivebase)));
 
     driverController
         .povUp()

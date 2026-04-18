@@ -60,11 +60,11 @@ public class FieldConstants {
 
   public static final Pose3d hubCenterBlue =
       new Pose3d(
-          new Translation3d(Inches.of(182.11), Inches.of(158.84), Inches.of(72)), Rotation3d.kZero);
+          new Translation3d(Inches.of(182.11), Inches.of(159.5), Inches.of(72)), Rotation3d.kZero);
 
   public static final Pose3d hubCenterRed =
       new Pose3d(
-          new Translation3d(Inches.of(469.11), Inches.of(158.84), Inches.of(72)), Rotation3d.kZero);
+          new Translation3d(Inches.of(469.11), Inches.of(159.5), Inches.of(72)), Rotation3d.kZero);
   // 11.915394m and 4.034536m
   public static final Pose3d passingOutpostBlue =
       new Pose3d(
@@ -92,13 +92,13 @@ public class FieldConstants {
     }
   }
 
-    public static Translation2d shootingSpot() {
-  if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
-    return new Translation2d(hubCenterRed.getX()+134, hubCenterRed.getY());
-  } else {
-    return new Translation2d(hubCenterBlue.getX()-134, hubCenterBlue.getY());
+  public static Translation2d shootingSpot() {
+    if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
+      return new Translation2d(hubCenterRed.getX() + 134, hubCenterRed.getY());
+    } else {
+      return new Translation2d(hubCenterBlue.getX() - 134, hubCenterBlue.getY());
+    }
   }
-}
 
   // public static Rotation2d targetAngle(Translation2d target, Pose2d robotPose) {
   //   if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
