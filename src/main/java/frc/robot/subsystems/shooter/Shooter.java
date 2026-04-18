@@ -185,6 +185,13 @@ public class Shooter extends RBSISubsystem {
     return currentSpeed >= Math.abs(targetRpm) * 0.9;
   }
 
+  public boolean shooterAlmostAtSpeed() {
+    if (targetRpm == 0.0) return false;
+    double currentSpeed = Math.abs(io.getVelocityRPM());
+    // inputs.velocityRadPerSec / 425 * -1;
+    return currentSpeed >= Math.abs(targetRpm) * 0.75;
+  }
+
   public boolean leaderAlive() {
     return inputs.leaderAlive;
   }
