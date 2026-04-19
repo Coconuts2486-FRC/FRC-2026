@@ -444,7 +444,7 @@ public class RobotContainer {
             () -> {
               if (m_feeder.isFeederRunning()) {
                 m_indexer.setVelocity(-0.7);
-              } else if(m_shooter.shooterAlmostAtSpeed()) {
+              } else if (m_shooter.shooterAlmostAtSpeed()) {
                 m_indexer.setVelocity(-0.35);
               } else {
                 m_indexer.indexerStop();
