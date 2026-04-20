@@ -32,7 +32,6 @@ public class Shooter extends RBSISubsystem {
   private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
 
   private final SysIdRoutine sysId;
-  private double targetDutyCycle = 0.0;
   private double targetRpm = 0.0;
   // private double shooterOffset = 0.0;
 
@@ -65,12 +64,7 @@ public class Shooter extends RBSISubsystem {
                 (state) -> Logger.recordOutput("Shooter/SysIdState", state.toString())),
             new SysIdRoutine.Mechanism(
                 (voltage) -> runVolts(voltage.in(Volts)),
-                log -> {
-                  log.motor("shotleader")
-                      .voltage(io.getMotorVoltage()) // Log voltage
-                      .angularPosition(io.getPositionRot()) // Radians
-                      .angularVelocity(io.getVelocityRotPerSec()); // Radians/sec
-                },
+                null, // <- IMPORTANT for AdvantageKit
                 this));
   }
 
@@ -98,7 +92,6 @@ public class Shooter extends RBSISubsystem {
    * @param set Set point
    */
   public void set(double set) {
-    targetDutyCycle = set;
     // Simple 3-point regression to convert DutyCycle to RPM
     io.set(set);
   }
@@ -112,6 +105,8 @@ public class Shooter extends RBSISubsystem {
 
     double speed = velocityRPM / 60.;
     targetRpm = velocityRPM;
+
+    // Set the motor velocity in rotations / second
     io.setVelocity(speed);
   }
 
@@ -130,26 +125,28 @@ public class Shooter extends RBSISubsystem {
     System.out.println(solution.v0());
   }
 
-  /** Run closed loop at the specified velocity. */
+  /**
+   * Run closed loop at the specified velocity
+   *
+   * @param velocity Target wheel speed velocity in meters / second
+   */
   public void runVelocity(double velocity) {
 
-    targetDutyCycle = velocity * -1;
-
+    // This is radians per second
     double speed =
-        (velocity / ShooterConstants.flywheelCircumfrence)
-            * ShooterConstants.kShooterGearRatio
-            * -1;
+        (velocity / ShooterConstants.flywheelCircumfrence) * ShooterConstants.kShooterGearRatio;
 
-    targetRpm = speed * 60.0;
+    // rad/s -> RPM
+    targetRpm = speed / (2 * Math.PI) * 60.0;
 
-    io.setVelocity(speed);
+    // Set the rotations/second to the motor
+    io.setVelocity(speed / (2 * Math.PI));
 
     // Log Shooter setpoint
   }
 
   /** Stops the Shooter. */
   public void stop() {
-    targetDutyCycle = 0.0;
     io.stop();
   }
 
