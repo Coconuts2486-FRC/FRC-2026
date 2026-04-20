@@ -3,41 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.684,
-        "y": 5.218887303851641
+        "x": 3.5362000868055556,
+        "y": 1.0387638165509259
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.567552068473606,
-        "y": 4.31318116975749
+        "x": 2.6158059914407983,
+        "y": 0.6386019971469341
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "HCWO1"
     },
     {
       "anchor": {
-        "x": 8.580527817403707,
-        "y": 0.9491298145506415
+        "x": 8.464079885877318,
+        "y": 1.4407988587731824
       },
       "prevControl": {
-        "x": 8.976544145352355,
-        "y": 0.8583760727290758
+        "x": 8.524866766034812,
+        "y": 0.6049792566076743
       },
       "nextControl": {
-        "x": 7.95947218259629,
-        "y": 1.0914550641940093
+        "x": 8.412325249643365,
+        "y": 2.152425106990015
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.3403708987161194,
-        "y": 0.9491298145506415
+        "x": 8.684,
+        "y": 5.19
       },
       "prevControl": {
-        "x": 5.216476462196862,
-        "y": 0.31513552068473705
+        "x": 8.583091001157406,
+        "y": 4.661047887731482
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,15 +46,19 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.7484008528784534,
+      "waypointRelativePos": 0.5,
       "rotationDegrees": -90.0
+    },
+    {
+      "waypointRelativePos": 1.1,
+      "rotationDegrees": 100.0
     }
   ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.75,
-      "maxWaypointRelativePos": 0.8999999999999999,
+      "minWaypointRelativePos": 1.75,
+      "maxWaypointRelativePos": 1.9,
       "constraints": {
         "maxVelocity": 2.0,
         "maxAcceleration": 3.0,
@@ -77,13 +81,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -113.025
+    "rotation": 100.0
   },
   "reversed": false,
-  "folder": "Highlanders Gone Wired",
+  "folder": "Out and Back",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 100.0
+    "rotation": -105.00000000000001
   },
   "useDefaultConstraints": false
 }

@@ -42,6 +42,10 @@ public class Rollers extends RBSISubsystem {
     io.runRollers(1.5);
   }
 
+  public void reverseRollers() {
+    io.runRollers(-1);
+  }
+
   public void feedRollers() {
     io.runRollers(0.33);
   }

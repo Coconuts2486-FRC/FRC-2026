@@ -9,7 +9,7 @@
       "prevControl": null,
       "nextControl": {
         "x": 3.1329577546296297,
-        "y": 0.579686921296296
+        "y": 0.5796869212962961
       },
       "isLocked": false,
       "linkedName": "HCWO1"
@@ -140,7 +140,7 @@
     "rotation": 123.00000000000001
   },
   "reversed": false,
-  "folder": "Highlanders Gone Wired",
+  "folder": "Cross & Depot",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -105.00000000000001

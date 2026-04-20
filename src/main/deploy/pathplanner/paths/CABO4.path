@@ -3,41 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5362000868055556,
-        "y": 1.0387638165509259
+        "x": 3.3403708987161194,
+        "y": 0.9491298145506415
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.6158059914407983,
-        "y": 0.6386019971469341
-      },
-      "isLocked": false,
-      "linkedName": "HCWO1"
-    },
-    {
-      "anchor": {
-        "x": 8.464079885877318,
-        "y": 1.4407988587731824
-      },
-      "prevControl": {
-        "x": 8.524866766034812,
-        "y": 0.6049792566076743
-      },
-      "nextControl": {
-        "x": 8.412325249643365,
-        "y": 2.152425106990015
+        "x": 3.6120827389443653,
+        "y": 0.418644793152639
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.684,
-        "y": 5.19
+        "x": 8.334693295292439,
+        "y": 1.1302710413694728
       },
       "prevControl": {
-        "x": 8.583091001157406,
-        "y": 4.661047887731482
+        "x": 7.3513552068473595,
+        "y": 0.8844365192582018
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,19 +30,15 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.5,
+      "waypointRelativePos": 0.4541577825159942,
       "rotationDegrees": -90.0
-    },
-    {
-      "waypointRelativePos": 1.1,
-      "rotationDegrees": 100.0
     }
   ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 1.75,
-      "maxWaypointRelativePos": 1.9,
+      "minWaypointRelativePos": 0.4,
+      "maxWaypointRelativePos": 0.45,
       "constraints": {
         "maxVelocity": 2.0,
         "maxAcceleration": 3.0,
@@ -84,10 +64,10 @@
     "rotation": 100.0
   },
   "reversed": false,
-  "folder": "Highlanders Gone Wired",
+  "folder": "Out and Back",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -105.00000000000001
+    "rotation": -113.03
   },
   "useDefaultConstraints": false
 }

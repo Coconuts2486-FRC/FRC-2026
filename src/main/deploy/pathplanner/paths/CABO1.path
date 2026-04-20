@@ -9,7 +9,7 @@
       "prevControl": null,
       "nextControl": {
         "x": 3.5847896966557937,
-        "y": 0.7935311722830765
+        "y": 0.7935311722830763
       },
       "isLocked": false,
       "linkedName": "HCWO1"
@@ -45,7 +45,7 @@
     "rotation": -105.00000000000001
   },
   "reversed": false,
-  "folder": "Highlanders Gone Wired",
+  "folder": "Out and Back",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -105.00000000000001

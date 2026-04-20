@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.5362000868055556,
+        "y": 1.0387638165509259
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.5847896966557937,
+        "y": 0.7935311722830763
+      },
+      "isLocked": false,
+      "linkedName": "HCWO1"
+    },
+    {
+      "anchor": {
+        "x": 3.5362000868055556,
+        "y": 1.0387638165509259
+      },
+      "prevControl": {
+        "x": 3.4814664591098436,
+        "y": 1.3152643255789913
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "HCWO1"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 1.9,
+    "maxAcceleration": 2.5,
+    "maxAngularVelocity": 360.0,
+    "maxAngularAcceleration": 360.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -105.00000000000001
+  },
+  "reversed": false,
+  "folder": "Cross & Depot",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -105.00000000000001
+  },
+  "useDefaultConstraints": false
+}

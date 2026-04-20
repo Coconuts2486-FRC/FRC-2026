@@ -31,7 +31,7 @@
                           {
                             "type": "path",
                             "data": {
-                              "pathName": "HCWO1"
+                              "pathName": "CABO1"
                             }
                           }
                         ]
@@ -48,13 +48,13 @@
                                 {
                                   "type": "path",
                                   "data": {
-                                    "pathName": "Copy of HCWO2"
+                                    "pathName": "CABO2"
                                   }
                                 },
                                 {
                                   "type": "path",
                                   "data": {
-                                    "pathName": "Copy of HCWO3"
+                                    "pathName": "CABO3"
                                   }
                                 }
                               ]
@@ -97,7 +97,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Copy of HCWO4"
+                        "pathName": "CABO4"
                       }
                     }
                   ]
