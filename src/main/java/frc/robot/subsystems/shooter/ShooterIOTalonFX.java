@@ -118,11 +118,24 @@ public class ShooterIOTalonFX implements ShooterIO {
     inputs.leaderAlive = leaderStatus.isOK();
     inputs.followerAlive = followerStatus.isOK();
 
-    inputs.positionRad =
-        Units.rotationsToRadians(leaderPosition.getValueAsDouble()) / kShooterGearRatio;
-    inputs.velocityRadPerSec =
-        Units.rotationsToRadians(leaderVelocity.getValueAsDouble()) / kShooterGearRatio;
-    inputs.velocityMetersPerSec = inputs.velocityRadPerSec * -ShooterConstants.flywheelCircumfrence;
+    // TODO: Decide whether we're using MOTOR angular speed or FLYWHEEL angular speed!!!
+    inputs.positionRad = Units.rotationsToRadians(leaderPosition.getValueAsDouble());
+    inputs.velocityRadPerSec = Units.rotationsToRadians(leaderVelocity.getValueAsDouble());
+    inputs.velocityMetersPerSec =
+        Math.abs(
+            inputs.velocityRadPerSec / kShooterGearRatio * ShooterConstants.flywheelCircumfrence);
+    inputs.appliedVolts = leaderAppliedVolts.getValueAsDouble();
+
+    inputs.positionRadFollower = Units.rotationsToRadians(followerPosition.getValueAsDouble());
+    inputs.velocityRadPerSecFollower =
+        Units.rotationsToRadians(followerVelocity.getValueAsDouble());
+    inputs.velocityMetersPerSecFollower =
+        Math.abs(
+            inputs.velocityRadPerSecFollower
+                / kShooterGearRatio
+                * ShooterConstants.flywheelCircumfrence);
+    inputs.appliedVoltsFollower = followerAppliedVolts.getValueAsDouble();
+
     inputs.currentAmps =
         new double[] {leaderCurrent.getValueAsDouble(), followerCurrent.getValueAsDouble()};
   }
