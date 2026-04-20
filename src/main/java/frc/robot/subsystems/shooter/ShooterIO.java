@@ -37,7 +37,11 @@ public interface ShooterIO extends RBSIIO {
   /** Updates the set of loggable inputs. */
   public default void updateInputs(ShooterIOInputs inputs) {}
 
-  /** Run closed loop at the specified velocity. */
+  /**
+   * Run closed loop at the specified velocity.
+   *
+   * @param velocityRotationsPerSecond Specified velocity in rot / sec
+   */
   public default void setVelocity(double velocityRotationsPerSecond) {}
 
   public default void set(double set) {}

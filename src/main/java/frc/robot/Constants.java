@@ -218,9 +218,8 @@ public final class Constants {
 
     /* SUBSYSTEM CAN DEVICE IDS */
     // This is where mechanism subsystem devices are defined (Including ID, bus, and power port)
-    // Example:
-    public static final RobotDeviceId SHOOTER_LEADER = new RobotDeviceId(25, CANBuses.RIO, 7);
-    public static final RobotDeviceId SHOOTER_FOLLOWER = new RobotDeviceId(26, CANBuses.RIO, 6);
+    public static final RobotDeviceId SHOOTER_LEADER = new RobotDeviceId(26, CANBuses.RIO, 6);
+    public static final RobotDeviceId SHOOTER_FOLLOWER = new RobotDeviceId(25, CANBuses.RIO, 7);
 
     public static final RobotDeviceId INTAKE_PIVOT = new RobotDeviceId(11, CANBuses.RIO, 19);
     public static final RobotDeviceId INTAKE_ROLLER = new RobotDeviceId(13, CANBuses.RIO, 0);

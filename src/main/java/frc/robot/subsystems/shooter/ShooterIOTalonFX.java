@@ -146,6 +146,11 @@ public class ShooterIOTalonFX implements ShooterIO {
   }
 
   @Override
+  /**
+   * Set the velocity of the motor in rotations per second
+   *
+   * @param velocityRotationsPerSecond Desired angular speed in rotations per second
+   */
   public void setVelocity(double velocityRotationsPerSecond) {
     // create a Motion Magic Velocity request, voltage output
     final MotionMagicVelocityVoltage m_request = new MotionMagicVelocityVoltage(0);
@@ -154,9 +159,16 @@ public class ShooterIOTalonFX implements ShooterIO {
     leader.setControl(m_request.withVelocity(velocityRotationsPerSecond));
   }
 
+  /**
+   * Primitive set speed in percent
+   *
+   * <p>Only use this function for testing!!!
+   *
+   * @param speed Primitive -1.0 to 1.0 value
+   */
   @Override
   public void set(double speed) {
-    leader.set(speed * -1);
+    leader.set(speed);
   }
 
   @Override
@@ -169,6 +181,7 @@ public class ShooterIOTalonFX implements ShooterIO {
     leader.stopMotor();
   }
 
+  /** Getter Functions ===================================================== */
   @Override
   public double get() {
     return leader.get();
