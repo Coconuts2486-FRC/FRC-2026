@@ -17,6 +17,7 @@
 
 package frc.robot.subsystems.coordinator;
 
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static frc.robot.Constants.ShooterConstants.kShooterTransform;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -25,11 +26,15 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.FieldConstants;
 import frc.robot.computations.BasicRegression;
 import frc.robot.computations.BasicRegression.RegressionShotSolution;
+import frc.robot.computations.FieldRelativeShooterSolver;
+import frc.robot.computations.FieldRelativeShooterSolver.FieldShotSolution;
 import frc.robot.util.VirtualSubsystem;
 import java.util.function.Supplier;
+import org.littletonrobotics.junction.Logger;
 
 public class Coordinator extends VirtualSubsystem {
   public enum Mode {
@@ -60,7 +65,7 @@ public class Coordinator extends VirtualSubsystem {
   // Internal variables
   private static boolean ok_to_shoot = false;
   public static Pose3d target = null;
-  // private static FieldShotSolution fuelSolution;
+  private static FieldShotSolution physicsSolution;
   private static RegressionShotSolution fuelSolution;
   private double midField = FieldConstants.aprilTagLayout.getFieldWidth() / 2.;
 
@@ -169,6 +174,9 @@ public class Coordinator extends VirtualSubsystem {
     //     FieldRelativeShooterSolver.solve(new Pose3d(pose), kShooterTransform, target, velocity);
     fuelSolution = BasicRegression.solve(new Pose3d(pose), kShooterTransform, target);
 
+    physicsSolution =
+        FieldRelativeShooterSolver.solve(new Pose3d(pose), kShooterTransform, target, velocity);
+
     // Check on intake roller running
     intakeRunning = intakeRollersRunningSupplier.get();
 
@@ -213,10 +221,14 @@ public class Coordinator extends VirtualSubsystem {
     // "DON'T SHOOT" button not pressed...
     ok_to_shoot = true;
 
-    // double dist2hub = pose.minus(pose)
+    // double dist2hub = pose.minus(pose);
 
-    // Logger.recordOutput("Coordinator/DistHub", null);
-
+    Logger.recordOutput(
+        "Coordinator/RegVel", RotationsPerSecond.of(fuelSolution.getVelocity() / 60.));
+    Logger.recordOutput(
+        "Coordinator/PhysVel",
+        RotationsPerSecond.of(
+            physicsSolution.getVelocity() / ShooterConstants.flywheelCircumfrence));
   }
 
   // Getter functions
