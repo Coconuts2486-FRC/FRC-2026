@@ -495,16 +495,7 @@ public class RobotContainer {
                     () -> m_shooter.runVelocityRPM((Coordinator.getShooterVelocity())), m_shooter)
                 .alongWith(Commands.run(() -> m_rollers.feedRollers(), m_rollers)));
 
-    driverController
-        .rightBumper()
-        .whileTrue(
-<<<<<<< HEAD
-            Commands.run(() -> m_shooter.runVelocityRPM(-4000), m_shooter)
-            .alongWith(Commands.run(() -> m_rollers.feedRollers(), m_rollers)));
-=======
-            Commands.run(() -> m_shooter.runVelocityRPM(4500), m_shooter)
-                .alongWith(Commands.run(() -> m_rollers.feedRollers(), m_rollers)));
->>>>>>> 931e553afc515186dfbfc98e311a94f0e9fd24b1
+    driverController.rightBumper().whileTrue(Commands.run(() -> m_shooter.runVelocityRPM(4000)));
 
     // auto aim - turn only, driver keeps translational control
     driverController

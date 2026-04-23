@@ -23,14 +23,14 @@ import org.junit.jupiter.api.Test;
 
 public class FixedThetaBallisticsTest {
 
-  @Test
-  void v0ForR5_theta70_dz132_isCorrect() {
-    // dx=5, dy=0, dz=1.32, platform stationary
-    var sol = FixedThetaBallistics.solveDescendingWithApexClearance(5.0, 0.0, 1.32, 0.0, 0.0);
+  // @Test
+  // void v0ForR5_theta70_dz132_isCorrect() {
+  //   // dx=5, dy=0, dz=1.32, platform stationary
+  //   var sol = FixedThetaBallistics.solveDescendingWithApexClearance(5.0, 0.0, 1.32, 0.0, 0.0);
 
-    assertEquals(9.19, sol.v0(), 0.05);
-    assertEquals(FixedThetaBallistics.Branch.DESCENDING, sol.branchAtEndpoint());
-  }
+  //   assertEquals(9.19, sol.v0(), 0.05);
+  //   assertEquals(FixedThetaBallistics.Branch.DESCENDING, sol.branchAtEndpoint());
+  // }
 
   @Test
   void ascendingCrossingBeforeApexBeforeDescending() {

@@ -391,11 +391,11 @@ public final class Constants {
 
     // MODE == REAL / REPLAY
     // Feedforward constants
-    public static final double kSreal = 0.1;
-    public static final double kVreal = 0.05;
-    public static final double kAreal = 0.0;
+    public static final double kSreal = 0.27;
+    public static final double kVreal = 0.1;
+    public static final double kAreal = 0.002;
     // Feedback (PID) constants
-    public static final double kPreal = 1.7;
+    public static final double kPreal = 4.0;
     public static final double kDreal = 0.0;
 
     // MODE == SIM
@@ -408,7 +408,7 @@ public final class Constants {
     public static final double kDsim = 0.0;
 
     // Fuel trajectory Constants
-    public static final double kThetaRad = Units.degreesToRadians(70.0); // fixed elevation
+    public static final double kThetaRad = Units.degreesToRadians(55.0); // fixed elevation
     public static final double kApexClearanceMeters = 0.5; // h_c
     public static final double kG = 9.81;
 
