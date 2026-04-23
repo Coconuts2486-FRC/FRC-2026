@@ -9,7 +9,10 @@
     "Out and Back",
     "Potato O"
   ],
-  "autoFolders": [],
+  "autoFolders": [
+    "Worlds 3 Middle Autos",
+    "Standard Autos"
+  ],
   "defaultMaxVel": 3.0,
   "defaultMaxAccel": 3.0,
   "defaultMaxAngVel": 540.0,
