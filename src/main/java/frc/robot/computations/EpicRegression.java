@@ -64,14 +64,14 @@ public class EpicRegression {
     double vRobot = fieldPlatformVelocityMps.getNorm();
 
     // PLEASE NOTE: THESE SIGNS MAY BE WRONG!!!
-    v0 +=
+    v0 -=
         vRobot
             * (Math.cos(robotVel2HubVectorAngle.getRadians()))
             / Math.cos(kShotAngle)
             / kFlywheelCircumfrence
             * 60.0;
 
-    psiFieldRad +=
+    psiFieldRad -=
         vRobot * (Math.sin(robotVel2HubVectorAngle.getRadians())) * kTimeOfFlight / distance;
 
     if (Math.sqrt(
