@@ -19,7 +19,6 @@ package frc.robot.subsystems.rollers;
 
 import static frc.robot.Constants.IntakeConstants.*;
 
-import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.util.RBSISubsystem;
@@ -44,8 +43,6 @@ public class Rollers extends RBSISubsystem {
         io.configureGains(kPsim, 0.0, kDsim, kSsim, kVsim, kAsim);
         break;
     }
-
-    // setDefaultCommand(Commands.run(() -> stop(), this));
   }
 
   @Override
@@ -76,7 +73,6 @@ public class Rollers extends RBSISubsystem {
     io.setVelocity(-IntakeConstants.kRollersRPM * 0.4 / 60.);
     // io.runRollers(0.33);
   }
-
 
   public void stop() {
     io.setVelocity(0.0);

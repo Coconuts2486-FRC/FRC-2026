@@ -55,12 +55,7 @@ public class RollersIOTalonFX implements RollersIO {
   private boolean isStopped;
 
   /** Constructor */
-  public RollersIOTalonFX() {}
-
-  /** Update inputs */
-  @Override
-  public void updateInputs(RollersIOInputs inputs) {
-
+  public RollersIOTalonFX() {
     config.CurrentLimits.SupplyCurrentLimit = PowerConstants.kMotorPortMaxCurrent;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
     config.MotorOutput.NeutralMode =
@@ -91,6 +86,11 @@ public class RollersIOTalonFX implements RollersIO {
     BaseStatusSignal.setUpdateFrequencyForAll(
         50.0, rollersPosition, rollersVelocity, rollersAppliedVolts, rollersCurrent);
     rollers.optimizeBusUtilization();
+  }
+
+  /** Update inputs */
+  @Override
+  public void updateInputs(RollersIOInputs inputs) {
 
     var rollerStatus =
         BaseStatusSignal.refreshAll(
