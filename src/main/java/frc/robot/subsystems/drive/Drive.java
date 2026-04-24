@@ -821,7 +821,7 @@ public class Drive extends RBSISubsystem {
       final boolean stale =
           Double.isFinite(lastDisabledVisionTs)
               && (t - lastDisabledVisionTs) > DrivebaseConstants.kDisabledVisionStale;
-      Logger.recordOutput("Vision/Debug/visionStale", stale);
+      // Logger.recordOutput("Vision/Debug/visionStale", stale);
 
       // If coasting, intentionally DO NOT snap; reset initialization so that once coast ends, the
       // first good stationary frame snaps.
@@ -854,8 +854,8 @@ public class Drive extends RBSISubsystem {
       final double deltaRotation =
           Math.abs(gateRef.getRotation().minus(vision.getRotation()).getRadians());
 
-      Logger.recordOutput("Vision/Debug/dTransFromLastVision", deltaTranslation);
-      Logger.recordOutput("Vision/Debug/dRotFromLastVision", deltaRotation);
+      // Logger.recordOutput("Vision/Debug/dTransFromLastVision", deltaTranslation);
+      // Logger.recordOutput("Vision/Debug/dRotFromLastVision", deltaRotation);
 
       // Reject large jumps only if vision measurement is not stale (large delta-T can mean large
       // change in position)

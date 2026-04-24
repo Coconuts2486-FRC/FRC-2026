@@ -37,6 +37,13 @@ public interface RollersIO extends RBSIIO {
     return false;
   }
 
+  /**
+   * Run closed loop at the specified velocity.
+   *
+   * @param velocityRotationsPerSecond Specified velocity in rot / sec
+   */
+  public default void setVelocity(double velocityRotationsPerSecond) {}
+
   public default void runRollers(double speed) {}
 
   public default void feedRollers(double speed) {}
