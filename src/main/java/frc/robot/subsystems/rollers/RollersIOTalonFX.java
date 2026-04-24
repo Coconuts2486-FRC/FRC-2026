@@ -17,6 +17,7 @@
 
 package frc.robot.subsystems.rollers;
 
+import static frc.robot.Constants.IntakeConstants.*;
 import static frc.robot.Constants.RobotDevices.*;
 import static frc.robot.Constants.ShooterConstants.*;
 
@@ -51,6 +52,8 @@ public class RollersIOTalonFX implements RollersIO {
   private final TalonFXConfiguration config = new TalonFXConfiguration();
   private final boolean isCTREPro = Constants.getPhoenixPro() == CTREPro.LICENSED;
 
+  private boolean isStopped;
+
   /** Constructor */
   public RollersIOTalonFX() {}
 
@@ -61,7 +64,7 @@ public class RollersIOTalonFX implements RollersIO {
     config.CurrentLimits.SupplyCurrentLimit = PowerConstants.kMotorPortMaxCurrent;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
     config.MotorOutput.NeutralMode =
-        switch (kShooterIdleMode) {
+        switch (kIntakeIdleMode) {
           case COAST -> NeutralModeValue.Coast;
           case BRAKE -> NeutralModeValue.Brake;
         };
@@ -114,16 +117,21 @@ public class RollersIOTalonFX implements RollersIO {
     // final VelocityVoltage m_request = new VelocityVoltage(0);
     m_request.withEnableFOC(isCTREPro);
     rollers.setControl(m_request.withVelocity(velocityRotationsPerSecond));
+    isStopped = false;
   }
 
-  @Override
-  public void runRollers(double speed) {
-    rollers.set(speed);
-  }
+  // @Override
+  // public void runRollers(double speed) {
+  //   rollers.set(speed);
+  // }
 
   @Override
   public void stop() {
-    rollers.stopMotor();
+
+    if (!isStopped) {
+      rollers.stopMotor();
+      isStopped = true;
+    }
   }
 
   @Override

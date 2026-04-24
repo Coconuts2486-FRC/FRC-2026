@@ -431,6 +431,9 @@ public final class Constants {
 
     // public static final AngularVelocity kMaxPivotSpeed = RotationsPerSecond.of(106.3);
 
+    // Mechanism idle mode
+    public static final MotorIdleMode kIntakeIdleMode = MotorIdleMode.COAST; // BRAKE, COAST
+
     // Pivot angle positions
     public static final double dropPosition = 0.54;
     public static final double storedAngle = 0.78;
