@@ -97,8 +97,8 @@ public class Accelerometer extends VirtualSubsystem {
       loopCount = 0;
       rioJerk = rioAcc.minus(prevRioAcc).div(Constants.loopPeriodSecs);
       imuJerk = imuInputs.linearJerk.rotateBy(RobotConstants.kIMUOrientation);
-      Logger.recordOutput("Accel/Rio/Jerk_mps3", rioJerk);
-      Logger.recordOutput("Accel/IMU/Jerk_mps3", imuJerk);
+      // Logger.recordOutput("Accel/Rio/Jerk_mps3", rioJerk);
+      // Logger.recordOutput("Accel/IMU/Jerk_mps3", imuJerk);
 
       final double[] ts = imuInputs.odometryYawTimestamps;
       if (ts.length > 0) {

@@ -789,16 +789,16 @@ public class Drive extends RBSISubsystem {
       // If coasting,
       if (coast) {
         final double coastAge = t - getDisabledCoastStartTs();
-        Logger.recordOutput("Vision/Debug/disabledCoastAge", coastAge);
+        // Logger.recordOutput("Vision/Debug/disabledCoastAge", coastAge);
 
         // Ignore vision briefly right after ENABLE->DISABLE (prevents “phase mismatch” at disable
         // edge)
         if (coastAge >= 0.0 && coastAge < DrivebaseConstants.kDisabledVisionIgnoreAfterDisableSec) {
-          Logger.recordOutput("Vision/Debug/disabledIgnoreEarlyCoast", true);
+          // Logger.recordOutput("Vision/Debug/disabledIgnoreEarlyCoast", true);
           return;
         }
       }
-      Logger.recordOutput("Vision/Debug/disabledIgnoreEarlyCoast", false);
+      // Logger.recordOutput("Vision/Debug/disabledIgnoreEarlyCoast", false);
 
       // If we're coasting, avoid snapping Pose to Vision; lean gentler than stationary.
       final double alpha =
@@ -810,12 +810,12 @@ public class Drive extends RBSISubsystem {
       final Pose2d current = m_PoseEstimator.getEstimatedPosition();
 
       // Debug
-      Logger.recordOutput("Vision/Debug/disabledCoast", coast);
-      Logger.recordOutput("Vision/Debug/disabledVisionInitialized", disabledVisionInitialized);
-      Logger.recordOutput("Vision/Debug/disabledVisionTs", t);
-      Logger.recordOutput(
-          "Vision/Debug/disabledVisionAge",
-          Double.isFinite(lastDisabledVisionTs) ? (t - lastDisabledVisionTs) : Double.NaN);
+      // Logger.recordOutput("Vision/Debug/disabledCoast", coast);
+      // Logger.recordOutput("Vision/Debug/disabledVisionInitialized", disabledVisionInitialized);
+      // Logger.recordOutput("Vision/Debug/disabledVisionTs", t);
+      // Logger.recordOutput(
+      //     "Vision/Debug/disabledVisionAge",
+      //     Double.isFinite(lastDisabledVisionTs) ? (t - lastDisabledVisionTs) : Double.NaN);
 
       // Check if the last while-disabled vision timestamp is stale (too old)
       final boolean stale =
