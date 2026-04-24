@@ -453,7 +453,7 @@ public final class Constants {
 
     // Intake rollers constats
     public static final double kRollerPrimitiveSpeed = 0.55; // 0.65
-    public static final double kRollersRPM = 2500.0;
+    public static final double kRollersRPM = 4500.0;
 
     // INTAKE ROLLERS PIDS
     // MODE == REAL / REPLAY

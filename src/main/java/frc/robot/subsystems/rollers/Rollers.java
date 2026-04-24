@@ -70,7 +70,7 @@ public class Rollers extends RBSISubsystem {
 
   /** Run the intake rollers slowly while shooting */
   public void feedRollers() {
-    io.setVelocity(-IntakeConstants.kRollersRPM * 0.4 / 60.);
+    io.setVelocity(-IntakeConstants.kRollersRPM * 0.8 / 60.);
     // io.runRollers(0.33);
   }
 

@@ -533,8 +533,8 @@ public class RobotContainer {
         .toggleOnTrue(
             DriveCommands.fieldRelativeDriveAtAngle(
                 m_drivebase,
-                () -> -driveStickY.value() * 0.5,
-                () -> -driveStickX.value() * 0.5,
+                () -> -driveStickY.value() * 0.4,
+                () -> -driveStickX.value() * 0.4,
                 Coordinator::getRobotAngle));
 
     driverController
@@ -543,7 +543,7 @@ public class RobotContainer {
             Commands.run(
                 () -> {
                   m_drivebase.runVelocity(
-                      new ChassisSpeeds(Units.inchesToMeters(11), Units.inchesToMeters(0), 0));
+                      new ChassisSpeeds(Units.inchesToMeters(-16), Units.inchesToMeters(0), 0));
                 },
                 m_drivebase));
 
@@ -553,7 +553,7 @@ public class RobotContainer {
             Commands.run(
                 () -> {
                   m_drivebase.runVelocity(
-                      new ChassisSpeeds(Units.inchesToMeters(-11), Units.inchesToMeters(0), 0));
+                      new ChassisSpeeds(Units.inchesToMeters(16), Units.inchesToMeters(0), 0));
                 },
                 m_drivebase));
 
@@ -564,7 +564,7 @@ public class RobotContainer {
             Commands.run(
                 () -> {
                   m_drivebase.runVelocity(
-                      new ChassisSpeeds(Units.inchesToMeters(0.), Units.inchesToMeters(-11.0), 0.));
+                      new ChassisSpeeds(Units.inchesToMeters(0.), Units.inchesToMeters(-20.0), 0.));
                 },
                 m_drivebase));
 
@@ -574,7 +574,7 @@ public class RobotContainer {
             Commands.run(
                 () -> {
                   m_drivebase.runVelocity(
-                      new ChassisSpeeds(Units.inchesToMeters(0.), Units.inchesToMeters(11.0), 0.));
+                      new ChassisSpeeds(Units.inchesToMeters(0.), Units.inchesToMeters(20.0), 0.));
                 },
                 m_drivebase));
 
