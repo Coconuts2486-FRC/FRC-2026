@@ -117,10 +117,10 @@ public class RollersIOTalonFX implements RollersIO {
     rollers.setControl(m_request.withVelocity(velocityRotationsPerSecond));
   }
 
-  @Override
-  public void runRollers(double speed) {
-    rollers.set(speed);
-  }
+  // @Override
+  // public void runRollers(double speed) {
+  //   rollers.set(speed);
+  // }
 
   @Override
   public void stop() {
