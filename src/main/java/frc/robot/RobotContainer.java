@@ -500,9 +500,9 @@ public class RobotContainer {
         .rightBumper()
         .whileTrue(
             Commands.run(
-                    () -> m_shooter.runVelocityRPM((Coordinator.getEpicShooterVelocity())), m_shooter)
+                    () -> m_shooter.runVelocityRPM((Coordinator.getEpicShooterVelocity())),
+                    m_shooter)
                 .alongWith(Commands.run(() -> m_rollers.feedRollers(), m_rollers)));
-
 
     // auto aim - turn only, driver keeps translational control
     driverController
@@ -521,14 +521,14 @@ public class RobotContainer {
                 }));
 
     // toggle aim at hub
-driverController
-    .leftTrigger()
-    .whileTrue(
-        DriveCommands.fieldRelativeDriveAtAngle(
-            m_drivebase,
-            () -> -driveStickY.value(),
-            () -> -driveStickX.value(),
-        Coordinator::getRobotAngle));
+    driverController
+        .leftBumper()
+        .toggleOnTrue(
+            DriveCommands.fieldRelativeDriveAtAngle(
+                m_drivebase,
+                () -> -driveStickY.value(),
+                () -> -driveStickX.value(),
+                Coordinator::getRobotAngle));
 
     driverController
         .povUp()
