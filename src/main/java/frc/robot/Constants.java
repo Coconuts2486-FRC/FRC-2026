@@ -450,6 +450,7 @@ public final class Constants {
 
     // Intake rollers constats
     public static final double kRollerPrimitiveSpeed = 0.55; // 0.65
+    public static final double kRollersRPM = 5000.0;
   }
 
   /** Climb Mechanism Constants ******************************************** */

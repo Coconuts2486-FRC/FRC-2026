@@ -18,6 +18,7 @@
 package frc.robot.subsystems.rollers;
 
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.util.RBSISubsystem;
 import org.littletonrobotics.junction.Logger;
 
@@ -38,16 +39,26 @@ public class Rollers extends RBSISubsystem {
     Logger.recordOutput("Rollers/RollersRunning", (Math.abs(inputs.velocityRadPerSec) > 100));
   }
 
+  /**
+   * Run the intake rollers
+   *
+   * <p>For intake, the motor needs to run BACKWARDS!
+   */
   public void runRollers() {
-    io.runRollers(-0.8);
+    io.setVelocity(-IntakeConstants.kRollersRPM / 60.);
+    // io.runRollers(-0.8);
   }
 
+  /** Run the intake rollers in reverse */
   public void reverseRollers() {
-    io.runRollers(0.8);
+    io.setVelocity(IntakeConstants.kRollersRPM / 60.);
+    // io.runRollers(0.8);
   }
 
+  /** Run the intake rollers slowly while shooting */
   public void feedRollers() {
-    io.runRollers(0.33);
+    io.setVelocity(-IntakeConstants.kRollersRPM * 0.4 / 60.);
+    // io.runRollers(0.33);
   }
 
   public void stop() {

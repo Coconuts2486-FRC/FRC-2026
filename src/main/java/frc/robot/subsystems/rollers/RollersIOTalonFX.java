@@ -18,15 +18,25 @@
 package frc.robot.subsystems.rollers;
 
 import static frc.robot.Constants.RobotDevices.*;
+import static frc.robot.Constants.ShooterConstants.*;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
+import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
+import frc.robot.Constants;
+import frc.robot.Constants.PowerConstants;
+import frc.robot.util.PhoenixUtil;
+import frc.robot.util.RBSIEnum.CTREPro;
 
 public class RollersIOTalonFX implements RollersIO {
 
@@ -38,12 +48,47 @@ public class RollersIOTalonFX implements RollersIO {
   private final StatusSignal<Voltage> rollersAppliedVolts = rollers.getMotorVoltage();
   private final StatusSignal<Current> rollersCurrent = rollers.getSupplyCurrent();
 
+  private final TalonFXConfiguration config = new TalonFXConfiguration();
+  private final boolean isCTREPro = Constants.getPhoenixPro() == CTREPro.LICENSED;
+
   /** Constructor */
   public RollersIOTalonFX() {}
 
   /** Update inputs */
   @Override
   public void updateInputs(RollersIOInputs inputs) {
+
+    config.CurrentLimits.SupplyCurrentLimit = PowerConstants.kMotorPortMaxCurrent;
+    config.CurrentLimits.SupplyCurrentLimitEnable = true;
+    config.MotorOutput.NeutralMode =
+        switch (kShooterIdleMode) {
+          case COAST -> NeutralModeValue.Coast;
+          case BRAKE -> NeutralModeValue.Brake;
+        };
+    // Build the OpenLoopRampsConfigs and ClosedLoopRampsConfigs for current smoothing
+    OpenLoopRampsConfigs openRamps = new OpenLoopRampsConfigs();
+    openRamps.DutyCycleOpenLoopRampPeriod = kShooterOpenLoopRampPeriod;
+    openRamps.VoltageOpenLoopRampPeriod = kShooterOpenLoopRampPeriod;
+    openRamps.TorqueOpenLoopRampPeriod = kShooterOpenLoopRampPeriod;
+    ClosedLoopRampsConfigs closedRamps = new ClosedLoopRampsConfigs();
+    closedRamps.DutyCycleClosedLoopRampPeriod = kShooterClosedLoopRampPeriod;
+    closedRamps.VoltageClosedLoopRampPeriod = kShooterClosedLoopRampPeriod;
+    closedRamps.TorqueClosedLoopRampPeriod = kShooterClosedLoopRampPeriod;
+    // Apply the open- and closed-loop ramp configuration for current smoothing
+    config.withClosedLoopRamps(closedRamps).withOpenLoopRamps(openRamps);
+    // set Motion Magic Velocity settings
+    var motionMagicConfigs = config.MotionMagic;
+    motionMagicConfigs.MotionMagicAcceleration =
+        400; // Target acceleration of 400 rps/s (0.25 seconds to max)
+    motionMagicConfigs.MotionMagicJerk = 4000; // Target jerk of 4000 rps/s/s (0.1 seconds)
+
+    // Apply the configurations to the Shooter motors
+    PhoenixUtil.tryUntilOk(5, () -> rollers.getConfigurator().apply(config, 0.25));
+
+    BaseStatusSignal.setUpdateFrequencyForAll(
+        50.0, rollersPosition, rollersVelocity, rollersAppliedVolts, rollersCurrent);
+    rollers.optimizeBusUtilization();
+
     var rollerStatus =
         BaseStatusSignal.refreshAll(
             rollersPosition, rollersVelocity, rollersAppliedVolts, rollersCurrent);
@@ -58,12 +103,21 @@ public class RollersIOTalonFX implements RollersIO {
   }
 
   @Override
-  public void runRollers(double speed) {
-    rollers.set(speed);
+  /**
+   * Set the velocity of the motor in rotations per second
+   *
+   * @param velocityRotationsPerSecond Desired angular speed in rotations per second
+   */
+  public void setVelocity(double velocityRotationsPerSecond) {
+    // create a Motion Magic Velocity request, voltage output
+    final MotionMagicVelocityVoltage m_request = new MotionMagicVelocityVoltage(0);
+    // final VelocityVoltage m_request = new VelocityVoltage(0);
+    m_request.withEnableFOC(isCTREPro);
+    rollers.setControl(m_request.withVelocity(velocityRotationsPerSecond));
   }
 
   @Override
-  public void feedRollers(double speed) {
+  public void runRollers(double speed) {
     rollers.set(speed);
   }
 
