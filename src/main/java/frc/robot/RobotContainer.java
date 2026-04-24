@@ -494,17 +494,16 @@ public class RobotContainer {
 
     driverController.b().toggleOnTrue(Commands.run(() -> m_rollers.runRollers(), m_rollers));
 
-    // shooter control
+    // shooter feeding
     driverController
-        .rightTrigger()
+        .rightBumper()
         .whileTrue(
-            Commands.run(
-                    () -> m_shooter.runVelocityRPM((Coordinator.getShooterVelocity())), m_shooter)
+            Commands.run(() -> m_shooter.runVelocityRPM((3800)), m_shooter)
                 .alongWith(Commands.run(() -> m_rollers.feedRollers(), m_rollers)));
 
     // epic solution
     driverController
-        .rightBumper()
+        .rightTrigger()
         .whileTrue(
             Commands.run(
                     () -> m_shooter.runVelocityRPM((Coordinator.getEpicShooterVelocity())),
