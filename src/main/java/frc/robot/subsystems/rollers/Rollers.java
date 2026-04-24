@@ -75,7 +75,7 @@ public class Rollers extends RBSISubsystem {
   }
 
   public void stop() {
-    io.setVelocity(0.0);
+    io.stop();
   }
 
   public boolean isIntakeRollersRunning() {

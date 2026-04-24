@@ -469,6 +469,13 @@ public class RobotContainer {
             },
             m_shooter));
 
+    m_rollers.setDefaultCommand(
+        Commands.run(
+            () -> {
+              m_rollers.stop();
+            },
+            m_rollers));
+
     // driver controls
 
     // Press X button --> Stop with wheels in X-Lock position
