@@ -645,6 +645,24 @@ public final class Constants {
             }
           }),
 
+        new CameraConfig(
+          "PC_Camera",
+          new Transform3d(
+              Inches.of(-13.5),
+              Inches.of(0),
+              Inches.of(12),
+              new Rotation3d(0.0, Units.degreesToRadians(12.), -Math.PI)),
+          0.75,
+          new SimCameraProperties() {
+            {
+              setCalibration(1280, 800, Rotation2d.fromDegrees(120));
+              setCalibError(0.25, 0.08);
+              setFPS(30);
+              setAvgLatencyMs(20);
+              setLatencyStdDevMs(5);
+            }
+          }),
+
       // ... And more, if needed
     };
   }
