@@ -522,8 +522,8 @@ public class RobotContainer {
 
     // toggle aim at hub
     driverController
-        .leftTrigger()
-        .whileTrue(
+        .leftBumper()
+        .toggleOnTrue(
             DriveCommands.fieldRelativeDriveAtAngle(
                 m_drivebase,
                 () -> -driveStickY.value(),

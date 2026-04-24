@@ -54,8 +54,6 @@ public class EpicRegression {
     double distance = translation.getNorm();
     double psi = translation.getAngle().getRadians();
 
-    Logger.recordOutput("Coordinator/Dist2Hub", distance);
-
     // Compute the velocity from the regression
     v0 = BasicRegression.computeRegression(distance);
 
