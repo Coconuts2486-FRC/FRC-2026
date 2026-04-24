@@ -546,7 +546,7 @@ public final class Constants {
 
     // Acceleration and Jerk to be applied
     private static final APConstraints kAPConstraints =
-        new APConstraints().withAcceleration(2.0).withJerk(2.0);
+        new APConstraints().withAcceleration(3.0).withJerk(3.0);
 
     // Motion profile for drive to pose
     private static final APProfile kAPProfile =

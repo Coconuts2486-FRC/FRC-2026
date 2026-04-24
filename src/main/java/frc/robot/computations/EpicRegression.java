@@ -21,7 +21,7 @@ public class EpicRegression {
   private EpicRegression() {}
 
   /** Regression Shot Solution Record */
-  public record RegressionShotSolution(double v0, Rotation2d psiField) {
+  public record EpicShotSolution(double v0, Rotation2d psiField) {
     public double getVelocity() {
       return this.v0;
     }
@@ -36,7 +36,7 @@ public class EpicRegression {
    * @param launcherTransformRobot transform from ROBOT origin to LAUNCHER exit (robot frame)
    * @param fieldTargetPose target pose in FIELD frame
    */
-  public static RegressionShotSolution solve(
+  public static EpicShotSolution solve(
       Pose3d fieldRobotPose,
       Transform3d launcherTransformRobot,
       Pose3d fieldTargetPose,
@@ -86,9 +86,9 @@ public class EpicRegression {
             Math.pow(Math.abs((fieldRobotPose.getY() - fieldTargetPose.getY())), 2)
                 + Math.pow(Math.abs((fieldRobotPose.getX() - fieldTargetPose.getX())), 2))
         > 1.5) {
-      return new RegressionShotSolution(v0, Rotation2d.fromRadians(psiFieldRad));
+      return new EpicShotSolution(v0, Rotation2d.fromRadians(psiFieldRad));
     } else {
-      return new RegressionShotSolution(v0 + 0.05, Rotation2d.fromRadians(psiFieldRad));
+      return new EpicShotSolution(v0 + 0.05, Rotation2d.fromRadians(psiFieldRad));
     }
   }
 }

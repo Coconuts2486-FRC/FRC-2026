@@ -30,6 +30,8 @@ import frc.robot.Constants.ShooterConstants;
 import frc.robot.FieldConstants;
 import frc.robot.computations.BasicRegression;
 import frc.robot.computations.BasicRegression.RegressionShotSolution;
+import frc.robot.computations.EpicRegression;
+import frc.robot.computations.EpicRegression.EpicShotSolution;
 import frc.robot.computations.FieldRelativeShooterSolver;
 import frc.robot.computations.FieldRelativeShooterSolver.FieldShotSolution;
 import frc.robot.util.VirtualSubsystem;
@@ -67,6 +69,7 @@ public class Coordinator extends VirtualSubsystem {
   public static Pose3d target = null;
   private static FieldShotSolution physicsSolution;
   private static RegressionShotSolution fuelSolution;
+  private static EpicShotSolution epicSolution;
   private double midField = FieldConstants.aprilTagLayout.getFieldWidth() / 2.;
 
   private enum Zones {
@@ -174,6 +177,8 @@ public class Coordinator extends VirtualSubsystem {
     //     FieldRelativeShooterSolver.solve(new Pose3d(pose), kShooterTransform, target, velocity);
     fuelSolution = BasicRegression.solve(new Pose3d(pose), kShooterTransform, target);
 
+    epicSolution = EpicRegression.solve(new Pose3d(pose), kShooterTransform, target, velocity);
+
     physicsSolution =
         FieldRelativeShooterSolver.solve(new Pose3d(pose), kShooterTransform, target, velocity);
 
@@ -229,6 +234,10 @@ public class Coordinator extends VirtualSubsystem {
         "Coordinator/PhysVel",
         RotationsPerSecond.of(
             physicsSolution.getVelocity() / ShooterConstants.flywheelCircumfrence));
+    Logger.recordOutput(
+        "Coordinator/EpicVel",
+        RotationsPerSecond.of(
+            epicSolution.getVelocity() / ShooterConstants.flywheelCircumfrence));
   }
 
   // Getter functions
@@ -242,5 +251,13 @@ public class Coordinator extends VirtualSubsystem {
 
   public static Rotation2d getTurretAngle() {
     return fuelSolution.getAngle();
+  }
+
+   public static double getEpicShooterVelocity() {
+    return epicSolution.getVelocity();
+  }
+
+  public static Rotation2d getRobotAngle() {
+    return epicSolution.getAngle();
   }
 }
