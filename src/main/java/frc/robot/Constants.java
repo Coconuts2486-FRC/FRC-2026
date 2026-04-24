@@ -382,9 +382,9 @@ public final class Constants {
 
     // Mechanism motor gear ratio
     public static final double kShooterGearRatio = 24.0 / 18.0;
-    public static final double flywheelCircumfrence = 0.319186;
-    public static final double timeOfFlight = 1.0;
-    public static final double shotAngle = 65;
+    public static final double kFlywheelCircumfrence = Math.PI * Units.inchesToMeters(4.0); // πD
+    public static final double kTimeOfFlight = 1.0;
+    public static final double kShotAngle = Units.degreesToRadians(65.0);
 
     // Flywheel motor open-loop and closed-loop ramp periods for current smoothing
     //   Time from from 0 -> full duty
@@ -453,7 +453,7 @@ public final class Constants {
 
     // Intake rollers constats
     public static final double kRollerPrimitiveSpeed = 0.55; // 0.65
-    public static final double kRollersRPM = 5000.0;
+    public static final double kRollersRPM = 2500.0;
 
     // INTAKE ROLLERS PIDS
     // MODE == REAL / REPLAY

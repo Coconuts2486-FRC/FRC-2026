@@ -123,7 +123,7 @@ public class ShooterIOTalonFX implements ShooterIO {
     inputs.velocityRadPerSec = Units.rotationsToRadians(leaderVelocity.getValueAsDouble());
     inputs.velocityMetersPerSec =
         Math.abs(
-            inputs.velocityRadPerSec / kShooterGearRatio * ShooterConstants.flywheelCircumfrence);
+            inputs.velocityRadPerSec / kShooterGearRatio * ShooterConstants.kFlywheelCircumfrence);
     inputs.appliedVolts = leaderAppliedVolts.getValueAsDouble();
 
     inputs.positionRadFollower = Units.rotationsToRadians(followerPosition.getValueAsDouble());
@@ -133,7 +133,7 @@ public class ShooterIOTalonFX implements ShooterIO {
         Math.abs(
             inputs.velocityRadPerSecFollower
                 / kShooterGearRatio
-                * ShooterConstants.flywheelCircumfrence);
+                * ShooterConstants.kFlywheelCircumfrence);
     inputs.appliedVoltsFollower = followerAppliedVolts.getValueAsDouble();
 
     inputs.currentAmps =

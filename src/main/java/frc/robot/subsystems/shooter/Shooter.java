@@ -134,7 +134,7 @@ public class Shooter extends RBSISubsystem {
 
     // This is radians per second
     double speed =
-        (velocity / ShooterConstants.flywheelCircumfrence) * ShooterConstants.kShooterGearRatio;
+        (velocity / ShooterConstants.kFlywheelCircumfrence) * ShooterConstants.kShooterGearRatio;
 
     // rad/s -> RPM
     targetRpm = speed / (2 * Math.PI) * 60.0;

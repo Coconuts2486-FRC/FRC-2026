@@ -1,13 +1,13 @@
 package frc.robot.computations;
 
+import static frc.robot.Constants.ShooterConstants.*;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
-import frc.robot.Constants.ShooterConstants;
 
 public class EpicRegression {
 
@@ -34,6 +34,7 @@ public class EpicRegression {
    * @param fieldRobotPose robot/platform pose in FIELD frame
    * @param launcherTransformRobot transform from ROBOT origin to LAUNCHER exit (robot frame)
    * @param fieldTargetPose target pose in FIELD frame
+   * @param fieldPlatformVelocityMps platform horizontal velocity in FIELD frame (m/s)
    */
   public static EpicShotSolution solve(
       Pose3d fieldRobotPose,
@@ -43,9 +44,6 @@ public class EpicRegression {
     // Launcher pose in field frame
     fieldLauncherPose = fieldRobotPose.plus(launcherTransformRobot);
 
-    // // Target expressed in launcher frame
-    // targetInLauncherFrame = new Transform3d(fieldLauncherPose, fieldTargetPose);
-
     // Distance to target
     shooter2d = fieldLauncherPose.toPose2d();
     hub2d = fieldTargetPose.toPose2d();
@@ -53,7 +51,7 @@ public class EpicRegression {
     double distance = translation.getNorm();
     double psi = translation.getAngle().getRadians();
 
-    // Compute the velocity from the regression
+    // Compute the velocity from the basic regression
     v0 = BasicRegression.computeRegression(distance);
 
     // This is the robot YAW; compute field-relative angle
@@ -61,23 +59,20 @@ public class EpicRegression {
     double psiFieldRad = MathUtil.angleModulus(psi + yaw);
 
     // Shooting on the move!!!
-    Rotation2d angleVRobot2HubVector =
+    Rotation2d robotVel2HubVectorAngle =
         fieldPlatformVelocityMps.getAngle().minus(translation.getAngle());
-    double vr = fieldPlatformVelocityMps.getNorm();
+    double vRobot = fieldPlatformVelocityMps.getNorm();
 
     // PLEASE NOTE: THESE SIGNS MAY BE WRONG!!!
     v0 +=
-        vr
-            * (Math.cos(angleVRobot2HubVector.getRadians()))
-            / Math.cos(Units.degreesToRadians(65))
-            / ShooterConstants.flywheelCircumfrence
-            * 60;
+        vRobot
+            * (Math.cos(robotVel2HubVectorAngle.getRadians()))
+            / Math.cos(kShotAngle)
+            / kFlywheelCircumfrence
+            * 60.0;
 
     psiFieldRad +=
-        vr
-            * (Math.sin(angleVRobot2HubVector.getRadians()))
-            * ShooterConstants.timeOfFlight
-            / distance;
+        vRobot * (Math.sin(robotVel2HubVectorAngle.getRadians())) * kTimeOfFlight / distance;
 
     if (Math.sqrt(
             Math.pow(Math.abs((fieldRobotPose.getY() - fieldTargetPose.getY())), 2)
