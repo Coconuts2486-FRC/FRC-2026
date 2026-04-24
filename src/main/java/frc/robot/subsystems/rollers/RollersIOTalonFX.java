@@ -26,7 +26,7 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
+import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.util.Units;
@@ -52,6 +52,9 @@ public class RollersIOTalonFX implements RollersIO {
   private final TalonFXConfiguration config = new TalonFXConfiguration();
   private final boolean isCTREPro = Constants.getPhoenixPro() == CTREPro.LICENSED;
 
+  private final VelocityTorqueCurrentFOC velocityRequest =
+      new VelocityTorqueCurrentFOC(0.0).withSlot(0);
+
   /** Constructor */
   public RollersIOTalonFX() {
     config.CurrentLimits.SupplyCurrentLimit = PowerConstants.kMotorPortMaxCurrent;
@@ -72,11 +75,6 @@ public class RollersIOTalonFX implements RollersIO {
     closedRamps.TorqueClosedLoopRampPeriod = kShooterClosedLoopRampPeriod;
     // Apply the open- and closed-loop ramp configuration for current smoothing
     config.withClosedLoopRamps(closedRamps).withOpenLoopRamps(openRamps);
-    // set Motion Magic Velocity settings
-    var motionMagicConfigs = config.MotionMagic;
-    motionMagicConfigs.MotionMagicAcceleration =
-        400; // Target acceleration of 400 rps/s (0.25 seconds to max)
-    motionMagicConfigs.MotionMagicJerk = 4000; // Target jerk of 4000 rps/s/s (0.1 seconds)
 
     // Apply the configurations to the Shooter motors
     PhoenixUtil.tryUntilOk(5, () -> rollers.getConfigurator().apply(config, 0.25));
@@ -110,11 +108,7 @@ public class RollersIOTalonFX implements RollersIO {
    * @param velocityRotationsPerSecond Desired angular speed in rotations per second
    */
   public void setVelocity(double velocityRotationsPerSecond) {
-    // create a Motion Magic Velocity request, voltage output
-    final MotionMagicVelocityVoltage m_request = new MotionMagicVelocityVoltage(0);
-    // final VelocityVoltage m_request = new VelocityVoltage(0);
-    m_request.withEnableFOC(isCTREPro);
-    rollers.setControl(m_request.withVelocity(velocityRotationsPerSecond));
+    rollers.setControl(velocityRequest.withVelocity(velocityRotationsPerSecond));
   }
 
   // @Override

@@ -55,7 +55,7 @@ public class EpicRegression {
     v0 = BasicRegression.computeRegression(distance);
 
     // This is the robot YAW; compute field-relative angle
-    double yaw = fieldLauncherPose.getRotation().getZ();
+    double yaw = fieldLauncherPose.getRotation().getZ() + Math.PI;
     double psiFieldRad = MathUtil.angleModulus(psi + yaw);
 
     // Shooting on the move!!!
