@@ -52,6 +52,8 @@ public class RollersIOTalonFX implements RollersIO {
   private final TalonFXConfiguration config = new TalonFXConfiguration();
   private final boolean isCTREPro = Constants.getPhoenixPro() == CTREPro.LICENSED;
 
+  private boolean isStopped;
+
   /** Constructor */
   public RollersIOTalonFX() {}
 
@@ -115,6 +117,7 @@ public class RollersIOTalonFX implements RollersIO {
     // final VelocityVoltage m_request = new VelocityVoltage(0);
     m_request.withEnableFOC(isCTREPro);
     rollers.setControl(m_request.withVelocity(velocityRotationsPerSecond));
+    isStopped = false;
   }
 
   // @Override
@@ -124,7 +127,11 @@ public class RollersIOTalonFX implements RollersIO {
 
   @Override
   public void stop() {
-    rollers.stopMotor();
+
+    if (!isStopped) {
+      rollers.stopMotor();
+      isStopped = true;
+    }
   }
 
   @Override
