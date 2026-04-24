@@ -533,8 +533,8 @@ public class RobotContainer {
         .toggleOnTrue(
             DriveCommands.fieldRelativeDriveAtAngle(
                 m_drivebase,
-                () -> -driveStickY.value(),
-                () -> -driveStickX.value(),
+                () -> -driveStickY.value() * 0.5,
+                () -> -driveStickX.value() * 0.5,
                 Coordinator::getRobotAngle));
 
     driverController
