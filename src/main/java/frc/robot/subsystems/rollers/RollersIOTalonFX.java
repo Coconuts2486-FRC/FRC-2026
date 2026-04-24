@@ -17,6 +17,7 @@
 
 package frc.robot.subsystems.rollers;
 
+import static frc.robot.Constants.IntakeConstants.*;
 import static frc.robot.Constants.RobotDevices.*;
 import static frc.robot.Constants.ShooterConstants.*;
 
@@ -61,7 +62,7 @@ public class RollersIOTalonFX implements RollersIO {
     config.CurrentLimits.SupplyCurrentLimit = PowerConstants.kMotorPortMaxCurrent;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
     config.MotorOutput.NeutralMode =
-        switch (kShooterIdleMode) {
+        switch (kIntakeIdleMode) {
           case COAST -> NeutralModeValue.Coast;
           case BRAKE -> NeutralModeValue.Brake;
         };

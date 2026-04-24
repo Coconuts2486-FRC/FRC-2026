@@ -236,8 +236,7 @@ public class Coordinator extends VirtualSubsystem {
             physicsSolution.getVelocity() / ShooterConstants.flywheelCircumfrence));
     Logger.recordOutput(
         "Coordinator/EpicVel",
-        RotationsPerSecond.of(
-            epicSolution.getVelocity() / ShooterConstants.flywheelCircumfrence));
+        RotationsPerSecond.of(epicSolution.getVelocity() / ShooterConstants.flywheelCircumfrence));
   }
 
   // Getter functions
@@ -253,7 +252,7 @@ public class Coordinator extends VirtualSubsystem {
     return fuelSolution.getAngle();
   }
 
-   public static double getEpicShooterVelocity() {
+  public static double getEpicShooterVelocity() {
     return epicSolution.getVelocity();
   }
 
