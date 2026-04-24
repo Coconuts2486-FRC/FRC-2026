@@ -45,7 +45,7 @@ public class Rollers extends RBSISubsystem {
         break;
     }
 
-    setDefaultCommand(Commands.run(() -> stop(), this));
+    // setDefaultCommand(Commands.run(() -> stop(), this));
   }
 
   @Override
@@ -77,8 +77,9 @@ public class Rollers extends RBSISubsystem {
     // io.runRollers(0.33);
   }
 
+
   public void stop() {
-    io.stop();
+    io.setVelocity(0.0);
   }
 
   public boolean isIntakeRollersRunning() {
