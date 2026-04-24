@@ -147,7 +147,7 @@ public class Drive extends RBSISubsystem {
             DrivebaseConstants.kISPin,
             DrivebaseConstants.kDSpin,
             new TrapezoidProfile.Constraints(
-                getMaxAngularSpeedRadPerSec(), getMaxLinearAccelMetersPerSecPerSec()));
+                getMaxAngularSpeedRadPerSec(), getMaxAngularAccelRadPerSecPerSec()));
     angleController.enableContinuousInput(-Math.PI, Math.PI);
 
     // If REAL (i.e., NOT simulation), parse out the module types

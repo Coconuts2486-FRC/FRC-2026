@@ -499,40 +499,33 @@ public class RobotContainer {
     driverController
         .leftTrigger()
         .whileTrue(
-            DriveCommands.fieldRelativeDrive(
+            DriveCommands.fieldRelativeDriveAtAngle(
                 m_drivebase,
                 () -> -driveStickY.value(),
                 () -> -driveStickX.value(),
                 () -> {
-                  // Continuously recalculate heading to hub from current pose
                   Pose2d robotPose = m_drivebase.getPose();
-                  Rotation2d targetHeading =
-                      FieldConstants.hubCenter2d()
-                          .minus(robotPose.getTranslation())
-                          .getAngle()
-                          .plus(Rotation2d.fromDegrees(180));
-                  // Return the angular error so fieldRelativeDrive treats it
-                  // as a rotation rate input (normalize to [-1, 1])
-                  double errorRads = targetHeading.minus(robotPose.getRotation()).getRadians();
-                  return Math.max(-1, Math.min(1, errorRads * 1.25)); // tune the 1.5 gain
+                  return FieldConstants.hubCenter2d()
+                      .minus(robotPose.getTranslation())
+                      .getAngle()
+                      .plus(Rotation2d.fromDegrees(180));
                 }));
 
+    // toggle aim at hub
     driverController
         .leftBumper()
-        .whileTrue(
-            Commands.defer(
+        .toggleOnTrue(
+            DriveCommands.fieldRelativeDriveAtAngle(
+                m_drivebase,
+                () -> -driveStickY.value(),
+                () -> -driveStickX.value(),
                 () -> {
-                  Translation2d shootingSpot = FieldConstants.shootingSpot();
-                  Translation2d hub = FieldConstants.hubCenter2d();
-
-                  Rotation2d heading =
-                      hub.minus(shootingSpot).getAngle().plus(Rotation2d.fromDegrees(180));
-
-                  Pose2d targetPose = new Pose2d(shootingSpot, heading);
-
-                  return AutopilotCommands.runAutopilot(m_drivebase, targetPose, heading);
-                },
-                Set.of(m_drivebase)));
+                  Pose2d robotPose = m_drivebase.getPose();
+                  return FieldConstants.hubCenter2d()
+                      .minus(robotPose.getTranslation())
+                      .getAngle()
+                      .plus(Rotation2d.fromDegrees(180));
+                }));
 
     driverController
         .povUp()

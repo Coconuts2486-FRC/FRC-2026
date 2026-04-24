@@ -644,8 +644,7 @@ public final class Constants {
               setLatencyStdDevMs(5);
             }
           }),
-
-        new CameraConfig(
+      new CameraConfig(
           "PC_Camera",
           new Transform3d(
               Inches.of(-13.5),
