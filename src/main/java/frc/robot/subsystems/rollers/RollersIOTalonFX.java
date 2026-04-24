@@ -134,4 +134,45 @@ public class RollersIOTalonFX implements RollersIO {
       return false;
     }
   }
+
+  /**
+   * Set the gains of the Slot0 closed-loop configuration
+   *
+   * @param kP Proportional gain
+   * @param kI Integral gain
+   * @param kD Differential gain
+   * @param kS Static gain
+   * @param kV Velocity gain
+   */
+  @Override
+  public void configureGains(double kP, double kI, double kD, double kS, double kV) {
+    config.Slot0.kP = kP;
+    config.Slot0.kI = kI;
+    config.Slot0.kD = kD;
+    config.Slot0.kS = kS;
+    config.Slot0.kV = kV;
+    config.Slot0.kA = 0.0;
+    PhoenixUtil.tryUntilOk(5, () -> rollers.getConfigurator().apply(config, 0.25));
+  }
+
+  /**
+   * Set the gains of the Slot0 closed-loop configuration
+   *
+   * @param kP Proportional gain
+   * @param kI Integral gain
+   * @param kD Differential gain
+   * @param kS Static gain
+   * @param kV Velocity gain
+   * @param kA Acceleration gain
+   */
+  @Override
+  public void configureGains(double kP, double kI, double kD, double kS, double kV, double kA) {
+    config.Slot0.kP = kP;
+    config.Slot0.kI = kI;
+    config.Slot0.kD = kD;
+    config.Slot0.kS = kS;
+    config.Slot0.kV = kV;
+    config.Slot0.kA = kA;
+    PhoenixUtil.tryUntilOk(5, () -> rollers.getConfigurator().apply(config, 0.25));
+  }
 }

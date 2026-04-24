@@ -17,7 +17,10 @@
 
 package frc.robot.subsystems.rollers;
 
+import static frc.robot.Constants.IntakeConstants.*;
+
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.util.RBSISubsystem;
 import org.littletonrobotics.junction.Logger;
@@ -28,6 +31,19 @@ public class Rollers extends RBSISubsystem {
 
   public Rollers(RollersIO io) {
     this.io = io;
+
+    // Switch constants based on mode (the physics simulator is treated as a
+    // separate robot with different tuning)
+    switch (Constants.getMode()) {
+      case REAL:
+      case REPLAY:
+        io.configureGains(kPreal, 0.0, kDreal, kSreal, kVreal, kAreal);
+        break;
+      case SIM:
+      default:
+        io.configureGains(kPsim, 0.0, kDsim, kSsim, kVsim, kAsim);
+        break;
+    }
 
     setDefaultCommand(Commands.run(() -> stop(), this));
   }

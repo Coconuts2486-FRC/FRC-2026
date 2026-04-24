@@ -451,6 +451,25 @@ public final class Constants {
     // Intake rollers constats
     public static final double kRollerPrimitiveSpeed = 0.55; // 0.65
     public static final double kRollersRPM = 5000.0;
+
+    // INTAKE ROLLERS PIDS
+    // MODE == REAL / REPLAY
+    // Feedforward constants
+    public static final double kSreal = 0.27;
+    public static final double kVreal = 0.1;
+    public static final double kAreal = 0.002;
+    // Feedback (PID) constants
+    public static final double kPreal = 4.0;
+    public static final double kDreal = 0.0;
+
+    // MODE == SIM
+    // Feedforward constants
+    public static final double kSsim = 0.0;
+    public static final double kVsim = 0.03;
+    public static final double kAsim = 0.0;
+    // Feedback (PID) constants
+    public static final double kPsim = 0.0;
+    public static final double kDsim = 0.0;
   }
 
   /** Climb Mechanism Constants ******************************************** */
