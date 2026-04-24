@@ -516,7 +516,7 @@ public class RobotContainer {
                   // Return the angular error so fieldRelativeDrive treats it
                   // as a rotation rate input (normalize to [-1, 1])
                   double errorRads = targetHeading.minus(robotPose.getRotation()).getRadians();
-                  return Math.max(-0.25, Math.min(0.25, errorRads * 1.5)); // tune the 1.5 gain
+                  return Math.max(-1, Math.min(1, errorRads * 1.25)); // tune the 1.5 gain
                 }));
 
     driverController
