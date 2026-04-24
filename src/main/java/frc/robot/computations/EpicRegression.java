@@ -59,10 +59,11 @@ public class EpicRegression {
     double psiFieldRad = MathUtil.angleModulus(psi + yaw);
 
     // Shooting on the move!!!
-    Rotation2d robotVel2HubVectorAngle =
-        fieldPlatformVelocityMps.getAngle().minus(translation.getAngle());
     double vRobot = fieldPlatformVelocityMps.getNorm();
-
+    Rotation2d robotVel2HubVectorAngle =
+        vRobot > 0.0
+            ? fieldPlatformVelocityMps.getAngle().minus(translation.getAngle())
+            : Rotation2d.kZero;
     // PLEASE NOTE: THESE SIGNS MAY BE WRONG!!!
     v0 -=
         vRobot
