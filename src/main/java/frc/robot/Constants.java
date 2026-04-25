@@ -383,6 +383,8 @@ public final class Constants {
     // Mechanism motor gear ratio
     public static final double kShooterGearRatio = 24.0 / 18.0;
     public static final double flywheelCircumfrence = 0.319186;
+    public static final double timeOfFlight = 1.0;
+    public static final double shotAngle = 65;
 
     // Flywheel motor open-loop and closed-loop ramp periods for current smoothing
     //   Time from from 0 -> full duty
@@ -633,6 +635,24 @@ public final class Constants {
               Inches.of(15.5),
               new Rotation3d(0.0, Units.degreesToRadians(10.), -Math.PI / 2)),
           1.0,
+          new SimCameraProperties() {
+            {
+              setCalibration(1280, 800, Rotation2d.fromDegrees(120));
+              setCalibError(0.25, 0.08);
+              setFPS(30);
+              setAvgLatencyMs(20);
+              setLatencyStdDevMs(5);
+            }
+          }),
+
+        new CameraConfig(
+          "PC_Camera",
+          new Transform3d(
+              Inches.of(-13.5),
+              Inches.of(0),
+              Inches.of(12),
+              new Rotation3d(0.0, Units.degreesToRadians(12.), -Math.PI)),
+          0.75,
           new SimCameraProperties() {
             {
               setCalibration(1280, 800, Rotation2d.fromDegrees(120));

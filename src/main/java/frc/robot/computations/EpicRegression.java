@@ -6,9 +6,11 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
+import frc.robot.Constants.ShooterConstants;
 import org.littletonrobotics.junction.Logger;
 
-public class BasicRegression {
+public class EpicRegression {
 
   private static Pose2d shooter2d = Pose2d.kZero;
   private static Pose2d hub2d = Pose2d.kZero;
@@ -16,7 +18,7 @@ public class BasicRegression {
   private static Translation2d translation;
   private static double v0;
 
-  private BasicRegression() {}
+  private EpicRegression() {}
 
   /** Regression Shot Solution Record */
   public record RegressionShotSolution(double v0, Rotation2d psiField) {
@@ -30,27 +32,15 @@ public class BasicRegression {
   }
 
   /**
-   * Compute the regression for v0 given the distance in meters
-   *
-   * @param distance Distance of the shot in meters
-   */
-  static double computeRegression(double distance) {
-    double A = 2348.71915; // Constant
-    double B = 575.49413; // Linear in distance
-    // double C = -41.11129; // Quadratic in distance
-    // double D = 1.39996; // Cubic in distance
-    // double E = 0.0; // Quartic in distance
-
-    return B * distance + A;
-  }
-
-  /**
    * @param fieldRobotPose robot/platform pose in FIELD frame
    * @param launcherTransformRobot transform from ROBOT origin to LAUNCHER exit (robot frame)
    * @param fieldTargetPose target pose in FIELD frame
    */
   public static RegressionShotSolution solve(
-      Pose3d fieldRobotPose, Transform3d launcherTransformRobot, Pose3d fieldTargetPose) {
+      Pose3d fieldRobotPose,
+      Transform3d launcherTransformRobot,
+      Pose3d fieldTargetPose,
+      Translation2d fieldPlatformVelocityMps) {
     // Launcher pose in field frame
     fieldLauncherPose = fieldRobotPose.plus(launcherTransformRobot);
 
@@ -67,11 +57,30 @@ public class BasicRegression {
     Logger.recordOutput("Coordinator/Dist2Hub", distance);
 
     // Compute the velocity from the regression
-    v0 = computeRegression(distance);
+    v0 = BasicRegression.computeRegression(distance);
 
     // This is the robot YAW; compute field-relative angle
     double yaw = fieldLauncherPose.getRotation().getZ();
     double psiFieldRad = MathUtil.angleModulus(psi + yaw);
+
+    // Shooting on the move!!!
+    Rotation2d angleVRobot2HubVector =
+        fieldPlatformVelocityMps.getAngle().minus(translation.getAngle());
+    double vr = fieldPlatformVelocityMps.getNorm();
+
+    // PLEASE NOTE: THESE SIGNS MAY BE WRONG!!!
+    v0 +=
+        vr
+            * (Math.cos(angleVRobot2HubVector.getRadians()))
+            / Math.cos(Units.degreesToRadians(65))
+            / ShooterConstants.flywheelCircumfrence
+            * 60;
+
+    psiFieldRad +=
+        vr
+            * (Math.sin(angleVRobot2HubVector.getRadians()))
+            * ShooterConstants.timeOfFlight
+            / distance;
 
     if (Math.sqrt(
             Math.pow(Math.abs((fieldRobotPose.getY() - fieldTargetPose.getY())), 2)
