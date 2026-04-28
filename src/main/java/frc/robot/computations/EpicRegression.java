@@ -51,9 +51,6 @@ public class EpicRegression {
     double distance = translation.getNorm();
     double psi = translation.getAngle().getRadians();
 
-    // Compute the velocity from the basic regression
-    v0 = BasicRegression.computeRegression(distance);
-
     // This is the robot YAW; compute field-relative angle
     double yaw = fieldLauncherPose.getRotation().getZ() + Math.PI;
     double psiFieldRad = MathUtil.angleModulus(psi + yaw);
@@ -64,13 +61,13 @@ public class EpicRegression {
         vRobot > 0.0
             ? fieldPlatformVelocityMps.getAngle().minus(translation.getAngle())
             : Rotation2d.kZero;
-    // PLEASE NOTE: THESE SIGNS MAY BE WRONG!!!
-    v0 -=
-        vRobot
-            * (Math.cos(robotVel2HubVectorAngle.getRadians()))
-            / Math.cos(kShotAngle)
-            / kFlywheelCircumfrence
-            * 60.0;
+
+    // Project distance based on radial velocity during flight
+    double radialVelocity = vRobot * Math.cos(robotVel2HubVectorAngle.getRadians());
+    double projectedDistance = distance + radialVelocity * kTimeOfFlight;
+
+    // Compute velocity from projected distance
+    v0 = BasicRegression.computeRegression(projectedDistance);
 
     psiFieldRad -=
         vRobot * (Math.sin(robotVel2HubVectorAngle.getRadians())) * kTimeOfFlight / distance;
