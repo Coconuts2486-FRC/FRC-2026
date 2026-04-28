@@ -3,41 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.843,
-        "y": 7.38
+        "x": 1.6869016203703708,
+        "y": 5.091788845486111
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.45093627025463,
-        "y": 7.066075376157407
+        "x": 1.286086877893519,
+        "y": 6.72640964988426
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.0605178674768525,
-        "y": 7.216454716435185
+        "x": 6.592338686342592,
+        "y": 7.418403935185186
       },
       "prevControl": {
-        "x": 1.6561031345230273,
-        "y": 7.496034918239878
-      },
-      "nextControl": {
-        "x": 0.052083984375000725,
-        "y": 6.743074725115742
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 1.7653718171296302,
-        "y": 6.355316478587963
-      },
-      "prevControl": {
-        "x": 0.5975699508101862,
-        "y": 4.731915075231481
+        "x": 3.2511223234953706,
+        "y": 7.751902271412037
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,8 +30,8 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.4412109374999995,
-      "rotationDegrees": -100.0
+      "waypointRelativePos": 0.7008943256578948,
+      "rotationDegrees": 0.0
     }
   ],
   "constraintZones": [],
@@ -63,13 +47,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 139.5
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Cross & Depot",
+  "folder": "Team Specific",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 102.5
+    "rotation": 150.979
   },
   "useDefaultConstraints": false
 }

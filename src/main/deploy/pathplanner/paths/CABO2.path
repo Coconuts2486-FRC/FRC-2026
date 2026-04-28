@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 3.5362000868055556,
-        "y": 1.0387638165509259
+        "y": 1.0364999208574524
       },
       "prevControl": null,
       "nextControl": {
         "x": 2.6158059914407983,
-        "y": 0.6386019971469341
+        "y": 0.6363381014534606
       },
       "isLocked": false,
       "linkedName": "HCWO1"
@@ -87,7 +87,7 @@
   "folder": "Out and Back",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -105.00000000000001
+    "rotation": -109.89699999999999
   },
   "useDefaultConstraints": false
 }

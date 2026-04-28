@@ -25,19 +25,13 @@
                           {
                             "type": "wait",
                             "data": {
-                              "waitTime": 1.0
+                              "waitTime": 0.5
                             }
                           },
                           {
                             "type": "named",
                             "data": {
                               "name": "Shoot"
-                            }
-                          },
-                          {
-                            "type": "path",
-                            "data": {
-                              "pathName": "CADO1"
                             }
                           }
                         ]
@@ -54,7 +48,7 @@
                                 {
                                   "type": "path",
                                   "data": {
-                                    "pathName": "CADO2"
+                                    "pathName": "OP1"
                                   }
                                 }
                               ]
@@ -76,7 +70,7 @@
                           {
                             "type": "wait",
                             "data": {
-                              "waitTime": 3.0
+                              "waitTime": 2.0
                             }
                           },
                           {
@@ -105,7 +99,7 @@
                                 {
                                   "type": "path",
                                   "data": {
-                                    "pathName": "CADO3"
+                                    "pathName": "OP2"
                                   }
                                 }
                               ]
@@ -127,7 +121,7 @@
                           {
                             "type": "wait",
                             "data": {
-                              "waitTime": 3.0
+                              "waitTime": 3.5
                             }
                           },
                           {
@@ -143,6 +137,12 @@
                             }
                           }
                         ]
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "OP3"
                       }
                     }
                   ]
@@ -161,6 +161,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Worlds 3 Middle Autos",
+  "folder": "Team Specific",
   "choreoAuto": false
 }

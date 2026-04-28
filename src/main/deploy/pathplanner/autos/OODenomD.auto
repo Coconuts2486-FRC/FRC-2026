@@ -25,19 +25,13 @@
                           {
                             "type": "wait",
                             "data": {
-                              "waitTime": 1.5
+                              "waitTime": 0.5
                             }
                           },
                           {
                             "type": "named",
                             "data": {
                               "name": "Shoot"
-                            }
-                          },
-                          {
-                            "type": "path",
-                            "data": {
-                              "pathName": "CABO1"
                             }
                           }
                         ]
@@ -54,7 +48,7 @@
                                 {
                                   "type": "path",
                                   "data": {
-                                    "pathName": "TCADMO2"
+                                    "pathName": "DV1"
                                   }
                                 }
                               ]
@@ -76,7 +70,7 @@
                           {
                             "type": "wait",
                             "data": {
-                              "waitTime": 3.0
+                              "waitTime": 2.0
                             }
                           },
                           {
@@ -105,7 +99,7 @@
                                 {
                                   "type": "path",
                                   "data": {
-                                    "pathName": "TCADO3"
+                                    "pathName": "DV2"
                                   }
                                 }
                               ]
@@ -127,7 +121,7 @@
                           {
                             "type": "wait",
                             "data": {
-                              "waitTime": 3.0
+                              "waitTime": 3.5
                             }
                           },
                           {
@@ -143,6 +137,12 @@
                             }
                           }
                         ]
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "DV3"
                       }
                     }
                   ]
@@ -161,6 +161,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Worlds 3 Middle Autos",
+  "folder": "Team Specific",
   "choreoAuto": false
 }

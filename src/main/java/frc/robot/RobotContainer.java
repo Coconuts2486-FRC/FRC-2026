@@ -28,7 +28,6 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -45,7 +44,6 @@ import frc.robot.Constants.CANBuses;
 import frc.robot.Constants.Cameras;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.FieldConstants.AprilTagLayoutType;
-import frc.robot.commands.AutopilotCommands;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.accelerometer.Accelerometer;
 import frc.robot.subsystems.coordinator.Coordinator;
@@ -95,7 +93,6 @@ import frc.robot.util.RBSIEnum.Mode;
 import frc.robot.util.RBSIPowerMonitor;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.photonvision.PhotonCamera;
@@ -184,25 +181,20 @@ public class RobotContainer {
 
     NamedCommands.registerCommand(
         "Shoot",
-        Commands.run(() -> m_shooter.runVelocityRPM((Coordinator.getShooterVelocity())), m_shooter)
+        Commands.run(
+                () -> m_shooter.runVelocityRPM((Coordinator.getEpicShooterVelocity())), m_shooter)
+            .finallyDo(() -> m_shooter.stop()));
+
+    NamedCommands.registerCommand(
+        "Feed",
+        Commands.run(
+                () -> m_shooter.runVelocityRPM((4000)), m_shooter)
             .finallyDo(() -> m_shooter.stop()));
 
     NamedCommands.registerCommand(
         "Align",
-        Commands.defer(
-            () -> {
-              Pose2d robotPose = m_drivebase.getPose();
-              Translation2d hub = FieldConstants.hubCenter2d();
-
-              Rotation2d heading =
-                  hub.minus(robotPose.getTranslation())
-                      .getAngle()
-                      .plus(Rotation2d.fromDegrees(180));
-
-              return AutopilotCommands.runAutopilot(
-                  m_drivebase, new Pose2d(robotPose.getTranslation(), heading));
-            },
-            Set.of(m_drivebase)));
+        DriveCommands.fieldRelativeDriveAtAngle(
+            m_drivebase, () -> 0.0, () -> 0.0, Coordinator::getRobotAngle));
 
     NamedCommands.registerCommand(
         "Zero", Commands.runOnce(m_drivebase::zeroHeadingForAlliance, m_drivebase));

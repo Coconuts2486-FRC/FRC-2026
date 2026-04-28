@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 3.5362000868055556,
-        "y": 1.0387638165509259
+        "y": 1.0364999208574524
       },
       "prevControl": null,
       "nextControl": {
         "x": 3.1329577546296297,
-        "y": 0.5796869212962961
+        "y": 0.5774230256028225
       },
       "isLocked": false,
       "linkedName": "HCWO1"
@@ -80,12 +80,12 @@
     },
     {
       "anchor": {
-        "x": 2.783,
-        "y": 6.85
+        "x": 3.3639068287037044,
+        "y": 7.06476316550926
       },
       "prevControl": {
-        "x": 2.6820910011574073,
-        "y": 6.321047887731481
+        "x": 3.179934895833334,
+        "y": 6.397569661458334
       },
       "nextControl": null,
       "isLocked": false,
@@ -96,6 +96,10 @@
     {
       "waypointRelativePos": 0.5,
       "rotationDegrees": -90.0
+    },
+    {
+      "waypointRelativePos": 0.7534131021594681,
+      "rotationDegrees": 0.0
     },
     {
       "waypointRelativePos": 1.1832812499999976,
@@ -137,13 +141,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 123.00000000000001
+    "rotation": 112.332
   },
   "reversed": false,
-  "folder": "Cross & Depot",
+  "folder": "Team Specific",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -105.00000000000001
+    "rotation": -109.89699999999999
   },
   "useDefaultConstraints": false
 }

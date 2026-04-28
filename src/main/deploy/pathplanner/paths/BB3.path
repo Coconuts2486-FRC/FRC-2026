@@ -3,37 +3,42 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5362000868055556,
-        "y": 1.0364999208574524
+        "x": 2.1154780590120663,
+        "y": 6.964327158748115
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.5847896966557937,
-        "y": 0.7912672765896028
+        "x": 3.7351543646304677,
+        "y": 7.773493589743589
       },
       "isLocked": false,
-      "linkedName": "HCWO1"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.5362000868055556,
-        "y": 1.0364999208574524
+        "x": 7.362762184200603,
+        "y": 7.159436510180996
       },
       "prevControl": {
-        "x": 3.4814664591098436,
-        "y": 1.3130004298855178
+        "x": 6.027158080044247,
+        "y": 7.560670525746707
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "HCWO1"
+      "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.36314739096573223,
+      "rotationDegrees": 180.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.9,
+    "maxVelocity": 2.0,
     "maxAcceleration": 2.5,
     "maxAngularVelocity": 360.0,
     "maxAngularAcceleration": 360.0,
@@ -42,13 +47,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -109.89699999999999
+    "rotation": 180.0
   },
   "reversed": false,
-  "folder": "Out and Back",
+  "folder": "Team Specific",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -109.89699999999999
+    "rotation": 129.95
   },
   "useDefaultConstraints": false
 }

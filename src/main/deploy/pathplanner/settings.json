@@ -4,14 +4,12 @@
   "holonomicMode": true,
   "pathFolders": [
     "Citrus",
-    "Cross & Depot",
-    "Cross Over Bump",
     "Out and Back",
-    "Potato O"
+    "Team Specific"
   ],
   "autoFolders": [
-    "Worlds 3 Middle Autos",
-    "Standard Autos"
+    "Standard Autos",
+    "Team Specific"
   ],
   "defaultMaxVel": 3.0,
   "defaultMaxAccel": 3.0,

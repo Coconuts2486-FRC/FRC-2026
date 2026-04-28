@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5362000868055556,
-        "y": 1.0387638165509259
+        "x": 1.7653718171296302,
+        "y": 6.355316478587963
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.5847896966557937,
-        "y": 0.7935311722830763
+        "x": 4.8654637681159425,
+        "y": 5.411879812047102
       },
       "isLocked": false,
-      "linkedName": "HCWO1"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.5362000868055556,
-        "y": 1.0387638165509259
+        "x": 6.798846410778985,
+        "y": 4.998430763134058
       },
       "prevControl": {
-        "x": 3.4814664591098436,
-        "y": 1.3152643255789913
+        "x": 5.594235371506095,
+        "y": 5.319038950572173
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "HCWO1"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -33,7 +33,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.9,
+    "maxVelocity": 2.5,
     "maxAcceleration": 2.5,
     "maxAngularVelocity": 360.0,
     "maxAngularAcceleration": 360.0,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -105.00000000000001
+    "rotation": 140.0
   },
   "reversed": false,
-  "folder": "Cross & Depot",
+  "folder": "Team Specific",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -105.00000000000001
+    "rotation": 140.0
   },
   "useDefaultConstraints": false
 }
