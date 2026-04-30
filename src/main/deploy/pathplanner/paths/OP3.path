@@ -8,33 +8,54 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.8654637681159425,
-        "y": 5.411879812047102
+        "x": 2.564656370638279,
+        "y": 5.834499690090661
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.798846410778985,
-        "y": 4.998430763134058
+        "x": 3.5737293113425928,
+        "y": 5.625596137152778
       },
       "prevControl": {
-        "x": 5.594235371506095,
-        "y": 5.319038950572173
+        "x": 2.5449591797920164,
+        "y": 5.76772696994901
+      },
+      "nextControl": {
+        "x": 3.991271981700491,
+        "y": 5.56791008499603
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.456984157986111,
+        "y": 5.625596137152778
+      },
+      "prevControl": {
+        "x": 5.718129337537455,
+        "y": 5.65086452401881
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.9938462048832266,
+      "rotationDegrees": 180.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 2.5,
-    "maxAcceleration": 2.5,
+    "maxVelocity": 3.5,
+    "maxAcceleration": 3.5,
     "maxAngularVelocity": 360.0,
     "maxAngularAcceleration": 360.0,
     "nominalVoltage": 12.0,
@@ -42,7 +63,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 140.0
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": "Team Specific",
