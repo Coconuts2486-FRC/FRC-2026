@@ -25,7 +25,9 @@ import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.util.PathPlannerLogging;
+import frc.robot.commands.PathAngleOverride;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -93,6 +95,8 @@ import frc.robot.util.RBSIEnum.Mode;
 import frc.robot.util.RBSIPowerMonitor;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.photonvision.PhotonCamera;
@@ -186,15 +190,39 @@ public class RobotContainer {
             .finallyDo(() -> m_shooter.stop()));
 
     NamedCommands.registerCommand(
+    "ShootOnTheMove",
+    Commands.run(
+            () -> {
+              if (Coordinator.isAimedAtTarget(10.0)) {
+                m_shooter.runVelocityRPM(Coordinator.getEpicShooterVelocity());
+              } else {
+                m_shooter.stop();
+              }
+            },
+            m_shooter)
+        .finallyDo(() -> m_shooter.stop()));
+
+    NamedCommands.registerCommand(
         "Feed",
         Commands.run(
-                () -> m_shooter.runVelocityRPM((4000)), m_shooter)
+                () -> m_shooter.runVelocityRPM((4500)), m_shooter)
             .finallyDo(() -> m_shooter.stop()));
 
     NamedCommands.registerCommand(
         "Align",
         DriveCommands.fieldRelativeDriveAtAngle(
             m_drivebase, () -> 0.0, () -> 0.0, Coordinator::getRobotAngle));
+
+    NamedCommands.registerCommand(
+    "EnableShootOnMove",
+    Commands.runOnce(
+        () ->
+            PathAngleOverride.setOverride(
+                () -> Optional.of(Coordinator.getRobotAngle()))));
+
+    NamedCommands.registerCommand(
+    "DisableShootOnMove",
+      Commands.runOnce(PathAngleOverride::clearOverride));
 
     NamedCommands.registerCommand(
         "Zero", Commands.runOnce(m_drivebase::zeroHeadingForAlliance, m_drivebase));
@@ -335,6 +363,10 @@ public class RobotContainer {
       case PATHPLANNER:
         autoChooserPathPlanner =
             new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
+
+        PPHolonomicDriveController.setRotationTargetOverride(
+        PathAngleOverride::getOverride);
+
         // Set the others to null
         autoChooserChoreo = null;
         autoFactoryChoreo = null;
@@ -490,7 +522,7 @@ public class RobotContainer {
     driverController
         .rightBumper()
         .whileTrue(
-            Commands.run(() -> m_shooter.runVelocityRPM((3800)), m_shooter)
+            Commands.run(() -> m_shooter.runVelocityRPM((4500)), m_shooter)
                 .alongWith(Commands.run(() -> m_rollers.feedRollers(), m_rollers)));
 
     // epic solution
@@ -524,8 +556,8 @@ public class RobotContainer {
         .toggleOnTrue(
             DriveCommands.fieldRelativeDriveAtAngle(
                 m_drivebase,
-                () -> -driveStickY.value() * 0.6,
-                () -> -driveStickX.value() * 0.6,
+                () -> -driveStickY.value() * 0.75,
+                () -> -driveStickX.value() * 0.75,
                 Coordinator::getRobotAngle));
 
     driverController

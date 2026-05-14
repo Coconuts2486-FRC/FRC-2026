@@ -4,10 +4,12 @@
   "holonomicMode": true,
   "pathFolders": [
     "Citrus",
+    "OFF",
     "Out and Back",
     "Team Specific"
   ],
   "autoFolders": [
+    "OFF Autos",
     "Standard Autos",
     "Team Specific"
   ],

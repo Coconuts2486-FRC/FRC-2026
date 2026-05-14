@@ -19,7 +19,7 @@
                           {
                             "type": "wait",
                             "data": {
-                              "waitTime": 1.0
+                              "waitTime": 4.75
                             }
                           },
                           {
@@ -42,33 +42,7 @@
                                 {
                                   "type": "path",
                                   "data": {
-                                    "pathName": "Bump1"
-                                  }
-                                }
-                              ]
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "Intake"
-                            }
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "type": "deadline",
-                      "data": {
-                        "commands": [
-                          {
-                            "type": "sequential",
-                            "data": {
-                              "commands": [
-                                {
-                                  "type": "path",
-                                  "data": {
-                                    "pathName": "OP2"
+                                    "pathName": "Copy of Bump1"
                                   }
                                 }
                               ]
@@ -106,12 +80,6 @@
                             }
                           }
                         ]
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "OP3"
                       }
                     }
                   ]
