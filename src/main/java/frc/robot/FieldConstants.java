@@ -68,19 +68,19 @@ public class FieldConstants {
   // 11.915394m and 4.034536m
   public static final Pose3d passingOutpostBlue =
       new Pose3d(
-          new Translation3d(Inches.of(78.03), Inches.of(49.32), Inches.of(0)), Rotation3d.kZero);
+          new Translation3d(Inches.of(108.28), Inches.of(84.89), Inches.of(0)), Rotation3d.kZero);
 
   public static final Pose3d passingDepotBlue =
       new Pose3d(
-          new Translation3d(Inches.of(78.03), Inches.of(267.85), Inches.of(0)), Rotation3d.kZero);
+          new Translation3d(Inches.of(108.28), Inches.of(267.85), Inches.of(0)), Rotation3d.kZero);
 
   public static final Pose3d passingOutpostRed =
       new Pose3d(
-          new Translation3d(Inches.of(573.19), Inches.of(267.85), Inches.of(0)), Rotation3d.kZero);
+          new Translation3d(Inches.of(543.95), Inches.of(267.85), Inches.of(0)), Rotation3d.kZero);
 
   public static final Pose3d passingDepotRed =
       new Pose3d(
-          new Translation3d(Inches.of(573.19), Inches.of(49.32), Inches.of(0)), Rotation3d.kZero);
+          new Translation3d(Inches.of(543.95), Inches.of(84.89), Inches.of(0)), Rotation3d.kZero);
 
   public static Translation2d hubCenter2d() {
     if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {

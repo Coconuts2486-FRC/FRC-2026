@@ -55,7 +55,7 @@ public class Coordinator extends VirtualSubsystem {
   private Mode mode = Mode.IDLE;
 
   // Instantiate loop variables
-  private Pose2d pose;
+  private static Pose2d pose;
   private double xpos;
   private double ypos;
   private Translation2d velocity;
@@ -95,6 +95,16 @@ public class Coordinator extends VirtualSubsystem {
   public void setMode(Mode mode) {
     this.mode = mode;
   }
+
+  public static boolean isAimedAtTarget(double toleranceDegrees) {
+  if (epicSolution == null || pose == null || target == null) return false;
+
+  Rotation2d desired = epicSolution.getAngle();
+
+  Rotation2d current = pose.getRotation();
+
+  return Math.abs(current.minus(desired).getDegrees()) <= toleranceDegrees;
+}
 
   @Override
   public void rbsiPeriodic() {

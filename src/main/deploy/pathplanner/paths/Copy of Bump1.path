@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.9910271041369465,
-        "y": 2.825235378031384
+        "x": 3.5240626130607815,
+        "y": 2.8654101279848043
       },
       "isLocked": false,
       "linkedName": null
@@ -48,48 +48,48 @@
     },
     {
       "anchor": {
-        "x": 5.774,
-        "y": 7.425
+        "x": 5.773912905092593,
+        "y": 7.424899377893519
       },
       "prevControl": {
-        "x": 6.273000000000001,
-        "y": 7.425
+        "x": 6.272912905092594,
+        "y": 7.424899377893519
       },
       "nextControl": {
-        "x": 4.967117393749241,
-        "y": 7.425
+        "x": 4.967030298841834,
+        "y": 7.424899377893519
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.339,
-        "y": 7.425
+        "x": 4.339469835069445,
+        "y": 7.424899377893519
       },
       "prevControl": {
-        "x": 5.23582112992327,
-        "y": 7.425
+        "x": 5.2362909649927145,
+        "y": 7.424899377893519
       },
       "nextControl": {
-        "x": 3.442178870076731,
-        "y": 7.425
+        "x": 3.4426487051461754,
+        "y": 7.424899377893519
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.364,
-        "y": 7.065
+        "x": 3.3639068287037044,
+        "y": 7.06476316550926
       },
       "prevControl": {
-        "x": 3.3692212083491775,
-        "y": 7.314945472020148
+        "x": 3.565921657986112,
+        "y": 7.314870515046297
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "DV"
     }
   ],
   "rotationTargets": [
@@ -133,7 +133,7 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 2.0,
-    "maxAcceleration": 3.5,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 360.0,
     "maxAngularAcceleration": 360.0,
     "nominalVoltage": 12.0,
@@ -141,7 +141,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 112.0
+    "rotation": 112.332
   },
   "reversed": false,
   "folder": "Team Specific",
