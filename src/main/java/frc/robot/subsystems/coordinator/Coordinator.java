@@ -97,14 +97,14 @@ public class Coordinator extends VirtualSubsystem {
   }
 
   public static boolean isAimedAtTarget(double toleranceDegrees) {
-  if (epicSolution == null || pose == null || target == null) return false;
+    if (epicSolution == null || pose == null || target == null) return false;
 
-  Rotation2d desired = epicSolution.getAngle();
+    Rotation2d desired = epicSolution.getAngle();
 
-  Rotation2d current = pose.getRotation();
+    Rotation2d current = pose.getRotation();
 
-  return Math.abs(current.minus(desired).getDegrees()) <= toleranceDegrees;
-}
+    return Math.abs(current.minus(desired).getDegrees()) <= toleranceDegrees;
+  }
 
   @Override
   public void rbsiPeriodic() {
