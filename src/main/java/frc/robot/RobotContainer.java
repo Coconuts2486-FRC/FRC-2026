@@ -187,8 +187,7 @@ public class RobotContainer {
 
     NamedCommands.registerCommand(
         "Feed",
-        Commands.run(
-                () -> m_shooter.runVelocityRPM((4000)), m_shooter)
+        Commands.run(() -> m_shooter.runVelocityRPM((4000)), m_shooter)
             .finallyDo(() -> m_shooter.stop()));
 
     NamedCommands.registerCommand(

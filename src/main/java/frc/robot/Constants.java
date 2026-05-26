@@ -435,9 +435,9 @@ public final class Constants {
     public static final MotorIdleMode kIntakeIdleMode = MotorIdleMode.COAST; // BRAKE, COAST
 
     // Pivot angle positions
-    public static final double dropPosition = 0.54;
-    public static final double storedAngle = 0.78;
-    public static final double lowerPosition = 0.47;
+    public static final double dropPosition = 0.72;
+    public static final double storedAngle = 0.91;
+    public static final double lowerPosition = 0.62;
 
     // Pivot gear ratio
     public static final double kPivotGearRatio = 25.0 * 54.0 / 16.0;
@@ -651,7 +651,7 @@ public final class Constants {
           }),
       //
       new CameraConfig(
-          "Photon_BW8",
+          "Photon_C10",
           new Transform3d(
               Inches.of(-11.25),
               Inches.of(-13.5),
