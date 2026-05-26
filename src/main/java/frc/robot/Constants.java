@@ -218,9 +218,8 @@ public final class Constants {
 
     /* SUBSYSTEM CAN DEVICE IDS */
     // This is where mechanism subsystem devices are defined (Including ID, bus, and power port)
-    // Example:
-    public static final RobotDeviceId SHOOTER_LEADER = new RobotDeviceId(25, CANBuses.RIO, 7);
-    public static final RobotDeviceId SHOOTER_FOLLOWER = new RobotDeviceId(26, CANBuses.RIO, 6);
+    public static final RobotDeviceId SHOOTER_LEADER = new RobotDeviceId(26, CANBuses.RIO, 6);
+    public static final RobotDeviceId SHOOTER_FOLLOWER = new RobotDeviceId(25, CANBuses.RIO, 7);
 
     public static final RobotDeviceId INTAKE_PIVOT = new RobotDeviceId(11, CANBuses.RIO, 19);
     public static final RobotDeviceId INTAKE_ROLLER = new RobotDeviceId(13, CANBuses.RIO, 0);
@@ -383,7 +382,9 @@ public final class Constants {
 
     // Mechanism motor gear ratio
     public static final double kShooterGearRatio = 24.0 / 18.0;
-    public static final double flywheelCircumfrence = 0.319186;
+    public static final double kFlywheelCircumfrence = Math.PI * Units.inchesToMeters(4.0); // πD
+    public static final double kTimeOfFlight = 1.0;
+    public static final double kShotAngle = Units.degreesToRadians(65.0);
 
     // Flywheel motor open-loop and closed-loop ramp periods for current smoothing
     //   Time from from 0 -> full duty
@@ -392,11 +393,11 @@ public final class Constants {
 
     // MODE == REAL / REPLAY
     // Feedforward constants
-    public static final double kSreal = 0.1;
-    public static final double kVreal = 0.05;
-    public static final double kAreal = 0.0;
+    public static final double kSreal = 0.27;
+    public static final double kVreal = 0.1;
+    public static final double kAreal = 0.002;
     // Feedback (PID) constants
-    public static final double kPreal = 1.7;
+    public static final double kPreal = 4.0;
     public static final double kDreal = 0.0;
 
     // MODE == SIM
@@ -409,7 +410,7 @@ public final class Constants {
     public static final double kDsim = 0.0;
 
     // Fuel trajectory Constants
-    public static final double kThetaRad = Units.degreesToRadians(70.0); // fixed elevation
+    public static final double kThetaRad = Units.degreesToRadians(55.0); // fixed elevation
     public static final double kApexClearanceMeters = 0.5; // h_c
     public static final double kG = 9.81;
 
@@ -430,10 +431,13 @@ public final class Constants {
 
     // public static final AngularVelocity kMaxPivotSpeed = RotationsPerSecond.of(106.3);
 
+    // Mechanism idle mode
+    public static final MotorIdleMode kIntakeIdleMode = MotorIdleMode.COAST; // BRAKE, COAST
+
     // Pivot angle positions
-    public static final double dropPosition = 0.67;
-    public static final double storedAngle = 0.97;
-    public static final double lowerPosition = 0.63;
+    public static final double dropPosition = 0.72;
+    public static final double storedAngle = 0.91;
+    public static final double lowerPosition = 0.62;
 
     // Pivot gear ratio
     public static final double kPivotGearRatio = 25.0 * 54.0 / 16.0;
@@ -449,6 +453,26 @@ public final class Constants {
 
     // Intake rollers constats
     public static final double kRollerPrimitiveSpeed = 0.55; // 0.65
+    public static final double kRollersRPM = 4500.0;
+
+    // INTAKE ROLLERS PIDS
+    // MODE == REAL / REPLAY
+    // Feedforward constants
+    public static final double kSreal = 0.27;
+    public static final double kVreal = 0.1;
+    public static final double kAreal = 0.002;
+    // Feedback (PID) constants
+    public static final double kPreal = 4.0;
+    public static final double kDreal = 0.0;
+
+    // MODE == SIM
+    // Feedforward constants
+    public static final double kSsim = 0.0;
+    public static final double kVsim = 0.03;
+    public static final double kAsim = 0.0;
+    // Feedback (PID) constants
+    public static final double kPsim = 0.0;
+    public static final double kDsim = 0.0;
   }
 
   /** Climb Mechanism Constants ******************************************** */
@@ -545,7 +569,7 @@ public final class Constants {
 
     // Acceleration and Jerk to be applied
     private static final APConstraints kAPConstraints =
-        new APConstraints().withAcceleration(2.0).withJerk(2.0);
+        new APConstraints().withAcceleration(3.0).withJerk(3.0);
 
     // Motion profile for drive to pose
     private static final APProfile kAPProfile =
@@ -627,13 +651,30 @@ public final class Constants {
           }),
       //
       new CameraConfig(
-          "Photon_BW8",
+          "Photon_C10",
           new Transform3d(
               Inches.of(-11.25),
               Inches.of(-13.5),
               Inches.of(15.5),
               new Rotation3d(0.0, Units.degreesToRadians(10.), -Math.PI / 2)),
           1.0,
+          new SimCameraProperties() {
+            {
+              setCalibration(1280, 800, Rotation2d.fromDegrees(120));
+              setCalibError(0.25, 0.08);
+              setFPS(30);
+              setAvgLatencyMs(20);
+              setLatencyStdDevMs(5);
+            }
+          }),
+      new CameraConfig(
+          "PC_Camera",
+          new Transform3d(
+              Inches.of(-13.5),
+              Inches.of(0),
+              Inches.of(12),
+              new Rotation3d(0.0, Units.degreesToRadians(12.), -Math.PI)),
+          0.75,
           new SimCameraProperties() {
             {
               setCalibration(1280, 800, Rotation2d.fromDegrees(120));

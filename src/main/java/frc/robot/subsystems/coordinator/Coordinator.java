@@ -17,6 +17,7 @@
 
 package frc.robot.subsystems.coordinator;
 
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static frc.robot.Constants.ShooterConstants.kShooterTransform;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -25,11 +26,17 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.FieldConstants;
 import frc.robot.computations.BasicRegression;
 import frc.robot.computations.BasicRegression.RegressionShotSolution;
+import frc.robot.computations.EpicRegression;
+import frc.robot.computations.EpicRegression.EpicShotSolution;
+import frc.robot.computations.FieldRelativeShooterSolver;
+import frc.robot.computations.FieldRelativeShooterSolver.FieldShotSolution;
 import frc.robot.util.VirtualSubsystem;
 import java.util.function.Supplier;
+import org.littletonrobotics.junction.Logger;
 
 public class Coordinator extends VirtualSubsystem {
   public enum Mode {
@@ -48,7 +55,7 @@ public class Coordinator extends VirtualSubsystem {
   private Mode mode = Mode.IDLE;
 
   // Instantiate loop variables
-  private Pose2d pose;
+  private static Pose2d pose;
   private double xpos;
   private double ypos;
   private Translation2d velocity;
@@ -60,8 +67,9 @@ public class Coordinator extends VirtualSubsystem {
   // Internal variables
   private static boolean ok_to_shoot = false;
   public static Pose3d target = null;
-  // private static FieldShotSolution fuelSolution;
+  private static FieldShotSolution physicsSolution;
   private static RegressionShotSolution fuelSolution;
+  private static EpicShotSolution epicSolution;
   private double midField = FieldConstants.aprilTagLayout.getFieldWidth() / 2.;
 
   private enum Zones {
@@ -86,6 +94,16 @@ public class Coordinator extends VirtualSubsystem {
 
   public void setMode(Mode mode) {
     this.mode = mode;
+  }
+
+  public static boolean isAimedAtTarget(double toleranceDegrees) {
+    if (epicSolution == null || pose == null || target == null) return false;
+
+    Rotation2d desired = epicSolution.getAngle();
+
+    Rotation2d current = pose.getRotation();
+
+    return Math.abs(current.minus(desired).getDegrees()) <= toleranceDegrees;
   }
 
   @Override
@@ -169,6 +187,11 @@ public class Coordinator extends VirtualSubsystem {
     //     FieldRelativeShooterSolver.solve(new Pose3d(pose), kShooterTransform, target, velocity);
     fuelSolution = BasicRegression.solve(new Pose3d(pose), kShooterTransform, target);
 
+    epicSolution = EpicRegression.solve(new Pose3d(pose), kShooterTransform, target, velocity);
+
+    physicsSolution =
+        FieldRelativeShooterSolver.solve(new Pose3d(pose), kShooterTransform, target, velocity);
+
     // Check on intake roller running
     intakeRunning = intakeRollersRunningSupplier.get();
 
@@ -213,10 +236,17 @@ public class Coordinator extends VirtualSubsystem {
     // "DON'T SHOOT" button not pressed...
     ok_to_shoot = true;
 
-    // double dist2hub = pose.minus(pose)
+    // double dist2hub = pose.minus(pose);
 
-    // Logger.recordOutput("Coordinator/DistHub", null);
-
+    Logger.recordOutput(
+        "Coordinator/RegVel", RotationsPerSecond.of(fuelSolution.getVelocity() / 60.));
+    Logger.recordOutput(
+        "Coordinator/PhysVel",
+        RotationsPerSecond.of(
+            physicsSolution.getVelocity() / ShooterConstants.kFlywheelCircumfrence));
+    Logger.recordOutput(
+        "Coordinator/EpicVel",
+        RotationsPerSecond.of(epicSolution.getVelocity() / ShooterConstants.kFlywheelCircumfrence));
   }
 
   // Getter functions
@@ -230,5 +260,13 @@ public class Coordinator extends VirtualSubsystem {
 
   public static Rotation2d getTurretAngle() {
     return fuelSolution.getAngle();
+  }
+
+  public static double getEpicShooterVelocity() {
+    return epicSolution.getVelocity();
+  }
+
+  public static Rotation2d getRobotAngle() {
+    return epicSolution.getAngle();
   }
 }

@@ -25,10 +25,10 @@ import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -45,13 +45,14 @@ import frc.robot.Constants.CANBuses;
 import frc.robot.Constants.Cameras;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.FieldConstants.AprilTagLayoutType;
-import frc.robot.commands.AutopilotCommands;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.PathAngleOverride;
 import frc.robot.subsystems.accelerometer.Accelerometer;
 import frc.robot.subsystems.coordinator.Coordinator;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveOdometry;
 import frc.robot.subsystems.drive.SwerveConstants;
+import frc.robot.subsystems.driver_info.Blinkin;
 import frc.robot.subsystems.driver_info.CANStatus;
 import frc.robot.subsystems.driver_info.MatchStatus;
 import frc.robot.subsystems.feeder.Feeder;
@@ -94,7 +95,7 @@ import frc.robot.util.RBSIEnum.Mode;
 import frc.robot.util.RBSIPowerMonitor;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
+import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.photonvision.PhotonCamera;
@@ -108,6 +109,7 @@ public class RobotContainer {
   // Replace with ``CommandPS4Controller`` or ``CommandJoystick`` if needed
   final CommandXboxController driverController = new CommandXboxController(0); // Main Driver
 
+  final Blinkin blinkin = new Blinkin(0);
   final CommandXboxController operatorController = new CommandXboxController(1); // Second Operator
   final OverrideSwitches overrides = new OverrideSwitches(2); // Console toggle switches
 
@@ -183,25 +185,39 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Shoot",
         Commands.run(
-                () -> m_shooter.runVelocityRPM((Coordinator.getShooterVelocity() * -1)), m_shooter)
+                () -> m_shooter.runVelocityRPM((Coordinator.getEpicShooterVelocity())), m_shooter)
+            .finallyDo(() -> m_shooter.stop()));
+
+    NamedCommands.registerCommand(
+        "ShootOnTheMove",
+        Commands.run(
+                () -> {
+                  if (Coordinator.isAimedAtTarget(10.0)) {
+                    m_shooter.runVelocityRPM(Coordinator.getEpicShooterVelocity());
+                  } else {
+                    m_shooter.stop();
+                  }
+                },
+                m_shooter)
+            .finallyDo(() -> m_shooter.stop()));
+
+    NamedCommands.registerCommand(
+        "Feed",
+        Commands.run(() -> m_shooter.runVelocityRPM((4500)), m_shooter)
             .finallyDo(() -> m_shooter.stop()));
 
     NamedCommands.registerCommand(
         "Align",
-        Commands.defer(
-            () -> {
-              Pose2d robotPose = m_drivebase.getPose();
-              Translation2d hub = FieldConstants.hubCenter2d();
+        DriveCommands.fieldRelativeDriveAtAngle(
+            m_drivebase, () -> 0.0, () -> 0.0, Coordinator::getRobotAngle));
 
-              Rotation2d heading =
-                  hub.minus(robotPose.getTranslation())
-                      .getAngle()
-                      .plus(Rotation2d.fromDegrees(180));
+    NamedCommands.registerCommand(
+        "EnableShootOnMove",
+        Commands.runOnce(
+            () -> PathAngleOverride.setOverride(() -> Optional.of(Coordinator.getRobotAngle()))));
 
-              return AutopilotCommands.runAutopilot(
-                  m_drivebase, new Pose2d(robotPose.getTranslation(), heading));
-            },
-            Set.of(m_drivebase)));
+    NamedCommands.registerCommand(
+        "DisableShootOnMove", Commands.runOnce(PathAngleOverride::clearOverride));
 
     NamedCommands.registerCommand(
         "Zero", Commands.runOnce(m_drivebase::zeroHeadingForAlliance, m_drivebase));
@@ -237,7 +253,7 @@ public class RobotContainer {
         m_feeder = new Feeder(new FeederIOTalonFX());
         m_shooter = new Shooter(new ShooterIOTalonFX());
         m_rollers = new Rollers(new RollersIOTalonFX());
-        m_matchstatus = new MatchStatus(driverController, operatorController);
+        m_matchstatus = new MatchStatus(driverController, operatorController, blinkin);
 
         sweep = null;
 
@@ -259,7 +275,7 @@ public class RobotContainer {
         m_feeder = new Feeder(new FeederIOSim());
         m_shooter = new Shooter(new ShooterIOSim());
         m_rollers = new Rollers(new RollersIOTalonFX());
-        m_matchstatus = new MatchStatus(driverController, operatorController);
+        m_matchstatus = new MatchStatus(driverController, operatorController, blinkin);
 
         // CameraSweepEvaluator (sim-only analysis)
         VisionSystemSim visionSim = new VisionSystemSim("CameraSweepWorld");
@@ -301,7 +317,7 @@ public class RobotContainer {
         m_feeder = new Feeder(new FeederIO() {});
         m_shooter = new Shooter(new ShooterIO() {});
         m_rollers = new Rollers(new RollersIO() {});
-        m_matchstatus = new MatchStatus(driverController, operatorController);
+        m_matchstatus = new MatchStatus(driverController, operatorController, blinkin);
 
         break;
     }
@@ -342,6 +358,9 @@ public class RobotContainer {
       case PATHPLANNER:
         autoChooserPathPlanner =
             new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
+
+        PPHolonomicDriveController.setRotationTargetOverride(PathAngleOverride::getOverride);
+
         // Set the others to null
         autoChooserChoreo = null;
         autoFactoryChoreo = null;
@@ -441,9 +460,9 @@ public class RobotContainer {
         Commands.run(
             () -> {
               if (m_feeder.isFeederRunning()) {
-                m_indexer.setVelocity(-0.7);
-              } else if (m_rollers.isIntakeRollersRunning()) {
-                m_indexer.setVelocity(-0.1);
+                m_indexer.setVelocity(-0.8);
+              } else if (m_shooter.shooterAlmostAtSpeed()) {
+                m_indexer.setVelocity(-0.5);
               } else {
                 m_indexer.indexerStop();
               }
@@ -468,13 +487,13 @@ public class RobotContainer {
             },
             m_shooter));
 
-    // m_turret.setDefaultCommand(
-    //     Commands.run(
-    //         () -> {
-    //           m_turret.setBrake();
-    //         },
-    //         m_turret));
-    // ===============================================================================
+    m_rollers.setDefaultCommand(
+        Commands.run(
+            () -> {
+              m_rollers.stop();
+            },
+            m_rollers));
+
     // driver controls
 
     // Press X button --> Stop with wheels in X-Lock position
@@ -493,42 +512,47 @@ public class RobotContainer {
 
     driverController.b().toggleOnTrue(Commands.run(() -> m_rollers.runRollers(), m_rollers));
 
-    // shooter control
+    // shooter feeding
+    driverController
+        .rightBumper()
+        .whileTrue(
+            Commands.run(() -> m_shooter.runVelocityRPM((4500)), m_shooter)
+                .alongWith(Commands.run(() -> m_rollers.feedRollers(), m_rollers)));
+
+    // epic solution
     driverController
         .rightTrigger()
         .whileTrue(
             Commands.run(
-                    () -> m_shooter.runVelocityRPM((Coordinator.getShooterVelocity() * -1)),
+                    () -> m_shooter.runVelocityRPM((Coordinator.getEpicShooterVelocity())),
                     m_shooter)
-                .alongWith(Commands.run(() -> m_rollers.feedRollers(), m_rollers)));
-
-    driverController
-        .rightBumper()
-        .whileTrue(
-            Commands.run(() -> m_shooter.runVelocityRPM(-4500), m_shooter)
                 .alongWith(Commands.run(() -> m_rollers.feedRollers(), m_rollers)));
 
     // auto aim - turn only, driver keeps translational control
     driverController
         .leftTrigger()
         .whileTrue(
-            DriveCommands.fieldRelativeDrive(
+            DriveCommands.fieldRelativeDriveAtAngle(
                 m_drivebase,
                 () -> -driveStickY.value(),
                 () -> -driveStickX.value(),
                 () -> {
-                  // Continuously recalculate heading to hub from current pose
                   Pose2d robotPose = m_drivebase.getPose();
-                  Rotation2d targetHeading =
-                      FieldConstants.hubCenter2d()
-                          .minus(robotPose.getTranslation())
-                          .getAngle()
-                          .plus(Rotation2d.fromDegrees(180));
-                  // Return the angular error so fieldRelativeDrive treats it
-                  // as a rotation rate input (normalize to [-1, 1])
-                  double errorRads = targetHeading.minus(robotPose.getRotation()).getRadians();
-                  return Math.max(-0.5, Math.min(0.5, errorRads * 1.5)); // tune the 1.5 gain
+                  return FieldConstants.hubCenter2d()
+                      .minus(robotPose.getTranslation())
+                      .getAngle()
+                      .plus(Rotation2d.fromDegrees(180));
                 }));
+
+    // toggle aim at hub
+    driverController
+        .leftBumper()
+        .toggleOnTrue(
+            DriveCommands.fieldRelativeDriveAtAngle(
+                m_drivebase,
+                () -> -driveStickY.value() * 0.75,
+                () -> -driveStickX.value() * 0.75,
+                Coordinator::getRobotAngle));
 
     driverController
         .povUp()
@@ -536,7 +560,7 @@ public class RobotContainer {
             Commands.run(
                 () -> {
                   m_drivebase.runVelocity(
-                      new ChassisSpeeds(Units.inchesToMeters(11), Units.inchesToMeters(0), 0));
+                      new ChassisSpeeds(Units.inchesToMeters(-16), Units.inchesToMeters(0), 0));
                 },
                 m_drivebase));
 
@@ -546,7 +570,7 @@ public class RobotContainer {
             Commands.run(
                 () -> {
                   m_drivebase.runVelocity(
-                      new ChassisSpeeds(Units.inchesToMeters(-11), Units.inchesToMeters(0), 0));
+                      new ChassisSpeeds(Units.inchesToMeters(16), Units.inchesToMeters(0), 0));
                 },
                 m_drivebase));
 
@@ -557,7 +581,7 @@ public class RobotContainer {
             Commands.run(
                 () -> {
                   m_drivebase.runVelocity(
-                      new ChassisSpeeds(Units.inchesToMeters(0.), Units.inchesToMeters(-11.0), 0.));
+                      new ChassisSpeeds(Units.inchesToMeters(0.), Units.inchesToMeters(-20.0), 0.));
                 },
                 m_drivebase));
 
@@ -567,11 +591,16 @@ public class RobotContainer {
             Commands.run(
                 () -> {
                   m_drivebase.runVelocity(
-                      new ChassisSpeeds(Units.inchesToMeters(0.), Units.inchesToMeters(11.0), 0.));
+                      new ChassisSpeeds(Units.inchesToMeters(0.), Units.inchesToMeters(20.0), 0.));
                 },
                 m_drivebase));
 
-    driverController.y().whileTrue(Commands.run(() -> m_indexer.setVelocity(0.37), m_indexer));
+    driverController
+        .y()
+        .whileTrue(
+            Commands.run(() -> m_indexer.setVelocity(0.8), m_indexer)
+                .alongWith(Commands.run(() -> m_rollers.reverseRollers(), m_rollers))
+                .alongWith(Commands.run(() -> m_feeder.reverseFeeder(), m_feeder)));
 
     driverController.x().whileTrue(Commands.run(() -> m_intake.printPos()));
 

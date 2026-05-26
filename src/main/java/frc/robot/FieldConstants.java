@@ -60,27 +60,27 @@ public class FieldConstants {
 
   public static final Pose3d hubCenterBlue =
       new Pose3d(
-          new Translation3d(Inches.of(182.11), Inches.of(158.84), Inches.of(72)), Rotation3d.kZero);
+          new Translation3d(Inches.of(182.11), Inches.of(159.5), Inches.of(72)), Rotation3d.kZero);
 
   public static final Pose3d hubCenterRed =
       new Pose3d(
-          new Translation3d(Inches.of(469.11), Inches.of(158.84), Inches.of(72)), Rotation3d.kZero);
+          new Translation3d(Inches.of(469.11), Inches.of(159.5), Inches.of(72)), Rotation3d.kZero);
   // 11.915394m and 4.034536m
   public static final Pose3d passingOutpostBlue =
       new Pose3d(
-          new Translation3d(Inches.of(78.03), Inches.of(49.32), Inches.of(0)), Rotation3d.kZero);
+          new Translation3d(Inches.of(108.28), Inches.of(84.89), Inches.of(0)), Rotation3d.kZero);
 
   public static final Pose3d passingDepotBlue =
       new Pose3d(
-          new Translation3d(Inches.of(78.03), Inches.of(267.85), Inches.of(0)), Rotation3d.kZero);
+          new Translation3d(Inches.of(108.28), Inches.of(267.85), Inches.of(0)), Rotation3d.kZero);
 
   public static final Pose3d passingOutpostRed =
       new Pose3d(
-          new Translation3d(Inches.of(573.19), Inches.of(267.85), Inches.of(0)), Rotation3d.kZero);
+          new Translation3d(Inches.of(543.95), Inches.of(267.85), Inches.of(0)), Rotation3d.kZero);
 
   public static final Pose3d passingDepotRed =
       new Pose3d(
-          new Translation3d(Inches.of(573.19), Inches.of(49.32), Inches.of(0)), Rotation3d.kZero);
+          new Translation3d(Inches.of(543.95), Inches.of(84.89), Inches.of(0)), Rotation3d.kZero);
 
   public static Translation2d hubCenter2d() {
     if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
@@ -89,6 +89,14 @@ public class FieldConstants {
       return new Translation2d(hubCenterBlue.getX(), hubCenterBlue.getY());
     } else {
       return new Translation2d(hubCenterRed.getX(), hubCenterRed.getY());
+    }
+  }
+
+  public static Translation2d shootingSpot() {
+    if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
+      return new Translation2d(hubCenterRed.getX() + 134, hubCenterRed.getY());
+    } else {
+      return new Translation2d(hubCenterBlue.getX() - 134, hubCenterBlue.getY());
     }
   }
 

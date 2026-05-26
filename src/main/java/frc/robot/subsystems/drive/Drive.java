@@ -147,7 +147,7 @@ public class Drive extends RBSISubsystem {
             DrivebaseConstants.kISPin,
             DrivebaseConstants.kDSpin,
             new TrapezoidProfile.Constraints(
-                getMaxAngularSpeedRadPerSec(), getMaxLinearAccelMetersPerSecPerSec()));
+                getMaxAngularSpeedRadPerSec(), getMaxAngularAccelRadPerSecPerSec()));
     angleController.enableContinuousInput(-Math.PI, Math.PI);
 
     // If REAL (i.e., NOT simulation), parse out the module types
@@ -789,16 +789,16 @@ public class Drive extends RBSISubsystem {
       // If coasting,
       if (coast) {
         final double coastAge = t - getDisabledCoastStartTs();
-        Logger.recordOutput("Vision/Debug/disabledCoastAge", coastAge);
+        // Logger.recordOutput("Vision/Debug/disabledCoastAge", coastAge);
 
         // Ignore vision briefly right after ENABLE->DISABLE (prevents “phase mismatch” at disable
         // edge)
         if (coastAge >= 0.0 && coastAge < DrivebaseConstants.kDisabledVisionIgnoreAfterDisableSec) {
-          Logger.recordOutput("Vision/Debug/disabledIgnoreEarlyCoast", true);
+          // Logger.recordOutput("Vision/Debug/disabledIgnoreEarlyCoast", true);
           return;
         }
       }
-      Logger.recordOutput("Vision/Debug/disabledIgnoreEarlyCoast", false);
+      // Logger.recordOutput("Vision/Debug/disabledIgnoreEarlyCoast", false);
 
       // If we're coasting, avoid snapping Pose to Vision; lean gentler than stationary.
       final double alpha =
@@ -810,18 +810,18 @@ public class Drive extends RBSISubsystem {
       final Pose2d current = m_PoseEstimator.getEstimatedPosition();
 
       // Debug
-      Logger.recordOutput("Vision/Debug/disabledCoast", coast);
-      Logger.recordOutput("Vision/Debug/disabledVisionInitialized", disabledVisionInitialized);
-      Logger.recordOutput("Vision/Debug/disabledVisionTs", t);
-      Logger.recordOutput(
-          "Vision/Debug/disabledVisionAge",
-          Double.isFinite(lastDisabledVisionTs) ? (t - lastDisabledVisionTs) : Double.NaN);
+      // Logger.recordOutput("Vision/Debug/disabledCoast", coast);
+      // Logger.recordOutput("Vision/Debug/disabledVisionInitialized", disabledVisionInitialized);
+      // Logger.recordOutput("Vision/Debug/disabledVisionTs", t);
+      // Logger.recordOutput(
+      //     "Vision/Debug/disabledVisionAge",
+      //     Double.isFinite(lastDisabledVisionTs) ? (t - lastDisabledVisionTs) : Double.NaN);
 
       // Check if the last while-disabled vision timestamp is stale (too old)
       final boolean stale =
           Double.isFinite(lastDisabledVisionTs)
               && (t - lastDisabledVisionTs) > DrivebaseConstants.kDisabledVisionStale;
-      Logger.recordOutput("Vision/Debug/visionStale", stale);
+      // Logger.recordOutput("Vision/Debug/visionStale", stale);
 
       // If coasting, intentionally DO NOT snap; reset initialization so that once coast ends, the
       // first good stationary frame snaps.
@@ -854,8 +854,8 @@ public class Drive extends RBSISubsystem {
       final double deltaRotation =
           Math.abs(gateRef.getRotation().minus(vision.getRotation()).getRadians());
 
-      Logger.recordOutput("Vision/Debug/dTransFromLastVision", deltaTranslation);
-      Logger.recordOutput("Vision/Debug/dRotFromLastVision", deltaRotation);
+      // Logger.recordOutput("Vision/Debug/dTransFromLastVision", deltaTranslation);
+      // Logger.recordOutput("Vision/Debug/dRotFromLastVision", deltaRotation);
 
       // Reject large jumps only if vision measurement is not stale (large delta-T can mean large
       // change in position)

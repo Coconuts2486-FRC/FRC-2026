@@ -4,10 +4,15 @@
   "holonomicMode": true,
   "pathFolders": [
     "Citrus",
-    "High Space D",
-    "Potato O"
+    "OFF",
+    "Out and Back",
+    "Team Specific"
   ],
-  "autoFolders": [],
+  "autoFolders": [
+    "OFF Autos",
+    "Standard Autos",
+    "Team Specific"
+  ],
   "defaultMaxVel": 3.0,
   "defaultMaxAccel": 3.0,
   "defaultMaxAngVel": 540.0,

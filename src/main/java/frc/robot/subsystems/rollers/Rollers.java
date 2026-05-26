@@ -17,7 +17,10 @@
 
 package frc.robot.subsystems.rollers;
 
-import edu.wpi.first.wpilibj2.command.Commands;
+import static frc.robot.Constants.IntakeConstants.*;
+
+import frc.robot.Constants;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.util.RBSISubsystem;
 import org.littletonrobotics.junction.Logger;
 
@@ -28,7 +31,18 @@ public class Rollers extends RBSISubsystem {
   public Rollers(RollersIO io) {
     this.io = io;
 
-    setDefaultCommand(Commands.run(() -> stop(), this));
+    // Switch constants based on mode (the physics simulator is treated as a
+    // separate robot with different tuning)
+    switch (Constants.getMode()) {
+      case REAL:
+      case REPLAY:
+        io.configureGains(kPreal, 0.0, kDreal, kSreal, kVreal, kAreal);
+        break;
+      case SIM:
+      default:
+        io.configureGains(kPsim, 0.0, kDsim, kSsim, kVsim, kAsim);
+        break;
+    }
   }
 
   @Override
@@ -38,12 +52,26 @@ public class Rollers extends RBSISubsystem {
     Logger.recordOutput("Rollers/RollersRunning", (Math.abs(inputs.velocityRadPerSec) > 100));
   }
 
+  /**
+   * Run the intake rollers
+   *
+   * <p>For intake, the motor needs to run BACKWARDS!
+   */
   public void runRollers() {
-    io.runRollers(1.5);
+    io.setVelocity(-IntakeConstants.kRollersRPM / 60.);
+    // io.runRollers(-0.8);
   }
 
+  /** Run the intake rollers in reverse */
+  public void reverseRollers() {
+    io.setVelocity(IntakeConstants.kRollersRPM / 60.);
+    // io.runRollers(0.8);
+  }
+
+  /** Run the intake rollers slowly while shooting */
   public void feedRollers() {
-    io.runRollers(0.33);
+    io.setVelocity(-IntakeConstants.kRollersRPM * 0.8 / 60.);
+    // io.runRollers(0.33);
   }
 
   public void stop() {

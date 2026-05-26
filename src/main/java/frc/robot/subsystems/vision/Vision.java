@@ -191,7 +191,7 @@ public class Vision extends VirtualSubsystem {
           // Log zeros and move along if we ain't seen nuthin'
           Logger.recordOutput("Vision/Camera" + cam + "/ObsSeen", 0);
           Logger.recordOutput("Vision/Camera" + cam + "/ObsAccepted", 0);
-          Logger.recordOutput("Vision/Camera" + cam + "/ObsRejected", 0);
+          // Logger.recordOutput("Vision/Camera" + cam + "/ObsRejected", 0);
           continue;
         }
 
@@ -207,7 +207,7 @@ public class Vision extends VirtualSubsystem {
           }
 
           GateResult gate = passesScrutiny(cam, obs);
-          Logger.recordOutput("Vision/Camera" + cam + "/GateFail", gate.reason);
+          // Logger.recordOutput("Vision/Camera" + cam + "/GateFail", gate.reason);
           if (!gate.accepted) {
             rejected++;
             continue;
@@ -239,17 +239,17 @@ public class Vision extends VirtualSubsystem {
           Logger.recordOutput("Vision/Camera" + cam + "/InjectedPose2d", best.pose());
           Logger.recordOutput(
               "Vision/Camera" + cam + "/InjectedTimestamp", best.timestampSeconds());
-          Logger.recordOutput(
-              "Vision/Camera" + cam + "/InjectedStdDevs", stdDevsToArray(best.stdDevs()));
-          Logger.recordOutput("Vision/Camera" + cam + "/LastAcceptedTrustScale", bestTrustScale);
-          Logger.recordOutput(
-              "Vision/Camera" + cam + "/LastAcceptedTrustedCount", bestTrustedCount);
+          // Logger.recordOutput(
+          //     "Vision/Camera" + cam + "/InjectedStdDevs", stdDevsToArray(best.stdDevs()));
+          // Logger.recordOutput("Vision/Camera" + cam + "/LastAcceptedTrustScale", bestTrustScale);
+          // Logger.recordOutput(
+          //     "Vision/Camera" + cam + "/LastAcceptedTrustedCount", bestTrustedCount);
           Logger.recordOutput("Vision/Camera" + cam + "/LastAcceptedTagCount", bestTagCount);
         }
 
         Logger.recordOutput("Vision/Camera" + cam + "/ObsSeen", seen);
         Logger.recordOutput("Vision/Camera" + cam + "/ObsAccepted", accepted);
-        Logger.recordOutput("Vision/Camera" + cam + "/ObsRejected", rejected);
+        // Logger.recordOutput("Vision/Camera" + cam + "/ObsRejected", rejected);
       }
 
       // Logger.recordOutput("Vision/Debug/perCamAcceptedSize", perCamAccepted.size());
@@ -497,12 +497,12 @@ public class Vision extends VirtualSubsystem {
     angularStdDev = Math.max(angularStdDev, angularStdDevBaseline);
 
     // Output logs for tuning
-    Logger.recordOutput("Vision/Camera" + cam + "/InjectedFracTrusted", fracTrusted);
+    // Logger.recordOutput("Vision/Camera" + cam + "/InjectedFracTrusted", fracTrusted);
 
-    Logger.recordOutput("Vision/Camera" + cam + "/Dbg_linearStdDev", linearStdDev);
-    Logger.recordOutput("Vision/Camera" + cam + "/Dbg_angularStdDev", angularStdDev);
-    Logger.recordOutput("Vision/Camera" + cam + "/Dbg_avgDist", avgDist);
-    Logger.recordOutput("Vision/Camera" + cam + "/Dbg_tagCount", obs.tagCount());
+    // Logger.recordOutput("Vision/Camera" + cam + "/Dbg_linearStdDev", linearStdDev);
+    // Logger.recordOutput("Vision/Camera" + cam + "/Dbg_angularStdDev", angularStdDev);
+    // Logger.recordOutput("Vision/Camera" + cam + "/Dbg_avgDist", avgDist);
+    // Logger.recordOutput("Vision/Camera" + cam + "/Dbg_tagCount", obs.tagCount());
 
     return new BuiltEstimate(
         new TimedPose(
@@ -725,7 +725,7 @@ public class Vision extends VirtualSubsystem {
       if (alignedPose == null) continue;
       aligned.add(new TimedPose(alignedPose, tFusion, e.stdDevs()));
       // Debugging Logging
-      Logger.recordOutput("Vision/Debug/deltaTime", tFusion - e.timestampSeconds());
+      // Logger.recordOutput("Vision/Debug/deltaTime", tFusion - e.timestampSeconds());
     }
 
     if (aligned.isEmpty()) return fusedBuffer.peekLast();
