@@ -13,12 +13,6 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.33
-                      }
-                    },
-                    {
                       "type": "deadline",
                       "data": {
                         "commands": [
@@ -29,7 +23,7 @@
                                 {
                                   "type": "path",
                                   "data": {
-                                    "pathName": "Copy of CCO1"
+                                    "pathName": "Anti Cobra CFFO1"
                                   }
                                 }
                               ]
@@ -65,19 +59,19 @@
                       }
                     },
                     {
+                      "type": "named",
+                      "data": {
+                        "name": "EnableShootOnMove"
+                      }
+                    },
+                    {
                       "type": "deadline",
                       "data": {
                         "commands": [
                           {
-                            "type": "wait",
+                            "type": "path",
                             "data": {
-                              "waitTime": 3.25
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "Align"
+                              "pathName": "CFFO2"
                             }
                           },
                           {
@@ -87,6 +81,12 @@
                             }
                           }
                         ]
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "DisableShootOnMove"
                       }
                     },
                     {
@@ -100,7 +100,7 @@
                                 {
                                   "type": "path",
                                   "data": {
-                                    "pathName": "Copy of CCO2A"
+                                    "pathName": "CFFO3"
                                   }
                                 }
                               ]
@@ -136,19 +136,19 @@
                       }
                     },
                     {
+                      "type": "named",
+                      "data": {
+                        "name": "EnableShootOnMove"
+                      }
+                    },
+                    {
                       "type": "deadline",
                       "data": {
                         "commands": [
                           {
-                            "type": "wait",
+                            "type": "path",
                             "data": {
-                              "waitTime": 3.25
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "Align"
+                              "pathName": "CFFO2"
                             }
                           },
                           {
@@ -158,6 +158,12 @@
                             }
                           }
                         ]
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "DisableShootOnMove"
                       }
                     }
                   ]
@@ -170,7 +176,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.75
+                        "waitTime": 0.5
                       }
                     },
                     {
@@ -189,6 +195,6 @@
     }
   },
   "resetOdom": false,
-  "folder": "Standard Autos",
+  "folder": "OFF Autos",
   "choreoAuto": false
 }
