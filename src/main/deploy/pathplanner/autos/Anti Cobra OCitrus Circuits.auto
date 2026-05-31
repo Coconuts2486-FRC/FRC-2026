@@ -29,7 +29,7 @@
                                 {
                                   "type": "path",
                                   "data": {
-                                    "pathName": "Anti Cobra CFFD1"
+                                    "pathName": "Anti Cobra CFFO1"
                                   }
                                 }
                               ]
@@ -65,19 +65,19 @@
                       }
                     },
                     {
-                      "type": "named",
-                      "data": {
-                        "name": "EnableShootOnMove"
-                      }
-                    },
-                    {
                       "type": "deadline",
                       "data": {
                         "commands": [
                           {
-                            "type": "path",
+                            "type": "wait",
                             "data": {
-                              "pathName": "CFFD2"
+                              "waitTime": 3.25
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Align"
                             }
                           },
                           {
@@ -87,12 +87,6 @@
                             }
                           }
                         ]
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "DisableShootOnMove"
                       }
                     },
                     {
@@ -106,7 +100,7 @@
                                 {
                                   "type": "path",
                                   "data": {
-                                    "pathName": "CFFD3"
+                                    "pathName": "CCO2A"
                                   }
                                 }
                               ]
@@ -142,19 +136,19 @@
                       }
                     },
                     {
-                      "type": "named",
-                      "data": {
-                        "name": "EnableShootOnMove"
-                      }
-                    },
-                    {
                       "type": "deadline",
                       "data": {
                         "commands": [
                           {
-                            "type": "path",
+                            "type": "wait",
                             "data": {
-                              "pathName": "CFFD2"
+                              "waitTime": 3.25
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Align"
                             }
                           },
                           {
@@ -164,12 +158,6 @@
                             }
                           }
                         ]
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "DisableShootOnMove"
                       }
                     }
                   ]
@@ -201,6 +189,6 @@
     }
   },
   "resetOdom": false,
-  "folder": "OFF Autos",
+  "folder": "Standard Autos",
   "choreoAuto": false
 }
