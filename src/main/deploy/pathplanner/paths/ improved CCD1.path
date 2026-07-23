@@ -48,28 +48,28 @@
     },
     {
       "anchor": {
-        "x": 5.790249927662037,
-        "y": 5.305154296875
+        "x": 5.9423975903614465,
+        "y": 5.553951807228916
       },
       "prevControl": {
-        "x": 6.422552415319868,
-        "y": 5.237809781527911
+        "x": 6.576403299280395,
+        "y": 5.505182137312074
       },
       "nextControl": {
-        "x": 5.522733594837763,
-        "y": 5.333646605751112
+        "x": 5.51621686746988,
+        "y": 5.586734939759037
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.522024096385542,
-        "y": 5.717867469879518
+        "x": 2.522,
+        "y": 5.718
       },
       "prevControl": {
-        "x": 3.2009870566885983,
-        "y": 5.575187876936658
+        "x": 3.2009629603030563,
+        "y": 5.57532040705714
       },
       "nextControl": null,
       "isLocked": false,
@@ -91,7 +91,11 @@
     },
     {
       "waypointRelativePos": 2.497005528255528,
-      "rotationDegrees": 136.0
+      "rotationDegrees": 155.0
+    },
+    {
+      "waypointRelativePos": 3.7278008298754917,
+      "rotationDegrees": 155.0
     }
   ],
   "constraintZones": [],
@@ -110,7 +114,7 @@
     "rotation": 136.0
   },
   "reversed": false,
-  "folder": "Citrus",
+  "folder": "Improved Citrus",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0
