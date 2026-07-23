@@ -262,6 +262,8 @@ public final class Constants {
 
     // Joystick Deadbands
     public static final double kDeadband = 0.1;
+    public static final double kLinearJoystickResponseExponent = 3.0;
+    public static final double kAngularJoystickResponseExponent = 3.0;
     public static final double kTurnConstant = 6;
 
     // Joystick slew rate limiters to smooth erratic joystick motions, measured in units per second

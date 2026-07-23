@@ -152,17 +152,16 @@ public class DriveCommands {
 
   /** Utility functions needed by commands in this module ****************** */
   /**
-   * Compute the new linear velocity from inputs, including applying deadbands and squaring for
+   * Compute the new linear velocity from inputs, including applying deadbands and shaping for
    * smoothness. Also apply the linear velocity Slew Rate Limiter.
    */
-  private static Translation2d getLinearVelocity(double x, double y) {
+  static Translation2d getLinearVelocity(double x, double y) {
     // Apply deadband
     double linearMagnitude = MathUtil.applyDeadband(Math.hypot(x, y), OperatorConstants.kDeadband);
     Rotation2d linearDirection = new Rotation2d(Math.atan2(y, x));
 
-    // Square magnitude for more precise control
-    // NOTE: The x & y values range from -1 to +1, so their squares are as well
-    linearMagnitude = linearMagnitude * linearMagnitude;
+    // Shape magnitude for more precise low-speed control while preserving full speed at full stick.
+    linearMagnitude = Math.pow(linearMagnitude, OperatorConstants.kLinearJoystickResponseExponent);
 
     // Return new linear velocity
     return new Pose2d(Translation2d.kZero, linearDirection)
@@ -171,12 +170,13 @@ public class DriveCommands {
   }
 
   /**
-   * Compute the new angular velocity from inputs, including applying deadbands and squaring for
+   * Compute the new angular velocity from inputs, including applying deadbands and shaping for
    * smoothness. Also apply the angular Slew Rate Limiter.
    */
-  private static double getOmega(double omega) {
+  static double getOmega(double omega) {
     omega = MathUtil.applyDeadband(omega, OperatorConstants.kDeadband);
-    return Math.copySign(omega * omega, omega);
+    return Math.copySign(
+        Math.pow(Math.abs(omega), OperatorConstants.kAngularJoystickResponseExponent), omega);
   }
 
   /***************************************************************************/
