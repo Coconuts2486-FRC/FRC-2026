@@ -472,7 +472,7 @@ public class RobotContainer {
         Commands.run(
             () -> {
               if (m_feeder.isFeederRunning()) {
-                m_indexer.setVelocity(-0.8);
+                m_indexer.setVelocity(-0.9);
               } else if (m_shooter.shooterAlmostAtSpeed()) {
                 m_indexer.setVelocity(-0.5);
               } else {
@@ -557,14 +557,14 @@ public class RobotContainer {
                 }));
 
     // toggle aim at hub
-    driverController
-        .leftBumper()
-        .toggleOnTrue(
-            DriveCommands.fieldRelativeDriveAtAngle(
-                m_drivebase,
-                () -> -driveStickY.value() * 0.75,
-                () -> -driveStickX.value() * 0.75,
-                Coordinator::getRobotAngle));
+    // driverController
+    //     .leftBumper()
+    //     .toggleOnTrue(
+    //         DriveCommands.fieldRelativeDriveAtAngle(
+    //             m_drivebase,
+    //             () -> -driveStickY.value() * 0.75,
+    //             () -> -driveStickX.value() * 0.75,
+    //             Coordinator::getRobotAngle));
 
     driverController
         .povUp()
@@ -614,7 +614,7 @@ public class RobotContainer {
                 .alongWith(Commands.run(() -> m_rollers.reverseRollers(), m_rollers))
                 .alongWith(Commands.run(() -> m_feeder.reverseFeeder(), m_feeder)));
 
-    driverController.x().whileTrue(Commands.run(() -> m_intake.printPos()));
+    // driverController.x().whileTrue(Commands.run(() -> m_intake.printPos()));
 
     //
     // ===============================================================================

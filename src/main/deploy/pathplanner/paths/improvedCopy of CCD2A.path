@@ -48,60 +48,60 @@
     },
     {
       "anchor": {
-        "x": 6.004402705439816,
-        "y": 4.36246216724537
+        "x": 6.183978732638889,
+        "y": 5.426468171296296
       },
       "prevControl": {
-        "x": 5.744116341404801,
-        "y": 5.7207478546828225
+        "x": 5.8084240451388895,
+        "y": 5.84821267361111
       },
       "nextControl": {
-        "x": 6.283321282084712,
-        "y": 2.906945617149706
+        "x": 6.63479342602997,
+        "y": 4.920207366069555
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.423296079282408,
-        "y": 4.224483217592593
+        "x": 8.285221643518518,
+        "y": 5.426468171296296
       },
       "prevControl": {
-        "x": 7.234345664183542,
-        "y": 3.9736541638481735
+        "x": 8.259976056521072,
+        "y": 4.739893082775254
       },
       "nextControl": {
-        "x": 7.671779668499305,
-        "y": 4.5543417337629855
+        "x": 8.32944314236111,
+        "y": 6.629109230324075
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.190903573495371,
-        "y": 5.294525390625
+        "x": 7.2865060240963855,
+        "y": 5.9473493975903615
       },
       "prevControl": {
-        "x": 7.435373609946963,
-        "y": 4.984377356280201
+        "x": 8.051445783132529,
+        "y": 6.2533253012048196
       },
       "nextControl": {
-        "x": 7.03614217338505,
-        "y": 5.490864151535558
+        "x": 5.774188768214449,
+        "y": 5.342422495237586
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.55,
-        "y": 5.756
+        "x": 2.522,
+        "y": 5.586734939759037
       },
       "prevControl": {
-        "x": 2.249065565616666,
-        "y": 5.769956328169293
+        "x": 3.7288548441352827,
+        "y": 5.504883050185398
       },
       "nextControl": null,
       "isLocked": false,
@@ -135,24 +135,14 @@
     },
     {
       "waypointRelativePos": 5.192010902948402,
-      "rotationDegrees": 136.0
-    }
-  ],
-  "constraintZones": [
+      "rotationDegrees": 155.0
+    },
     {
-      "name": "Constraints Zone",
-      "minWaypointRelativePos": 5.395224883177569,
-      "maxWaypointRelativePos": 6.0,
-      "constraints": {
-        "maxVelocity": 2.1,
-        "maxAcceleration": 3.0,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0,
-        "nominalVoltage": 12.0,
-        "unlimited": false
-      }
+      "waypointRelativePos": 5.8207468879667985,
+      "rotationDegrees": 155.0
     }
   ],
+  "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -168,7 +158,7 @@
     "rotation": 136.0
   },
   "reversed": false,
-  "folder": "Citrus",
+  "folder": "Improved Citrus",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 136.0

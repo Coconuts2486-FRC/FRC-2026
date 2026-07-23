@@ -258,7 +258,7 @@ public final class Constants {
     // Set to TANK for Drive = Left Stick, Turn = Right Stick;
     // Set to GAMER for Drive = Right Stick, Turn = Left Stick;
     // NOTE: Intrepid programmers can turn this into a Dashboard-settable value
-    public static final DriveStyle kDriveStyle = DriveStyle.GAMER; // TANK, GAMER
+    public static final DriveStyle kDriveStyle = DriveStyle.TANK; // TANK, GAMER
 
     // Joystick Deadbands
     public static final double kDeadband = 0.1;
@@ -352,8 +352,8 @@ public final class Constants {
     // 0.10 = gentle, 0.25 = fairly quick, 1.0 = full snap.
     public static final double kDisabledVisionBlendAlpha = 0.15;
     // Optional: ignore obviously insane measurements while disabled.
-    public static final double kDisabledVisionMaxJumpM = 2.0; // meters
-    public static final double kDisabledVisionMaxJumpRad = Units.degreesToRadians(20.0);
+    public static final double kDisabledVisionMaxJumpM = 10.0; // meters
+    public static final double kDisabledVisionMaxJumpRad = Units.degreesToRadians(360.0);
     public static final double kDisabledVisionStale = 0.75; // seconds
 
     // Coast window config
@@ -433,9 +433,9 @@ public final class Constants {
     public static final MotorIdleMode kIntakeIdleMode = MotorIdleMode.COAST; // BRAKE, COAST
 
     // Pivot angle positions
-    public static final double dropPosition = 0.45;
+    public static final double dropPosition = 0.35;
     public static final double storedAngle = 0.61;
-    public static final double lowerPosition = 0.33;
+    public static final double lowerPosition = 0.3;
 
     // Pivot gear ratio
     public static final double kPivotGearRatio = 25.0 * 54.0 / 16.0;
