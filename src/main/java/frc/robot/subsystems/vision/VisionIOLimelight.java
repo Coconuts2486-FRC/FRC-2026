@@ -18,9 +18,9 @@ import edu.wpi.first.networktables.DoubleArraySubscriber;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.RobotController;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -35,6 +35,8 @@ public class VisionIOLimelight implements VisionIO {
   private final DoubleSubscriber tySubscriber;
   private final DoubleArraySubscriber megatag1Subscriber;
   private final DoubleArraySubscriber megatag2Subscriber;
+  private final Set<Integer> observedTagIds = new HashSet<>();
+  private final List<PoseObservation> poseObservations = new ArrayList<>();
 
   /**
    * Creates a new VisionIOLimelight.
@@ -72,95 +74,57 @@ public class VisionIOLimelight implements VisionIO {
         .flush(); // Increases network traffic but recommended by Limelight
 
     // Read new pose observations from NetworkTables
-    Set<Integer> unionTagIds = new HashSet<>();
-    List<PoseObservation> poseObservations = new LinkedList<>();
+    observedTagIds.clear();
+    poseObservations.clear();
 
     for (var rawSample : megatag1Subscriber.readQueue()) {
-      if (rawSample.value.length == 0) continue;
-
-      int tagCount = (int) rawSample.value[7];
-
-      // Build used tag array for THIS observation only
-      int[] used = new int[tagCount];
-      int u = 0;
-
-      for (int i = 11; i < rawSample.value.length && u < tagCount; i += 7) {
-        int id = (int) rawSample.value[i];
-        used[u++] = id;
-        unionTagIds.add(id);
-      }
-
-      poseObservations.add(
-          new PoseObservation(
-              // Timestamp, based on server timestamp of publish and latency
-              rawSample.timestamp * 1.0e-6 - rawSample.value[6] * 1.0e-3,
-
-              // 3D pose estimate
-              parsePose(rawSample.value),
-
-              // Ambiguity, using only the first tag because ambiguity isn't applicable for multitag
-              rawSample.value.length >= 18 ? rawSample.value[17] : 0.0,
-
-              // Tag count
-              tagCount,
-
-              // Average tag distance
-              rawSample.value[9],
-
-              // Observation type
-              PoseObservationType.MEGATAG_1,
-
-              // Used tag IDs
-              used));
+      addPoseObservation(rawSample.timestamp, rawSample.value, PoseObservationType.MEGATAG_1);
     }
 
     for (var rawSample : megatag2Subscriber.readQueue()) {
-      if (rawSample.value.length == 0) continue;
-
-      int tagCount = (int) rawSample.value[7];
-
-      int[] used = new int[tagCount];
-      int u = 0;
-
-      for (int i = 11; i < rawSample.value.length && u < tagCount; i += 7) {
-        int id = (int) rawSample.value[i];
-        used[u++] = id;
-        unionTagIds.add(id);
-      }
-
-      poseObservations.add(
-          new PoseObservation(
-              // Timestamp, based on server timestamp of publish and latency
-              rawSample.timestamp * 1.0e-6 - rawSample.value[6] * 1.0e-3,
-
-              // 3D pose estimate
-              parsePose(rawSample.value),
-
-              // Ambiguity, zeroed because the pose is already disambiguated
-              0.0,
-
-              // Tag count
-              (int) rawSample.value[7],
-
-              // Average tag distance
-              rawSample.value[9],
-
-              // Observation type
-              PoseObservationType.MEGATAG_2,
-              used));
+      addPoseObservation(rawSample.timestamp, rawSample.value, PoseObservationType.MEGATAG_2);
     }
 
     // Save pose observations to inputs object
     inputs.poseObservations = poseObservations.toArray(new PoseObservation[0]);
 
-    inputs.tagIds = new int[unionTagIds.size()];
+    inputs.tagIds = new int[observedTagIds.size()];
     int i = 0;
-    for (int id : unionTagIds) {
+    for (int id : observedTagIds) {
       inputs.tagIds[i++] = id;
     }
 
     // Sort list by TagID for clarity
     Arrays.sort(inputs.tagIds);
+  }
+
+  private void addPoseObservation(
+      long timestampMicros, double[] rawPose, PoseObservationType observationType) {
+    if (rawPose.length < 10) {
+      return;
+    }
+
+    int tagCount = Math.max(0, (int) rawPose[7]);
+    int availableTagCount = Math.max(0, (rawPose.length - 5) / 7);
+    int[] usedTagIds = new int[Math.min(tagCount, availableTagCount)];
+    int usedTagCount = 0;
+    for (int i = 11; i < rawPose.length && usedTagCount < usedTagIds.length; i += 7) {
+      int tagId = (int) rawPose[i];
+      usedTagIds[usedTagCount++] = tagId;
+      observedTagIds.add(tagId);
+    }
+
+    poseObservations.add(
+        new PoseObservation(
+            timestampMicros * 1.0e-6 - rawPose[6] * 1.0e-3,
+            parsePose(rawPose),
+            observationType == PoseObservationType.MEGATAG_1 && rawPose.length >= 18
+                ? rawPose[17]
+                : 0.0,
+            tagCount,
+            rawPose[9],
+            observationType,
+            usedTagIds));
   }
 
   /** Parses the 3D pose from a Limelight botpose array. */

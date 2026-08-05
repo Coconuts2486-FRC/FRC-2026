@@ -181,7 +181,6 @@ public class Robot extends LoggedRobot {
     m_robotContainer.getDrivebase().setMotorBrake(true);
     m_robotContainer.getDrivebase().resetHeadingController();
 
-    // TODO: Make sure Gyro inits here with whatever is in the path planning thingie
     switch (Constants.getAutoType()) {
       case MANUAL:
         CommandScheduler.getInstance().schedule(m_robotContainer.getManualAuto());

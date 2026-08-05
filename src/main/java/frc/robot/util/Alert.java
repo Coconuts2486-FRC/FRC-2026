@@ -18,11 +18,10 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 
 /** Class for managing persistent alerts to be sent over NetworkTables. */
 public class Alert {
-  private static Map<String, SendableAlerts> groups = new HashMap<String, SendableAlerts>();
+  private static final Map<String, SendableAlerts> groups = new HashMap<>();
 
   private final AlertType type;
   private boolean active = false;
@@ -103,13 +102,10 @@ public class Alert {
     public final List<Alert> alerts = new ArrayList<>();
 
     public String[] getStrings(AlertType type) {
-      Predicate<Alert> activeFilter = (Alert x) -> x.type == type && x.active;
-      Comparator<Alert> timeSorter =
-          (Alert a1, Alert a2) -> (int) (a2.activeStartTime - a1.activeStartTime);
       return alerts.stream()
-          .filter(activeFilter)
-          .sorted(timeSorter)
-          .map((Alert a) -> a.text)
+          .filter(alert -> alert.type == type && alert.active)
+          .sorted(Comparator.comparingDouble((Alert alert) -> alert.activeStartTime).reversed())
+          .map(alert -> alert.text)
           .toArray(String[]::new);
     }
 
@@ -123,7 +119,7 @@ public class Alert {
   }
 
   /** Represents an alert's level of urgency. */
-  public static enum AlertType {
+  public enum AlertType {
     /**
      * High priority alert - displayed first on the dashboard with a red "X" symbol. Use this type
      * for problems which will seriously affect the robot's functionality and thus require immediate

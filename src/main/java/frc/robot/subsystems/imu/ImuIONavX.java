@@ -53,8 +53,7 @@ public class ImuIONavX implements ImuIO {
     navx = new AHRS(NavXComType.kMXP_SPI, (byte) SwerveConstants.kOdometryFrequency);
 
     // Alliance-based adjustment (your original behavior)
-    if (DriverStation.getAlliance().isPresent()
-        && DriverStation.getAlliance().get() == Alliance.Red) {
+    if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
       navx.setAngleAdjustment(180.0);
     } else {
       navx.setAngleAdjustment(0.0);

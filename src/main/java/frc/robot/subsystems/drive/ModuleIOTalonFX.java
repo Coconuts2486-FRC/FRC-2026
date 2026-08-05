@@ -56,6 +56,8 @@ import org.littletonrobotics.junction.Logger;
  * <p>Device configuration and other behaviors not exposed by TunerConstants can be customized here.
  */
 public class ModuleIOTalonFX implements ModuleIO {
+  private static final double[] EMPTY_DOUBLE_ARRAY = new double[0];
+  private static final Rotation2d[] EMPTY_ROTATION_ARRAY = new Rotation2d[0];
   private final SwerveModuleConstants<
           TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>
       constants;
@@ -300,9 +302,9 @@ public class ModuleIOTalonFX implements ModuleIO {
     final int sampleCount = Math.min(tsCount, Math.min(driveCount, turnCount));
 
     if (sampleCount <= 0) {
-      inputs.odometryTimestamps = new double[0];
-      inputs.odometryDrivePositionsRad = new double[0];
-      inputs.odometryTurnPositions = new Rotation2d[0];
+      inputs.odometryTimestamps = EMPTY_DOUBLE_ARRAY;
+      inputs.odometryDrivePositionsRad = EMPTY_DOUBLE_ARRAY;
+      inputs.odometryTurnPositions = EMPTY_ROTATION_ARRAY;
       return;
     }
 

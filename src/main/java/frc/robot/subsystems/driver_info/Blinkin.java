@@ -1,20 +1,20 @@
 package frc.robot.subsystems.driver_info;
 
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
-import java.util.HashSet;
+import java.util.EnumSet;
 import java.util.Set;
 
 public class Blinkin {
 
-  private Spark LEDDriver;
-  public LEDState currentState = LEDState.IDLE;
+  private final Spark ledDriver;
+  private LEDState currentState = LEDState.IDLE;
 
   // tracks requested states for LEDs
-  private final Set<LEDState> requestedStates = new HashSet<>();
+  private final Set<LEDState> requestedStates = EnumSet.noneOf(LEDState.class);
 
   public Blinkin(int pwmPort) {
     // Creates new Spark Controller on PWM port
-    LEDDriver = new Spark(pwmPort);
+    ledDriver = new Spark(pwmPort);
     applyState();
   }
 
@@ -35,9 +35,12 @@ public class Blinkin {
       return;
     }
 
-    // Picks the highest priotity request
-    LEDState highest =
-        requestedStates.stream().max((a, b) -> Integer.compare(a.priority, b.priority)).get();
+    LEDState highest = LEDState.IDLE;
+    for (LEDState requestedState : requestedStates) {
+      if (requestedState.priority > highest.priority) {
+        highest = requestedState;
+      }
+    }
 
     setState(highest);
   }
@@ -48,13 +51,6 @@ public class Blinkin {
       applyState();
     }
   }
-
-  // public void setState(LEDState newState) {
-  //   if (newState != currentState) {
-  //     currentState = newState;
-  //     applyState();
-  //   }
-  // }
 
   public enum LEDState {
     CLIMB(0),
@@ -81,43 +77,43 @@ public class Blinkin {
   private void applyState() {
     switch (currentState) {
       case DISABLED:
-        LEDDriver.set(Pattern.SOLID_COLOR_BLACK.value); // I think this should just be off
+        ledDriver.set(Pattern.SOLID_COLOR_BLACK.value);
         break;
 
       case AUTONOMOUS:
-        LEDDriver.set(Pattern.FIRE_MEDIUM.value);
+        ledDriver.set(Pattern.FIRE_MEDIUM.value);
         break;
 
       case INTAKE:
-        LEDDriver.set(Pattern.LIGHT_CHASE_GRAY.value);
+        ledDriver.set(Pattern.LIGHT_CHASE_GRAY.value);
         break;
 
       case ACTIVE:
-        LEDDriver.set(Pattern.SOLID_COLOR_WHITE.value);
+        ledDriver.set(Pattern.SOLID_COLOR_WHITE.value);
         break;
 
       case DEACTIVE:
-        LEDDriver.set(Pattern.SOLID_COLOR_DARK_GRAY.value);
+        ledDriver.set(Pattern.SOLID_COLOR_DARK_GRAY.value);
         break;
 
       case ENDGAME:
-        LEDDriver.set(Pattern.C2_HEARTBEAT_SLOW.value);
+        ledDriver.set(Pattern.C2_HEARTBEAT_SLOW.value);
         break;
 
       case CLIMB:
-        LEDDriver.set(Pattern.BREATH_CHASE_GRAY.value);
+        ledDriver.set(Pattern.BREATH_CHASE_GRAY.value);
         break;
 
       case TELEOP_BLUE:
-        LEDDriver.set(Pattern.LIGHT_CHASE_BLUE.value);
+        ledDriver.set(Pattern.LIGHT_CHASE_BLUE.value);
         break;
 
       case TELEOP_RED:
-        LEDDriver.set(Pattern.LIGHT_CHASE_RED.value);
+        ledDriver.set(Pattern.LIGHT_CHASE_RED.value);
         break;
 
       default:
-        LEDDriver.set(Pattern.SOLID_COLOR_BLACK.value);
+        ledDriver.set(Pattern.SOLID_COLOR_BLACK.value);
     }
   }
 

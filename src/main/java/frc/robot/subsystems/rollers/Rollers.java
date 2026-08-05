@@ -25,7 +25,7 @@ import frc.robot.util.RBSISubsystem;
 import org.littletonrobotics.junction.Logger;
 
 public class Rollers extends RBSISubsystem {
-  private RollersIO io;
+  private final RollersIO io;
   private final RollersIOInputsAutoLogged inputs = new RollersIOInputsAutoLogged();
 
   public Rollers(RollersIO io) {

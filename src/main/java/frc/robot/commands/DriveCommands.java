@@ -64,15 +64,8 @@ public class DriveCommands {
                   linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
                   linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
                   omega * drive.getMaxAngularSpeedRadPerSec());
-          boolean isFlipped =
-              DriverStation.getAlliance().isPresent()
-                  && DriverStation.getAlliance().get() == Alliance.Red;
-          drive.runVelocity(
-              ChassisSpeeds.fromFieldRelativeSpeeds(
-                  speeds,
-                  isFlipped
-                      ? drive.getHeading().plus(new Rotation2d(Math.PI))
-                      : drive.getHeading()));
+          Rotation2d heading = getAllianceRelativeHeading(drive.getHeading());
+          drive.runVelocity(ChassisSpeeds.fromFieldRelativeSpeeds(speeds, heading));
         },
         drive);
   }
@@ -133,15 +126,8 @@ public class DriveCommands {
                       linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
                       linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
                       omega);
-              boolean isFlipped =
-                  DriverStation.getAlliance().isPresent()
-                      && DriverStation.getAlliance().get() == Alliance.Red;
-              drive.runVelocity(
-                  ChassisSpeeds.fromFieldRelativeSpeeds(
-                      speeds,
-                      isFlipped
-                          ? drive.getHeading().plus(new Rotation2d(Math.PI))
-                          : drive.getHeading()));
+              Rotation2d heading = getAllianceRelativeHeading(drive.getHeading());
+              drive.runVelocity(ChassisSpeeds.fromFieldRelativeSpeeds(speeds, heading));
             },
             drive)
 
@@ -177,6 +163,12 @@ public class DriveCommands {
     omega = MathUtil.applyDeadband(omega, OperatorConstants.kDeadband);
     return Math.copySign(
         Math.pow(Math.abs(omega), OperatorConstants.kAngularJoystickResponseExponent), omega);
+  }
+
+  private static Rotation2d getAllianceRelativeHeading(Rotation2d heading) {
+    return DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red
+        ? heading.plus(Rotation2d.kPi)
+        : heading;
   }
 
   /***************************************************************************/

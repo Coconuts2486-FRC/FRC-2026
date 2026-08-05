@@ -39,6 +39,8 @@ import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
 public class Coordinator extends VirtualSubsystem {
+  private static final double MID_FIELD_Y = FieldConstants.aprilTagLayout.getFieldWidth() / 2.0;
+
   public enum Mode {
     SYSTEM_CHECK, // Disabled, pre-match
     IDLE, // Disabled, playing defense, climb
@@ -70,7 +72,6 @@ public class Coordinator extends VirtualSubsystem {
   private static FieldShotSolution physicsSolution;
   private static RegressionShotSolution fuelSolution;
   private static EpicShotSolution epicSolution;
-  private double midField = FieldConstants.aprilTagLayout.getFieldWidth() / 2.;
 
   private enum Zones {
     HOME_ZONE,
@@ -108,11 +109,13 @@ public class Coordinator extends VirtualSubsystem {
 
   @Override
   public void rbsiPeriodic() {
-    if (DriverStation.isDisabled() && !runOnceDisabled) {
-      // Run the whole function once in disabled to init everything and make ENABLED startup faster
+    if (DriverStation.isDisabled()) {
+      if (!runOnceDisabled) {
+        return;
+      }
       runOnceDisabled = false;
-      // Always safe outputs
-      return;
+    } else {
+      runOnceDisabled = true;
     }
 
     // Read in the current robot state "truth"
@@ -122,8 +125,12 @@ public class Coordinator extends VirtualSubsystem {
     velocity = velocitySupplier.get();
     if (!allianceSet && DriverStation.isEnabled()) {
       // Get the current alliance once when enabled
-      alliance = DriverStation.getAlliance().get();
-      allianceSet = true;
+      DriverStation.getAlliance()
+          .ifPresent(
+              selectedAlliance -> {
+                alliance = selectedAlliance;
+                allianceSet = true;
+              });
     }
 
     // Determine whether we are in the HOME, NEUTRAL, or FOREIGN zone
@@ -161,19 +168,17 @@ public class Coordinator extends VirtualSubsystem {
 
       case NEUTRAL_ZONE:
         // Aim turret at one of two passing locations based on Y position
-        switch (alliance) {
-          case Blue:
-            target =
-                (ypos < midField)
-                    ? FieldConstants.passingOutpostBlue
-                    : FieldConstants.passingDepotBlue;
-
-          case Red:
-            target =
-                (ypos > midField)
-                    ? FieldConstants.passingOutpostRed
-                    : FieldConstants.passingDepotRed;
-        }
+        target =
+            switch (alliance) {
+              case Blue ->
+                  (ypos < MID_FIELD_Y)
+                      ? FieldConstants.passingOutpostBlue
+                      : FieldConstants.passingDepotBlue;
+              case Red ->
+                  (ypos > MID_FIELD_Y)
+                      ? FieldConstants.passingOutpostRed
+                      : FieldConstants.passingDepotRed;
+            };
         break;
 
       case FOREIGN_ZONE:

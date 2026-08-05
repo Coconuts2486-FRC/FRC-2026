@@ -24,7 +24,7 @@ import frc.robot.util.RBSISubsystem;
 import org.littletonrobotics.junction.Logger;
 
 public class Intake extends RBSISubsystem {
-  private IntakeIO io;
+  private final IntakeIO io;
   private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
 
   // pid used for bringing intake up to stored pos

@@ -20,8 +20,6 @@ package frc.robot.subsystems.drive;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.subsystems.drive.SwerveConstants.*;
 
-import choreo.trajectory.SwerveSample;
-import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
@@ -30,7 +28,7 @@ import com.pathplanner.lib.util.PathPlannerLogging;
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
-import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -75,6 +73,7 @@ import org.littletonrobotics.junction.Logger;
  * The odometry is updated from both the swerve modules and (optionally) the vision subsystem.
  */
 public class Drive extends RBSISubsystem {
+  private static final SwerveModuleState[] EMPTY_MODULE_STATES = new SwerveModuleState[0];
 
   // Declare Hardware
   private final Imu imu;
@@ -97,7 +96,8 @@ public class Drive extends RBSISubsystem {
   // This one is package-private; used in DriveOdometry, PhoenixOdometryThread, and
   // SparkOdometryThread
   static final Lock odometryLock = new ReentrantLock();
-  private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
+  private final SwerveDriveKinematics kinematics =
+      new SwerveDriveKinematics(getModuleTranslations());
   private SwerveModulePosition[] lastModulePositions = // For delta tracking
       new SwerveModulePosition[] {
         new SwerveModulePosition(),
@@ -105,11 +105,11 @@ public class Drive extends RBSISubsystem {
         new SwerveModulePosition(),
         new SwerveModulePosition()
       };
-  private SwerveDrivePoseEstimator m_PoseEstimator =
+  private final SwerveDrivePoseEstimator m_PoseEstimator =
       new SwerveDrivePoseEstimator(kinematics, Rotation2d.kZero, lastModulePositions, Pose2d.kZero);
 
   // Declare PID controller and siumulation physics
-  private ProfiledPIDController angleController;
+  private final ProfiledPIDController angleController;
   private DriveSimPhysics simPhysics;
 
   private boolean lastOnOpponentHalf = false;
@@ -173,6 +173,7 @@ public class Drive extends RBSISubsystem {
                   throw new RuntimeException(
                       "For an all-CTRE drive base, use Phoenix Tuner X Swerve Generator instead of YAGSL!");
                 }
+                break;
               case 0b00010000: // Blended Talon Drive / NEO Steer
                 modules[i] = new Module(new ModuleIOBlended(i), i);
                 break;
@@ -275,8 +276,8 @@ public class Drive extends RBSISubsystem {
     // diabled.
     if (DriverStation.isDisabled()) {
       for (var module : modules) module.stop();
-      Logger.recordOutput("SwerveStates/Setpoints", new SwerveModuleState[] {});
-      Logger.recordOutput("SwerveStates/SetpointsOptimized", new SwerveModuleState[] {});
+      Logger.recordOutput("SwerveStates/Setpoints", EMPTY_MODULE_STATES);
+      Logger.recordOutput("SwerveStates/SetpointsOptimized", EMPTY_MODULE_STATES);
     }
 
     boolean onOpponentHalf = onOpponentHalf();
@@ -344,10 +345,8 @@ public class Drive extends RBSISubsystem {
    * @param brake True to set motors to brake mode, false for coast.
    */
   public void setMotorBrake(boolean brake) {
-    {
-      for (Module swerveModule : modules) {
-        swerveModule.setBrakeMode(brake);
-      }
+    for (Module swerveModule : modules) {
+      swerveModule.setBrakeMode(brake);
     }
   }
 
@@ -576,8 +575,7 @@ public class Drive extends RBSISubsystem {
   }
 
   public Pose3d get3dPose() {
-    Pose3d newPose = new Pose3d(m_PoseEstimator.getEstimatedPosition());
-    return newPose;
+    return new Pose3d(m_PoseEstimator.getEstimatedPosition());
   }
 
   /** Returns the current odometry YAW. */
@@ -967,7 +965,7 @@ public class Drive extends RBSISubsystem {
       if (k > 0) {
         double dt = yawTs[k] - yawTs[k - 1];
         if (dt > 1e-6) {
-          yawRateBuffer.addSample(yawTs[k], (yawPosRad[k] - yawPosRad[k - 1]) / dt);
+          yawRateBuffer.addSample(yawTs[k], calculateYawRate(yawPosRad[k - 1], yawPosRad[k], dt));
         }
       }
     }
@@ -979,9 +977,13 @@ public class Drive extends RBSISubsystem {
     if (i > 0) {
       double dt = yawTs[i] - yawTs[i - 1];
       if (dt > 1e-6) {
-        yawRateBuffer.addSample(t, (yawPos[i] - yawPos[i - 1]) / dt);
+        yawRateBuffer.addSample(t, calculateYawRate(yawPos[i - 1], yawPos[i], dt));
       }
     }
+  }
+
+  static double calculateYawRate(double previousYawRad, double yawRad, double dtSeconds) {
+    return MathUtil.angleModulus(yawRad - previousYawRad) / dtSeconds;
   }
 
   /** Set the gyroDisconnectedAlert */
@@ -1007,57 +1009,8 @@ public class Drive extends RBSISubsystem {
   /** CHOREO SECTION (Ignore if AutoType == PATHPLANNER) ******************* */
 
   /** Choreo: Reset odometry */
-  public Command resetOdometry(Pose2d orElseGet) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'resetOdometry'");
-  }
-
-  /** Swerve request to apply during field-centric path following */
-  @SuppressWarnings("unused")
-  private final SwerveRequest.ApplyFieldSpeeds m_pathApplyFieldSpeeds =
-      new SwerveRequest.ApplyFieldSpeeds();
-
-  // Choreo Controller Values
-  private final PIDController m_pathXController = new PIDController(10, 0, 0);
-  private final PIDController m_pathYController = new PIDController(10, 0, 0);
-  private final PIDController m_pathThetaController = new PIDController(7, 0, 0);
-
-  /**
-   * Follows the given field-centric path sample with PID for Choreo
-   *
-   * @param pose Current pose of the robot
-   * @param sample Sample along the path to follow
-   */
-  public void choreoController(Pose2d pose, SwerveSample sample) {
-    m_pathThetaController.enableContinuousInput(-Math.PI, Math.PI);
-
-    var targetSpeeds = sample.getChassisSpeeds();
-    targetSpeeds.vxMetersPerSecond += m_pathXController.calculate(pose.getX(), sample.x);
-    targetSpeeds.vyMetersPerSecond += m_pathYController.calculate(pose.getY(), sample.y);
-    targetSpeeds.omegaRadiansPerSecond +=
-        m_pathThetaController.calculate(pose.getRotation().getRadians(), sample.heading);
-
-    // setControl(
-    //     m_pathApplyFieldSpeeds
-    //         .withSpeeds(targetSpeeds)
-    //         .withWheelForceFeedforwardsX(sample.moduleForcesX())
-    //         .withWheelForceFeedforwardsY(sample.moduleForcesY()));
-  }
-
-  public void followTrajectory(SwerveSample sample) {
-    // Get the current pose of the robot
-    Pose2d pose = getPose();
-
-    // Generate the next speeds for the robot
-    ChassisSpeeds speeds =
-        new ChassisSpeeds(
-            sample.vx + m_pathXController.calculate(pose.getX(), sample.x),
-            sample.vy + m_pathXController.calculate(pose.getX(), sample.y),
-            sample.omega
-                + m_pathXController.calculate(pose.getRotation().getRadians(), sample.heading));
-
-    // Apply the generated speeds
-    runVelocity(speeds);
+  public void resetOdometry(Pose2d pose) {
+    resetPose(pose);
   }
 
   private double[] getModuleStatesAsDoubleArray() {

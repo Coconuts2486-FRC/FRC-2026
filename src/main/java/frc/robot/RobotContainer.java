@@ -47,6 +47,7 @@ import frc.robot.Constants.CANBuses;
 import frc.robot.Constants.Cameras;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.FieldConstants.AprilTagLayoutType;
+import frc.robot.commands.ChoreoAutoController;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.accelerometer.Accelerometer;
 import frc.robot.subsystems.coordinator.Coordinator;
@@ -401,7 +402,7 @@ public class RobotContainer {
                 m_drivebase::getPose, // A function that returns the current robot pose
                 m_drivebase::resetOdometry, // A function that resets the current robot pose to the
                 // provided Pose2d
-                m_drivebase::followTrajectory, // The drive subsystem trajectory follower
+                new ChoreoAutoController(m_drivebase), // The drive subsystem trajectory follower
                 true, // If alliance flipping should be enabled
                 m_drivebase // The drive subsystem
                 );
