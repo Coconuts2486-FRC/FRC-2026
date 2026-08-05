@@ -119,6 +119,8 @@ public class Drive extends RBSISubsystem {
   // Pose reset gate (vision + anything latency-sensitive)
   private volatile long poseResetEpoch = 0; // monotonic counter
   private volatile double lastPoseResetTimestamp = Double.NEGATIVE_INFINITY;
+  private volatile double lastAcceptedVisionReceiptTimestamp = Double.NEGATIVE_INFINITY;
+  private volatile double lastAcceptedVisionMeasurementTimestamp = Double.NEGATIVE_INFINITY;
 
   // Pose Regimes (ENABLED, DISABLED_COAST, DISABLE_STATIONARY)
   private boolean lastEnabled = false;
@@ -212,7 +214,7 @@ public class Drive extends RBSISubsystem {
           // Configure AutoBuilder for PathPlanner
           AutoBuilder.configure(
               this::getPose,
-              this::resetPose,
+              this::resetPoseFromPathPlanner,
               this::getChassisSpeeds,
               (speeds, feedforwards) -> runVelocity(speeds),
               new PPHolonomicDriveController(
@@ -743,8 +745,30 @@ public class Drive extends RBSISubsystem {
   public void resetPose(Pose2d pose) {
     final double now = TimeUtil.now();
     m_PoseEstimator.resetPosition(getRawGyroHeading(), getModulePositions(), pose);
+    lastAcceptedVisionReceiptTimestamp = Double.NEGATIVE_INFINITY;
     markPoseReset(now);
     poseBufferAddSample(now, pose);
+  }
+
+  /** Applies PathPlanner's starting pose only when vision has not localized the robot recently. */
+  private void resetPoseFromPathPlanner(Pose2d pose) {
+    final double now = TimeUtil.now();
+    final double visionAge = now - lastAcceptedVisionReceiptTimestamp;
+    final boolean hasRecentVision =
+        Double.isFinite(visionAge)
+            && visionAge >= 0.0
+            && visionAge <= DrivebaseConstants.kPathPlannerVisionFreshnessSec;
+
+    Logger.recordOutput("Auto/NominalStartingPose", pose);
+    Logger.recordOutput("Auto/PoseBeforeResetDecision", getPose());
+    Logger.recordOutput("Auto/VisionMeasurementAgeSec", visionAge);
+    Logger.recordOutput(
+        "Auto/LastVisionMeasurementTimestamp", lastAcceptedVisionMeasurementTimestamp);
+    Logger.recordOutput("Auto/PoseResetSkippedForVision", hasRecentVision);
+
+    if (!hasRecentVision) {
+      resetPose(pose);
+    }
   }
 
   /** Zeros the gyro based on alliance color */
@@ -782,6 +806,7 @@ public class Drive extends RBSISubsystem {
         disabledVisionInitialized = false;
         lastDisabledVisionTs = Double.NaN;
         m_PoseEstimator.addVisionMeasurement(vision, t, meas.stdDevs());
+        markVisionMeasurementAccepted(t);
         return;
       }
 
@@ -837,6 +862,7 @@ public class Drive extends RBSISubsystem {
         m_PoseEstimator.resetPosition(getRawGyroHeading(), getModulePositions(), vision);
         markPoseReset(t);
         poseBufferAddSample(t, vision);
+        markVisionMeasurementAccepted(t);
 
         Logger.recordOutput("Vision/DisabledInitSnap", true);
         Logger.recordOutput("Vision/DisabledReject", false);
@@ -877,6 +903,7 @@ public class Drive extends RBSISubsystem {
       m_PoseEstimator.addVisionMeasurement(vision, t, meas.stdDevs());
       final Pose2d fusedPose = m_PoseEstimator.getEstimatedPosition();
       poseBufferAddSample(t, fusedPose);
+      markVisionMeasurementAccepted(t);
 
       Logger.recordOutput("Vision/DisabledBlendedPose", fusedPose);
       Logger.recordOutput("Vision/DisabledBlendAlphaUsed", 0.0);
@@ -884,6 +911,11 @@ public class Drive extends RBSISubsystem {
     } finally {
       odometryLock.unlock();
     }
+  }
+
+  private void markVisionMeasurementAccepted(double measurementTimestamp) {
+    lastAcceptedVisionMeasurementTimestamp = measurementTimestamp;
+    lastAcceptedVisionReceiptTimestamp = TimeUtil.now();
   }
 
   /**
