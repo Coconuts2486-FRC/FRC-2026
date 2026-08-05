@@ -14,7 +14,6 @@ import static frc.robot.FieldConstants.*;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -22,8 +21,14 @@ import org.photonvision.PhotonCamera;
 
 /** IO implementation for real PhotonVision hardware. */
 public class VisionIOPhotonVision implements VisionIO {
+  private static final PoseObservation[] kNoPoseObservations = new PoseObservation[0];
+  private static final int[] kNoTagIds = new int[0];
+
   protected final PhotonCamera camera;
   protected final Transform3d robotToCamera;
+  private final Set<Integer> unionTagIds = new HashSet<>();
+  private final PoseObservation[] poseObservationOutput = new PoseObservation[1];
+  private int[] tagIdOutput = kNoTagIds;
 
   /**
    * Creates a new VisionIOPhotonVision.
@@ -39,21 +44,28 @@ public class VisionIOPhotonVision implements VisionIO {
   @Override
   public void updateInputs(VisionIOInputs inputs) {
     inputs.connected = camera.isConnected();
+    unionTagIds.clear();
+    poseObservationOutput[0] = null;
 
-    // Cap the number of unread results processed per loop
-    final int kMaxUnread = 5;
-
-    final Set<Integer> unionTagIds = new HashSet<>();
-    final ArrayList<PoseObservation> poseObservations = new ArrayList<>(kMaxUnread);
+    if (!inputs.connected) {
+      inputs.latestTargetObservation = new TargetObservation(Rotation2d.kZero, Rotation2d.kZero);
+      inputs.poseObservations = kNoPoseObservations;
+      inputs.tagIds = kNoTagIds;
+      return;
+    }
 
     double newestTargetTs = Double.NEGATIVE_INFINITY;
     Rotation2d bestYaw = Rotation2d.kZero;
     Rotation2d bestPitch = Rotation2d.kZero;
 
-    int processed = 0;
-    for (var result : camera.getAllUnreadResults()) {
-      // Hard cap
-      if (processed++ >= kMaxUnread) break;
+    final var unreadResults = camera.getAllUnreadResults();
+    if (!unreadResults.isEmpty()) {
+      var result = unreadResults.get(0);
+      for (int i = 1; i < unreadResults.size(); i++) {
+        if (unreadResults.get(i).getTimestampSeconds() > result.getTimestampSeconds()) {
+          result = unreadResults.get(i);
+        }
+      }
 
       final double ts = result.getTimestampSeconds();
 
@@ -89,7 +101,7 @@ public class VisionIOPhotonVision implements VisionIO {
         }
 
         // Add observation
-        poseObservations.add(
+        poseObservationOutput[0] =
             new PoseObservation(
                 ts,
                 robotPose,
@@ -97,34 +109,34 @@ public class VisionIOPhotonVision implements VisionIO {
                 multitag.fiducialIDsUsed.size(),
                 avgTagDistance,
                 PoseObservationType.PHOTONVISION,
-                used));
+                used);
 
       } else if (!result.targets.isEmpty()) { // Single tag result
         var target = result.targets.get(0);
 
         // Calculate robot pose
         var tagPose = aprilTagLayout.getTagPose(target.fiducialId);
-        if (tagPose.isEmpty()) continue;
+        if (tagPose.isPresent()) {
+          Transform3d fieldToTarget =
+              new Transform3d(tagPose.get().getTranslation(), tagPose.get().getRotation());
+          Transform3d cameraToTarget = target.bestCameraToTarget;
 
-        Transform3d fieldToTarget =
-            new Transform3d(tagPose.get().getTranslation(), tagPose.get().getRotation());
-        Transform3d cameraToTarget = target.bestCameraToTarget;
+          Transform3d fieldToCamera = fieldToTarget.plus(cameraToTarget.inverse());
+          Transform3d fieldToRobot = fieldToCamera.plus(robotToCamera.inverse());
+          Pose3d robotPose = new Pose3d(fieldToRobot.getTranslation(), fieldToRobot.getRotation());
 
-        Transform3d fieldToCamera = fieldToTarget.plus(cameraToTarget.inverse());
-        Transform3d fieldToRobot = fieldToCamera.plus(robotToCamera.inverse());
-        Pose3d robotPose = new Pose3d(fieldToRobot.getTranslation(), fieldToRobot.getRotation());
+          unionTagIds.add(target.fiducialId);
 
-        unionTagIds.add(target.fiducialId);
-
-        poseObservations.add(
-            new PoseObservation(
-                ts,
-                robotPose,
-                target.poseAmbiguity,
-                1,
-                cameraToTarget.getTranslation().getNorm(),
-                PoseObservationType.PHOTONVISION,
-                new int[] {target.fiducialId}));
+          poseObservationOutput[0] =
+              new PoseObservation(
+                  ts,
+                  robotPose,
+                  target.poseAmbiguity,
+                  1,
+                  cameraToTarget.getTranslation().getNorm(),
+                  PoseObservationType.PHOTONVISION,
+                  new int[] {target.fiducialId});
+        }
       }
     }
 
@@ -134,10 +146,18 @@ public class VisionIOPhotonVision implements VisionIO {
             ? new TargetObservation(bestYaw, bestPitch)
             : new TargetObservation(Rotation2d.kZero, Rotation2d.kZero);
 
-    inputs.poseObservations = poseObservations.toArray(new PoseObservation[0]);
+    inputs.poseObservations =
+        poseObservationOutput[0] == null ? kNoPoseObservations : poseObservationOutput;
 
     // Save tag IDs to inputs objects
-    inputs.tagIds = new int[unionTagIds.size()];
+    if (unionTagIds.isEmpty()) {
+      inputs.tagIds = kNoTagIds;
+      return;
+    }
+    if (tagIdOutput.length != unionTagIds.size()) {
+      tagIdOutput = new int[unionTagIds.size()];
+    }
+    inputs.tagIds = tagIdOutput;
     int i = 0;
     for (int id : unionTagIds) inputs.tagIds[i++] = id;
 

@@ -28,6 +28,7 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import frc.robot.Constants;
 import frc.robot.Constants.Cameras;
 import frc.robot.FieldConstants;
 import frc.robot.subsystems.drive.Drive;
@@ -88,6 +89,8 @@ public class Vision extends VirtualSubsystem {
 
   // Variance minimum for fusing poses to prevent divide-by-zero explosions
   private static final double kMinVariance = 1e-12;
+  private static final Pose3d[] kEmptyTagPoseArray = new Pose3d[0];
+  private static final int[] kEmptyTagIdArray = new int[0];
 
   // Last smoothed and fused poses -- used for debugging
   private Pose2d lastFusedPose = new Pose2d();
@@ -95,6 +98,8 @@ public class Vision extends VirtualSubsystem {
   private double lastFusedTs = Double.NaN;
   private boolean lastFusedValid = false;
   private boolean lastSmoothedValid = false;
+  private final LinkedHashSet<Integer> tagIdsSeenThisLoop = new LinkedHashSet<>();
+  private final ArrayList<TimedPose> perCamAccepted = new ArrayList<>();
 
   /** Constructor */
   public Vision(Drive drive, PoseMeasurementConsumer consumer, VisionIO... io) {
@@ -135,9 +140,7 @@ public class Vision extends VirtualSubsystem {
     boolean hasAcceptedThisLoop = false;
     boolean hasFusedThisLoop = false;
     boolean hasSmoothedThisLoop = false;
-
-    // Deduplicated set of tag IDs seen across all cameras this loop
-    final LinkedHashSet<Integer> tagIdsSeenThisLoop = new LinkedHashSet<>();
+    final boolean tuningMode = Constants.tuningMode;
 
     // // Default debug outputs (so keys exist even if we return early)
     // double dbgAlignDt = Double.NaN;
@@ -147,6 +150,8 @@ public class Vision extends VirtualSubsystem {
 
     try {
       lastAlignDbg.reset();
+      tagIdsSeenThisLoop.clear();
+      perCamAccepted.clear();
       // Pose reset gate (clears smoothing state, resets per-cam monotonic gates)
       long epoch = drive.getPoseResetEpoch();
       if (epoch != lastSeenPoseResetEpoch) {
@@ -170,9 +175,6 @@ public class Vision extends VirtualSubsystem {
       //   totalObs += (inputs[i].poseObservations != null) ? inputs[i].poseObservations.length : 0;
       // }
       // Logger.recordOutput("Vision/Debug/totalObsThisLoop", totalObs);
-
-      // Choose best observation per camera for THIS loop
-      final ArrayList<TimedPose> perCamAccepted = new ArrayList<>(io.length);
 
       for (int cam = 0; cam < io.length; cam++) {
 
@@ -207,7 +209,9 @@ public class Vision extends VirtualSubsystem {
           }
 
           GateResult gate = passesScrutiny(cam, obs);
-          // Logger.recordOutput("Vision/Camera" + cam + "/GateFail", gate.reason);
+          if (tuningMode) {
+            Logger.recordOutput("Vision/Camera" + cam + "/GateFail", gate.reason);
+          }
           if (!gate.accepted) {
             rejected++;
             continue;
@@ -262,8 +266,13 @@ public class Vision extends VirtualSubsystem {
 
       // =====
       // Fuse all accepted cams at the newest timestamp among them
-      final double tFusion =
-          perCamAccepted.stream().mapToDouble(e -> e.timestampSeconds()).max().orElse(Double.NaN);
+      double tFusion = Double.NaN;
+      for (int i = 0; i < perCamAccepted.size(); i++) {
+        final double timestamp = perCamAccepted.get(i).timestampSeconds();
+        if (!Double.isFinite(tFusion) || timestamp > tFusion) {
+          tFusion = timestamp;
+        }
+      }
       if (!Double.isFinite(tFusion)) return;
 
       final TimedPose fused = fuseAtTime(perCamAccepted, tFusion);
@@ -304,19 +313,26 @@ public class Vision extends VirtualSubsystem {
 
       Logger.recordOutput("Vision/TagCountThisLoop", tagIdsSeenThisLoop.size());
 
-      // Convert deduplicated tag IDs → Pose3d[]
-      Pose3d[] tagsSeenThisLoop =
-          tagIdsSeenThisLoop.stream()
-              .map(FieldConstants.aprilTagLayout::getTagPose)
-              .filter(Optional::isPresent)
-              .map(Optional::get)
-              .toArray(Pose3d[]::new);
-
-      // Log results
-      Logger.recordOutput("Vision/TagsSeenThisLoop", tagsSeenThisLoop);
-      Logger.recordOutput(
-          "Vision/TagIdsSeenThisLoop",
-          tagIdsSeenThisLoop.stream().mapToInt(Integer::intValue).toArray());
+      if (tagIdsSeenThisLoop.isEmpty()) {
+        Logger.recordOutput("Vision/TagsSeenThisLoop", kEmptyTagPoseArray);
+        Logger.recordOutput("Vision/TagIdsSeenThisLoop", kEmptyTagIdArray);
+      } else {
+        final Pose3d[] tagPoses = new Pose3d[tagIdsSeenThisLoop.size()];
+        final int[] tagIds = new int[tagIdsSeenThisLoop.size()];
+        int poseCount = 0;
+        int idCount = 0;
+        for (int tagId : tagIdsSeenThisLoop) {
+          tagIds[idCount++] = tagId;
+          Optional<Pose3d> tagPose = FieldConstants.aprilTagLayout.getTagPose(tagId);
+          if (tagPose.isPresent()) {
+            tagPoses[poseCount++] = tagPose.get();
+          }
+        }
+        Logger.recordOutput(
+            "Vision/TagsSeenThisLoop",
+            poseCount == tagPoses.length ? tagPoses : Arrays.copyOf(tagPoses, poseCount));
+        Logger.recordOutput("Vision/TagIdsSeenThisLoop", tagIds);
+      }
     }
   }
 

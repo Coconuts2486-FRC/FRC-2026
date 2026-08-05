@@ -22,12 +22,13 @@ import com.pathplanner.lib.util.FlippingUtil;
 import com.revrobotics.util.StatusLogger;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.PowerConstants;
 import frc.robot.util.TimeUtil;
+import frc.robot.util.TimedCommand;
 import frc.robot.util.VirtualSubsystem;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedPowerDistribution;
@@ -107,6 +108,12 @@ public class Robot extends LoggedRobot {
     // Start AdvantageKit logger
     Logger.start();
 
+    // Let NetworkTables batch updates on its own thread and remove unused LiveWindow publishers.
+    // AdvantageKit telemetry continues to publish through NT4Publisher.
+    configureNetworkTablesBatching();
+    LiveWindow.disableAllTelemetry();
+    DriverStation.silenceJoystickConnectionWarning(true);
+
     // Instantiate our RobotContainer. This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
@@ -114,12 +121,13 @@ public class Robot extends LoggedRobot {
     // Create a timer to disable motor brake a few seconds after disable. This will let the robot
     // stop immediately when disabled, but then also let it be pushed more
     m_disabledTimer = new Timer();
+  }
 
-    // NOTE: THIS IS INTENTIONAL TO PROVIDE SOME PRIORITY, BUT NOT SUPER-PRIORITY
-    // Switch thread to medium priority to improve loop timing
-    // if (isReal()) {
-    //   Threads.setCurrentThreadPriority(true, 30);
-    // }
+  @SuppressWarnings("removal")
+  private void configureNetworkTablesBatching() {
+    // WPILib deprecated the per-loop flush switch without a replacement. Disabling it lets the NT
+    // implementation batch updates while retaining all publishers.
+    setNetworkTablesFlushEnabled(false);
   }
 
   // /** This function is called periodically during all modes. */
@@ -127,11 +135,6 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotPeriodic() {
     final long t0 = System.nanoTime();
-
-    if (isReal()) {
-      // Switch thread to high priority to improve loop timing
-      Threads.setCurrentThreadPriority(true, 99);
-    }
 
     // Run the Virtual Subsystem periodic functions
     VirtualSubsystem.periodicAll();
@@ -144,11 +147,6 @@ public class Robot extends LoggedRobot {
     // the Command-based framework to work.
     CommandScheduler.getInstance().run();
     final long t3 = System.nanoTime();
-
-    if (isReal()) {
-      // Return thread to normal priority
-      Threads.setCurrentThreadPriority(false, 10);
-    }
 
     Logger.recordOutput("Loop/RobotPeriodic_ms", (t3 - t0) / 1e6);
     Logger.recordOutput("Loop/Virtual_ms", (t2 - t0) / 1e6);
@@ -178,6 +176,7 @@ public class Robot extends LoggedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+    final long autoInitStart = System.nanoTime();
 
     // Just in case, cancel all running commands
     CommandScheduler.getInstance().cancelAll();
@@ -209,6 +208,8 @@ public class Robot extends LoggedRobot {
             Logger.recordOutput("Auto/StartingPose", startingPose);
           }
 
+          m_autoCommandPathPlanner =
+              new TimedCommand(m_autoCommandPathPlanner, "Loop/Commands/PathPlannerAuto");
           CommandScheduler.getInstance().schedule(m_autoCommandPathPlanner);
         }
         break;
@@ -220,6 +221,7 @@ public class Robot extends LoggedRobot {
         throw new RuntimeException(
             "Incorrect AUTO type selected in Constants: " + Constants.getAutoType());
     }
+    Logger.recordOutput("Loop/Mode/AutonomousInitMS", (System.nanoTime() - autoInitStart) / 1e6);
   }
 
   /** This function is called periodically during autonomous. */

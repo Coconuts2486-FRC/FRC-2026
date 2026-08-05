@@ -11,11 +11,25 @@ package frc.robot.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import org.littletonrobotics.junction.AutoLog;
+import org.littletonrobotics.junction.LogTable;
+import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 public interface VisionIO {
-  @AutoLog
-  class VisionIOInputs {
+  class VisionIOInputs implements LoggableInputs {
+    private static final double[] kEmptyDoubles = new double[0];
+    private static final Pose3d[] kEmptyPoses = new Pose3d[0];
+    private static final int[] kEmptyInts = new int[0];
+    private static final int[][] kEmptyIntArrays = new int[0][];
+    private static final String[] kEmptyStrings = new String[0];
+
+    private double[] logTimestamps = kEmptyDoubles;
+    private Pose3d[] logPoses = kEmptyPoses;
+    private double[] logAmbiguities = kEmptyDoubles;
+    private int[] logTagCounts = kEmptyInts;
+    private double[] logAverageTagDistances = kEmptyDoubles;
+    private String[] logTypes = kEmptyStrings;
+    private int[][] logUsedTagIds = kEmptyIntArrays;
+
     public boolean connected = false;
 
     // Latest "camera to target" observation (optional)
@@ -27,6 +41,102 @@ public interface VisionIO {
 
     // Union of tag IDs seen this loop
     public int[] tagIds = new int[0];
+
+    @Override
+    public void toLog(LogTable table) {
+      table.put("Connected", connected);
+      table.put("LatestTargetTxRad", latestTargetObservation.tx().getRadians());
+      table.put("LatestTargetTyRad", latestTargetObservation.ty().getRadians());
+      table.put("TagIds", tagIds);
+
+      final int count = poseObservations.length;
+      ensureLogCapacity(count);
+      for (int i = 0; i < count; i++) {
+        final PoseObservation observation = poseObservations[i];
+        logTimestamps[i] = observation.timestamp();
+        logPoses[i] = observation.pose();
+        logAmbiguities[i] = observation.ambiguity();
+        logTagCounts[i] = observation.tagCount();
+        logAverageTagDistances[i] = observation.averageTagDistance();
+        logTypes[i] = observation.type().name();
+        logUsedTagIds[i] = observation.usedTagIds();
+      }
+      table.put("PoseObservations/Timestamps", logTimestamps);
+      table.put("PoseObservations/Poses", logPoses);
+      table.put("PoseObservations/Ambiguities", logAmbiguities);
+      table.put("PoseObservations/TagCounts", logTagCounts);
+      table.put("PoseObservations/AverageTagDistances", logAverageTagDistances);
+      table.put("PoseObservations/Types", logTypes);
+      table.put("PoseObservations/UsedTagIds", logUsedTagIds);
+    }
+
+    @Override
+    public void fromLog(LogTable table) {
+      connected = table.get("Connected", connected);
+      latestTargetObservation =
+          new TargetObservation(
+              Rotation2d.fromRadians(table.get("LatestTargetTxRad", 0.0)),
+              Rotation2d.fromRadians(table.get("LatestTargetTyRad", 0.0)));
+      tagIds = table.get("TagIds", tagIds);
+
+      final double[] timestamps = table.get("PoseObservations/Timestamps", kEmptyDoubles);
+      final Pose3d[] poses = table.get("PoseObservations/Poses", kEmptyPoses);
+      final double[] ambiguities = table.get("PoseObservations/Ambiguities", kEmptyDoubles);
+      final int[] tagCounts = table.get("PoseObservations/TagCounts", kEmptyInts);
+      final double[] averageTagDistances =
+          table.get("PoseObservations/AverageTagDistances", kEmptyDoubles);
+      final String[] types = table.get("PoseObservations/Types", kEmptyStrings);
+      final int[][] usedTagIds = table.get("PoseObservations/UsedTagIds", kEmptyIntArrays);
+
+      final int count =
+          Math.min(
+              timestamps.length,
+              Math.min(
+                  poses.length,
+                  Math.min(
+                      ambiguities.length, Math.min(tagCounts.length, averageTagDistances.length))));
+      poseObservations = new PoseObservation[count];
+      for (int i = 0; i < count; i++) {
+        PoseObservationType type = PoseObservationType.PHOTONVISION;
+        if (i < types.length) {
+          try {
+            type = PoseObservationType.valueOf(types[i]);
+          } catch (IllegalArgumentException ignored) {
+            // Preserve compatibility with logs containing an unknown observation type.
+          }
+        }
+        poseObservations[i] =
+            new PoseObservation(
+                timestamps[i],
+                poses[i],
+                ambiguities[i],
+                tagCounts[i],
+                averageTagDistances[i],
+                type,
+                i < usedTagIds.length ? usedTagIds[i] : kEmptyInts);
+      }
+    }
+
+    private void ensureLogCapacity(int count) {
+      if (logTimestamps.length == count) return;
+      if (count == 0) {
+        logTimestamps = kEmptyDoubles;
+        logPoses = kEmptyPoses;
+        logAmbiguities = kEmptyDoubles;
+        logTagCounts = kEmptyInts;
+        logAverageTagDistances = kEmptyDoubles;
+        logTypes = kEmptyStrings;
+        logUsedTagIds = kEmptyIntArrays;
+      } else {
+        logTimestamps = new double[count];
+        logPoses = new Pose3d[count];
+        logAmbiguities = new double[count];
+        logTagCounts = new int[count];
+        logAverageTagDistances = new double[count];
+        logTypes = new String[count];
+        logUsedTagIds = new int[count][];
+      }
+    }
   }
 
   /** Represents the angle to a simple target, not used for pose estimation. */

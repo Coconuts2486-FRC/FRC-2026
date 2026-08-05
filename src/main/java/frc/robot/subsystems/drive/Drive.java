@@ -46,8 +46,6 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
@@ -113,7 +111,6 @@ public class Drive extends RBSISubsystem {
   // Declare PID controller and siumulation physics
   private ProfiledPIDController angleController;
   private DriveSimPhysics simPhysics;
-  private final Field2d m_field = new Field2d();
 
   private boolean lastOnOpponentHalf = false;
   private static final double FIELD_LENGTH_METERS = 16.54175; // official FRC 2026 field length
@@ -265,7 +262,6 @@ public class Drive extends RBSISubsystem {
                 (state) -> Logger.recordOutput("Drive/SysIdState", state.toString())),
             new SysIdRoutine.Mechanism(
                 (voltage) -> runCharacterization(voltage.in(Volts)), null, this));
-    SmartDashboard.putData("Field", m_field);
   }
 
   /************************************************************************* */
@@ -280,8 +276,6 @@ public class Drive extends RBSISubsystem {
       Logger.recordOutput("SwerveStates/Setpoints", new SwerveModuleState[] {});
       Logger.recordOutput("SwerveStates/SetpointsOptimized", new SwerveModuleState[] {});
     }
-
-    m_field.setRobotPose(m_PoseEstimator.getEstimatedPosition());
 
     boolean onOpponentHalf = onOpponentHalf();
 
@@ -590,8 +584,14 @@ public class Drive extends RBSISubsystem {
     if (Constants.isPureSim()) {
       return simPhysics.getYaw();
     }
-    // return imu.getYaw();
     return m_PoseEstimator.getEstimatedPosition().getRotation();
+  }
+
+  private Rotation2d getRawGyroHeading() {
+    if (Constants.isPureSim()) {
+      return simPhysics.getYaw();
+    }
+    return imu.getYaw();
   }
 
   /**
@@ -741,8 +741,10 @@ public class Drive extends RBSISubsystem {
    * @param pose The specified pose to which to reset the poseEsitmator
    */
   public void resetPose(Pose2d pose) {
-    m_PoseEstimator.resetPosition(getHeading(), getModulePositions(), pose);
-    markPoseReset(TimeUtil.now());
+    final double now = TimeUtil.now();
+    m_PoseEstimator.resetPosition(getRawGyroHeading(), getModulePositions(), pose);
+    markPoseReset(now);
+    poseBufferAddSample(now, pose);
   }
 
   /** Zeros the gyro based on alliance color */
@@ -806,9 +808,6 @@ public class Drive extends RBSISubsystem {
               ? Math.min(DrivebaseConstants.kDisabledVisionBlendAlpha, 0.05)
               : DrivebaseConstants.kDisabledVisionBlendAlpha;
 
-      // "Current" for blending target (estimator pose)
-      final Pose2d current = m_PoseEstimator.getEstimatedPosition();
-
       // Debug
       // Logger.recordOutput("Vision/Debug/disabledCoast", coast);
       // Logger.recordOutput("Vision/Debug/disabledVisionInitialized", disabledVisionInitialized);
@@ -835,7 +834,7 @@ public class Drive extends RBSISubsystem {
         lastDisabledVisionPose = vision;
         lastDisabledVisionTs = t;
 
-        m_PoseEstimator.resetPosition(getHeading(), getModulePositions(), vision);
+        m_PoseEstimator.resetPosition(getRawGyroHeading(), getModulePositions(), vision);
         markPoseReset(t);
         poseBufferAddSample(t, vision);
 
@@ -872,16 +871,15 @@ public class Drive extends RBSISubsystem {
       lastDisabledVisionPose = vision;
       lastDisabledVisionTs = t;
 
-      // Blend toward vision -- gentle correction
-      final Pose2d blended = current.interpolate(vision, alpha);
+      // After the one initialization snap, use the estimator's timestamped vision update. Repeated
+      // resetPosition calls invalidate the pose history and force Vision to clear its smoothing
+      // state every frame.
+      m_PoseEstimator.addVisionMeasurement(vision, t, meas.stdDevs());
+      final Pose2d fusedPose = m_PoseEstimator.getEstimatedPosition();
+      poseBufferAddSample(t, fusedPose);
 
-      // Push values to pose estimator and pose buffer
-      m_PoseEstimator.resetPosition(getHeading(), getModulePositions(), blended);
-      markPoseReset(t);
-      poseBufferAddSample(t, blended);
-
-      Logger.recordOutput("Vision/DisabledBlendedPose", blended);
-      Logger.recordOutput("Vision/DisabledBlendAlphaUsed", alpha);
+      Logger.recordOutput("Vision/DisabledBlendedPose", fusedPose);
+      Logger.recordOutput("Vision/DisabledBlendAlphaUsed", 0.0);
 
     } finally {
       odometryLock.unlock();

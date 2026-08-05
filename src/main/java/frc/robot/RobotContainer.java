@@ -25,8 +25,10 @@ import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.util.PathPlannerLogging;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -46,7 +48,6 @@ import frc.robot.Constants.Cameras;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.FieldConstants.AprilTagLayoutType;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.PathAngleOverride;
 import frc.robot.subsystems.accelerometer.Accelerometer;
 import frc.robot.subsystems.coordinator.Coordinator;
 import frc.robot.subsystems.drive.Drive;
@@ -95,7 +96,6 @@ import frc.robot.util.RBSIEnum.Mode;
 import frc.robot.util.RBSIPowerMonitor;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.photonvision.PhotonCamera;
@@ -104,6 +104,11 @@ import org.photonvision.simulation.VisionSystemSim;
 
 /** This is the location for defining robot hardware, commands, and controller button bindings. */
 public class RobotContainer {
+  private final PIDController pathRotationOverrideController =
+      new PIDController(
+          Constants.DrivebaseConstants.kPSPin,
+          Constants.DrivebaseConstants.kISPin,
+          Constants.DrivebaseConstants.kDSpin);
 
   /** Define the Driver and, optionally, the Operator/Co-Driver Controllers */
   // Replace with ``CommandPS4Controller`` or ``CommandJoystick`` if needed
@@ -214,10 +219,18 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "EnableShootOnMove",
         Commands.runOnce(
-            () -> PathAngleOverride.setOverride(() -> Optional.of(Coordinator.getRobotAngle()))));
+            () -> {
+              pathRotationOverrideController.reset();
+              PPHolonomicDriveController.overrideRotationFeedback(
+                  () ->
+                      pathRotationOverrideController.calculate(
+                          m_drivebase.getHeading().getRadians(),
+                          Coordinator.getRobotAngle().getRadians()));
+            }));
 
     NamedCommands.registerCommand(
-        "DisableShootOnMove", Commands.runOnce(PathAngleOverride::clearOverride));
+        "DisableShootOnMove",
+        Commands.runOnce(PPHolonomicDriveController::clearRotationFeedbackOverride));
 
     NamedCommands.registerCommand(
         "Zero", Commands.runOnce(m_drivebase::zeroHeadingForAlliance, m_drivebase));
@@ -342,6 +355,7 @@ public class RobotContainer {
             m_intake::isIntakeExtended);
 
     // Define Auto commands
+    pathRotationOverrideController.enableContinuousInput(-Math.PI, Math.PI);
     defineAutoCommands();
 
     // Set up the SmartDashboard Auto Chooser based on auto type
@@ -358,8 +372,6 @@ public class RobotContainer {
       case PATHPLANNER:
         autoChooserPathPlanner =
             new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
-
-        PPHolonomicDriveController.setRotationTargetOverride(PathAngleOverride::getOverride);
 
         // Set the others to null
         autoChooserChoreo = null;
@@ -683,8 +695,11 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommandPathPlanner() {
+    // Manually insert AUTO for dashboardless testing
+    return new PathPlannerAuto("Test1_Bowers");
+
     // Use the ``autoChooser`` to define your auto path from the SmartDashboard
-    return autoChooserPathPlanner.get();
+    // return autoChooserPathPlanner.get();
   }
 
   /**

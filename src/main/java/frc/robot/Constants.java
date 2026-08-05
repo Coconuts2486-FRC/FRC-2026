@@ -309,7 +309,7 @@ public final class Constants {
     // For Profiled PID Motion -- NEED TUNING!
     // Used in a variety of contexts, including PathPlanner and AutoPilot
     // Chassis (not module) across-the-field strafing motion
-    public static final double kPStrafe = 8; // 12.5
+    public static final double kPStrafe = 3.0;
     public static final double kIStrafe = 0.0;
     public static final double kDStrafe = 0.0;
     // Chassis (not module) solid-body rotation
@@ -332,23 +332,19 @@ public final class Constants {
     public static final double kDriveOpenLoopRampPeriod = 0.25; // seconds
 
     public static final double kOptimalVoltage = 12.0; // Volts
-    public static final double kNominalFFVolts = 2.0; // Volts
-
     // Default TalonFX Gains (Replaces what's in Phoenix X's Tuner Constants)
-    // NOTE: Default values from 6328's 2025 Public Code
-    //
-    // IMPORTANT:: These values are valid only for CTRE LICENSED operation!!
-    //             Adjust these downward until your modules behave correctly
-    public static final double kDriveP = 50.0;
-    public static final double kDriveD = 0.03;
-    public static final double kDriveV = 0.9;
-    public static final double kDriveA = 0.1;
-    public static final double kDriveS = 3.5;
+    // These are voltage-mode starting points for this custom IO layer, which configures TalonFX
+    // drive feedback in mechanism rotations. Characterize the robot before treating them as final.
+    public static final double kDriveP = 0.70;
+    public static final double kDriveD = 0.0;
+    public static final double kDriveV = 0.83;
+    public static final double kDriveA = 0.0;
+    public static final double kDriveS = 0.20;
     public static final double kDriveT =
         SwerveConstants.kDriveGearRatio / DCMotor.getKrakenX60Foc(1).KtNMPerAmp;
-    public static final double kSteerP = 500.0;
-    public static final double kSteerD = 20.0;
-    public static final double kSteerS = 2.0;
+    public static final double kSteerP = 100.0;
+    public static final double kSteerD = 0.5;
+    public static final double kSteerS = 0.1;
 
     // Odometry-related constants ==================================
     public static final double kHistorySize = 1.5; // seconds
