@@ -17,7 +17,9 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.util.FlippingUtil;
 import com.revrobotics.util.StatusLogger;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -191,13 +193,22 @@ public class Robot extends LoggedRobot {
 
         if (m_autoCommandPathPlanner != null) {
           Pose2d startingPose = getSelectedAutoStartingPosePathPlanner();
+          boolean autoReady = true;
           if (startingPose != null) {
+            if (AutoBuilder.shouldFlip()) {
+              startingPose = FlippingUtil.flipFieldPose(startingPose);
+            }
             Logger.recordOutput("Auto/StartingPose", startingPose);
+            autoReady = m_robotContainer.getDrivebase().validatePathPlannerAutoStart(startingPose);
           }
 
-          m_autoCommandPathPlanner =
-              new TimedCommand(m_autoCommandPathPlanner, "Loop/Commands/PathPlannerAuto");
-          CommandScheduler.getInstance().schedule(m_autoCommandPathPlanner);
+          if (autoReady) {
+            m_autoCommandPathPlanner =
+                new TimedCommand(m_autoCommandPathPlanner, "Loop/Commands/PathPlannerAuto");
+            CommandScheduler.getInstance().schedule(m_autoCommandPathPlanner);
+          } else {
+            m_autoCommandPathPlanner = null;
+          }
         }
         break;
 

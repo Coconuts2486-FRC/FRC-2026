@@ -32,7 +32,6 @@ import frc.robot.computations.BasicRegression;
 import frc.robot.computations.BasicRegression.RegressionShotSolution;
 import frc.robot.computations.EpicRegression;
 import frc.robot.computations.EpicRegression.EpicShotSolution;
-import frc.robot.computations.FieldRelativeShooterSolver;
 import frc.robot.computations.FieldRelativeShooterSolver.FieldShotSolution;
 import frc.robot.util.VirtualSubsystem;
 import java.util.function.Supplier;
@@ -194,8 +193,10 @@ public class Coordinator extends VirtualSubsystem {
 
     epicSolution = EpicRegression.solve(new Pose3d(pose), kShooterTransform, target, velocity);
 
-    physicsSolution =
-        FieldRelativeShooterSolver.solve(new Pose3d(pose), kShooterTransform, target, velocity);
+    // The physics solver is retained for comparison work, but it is too expensive to run in every
+    // Coordinator cycle when EpicRegression supplies the active shot solution.
+    // physicsSolution =
+    //     FieldRelativeShooterSolver.solve(new Pose3d(pose), kShooterTransform, target, velocity);
 
     // Check on intake roller running
     intakeRunning = intakeRollersRunningSupplier.get();
@@ -245,10 +246,11 @@ public class Coordinator extends VirtualSubsystem {
 
     Logger.recordOutput(
         "Coordinator/RegVel", RotationsPerSecond.of(fuelSolution.getVelocity() / 60.));
-    Logger.recordOutput(
-        "Coordinator/PhysVel",
-        RotationsPerSecond.of(
-            physicsSolution.getVelocity() / ShooterConstants.kFlywheelCircumfrence));
+    // Dependent on the physics calculation above.
+    // Logger.recordOutput(
+    //     "Coordinator/PhysVel",
+    //     RotationsPerSecond.of(
+    //         physicsSolution.getVelocity() / ShooterConstants.kFlywheelCircumfrence));
     Logger.recordOutput(
         "Coordinator/EpicVel",
         RotationsPerSecond.of(epicSolution.getVelocity() / ShooterConstants.kFlywheelCircumfrence));

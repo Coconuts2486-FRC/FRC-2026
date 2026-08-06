@@ -58,6 +58,7 @@ public class RBSIPowerMonitor extends VirtualSubsystem {
   private final Alert lowVoltageAlert = new Alert("Low battery voltage!", AlertType.WARNING);
   private final Alert criticalVoltageAlert =
       new Alert("Critical battery voltage!", AlertType.ERROR);
+  private final double[] channelCurrents = new double[24];
 
   private long loops = 0;
 
@@ -86,8 +87,10 @@ public class RBSIPowerMonitor extends VirtualSubsystem {
     lowVoltageAlert.set(voltage < PowerConstants.kVoltageWarning);
     criticalVoltageAlert.set(voltage < PowerConstants.kVoltageCritical);
 
-    for (int ch = 0; ch < conduit.getPDPChannelCount(); ch++) {
-      portAlerts[ch].set(conduit.getPDPChannelCurrent(ch) > PowerConstants.kMotorPortMaxCurrent);
+    int channelCount = Math.min(channelCurrents.length, conduit.getPDPChannelCount());
+    for (int ch = 0; ch < channelCount; ch++) {
+      channelCurrents[ch] = conduit.getPDPChannelCurrent(ch);
+      portAlerts[ch].set(channelCurrents[ch] > PowerConstants.kMotorPortMaxCurrent);
     }
 
     // --- Battery estimation ---
@@ -130,7 +133,9 @@ public class RBSIPowerMonitor extends VirtualSubsystem {
   private void logGroupCurrent(String name, int[] ports) {
     double sum = 0.0;
     for (int port : ports) {
-      sum += conduit.getPDPChannelCurrent(port);
+      if (port >= 0 && port < channelCurrents.length) {
+        sum += channelCurrents[port];
+      }
     }
     // Logger.recordOutput("Power/Subsystems/" + name + "_Ports", ports);
     Logger.recordOutput("Power/Subsystems/" + name + "_Current", sum);

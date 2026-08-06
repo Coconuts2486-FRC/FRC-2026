@@ -60,12 +60,9 @@ public class VisionIOPhotonVision implements VisionIO {
 
     final var unreadResults = camera.getAllUnreadResults();
     if (!unreadResults.isEmpty()) {
-      var result = unreadResults.get(0);
-      for (int i = 1; i < unreadResults.size(); i++) {
-        if (unreadResults.get(i).getTimestampSeconds() > result.getTimestampSeconds()) {
-          result = unreadResults.get(i);
-        }
-      }
+      // PhotonVision returns unread changes in FIFO order. Drain the FIFO, but retain only the
+      // newest result so a slow robot loop cannot create a camera-processing backlog.
+      var result = unreadResults.get(unreadResults.size() - 1);
 
       final double ts = result.getTimestampSeconds();
 

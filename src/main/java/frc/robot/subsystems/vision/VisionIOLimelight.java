@@ -77,12 +77,16 @@ public class VisionIOLimelight implements VisionIO {
     observedTagIds.clear();
     poseObservations.clear();
 
-    for (var rawSample : megatag1Subscriber.readQueue()) {
-      addPoseObservation(rawSample.timestamp, rawSample.value, PoseObservationType.MEGATAG_1);
+    var megatag1Samples = megatag1Subscriber.readQueue();
+    if (megatag1Samples.length > 0) {
+      var newest = megatag1Samples[megatag1Samples.length - 1];
+      addPoseObservation(newest.timestamp, newest.value, PoseObservationType.MEGATAG_1);
     }
 
-    for (var rawSample : megatag2Subscriber.readQueue()) {
-      addPoseObservation(rawSample.timestamp, rawSample.value, PoseObservationType.MEGATAG_2);
+    var megatag2Samples = megatag2Subscriber.readQueue();
+    if (megatag2Samples.length > 0) {
+      var newest = megatag2Samples[megatag2Samples.length - 1];
+      addPoseObservation(newest.timestamp, newest.value, PoseObservationType.MEGATAG_2);
     }
 
     // Save pose observations to inputs object

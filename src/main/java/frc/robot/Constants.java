@@ -108,7 +108,7 @@ public final class Constants {
   /** General Constants **************************************************** */
   public static final double loopPeriodSecs = 0.02;
 
-  public static final boolean tuningMode = true;
+  public static final boolean tuningMode = false;
 
   public static final double G_TO_MPS2 = 9.80665; // Gravitational acceleration in m/s/s
 
@@ -349,6 +349,7 @@ public final class Constants {
     // Odometry-related constants ==================================
     public static final double kHistorySize = 1.5; // seconds
     public static final double kPathPlannerVisionFreshnessSec = 1.0;
+    public static final double kPathPlannerStartToleranceMeters = 0.5;
     // How aggressively to pull pose toward vision while DISABLED.
     // 0.10 = gentle, 0.25 = fairly quick, 1.0 = full snap.
     public static final double kDisabledVisionBlendAlpha = 0.15;

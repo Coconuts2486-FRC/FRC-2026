@@ -9,6 +9,8 @@
 
 package frc.robot.subsystems.drive;
 
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusCode;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -74,6 +76,14 @@ public class Module {
     driveDisconnectedAlert.set(!inputs.driveConnected);
     turnDisconnectedAlert.set(!inputs.turnConnected);
     turnEncoderDisconnectedAlert.set(!inputs.turnEncoderConnected);
+  }
+
+  BaseStatusSignal[] getBulkRefreshSignals() {
+    return io.getBulkRefreshSignals();
+  }
+
+  void setBulkRefreshStatus(StatusCode status) {
+    io.setBulkRefreshStatus(status);
   }
 
   /** Forwards the simulation periodic call to the IO layer */

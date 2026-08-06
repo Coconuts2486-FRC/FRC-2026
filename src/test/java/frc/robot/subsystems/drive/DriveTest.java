@@ -10,6 +10,8 @@ package frc.robot.subsystems.drive;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import org.junit.jupiter.api.Test;
 
 class DriveTest {
@@ -21,5 +23,32 @@ class DriveTest {
     double yaw = Math.toRadians(-179.0);
 
     assertEquals(Math.toRadians(20.0), Drive.calculateYawRate(previousYaw, yaw, 0.1), EPSILON);
+  }
+
+  @Test
+  void pathPlannerStartResetsWhenVisionIsMissingOrEstimatorIsUninitialized() {
+    Pose2d pathStart = new Pose2d(4.0, 6.0, Rotation2d.kZero);
+
+    assertEquals(
+        Drive.PathPlannerStartAction.RESET_TO_PATH_START,
+        Drive.determinePathPlannerStartAction(
+            new Pose2d(6.0, 6.0, Rotation2d.kZero), pathStart, false, 0.5));
+    assertEquals(
+        Drive.PathPlannerStartAction.RESET_TO_PATH_START,
+        Drive.determinePathPlannerStartAction(Pose2d.kZero, pathStart, true, 0.5));
+  }
+
+  @Test
+  void pathPlannerStartUsesNearbyVisionAndBlocksDistantVision() {
+    Pose2d pathStart = new Pose2d(4.0, 6.0, Rotation2d.kZero);
+
+    assertEquals(
+        Drive.PathPlannerStartAction.USE_VISION_POSE,
+        Drive.determinePathPlannerStartAction(
+            new Pose2d(4.4, 6.0, Rotation2d.kZero), pathStart, true, 0.5));
+    assertEquals(
+        Drive.PathPlannerStartAction.BLOCK_AUTO,
+        Drive.determinePathPlannerStartAction(
+            new Pose2d(4.6, 6.0, Rotation2d.kZero), pathStart, true, 0.5));
   }
 }

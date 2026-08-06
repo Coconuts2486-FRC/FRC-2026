@@ -17,7 +17,6 @@ import frc.robot.generated.TunerFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.DoubleSupplier;
@@ -36,9 +35,9 @@ public class PhoenixOdometryThread extends Thread {
       new ReentrantLock(); // Prevents conflicts when registering signals
   private BaseStatusSignal[] phoenixSignals = new BaseStatusSignal[0];
   private final List<DoubleSupplier> genericSignals = new ArrayList<>();
-  private final List<Queue<Double>> phoenixQueues = new ArrayList<>();
-  private final List<Queue<Double>> genericQueues = new ArrayList<>();
-  private final List<Queue<Double>> timestampQueues = new ArrayList<>();
+  private final List<LatestSampleQueue<Double>> phoenixQueues = new ArrayList<>();
+  private final List<LatestSampleQueue<Double>> genericQueues = new ArrayList<>();
+  private final List<LatestSampleQueue<Double>> timestampQueues = new ArrayList<>();
 
   private static final boolean isCANFD = TunerFactory.INSTANCE.canBus().isNetworkFD();
   private static PhoenixOdometryThread instance = null;
@@ -67,7 +66,7 @@ public class PhoenixOdometryThread extends Thread {
 
   /** Registers a Phoenix signal to be read from the thread. */
   public Queue<Double> registerSignal(StatusSignal<Angle> signal) {
-    Queue<Double> queue = new ArrayBlockingQueue<>(128); // was 20
+    LatestSampleQueue<Double> queue = new LatestSampleQueue<>(128);
     signalsLock.lock();
     Drive.odometryLock.lock();
     try {
@@ -85,7 +84,7 @@ public class PhoenixOdometryThread extends Thread {
 
   /** Registers a generic signal to be read from the thread. */
   public Queue<Double> registerSignal(DoubleSupplier signal) {
-    Queue<Double> queue = new ArrayBlockingQueue<>(128); // was 20
+    LatestSampleQueue<Double> queue = new LatestSampleQueue<>(128);
     signalsLock.lock();
     Drive.odometryLock.lock();
     try {
@@ -100,7 +99,7 @@ public class PhoenixOdometryThread extends Thread {
 
   /** Returns a new queue that returns timestamp values for each sample. */
   public Queue<Double> makeTimestampQueue() {
-    Queue<Double> queue = new ArrayBlockingQueue<>(128); // was 20
+    LatestSampleQueue<Double> queue = new LatestSampleQueue<>(128);
     Drive.odometryLock.lock();
     try {
       timestampQueues.add(queue);
@@ -148,13 +147,19 @@ public class PhoenixOdometryThread extends Thread {
 
         // Add new samples to queues
         for (int i = 0; i < phoenixSignals.length; i++) {
-          if (!phoenixQueues.get(i).offer(phoenixSignals[i].getValueAsDouble())) droppedSamples++;
+          if (phoenixQueues.get(i).offerLatest(phoenixSignals[i].getValueAsDouble())) {
+            droppedSamples++;
+          }
         }
         for (int i = 0; i < genericSignals.size(); i++) {
-          genericQueues.get(i).offer(genericSignals.get(i).getAsDouble());
+          if (genericQueues.get(i).offerLatest(genericSignals.get(i).getAsDouble())) {
+            droppedSamples++;
+          }
         }
         for (int i = 0; i < timestampQueues.size(); i++) {
-          if (!timestampQueues.get(i).offer(timestamp)) droppedSamples++;
+          if (timestampQueues.get(i).offerLatest(timestamp)) {
+            droppedSamples++;
+          }
         }
       } finally {
         Drive.odometryLock.unlock();

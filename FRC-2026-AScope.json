@@ -37,11 +37,14 @@
             "/ReplayOutputs/Vision/Summary",
             "/ReplayOutputs/Vision/Camera0",
             "/ReplayOutputs/Odometry",
-            "/RealOutputs"
+            "/RealOutputs",
+            "/RealOutputs/LogPeriodic",
+            "/RealOutputs/Loop",
+            "/RealOutputs/Loop/Mode"
           ]
         },
         "tabs": {
-          "selected": 2,
+          "selected": 12,
           "tabs": [
             {
               "type": 0,
@@ -661,6 +664,16 @@
                       "color": "#af2437",
                       "size": "normal"
                     }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/RealOutputs/Loop/Scheduler_ms",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#c0b487",
+                      "size": "normal"
+                    }
                   }
                 ],
                 "discreteSources": [
@@ -698,7 +711,7 @@
                 "leftSources": [
                   {
                     "type": "stepped",
-                    "logKey": "/RealOutputs/Loop/Mech/Drive_ms",
+                    "logKey": "/RealOutputs/LogPeriodic/Subsystem/DriveMS",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -708,7 +721,7 @@
                   },
                   {
                     "type": "stepped",
-                    "logKey": "/RealOutputs/Loop/Mech/Climb_ms",
+                    "logKey": "/RealOutputs/LogPeriodic/Subsystem/FeederMS",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -718,7 +731,7 @@
                   },
                   {
                     "type": "stepped",
-                    "logKey": "/RealOutputs/Loop/Mech/Feeder_ms",
+                    "logKey": "/RealOutputs/LogPeriodic/Subsystem/IndexerMS",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -728,7 +741,7 @@
                   },
                   {
                     "type": "stepped",
-                    "logKey": "/RealOutputs/Loop/Mech/Indexer_ms",
+                    "logKey": "/RealOutputs/LogPeriodic/Subsystem/IntakeMS",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -738,7 +751,7 @@
                   },
                   {
                     "type": "stepped",
-                    "logKey": "/RealOutputs/Loop/Mech/Intake_ms",
+                    "logKey": "/RealOutputs/LogPeriodic/Subsystem/RollersMS",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -748,31 +761,11 @@
                   },
                   {
                     "type": "stepped",
-                    "logKey": "/RealOutputs/Loop/Mech/rollers_ms",
+                    "logKey": "/RealOutputs/LogPeriodic/Subsystem/ShooterMS",
                     "logType": "Number",
                     "visible": true,
                     "options": {
                       "color": "#c0b487",
-                      "size": "normal"
-                    }
-                  },
-                  {
-                    "type": "stepped",
-                    "logKey": "/RealOutputs/Loop/Mech/Shooter_ms",
-                    "logType": "Number",
-                    "visible": true,
-                    "options": {
-                      "color": "#858584",
-                      "size": "normal"
-                    }
-                  },
-                  {
-                    "type": "stepped",
-                    "logKey": "/RealOutputs/Loop/Mech/Turret_ms",
-                    "logType": "Number",
-                    "visible": true,
-                    "options": {
-                      "color": "#3b875a",
                       "size": "normal"
                     }
                   }
@@ -813,7 +806,7 @@
                 "leftSources": [
                   {
                     "type": "stepped",
-                    "logKey": "/RealOutputs/Loop/Virtual/Accelerometer_ms",
+                    "logKey": "/RealOutputs/LogPeriodic/VirtualSubsystem/AccelerometerMS",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -823,7 +816,7 @@
                   },
                   {
                     "type": "stepped",
-                    "logKey": "/RealOutputs/Loop/Virtual/CANStatus_ms",
+                    "logKey": "/RealOutputs/LogPeriodic/VirtualSubsystem/CANStatusMS",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -833,7 +826,7 @@
                   },
                   {
                     "type": "stepped",
-                    "logKey": "/RealOutputs/Loop/Virtual/Coordinator_ms",
+                    "logKey": "/RealOutputs/LogPeriodic/VirtualSubsystem/CoordinatorMS",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -843,7 +836,7 @@
                   },
                   {
                     "type": "stepped",
-                    "logKey": "/RealOutputs/Loop/Virtual/Imu_ms",
+                    "logKey": "/RealOutputs/LogPeriodic/VirtualSubsystem/DriveOdometryMS",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -853,17 +846,7 @@
                   },
                   {
                     "type": "stepped",
-                    "logKey": "/RealOutputs/Loop/Virtual/RBSICANHealth_ms",
-                    "logType": "Number",
-                    "visible": true,
-                    "options": {
-                      "color": "#c0b487",
-                      "size": "normal"
-                    }
-                  },
-                  {
-                    "type": "stepped",
-                    "logKey": "/RealOutputs/Loop/Virtual/MatchStatus_ms",
+                    "logKey": "/RealOutputs/LogPeriodic/VirtualSubsystem/ImuMS",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -873,7 +856,17 @@
                   },
                   {
                     "type": "stepped",
-                    "logKey": "/RealOutputs/Loop/Virtual/RBSIPowerMonitor_ms",
+                    "logKey": "/RealOutputs/LogPeriodic/VirtualSubsystem/MatchStatusMS",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#c0b487",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/RealOutputs/LogPeriodic/VirtualSubsystem/RBSICANHealthMS",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -883,11 +876,21 @@
                   },
                   {
                     "type": "stepped",
-                    "logKey": "/RealOutputs/Loop/Virtual/Vision_ms",
+                    "logKey": "/RealOutputs/LogPeriodic/VirtualSubsystem/RBSIPowerMonitorMS",
                     "logType": "Number",
                     "visible": true,
                     "options": {
                       "color": "#3b875a",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/RealOutputs/LogPeriodic/VirtualSubsystem/VisionMS",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#5f4528",
                       "size": "normal"
                     }
                   }
@@ -918,6 +921,71 @@
                 "rightFilter": 0
               },
               "controllerUUID": "xhool1wmyuagi2ackb3949n6uwb3oadf",
+              "renderer": null,
+              "controlsHeight": 200
+            },
+            {
+              "type": 1,
+              "title": "Loop Time - Commands",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "/RealOutputs/Loop/Commands/PathPlannerAuto/EndMS",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#2b66a2",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/RealOutputs/Loop/Commands/PathPlannerAuto/ExecuteMS",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e5b31b",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/RealOutputs/Loop/Commands/PathPlannerAuto/InitializeMS",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#af2437",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/RealOutputs/Loop/Mode/AutonomousInitMS",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#80588e",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "rightSources": [],
+                "discreteSources": [],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "rightUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "e4nzjb0j9erxlk14p7hbzr70basbvckr",
               "renderer": null,
               "controlsHeight": 200
             },
@@ -953,7 +1021,7 @@
                 "cameraIndex": -1,
                 "orbitFov": 50,
                 "cameraPosition": [
-                  -0.05924093442537227,
+                  -0.0592409344253685,
                   10.616071094115314,
                   -8.480070526268811
                 ],
@@ -979,5 +1047,5 @@
     }
   ],
   "satellites": [],
-  "version": "26.0.1"
+  "version": "26.0.2"
 }
