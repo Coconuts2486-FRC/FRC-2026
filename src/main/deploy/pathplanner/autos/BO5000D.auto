@@ -104,6 +104,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Team Specific",
+  "folder": null,
   "choreoAuto": false
 }

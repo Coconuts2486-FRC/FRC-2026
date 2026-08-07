@@ -189,6 +189,6 @@
     }
   },
   "resetOdom": false,
-  "folder": "Improved autos",
+  "folder": null,
   "choreoAuto": false
 }

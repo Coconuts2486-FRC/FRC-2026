@@ -3,10 +3,9 @@
   "robotLength": 0.8128,
   "holonomicMode": true,
   "pathFolders": [
-    "Citrus",
-    "OFF",
-    "Out and Back",
-    "Team Specific"
+    "Left Side Paths",
+    "New Folder",
+    "Greybots"
   ],
   "autoFolders": [
     "OFF Autos",

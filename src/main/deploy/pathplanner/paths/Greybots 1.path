@@ -1,0 +1,119 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 4.4013409415121245,
+        "y": 0.5997860199714706
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.4013409415121245,
+        "y": 0.5997860199714706
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.759900142653351,
+        "y": 0.5997860199714706
+      },
+      "prevControl": {
+        "x": 4.759900142653351,
+        "y": 0.5997860199714707
+      },
+      "nextControl": {
+        "x": 6.75990014265335,
+        "y": 0.5997860199714706
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.088858773181169,
+        "y": 3.0969472182596305
+      },
+      "prevControl": {
+        "x": 8.33114951602967,
+        "y": 1.5523437326004372
+      },
+      "nextControl": {
+        "x": 7.881840228245363,
+        "y": 4.416690442225392
+      },
+      "isLocked": false,
+      "linkedName": "gb1 ending"
+    },
+    {
+      "anchor": {
+        "x": 6.199814550641939,
+        "y": 3.0969472182596305
+      },
+      "prevControl": {
+        "x": 6.205290627349803,
+        "y": 4.290731940573966
+      },
+      "nextControl": {
+        "x": 6.186875891583452,
+        "y": 0.2763195435092731
+      },
+      "isLocked": false,
+      "linkedName": "gb3 start"
+    },
+    {
+      "anchor": {
+        "x": 4.116690442225392,
+        "y": 0.7291726105563499
+      },
+      "prevControl": {
+        "x": 6.342139800285306,
+        "y": 0.7032952924393738
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "my head hurts"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 0.0
+    },
+    {
+      "waypointRelativePos": 1.6034115138592724,
+      "rotationDegrees": 90.0
+    },
+    {
+      "waypointRelativePos": 2.2942430703624774,
+      "rotationDegrees": 180.0
+    },
+    {
+      "waypointRelativePos": 3.0959488272920983,
+      "rotationDegrees": -90.0
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -90.0
+  },
+  "reversed": false,
+  "folder": "Greybots",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "useDefaultConstraints": true
+}
