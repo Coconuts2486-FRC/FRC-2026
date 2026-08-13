@@ -100,7 +100,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Greybots 4"
+                  "pathName": "Greybots 2"
                 }
               },
               {
@@ -177,6 +177,19 @@
                 "type": "named",
                 "data": {
                   "name": "Shoot"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Greybots 3"
                 }
               }
             ]

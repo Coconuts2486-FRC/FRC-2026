@@ -52,12 +52,12 @@
         "y": 3.0969472182596305
       },
       "prevControl": {
-        "x": 6.205290627349803,
-        "y": 4.290731940573966
+        "x": 6.188552813266123,
+        "y": 4.2906913800960345
       },
       "nextControl": {
-        "x": 6.186875891583452,
-        "y": 0.2763195435092731
+        "x": 6.225691868758916,
+        "y": 0.35395149786020097
       },
       "isLocked": false,
       "linkedName": "gb3 start"
@@ -73,7 +73,7 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "my head hurts"
+      "linkedName": "gb1 ending but its cooler"
     }
   ],
   "rotationTargets": [
@@ -83,18 +83,32 @@
     },
     {
       "waypointRelativePos": 1.6034115138592724,
-      "rotationDegrees": 90.0
+      "rotationDegrees": 75.0
     },
     {
       "waypointRelativePos": 2.2942430703624774,
-      "rotationDegrees": 180.0
+      "rotationDegrees": 140.0
     },
     {
       "waypointRelativePos": 3.0959488272920983,
       "rotationDegrees": -90.0
     }
   ],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 3.359891964888571,
+      "maxWaypointRelativePos": 4.0,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 2.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -110,7 +124,7 @@
     "rotation": -90.0
   },
   "reversed": false,
-  "folder": "Greybots",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0
