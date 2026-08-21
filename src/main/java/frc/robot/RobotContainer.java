@@ -19,6 +19,8 @@
 
 package frc.robot;
 
+import static frc.robot.Constants.ControllerButtonConstants.*;
+
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
@@ -34,13 +36,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.CANBuses;
@@ -86,11 +85,11 @@ import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import frc.robot.util.Alert;
 import frc.robot.util.Alert.AlertType;
-import frc.robot.util.GetJoystickValue;
 import frc.robot.util.LoggedTunableNumber;
 import frc.robot.util.OverrideSwitches;
 import frc.robot.util.RBSICANBusRegistry;
 import frc.robot.util.RBSICANHealth;
+import frc.robot.util.RBSIController;
 import frc.robot.util.RBSIEnum.AutoType;
 import frc.robot.util.RBSIEnum.DriveStyle;
 import frc.robot.util.RBSIEnum.Mode;
@@ -112,11 +111,11 @@ public class RobotContainer {
           Constants.DrivebaseConstants.kDSpin);
 
   /** Define the Driver and, optionally, the Operator/Co-Driver Controllers */
-  // Replace with ``CommandPS4Controller`` or ``CommandJoystick`` if needed
-  final CommandXboxController driverController = new CommandXboxController(0); // Main Driver
+  final RBSIController driverController = RBSIController.createDriverController(0); // Main Driver
 
   final Blinkin blinkin = new Blinkin(0);
-  final CommandXboxController operatorController = new CommandXboxController(1); // Second Operator
+  final RBSIController operatorController =
+      RBSIController.createDriverController(1); // Second Operator
   final OverrideSwitches overrides = new OverrideSwitches(2); // Console toggle switches
 
   // These two are needed for the Sweep evaluator for camera FOV simulation
@@ -430,40 +429,14 @@ public class RobotContainer {
 
   /** Use this method to define your Autonomous commands for use with PathPlanner / Choreo */
 
-  /**
-   * Use this method to define your button->command mappings. Buttons can be created by
-   * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
-   * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-   */
+  /** Use this method to define the controller action-to-command mappings. */
   private void configureBindings() {
-
-    // Send the proper joystick input based on driver preference -- Set this in `Constants.java`
-    GetJoystickValue driveStickY;
-    GetJoystickValue driveStickX;
-    GetJoystickValue turnStickX;
-    // OPTIONAL: Use the DashboardChooser rather than the Constants file for Drive Style
-    // switch (driveStyle.get()) {
-    switch (OperatorConstants.kDriveStyle) {
-      case GAMER:
-        driveStickY = driverController::getRightY;
-        driveStickX = driverController::getRightX;
-        turnStickX = driverController::getLeftX;
-        break;
-      default: // Includes case TANK
-        driveStickY = driverController::getLeftY;
-        driveStickX = driverController::getLeftX;
-        turnStickX = driverController::getRightX;
-    }
 
     // =======================================================================
     // SET STANDARD DRIVING AS DEFAULT COMMAND FOR THE DRIVEBASE
     m_drivebase.setDefaultCommand(
         DriveCommands.fieldRelativeDrive(
-            m_drivebase,
-            () -> -driveStickY.value(),
-            () -> -driveStickX.value(),
-            () -> -turnStickX.value()));
+            m_drivebase, () -> -getDriveStickY(), () -> -getDriveStickX(), () -> -getTurnStickX()));
 
     // =======================================================================
     // Set DEFAULT COMMANDS for subsystems
@@ -510,31 +483,35 @@ public class RobotContainer {
     // driver controls
 
     // Press X button --> Stop with wheels in X-Lock position
-    driverController.x().onTrue(Commands.runOnce(m_drivebase::stopWithX, m_drivebase));
+    driverController.button(X_LOCK).onTrue(Commands.runOnce(m_drivebase::stopWithX, m_drivebase));
 
     // Press Start button --> Manually Re-Zero the Gyro
     driverController
-        .start()
+        .button(ZERO_GYRO)
         .onTrue(
             Commands.runOnce(m_drivebase::zeroHeadingForAlliance, m_drivebase)
                 .ignoringDisable(true));
 
     /*there is a default command in intake that makes it go up this toggles a new command
     that cancels the default and keeps the intake down with out the driver having to hold any button */
-    driverController.a().toggleOnTrue(Commands.run(() -> m_intake.pivotDown(), m_intake));
+    driverController
+        .button(INTAKE_DOWN)
+        .toggleOnTrue(Commands.run(() -> m_intake.pivotDown(), m_intake));
 
-    driverController.b().toggleOnTrue(Commands.run(() -> m_rollers.runRollers(), m_rollers));
+    driverController
+        .button(RUN_ROLLERS)
+        .toggleOnTrue(Commands.run(() -> m_rollers.runRollers(), m_rollers));
 
     // shooter feeding
     driverController
-        .rightBumper()
+        .button(FIXED_SHOT)
         .whileTrue(
             Commands.run(() -> m_shooter.runVelocityRPM((4500)), m_shooter)
                 .alongWith(Commands.run(() -> m_rollers.feedRollers(), m_rollers)));
 
     // epic solution
     driverController
-        .rightTrigger()
+        .axisTrigger(EPIC_SHOT)
         .whileTrue(
             Commands.run(
                     () -> m_shooter.runVelocityRPM((Coordinator.getEpicShooterVelocity())),
@@ -543,12 +520,12 @@ public class RobotContainer {
 
     // auto aim - turn only, driver keeps translational control
     driverController
-        .leftTrigger()
+        .axisTrigger(AUTO_AIM)
         .whileTrue(
             DriveCommands.fieldRelativeDriveAtAngle(
                 m_drivebase,
-                () -> -driveStickY.value(),
-                () -> -driveStickX.value(),
+                () -> -getDriveStickY(),
+                () -> -getDriveStickX(),
                 () -> {
                   Pose2d robotPose = m_drivebase.getPose();
                   return FieldConstants.hubCenter2d()
@@ -568,7 +545,7 @@ public class RobotContainer {
     //             Coordinator::getRobotAngle));
 
     driverController
-        .povUp()
+        .button(NUDGE_FORWARD)
         .whileTrue(
             Commands.run(
                 () -> {
@@ -578,7 +555,7 @@ public class RobotContainer {
                 m_drivebase));
 
     driverController
-        .povDown()
+        .button(NUDGE_BACK)
         .whileTrue(
             Commands.run(
                 () -> {
@@ -589,7 +566,7 @@ public class RobotContainer {
 
     // micro driving controls
     driverController
-        .povRight()
+        .button(NUDGE_RIGHT)
         .whileTrue(
             Commands.run(
                 () -> {
@@ -599,7 +576,7 @@ public class RobotContainer {
                 m_drivebase));
 
     driverController
-        .povLeft()
+        .button(NUDGE_LEFT)
         .whileTrue(
             Commands.run(
                 () -> {
@@ -609,7 +586,7 @@ public class RobotContainer {
                 m_drivebase));
 
     driverController
-        .y()
+        .button(REVERSE_FEED)
         .whileTrue(
             Commands.run(() -> m_indexer.setVelocity(0.8), m_indexer)
                 .alongWith(Commands.run(() -> m_rollers.reverseRollers(), m_rollers))
@@ -624,7 +601,7 @@ public class RobotContainer {
 
     // Press start button --> switch elastic tab
     operatorController
-        .povRight()
+        .button(SHOW_DRIVE_TAB)
         .onTrue(
             Commands.runOnce(
                 () -> {
@@ -632,22 +609,28 @@ public class RobotContainer {
                 }));
 
     operatorController
-        .povLeft()
+        .button(SHOW_MATCH_TAB)
         .onTrue(
             Commands.runOnce(
                 () -> {
                   Elastic.selectTab(0);
                 }));
 
-    operatorController.povDown().whileTrue(Commands.run(() -> m_intake.printPos()));
+    operatorController
+        .button(PRINT_INTAKE_POSITION)
+        .whileTrue(Commands.run(() -> m_intake.printPos()));
 
     // operatorController.povUp().onTrue(Commands.runOnce(() -> m_shooter.incrementOffset(0.075)));
     // operatorController.povDown().onTrue(Commands.runOnce(() ->
     // m_shooter.incrementOffset(-0.075)));
 
-    operatorController.b().toggleOnTrue(Commands.run(() -> m_intake.stopPivot()));
+    operatorController
+        .button(STOP_INTAKE_PIVOT)
+        .toggleOnTrue(Commands.run(() -> m_intake.stopPivot()));
 
-    operatorController.a().whileTrue(Commands.run(() -> m_indexer.setVelocity(0.37), m_indexer));
+    operatorController
+        .button(RUN_INDEXER)
+        .whileTrue(Commands.run(() -> m_indexer.setVelocity(0.37), m_indexer));
 
     // ==============================================================================================================================
     // sim controls
@@ -807,7 +790,9 @@ public class RobotContainer {
     VisionIO[] ios = new VisionIO[cams.length];
     for (int i = 0; i < cams.length; i++) {
       var cfg = cams[i];
-      ios[i] = new VisionIOPhotonVisionSim(cfg.name(), cfg.robotToCamera(), drive::getPose);
+      ios[i] =
+          new VisionIOPhotonVisionSim(
+              cfg.name(), cfg.robotToCamera(), cfg.simProps(), drive::getPose);
     }
     return ios;
   }
@@ -858,5 +843,31 @@ public class RobotContainer {
     // scoreTraj.done().onTrue(scoringSubsystem.score());
 
     return routine;
+  }
+
+  private DriveStyle getSelectedDriveStyle() {
+    DriveStyle selected = driveStyle.get();
+    return selected != null ? selected : OperatorConstants.kDriveStyle;
+  }
+
+  private double getDriveStickY() {
+    return switch (getSelectedDriveStyle()) {
+      case GAMER -> driverController.getRightY();
+      case TANK -> driverController.getLeftY();
+    };
+  }
+
+  private double getDriveStickX() {
+    return switch (getSelectedDriveStyle()) {
+      case GAMER -> driverController.getRightX();
+      case TANK -> driverController.getLeftX();
+    };
+  }
+
+  private double getTurnStickX() {
+    return switch (getSelectedDriveStyle()) {
+      case GAMER -> driverController.getLeftX();
+      case TANK -> driverController.getRightX();
+    };
   }
 }

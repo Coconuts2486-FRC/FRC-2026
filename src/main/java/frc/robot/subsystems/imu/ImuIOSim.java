@@ -100,6 +100,7 @@ public class ImuIOSim implements ImuIO {
 
     inputs.odometryYawTimestamps = tsOut;
     inputs.odometryYawPositionsRad = yawOut;
+    clearOdomSamples();
 
     // SIM logging
     Logger.recordOutput("IMU/YawRad", yawRad);
@@ -116,6 +117,7 @@ public class ImuIOSim implements ImuIO {
   public void zeroYawRad(double yawRad) {
     this.yawRad = yawRad;
     this.yawRateRadPerSec = 0.0;
+    clearOdomSamples();
   }
 
   private void pushOdomSample(double timestampSec, double yawRad) {
@@ -126,5 +128,10 @@ public class ImuIOSim implements ImuIO {
     if (odomHead == ODOM_CAP) odomHead = 0;
 
     if (odomSize < ODOM_CAP) odomSize++;
+  }
+
+  private void clearOdomSamples() {
+    odomSize = 0;
+    odomHead = 0;
   }
 }

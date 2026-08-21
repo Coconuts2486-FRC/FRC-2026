@@ -2,23 +2,21 @@ package frc.robot.subsystems.driver_info;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.FieldState;
 import frc.robot.subsystems.driver_info.Blinkin.LEDState;
+import frc.robot.util.RBSIController;
 import frc.robot.util.VirtualSubsystem;
 
 public class MatchStatus extends VirtualSubsystem {
 
-  private final CommandXboxController driver;
-  private final CommandXboxController coDriver;
+  private final RBSIController driver;
+  private final RBSIController coDriver;
   private final Blinkin blinkin;
   Alliance alliance = DriverStation.getAlliance().orElse(Alliance.Blue);
   private boolean isRumbling = false;
 
   /** Constructor */
-  public MatchStatus(
-      CommandXboxController driver, CommandXboxController coDriver, Blinkin blinkin) {
+  public MatchStatus(RBSIController driver, RBSIController coDriver, Blinkin blinkin) {
     this.driver = driver;
     this.coDriver = coDriver;
     this.blinkin = blinkin;
@@ -31,8 +29,8 @@ public class MatchStatus extends VirtualSubsystem {
    */
   public void rumble(double strength) {
     if (!isRumbling) {
-      driver.setRumble(RumbleType.kBothRumble, strength);
-      coDriver.setRumble(RumbleType.kBothRumble, strength);
+      driver.setRumble(strength);
+      coDriver.setRumble(strength);
       isRumbling = true;
     }
   }
@@ -40,8 +38,8 @@ public class MatchStatus extends VirtualSubsystem {
   /** Make both controllers stop rumbling */
   public void stopRumble() {
     if (isRumbling) {
-      driver.setRumble(RumbleType.kBothRumble, 0);
-      coDriver.setRumble(RumbleType.kBothRumble, 0);
+      driver.setRumble(0);
+      coDriver.setRumble(0);
       isRumbling = false;
     }
   }

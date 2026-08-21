@@ -27,10 +27,20 @@ import java.util.function.Supplier;
 
 /** IO implementation for real Limelight hardware. */
 public class VisionIOLimelight implements VisionIO {
+  private static final int BOTPOSE_MIN_LENGTH = 11;
+  private static final int BOTPOSE_LATENCY_INDEX = 6;
+  private static final int BOTPOSE_TAG_COUNT_INDEX = 7;
+  private static final int BOTPOSE_AVG_DISTANCE_INDEX = 9;
+  private static final int BOTPOSE_FIRST_TAG_ID_INDEX = 11;
+  private static final int BOTPOSE_FIRST_TAG_AMBIGUITY_INDEX = 17;
+  private static final int BOTPOSE_TAG_STRIDE = 7;
+  private static final long ORIENTATION_FLUSH_PERIOD_US = 20_000;
+  private static long lastOrientationFlushUs = 0;
+
   private final Supplier<Rotation2d> rotationSupplier;
   private final DoubleArrayPublisher orientationPublisher;
 
-  private final DoubleSubscriber latencySubscriber;
+  private final DoubleSubscriber heartbeatSubscriber;
   private final DoubleSubscriber txSubscriber;
   private final DoubleSubscriber tySubscriber;
   private final DoubleArraySubscriber megatag1Subscriber;
@@ -48,7 +58,7 @@ public class VisionIOLimelight implements VisionIO {
     var table = NetworkTableInstance.getDefault().getTable(name);
     this.rotationSupplier = rotationSupplier;
     orientationPublisher = table.getDoubleArrayTopic("robot_orientation_set").publish();
-    latencySubscriber = table.getDoubleTopic("tl").subscribe(0.0);
+    heartbeatSubscriber = table.getDoubleTopic("hb").subscribe(0.0);
     txSubscriber = table.getDoubleTopic("tx").subscribe(0.0);
     tySubscriber = table.getDoubleTopic("ty").subscribe(0.0);
     megatag1Subscriber = table.getDoubleArrayTopic("botpose_wpiblue").subscribe(new double[] {});
@@ -60,7 +70,7 @@ public class VisionIOLimelight implements VisionIO {
   public void updateInputs(VisionIOInputs inputs) {
     // Update connection status based on whether an update has been seen in the last 250ms
     inputs.connected =
-        ((RobotController.getFPGATime() - latencySubscriber.getLastChange()) / 1000) < 250;
+        ((RobotController.getFPGATime() - heartbeatSubscriber.getLastChange()) / 1000) < 250;
 
     // Update target observation
     inputs.latestTargetObservation =
@@ -70,23 +80,22 @@ public class VisionIOLimelight implements VisionIO {
     // Update orientation for MegaTag 2
     orientationPublisher.accept(
         new double[] {rotationSupplier.get().getDegrees(), 0.0, 0.0, 0.0, 0.0, 0.0});
-    NetworkTableInstance.getDefault()
-        .flush(); // Increases network traffic but recommended by Limelight
+    flushOrientationIfDue();
 
     // Read new pose observations from NetworkTables
     observedTagIds.clear();
     poseObservations.clear();
 
     var megatag1Samples = megatag1Subscriber.readQueue();
-    if (megatag1Samples.length > 0) {
-      var newest = megatag1Samples[megatag1Samples.length - 1];
-      addPoseObservation(newest.timestamp, newest.value, PoseObservationType.MEGATAG_1);
+    for (int sampleIndex = megatag1Samples.length - 1; sampleIndex >= 0; sampleIndex--) {
+      var sample = megatag1Samples[sampleIndex];
+      if (addPoseObservation(sample.timestamp, sample.value, PoseObservationType.MEGATAG_1)) break;
     }
 
     var megatag2Samples = megatag2Subscriber.readQueue();
-    if (megatag2Samples.length > 0) {
-      var newest = megatag2Samples[megatag2Samples.length - 1];
-      addPoseObservation(newest.timestamp, newest.value, PoseObservationType.MEGATAG_2);
+    for (int sampleIndex = megatag2Samples.length - 1; sampleIndex >= 0; sampleIndex--) {
+      var sample = megatag2Samples[sampleIndex];
+      if (addPoseObservation(sample.timestamp, sample.value, PoseObservationType.MEGATAG_2)) break;
     }
 
     // Save pose observations to inputs object
@@ -102,37 +111,35 @@ public class VisionIOLimelight implements VisionIO {
     Arrays.sort(inputs.tagIds);
   }
 
-  private void addPoseObservation(
+  private boolean addPoseObservation(
       long timestampMicros, double[] rawPose, PoseObservationType observationType) {
-    if (rawPose.length < 10) {
-      return;
-    }
+    if (!isValidBotPoseSample(rawPose)) return false;
 
-    int tagCount = Math.max(0, (int) rawPose[7]);
-    int availableTagCount = Math.max(0, (rawPose.length - 5) / 7);
-    int[] usedTagIds = new int[Math.min(tagCount, availableTagCount)];
-    int usedTagCount = 0;
-    for (int i = 11; i < rawPose.length && usedTagCount < usedTagIds.length; i += 7) {
-      int tagId = (int) rawPose[i];
-      usedTagIds[usedTagCount++] = tagId;
-      observedTagIds.add(tagId);
-    }
+    int tagCount = getTagCount(rawPose);
+    int[] usedTagIds = extractUsedTagIds(rawPose);
+    for (int tagId : usedTagIds) observedTagIds.add(tagId);
 
     poseObservations.add(
         new PoseObservation(
-            timestampMicros * 1.0e-6 - rawPose[6] * 1.0e-3,
+            timestampSeconds(timestampMicros, rawPose),
             parsePose(rawPose),
-            observationType == PoseObservationType.MEGATAG_1 && rawPose.length >= 18
-                ? rawPose[17]
+            observationType == PoseObservationType.MEGATAG_1
+                    && rawPose.length > BOTPOSE_FIRST_TAG_AMBIGUITY_INDEX
+                ? rawPose[BOTPOSE_FIRST_TAG_AMBIGUITY_INDEX]
                 : 0.0,
             tagCount,
-            rawPose[9],
+            rawPose[BOTPOSE_AVG_DISTANCE_INDEX],
             observationType,
             usedTagIds));
+    return true;
   }
 
   /** Parses the 3D pose from a Limelight botpose array. */
-  private static Pose3d parsePose(double[] rawLLArray) {
+  static Pose3d parsePose(double[] rawLLArray) {
+    if (rawLLArray.length < BOTPOSE_MIN_LENGTH) {
+      throw new IllegalArgumentException(
+          "Limelight botpose array must have at least " + BOTPOSE_MIN_LENGTH + " values.");
+    }
     return new Pose3d(
         rawLLArray[0],
         rawLLArray[1],
@@ -141,5 +148,39 @@ public class VisionIOLimelight implements VisionIO {
             Units.degreesToRadians(rawLLArray[3]),
             Units.degreesToRadians(rawLLArray[4]),
             Units.degreesToRadians(rawLLArray[5])));
+  }
+
+  static boolean isValidBotPoseSample(double[] rawLLArray) {
+    return rawLLArray.length >= BOTPOSE_MIN_LENGTH
+        && getTagCount(rawLLArray) >= 0
+        && Double.isFinite(rawLLArray[BOTPOSE_LATENCY_INDEX])
+        && Double.isFinite(rawLLArray[BOTPOSE_AVG_DISTANCE_INDEX]);
+  }
+
+  static int[] extractUsedTagIds(double[] rawLLArray) {
+    int tagCount = getTagCount(rawLLArray);
+    int[] used = new int[Math.max(0, tagCount)];
+    int count = 0;
+    for (int i = BOTPOSE_FIRST_TAG_ID_INDEX;
+        i < rawLLArray.length && count < used.length;
+        i += BOTPOSE_TAG_STRIDE) {
+      used[count++] = (int) rawLLArray[i];
+    }
+    return count == used.length ? used : Arrays.copyOf(used, count);
+  }
+
+  static double timestampSeconds(long ntTimestampMicros, double[] rawLLArray) {
+    return ntTimestampMicros * 1.0e-6 - rawLLArray[BOTPOSE_LATENCY_INDEX] * 1.0e-3;
+  }
+
+  private static int getTagCount(double[] rawLLArray) {
+    return (int) rawLLArray[BOTPOSE_TAG_COUNT_INDEX];
+  }
+
+  private static void flushOrientationIfDue() {
+    long nowUs = RobotController.getFPGATime();
+    if (nowUs - lastOrientationFlushUs < ORIENTATION_FLUSH_PERIOD_US) return;
+    NetworkTableInstance.getDefault().flush();
+    lastOrientationFlushUs = nowUs;
   }
 }

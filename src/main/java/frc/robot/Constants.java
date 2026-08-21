@@ -39,6 +39,8 @@ import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.SwerveConstants;
 import frc.robot.util.Alert;
 import frc.robot.util.LoggedTunableNumber;
+import frc.robot.util.RBSIController.Axis;
+import frc.robot.util.RBSIController.Button;
 import frc.robot.util.RBSIEnum.AutoType;
 import frc.robot.util.RBSIEnum.CTREPro;
 import frc.robot.util.RBSIEnum.DriveStyle;
@@ -109,6 +111,10 @@ public final class Constants {
   public static final double loopPeriodSecs = 0.02;
 
   public static final boolean tuningMode = false;
+
+  public static boolean isTuningMode() {
+    return tuningMode;
+  }
 
   public static final double G_TO_MPS2 = 9.80665; // Gravitational acceleration in m/s/s
 
@@ -284,6 +290,40 @@ public final class Constants {
     public static final int OPERATOR_SWITCH_4 = 12;
 
     public static final int[] MULTI_TOGGLE = {4, 5};
+  }
+
+  /************************************************************************* */
+  /** Controller Button Constants ***************************************** */
+  public static final class ControllerButtonConstants {
+    // Actions are mapped by physical position. RBSIController translates these positions to the
+    // matching Xbox, PS4, or PS5 control for the controller detected at startup.
+
+    // Driver face buttons and menu button
+    public static final Button INTAKE_DOWN = Button.SOUTH_FACE;
+    public static final Button RUN_ROLLERS = Button.EAST_FACE;
+    public static final Button X_LOCK = Button.WEST_FACE;
+    public static final Button REVERSE_FEED = Button.NORTH_FACE;
+    public static final Button ZERO_GYRO = Button.START;
+
+    // Driver bumpers and triggers
+    public static final Button FIXED_SHOT = Button.RIGHT_BUMPER;
+    public static final Axis EPIC_SHOT = Axis.RIGHT_TRIGGER;
+    public static final Axis AUTO_AIM = Axis.LEFT_TRIGGER;
+
+    // Driver D-pad nudges
+    public static final Button NUDGE_LEFT = Button.POV_LEFT;
+    public static final Button NUDGE_RIGHT = Button.POV_RIGHT;
+    public static final Button NUDGE_FORWARD = Button.POV_UP;
+    public static final Button NUDGE_BACK = Button.POV_DOWN;
+
+    // Operator controls
+    public static final Button SHOW_DRIVE_TAB = Button.POV_RIGHT;
+    public static final Button SHOW_MATCH_TAB = Button.POV_LEFT;
+    public static final Button PRINT_INTAKE_POSITION = Button.POV_DOWN;
+    public static final Button STOP_INTAKE_PIVOT = Button.EAST_FACE;
+    public static final Button RUN_INDEXER = Button.SOUTH_FACE;
+
+    public static final double kTriggerPressedThreshold = 0.5;
   }
 
   /************************************************************************* */

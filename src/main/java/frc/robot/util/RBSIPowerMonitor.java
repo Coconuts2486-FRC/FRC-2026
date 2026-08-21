@@ -31,12 +31,17 @@ public class RBSIPowerMonitor extends VirtualSubsystem {
   private final RBSISubsystem[] subsystems;
   // private final LoggedPowerDistribution m_pdm =
   //     LoggedPowerDistribution.getInstance(PowerConstants.kPDMCANid, PowerConstants.kPDMType);
-  ConduitApi conduit = ConduitApi.getInstance();
+  private final ConduitApi conduit = ConduitApi.getInstance();
 
   // Define local variables
   private final LoggedTunableNumber batteryCapacityAh;
   private double totalAmpHours = 0.0;
+  private double totalEnergyJoules = 0.0;
   private long lastTimestampUs = RobotController.getFPGATime(); // In microseconds
+  private double lastVoltage = 0.0;
+  private double lastTotalCurrent = 0.0;
+  private boolean totalCurrentOverLimit = false;
+  private boolean brownoutImminent = false;
 
   // DRIVE and STEER motor power ports
   private final int[] m_drivePowerPorts = {
@@ -72,6 +77,11 @@ public class RBSIPowerMonitor extends VirtualSubsystem {
     }
   }
 
+  @Override
+  protected int getPeriodPriority() {
+    return 30;
+  }
+
   /** Periodic Method */
   @Override
   public void rbsiPeriodic() {
@@ -81,11 +91,17 @@ public class RBSIPowerMonitor extends VirtualSubsystem {
     // --- Read voltage & total current ---
     double voltage = conduit.getPDPVoltage();
     double totalCurrent = conduit.getPDPTotalCurrent();
+    lastVoltage = voltage;
+    lastTotalCurrent = totalCurrent;
+    totalCurrentOverLimit = totalCurrent > PowerConstants.kTotalMaxCurrent;
 
     // --- Safety alerts ---
-    totalCurrentAlert.set(totalCurrent > PowerConstants.kTotalMaxCurrent);
+    totalCurrentAlert.set(totalCurrentOverLimit);
     lowVoltageAlert.set(voltage < PowerConstants.kVoltageWarning);
     criticalVoltageAlert.set(voltage < PowerConstants.kVoltageCritical);
+    Logger.recordOutput("Power/Voltage", voltage);
+    Logger.recordOutput("Power/TotalCurrent", totalCurrent);
+    Logger.recordOutput("Power/TotalCurrentOverLimit", totalCurrentOverLimit);
 
     int channelCount = Math.min(channelCurrents.length, conduit.getPDPChannelCount());
     for (int ch = 0; ch < channelCount; ch++) {
@@ -99,10 +115,11 @@ public class RBSIPowerMonitor extends VirtualSubsystem {
     lastTimestampUs = nowUs;
 
     totalAmpHours += totalCurrent * dtSec / 3600.0; // accumulate amp-hours
+    double capacityAh = batteryCapacityAh.getAsDouble();
     double batteryPercent =
-        100.0 * (batteryCapacityAh.getAsDouble() - totalAmpHours) / batteryCapacityAh.getAsDouble();
+        capacityAh > 0.0 ? 100.0 * (capacityAh - totalAmpHours) / capacityAh : 0.0;
 
-    Logger.recordOutput("Power/BatteryPercentEstimate", batteryPercent);
+    Logger.recordOutput("Power/BatteryPercentEstimate", Math.max(0.0, batteryPercent));
     Logger.recordOutput("Power/AmpHoursUsed", totalAmpHours);
 
     // --- Drive & Steer aggregation ---
@@ -116,18 +133,14 @@ public class RBSIPowerMonitor extends VirtualSubsystem {
 
     // --- Energy / power calculations ---
     double totalPower = voltage * totalCurrent; // Watts
+    totalEnergyJoules += totalPower * dtSec;
     Logger.recordOutput("Power/TotalPower", totalPower);
-    Logger.recordOutput("Power/EnergyJoules", totalPower * dtSec);
-    Logger.recordOutput("Power/EnergyWh", totalPower * dtSec / 3600.0);
+    Logger.recordOutput("Power/EnergyJoules", totalEnergyJoules);
+    Logger.recordOutput("Power/EnergyWh", totalEnergyJoules / 3600.0);
 
     // --- Brownout prediction ---
-    boolean brownoutImminent = voltage < PowerConstants.kVoltageLimiting;
+    brownoutImminent = voltage < PowerConstants.kVoltageLimiting;
     Logger.recordOutput("Power/BrownoutImminent", brownoutImminent);
-
-    // --- Optional hooks for current shedding ---
-    if (brownoutImminent) {
-      // TODO: implement automatic shedding: e.g., disable non-critical subsystems
-    }
   }
 
   private void logGroupCurrent(String name, int[] ports) {
@@ -141,6 +154,23 @@ public class RBSIPowerMonitor extends VirtualSubsystem {
     Logger.recordOutput("Power/Subsystems/" + name + "_Current", sum);
   }
 
-  // TODO: Do something about setting priorities if drawing too much current
+  /** Returns the most recently sampled battery voltage. */
+  public double getLastVoltage() {
+    return lastVoltage;
+  }
 
+  /** Returns the most recently sampled total current draw. */
+  public double getLastTotalCurrent() {
+    return lastTotalCurrent;
+  }
+
+  /** Returns whether the last sampled total current exceeded the configured warning limit. */
+  public boolean isTotalCurrentOverLimit() {
+    return totalCurrentOverLimit;
+  }
+
+  /** Returns whether the last sampled voltage is below the limiting threshold. */
+  public boolean isBrownoutImminent() {
+    return brownoutImminent;
+  }
 }

@@ -490,7 +490,8 @@ public class Drive extends RBSISubsystem {
 
     // Compute max wheel delta this loop
     double maxDelta = 0.0;
-    if (haveLastWheelDist) {
+    final boolean hadWheelBaseline = haveLastWheelDist;
+    if (hadWheelBaseline) {
       for (int i = 0; i < 4; i++) {
         double dist = odomPositions[i].distanceMeters;
         double d = Math.abs(dist - lastWheelDistM[i]);
@@ -505,7 +506,7 @@ public class Drive extends RBSISubsystem {
     haveLastWheelDist = true;
 
     // Stationary test (must have baseline)
-    if (haveLastWheelDist
+    if (hadWheelBaseline
         && maxDelta <= DrivebaseConstants.kStationaryMaxWheelDeltaM
         && Math.abs(yawRateRadPerSec) <= DrivebaseConstants.kStationaryMaxYawRateRadPerSec) {
       stationaryLoops++;
@@ -649,12 +650,12 @@ public class Drive extends RBSISubsystem {
 
   /** Returns the oldest timetamp in the current pose buffer */
   public double getPoseBufferOldestTime() {
-    return poseBuffer.getOldestTimestamp().getAsDouble();
+    return poseBuffer.getOldestTimestamp().orElse(Double.NaN);
   }
 
   /** Returns the newest timetamp in the current pose buffer */
   public double getPoseBufferNewestTime() {
-    return poseBuffer.getNewestTimestamp().getAsDouble();
+    return poseBuffer.getNewestTimestamp().orElse(Double.NaN);
   }
 
   /**
@@ -669,7 +670,7 @@ public class Drive extends RBSISubsystem {
     if (t1 < t0) return OptionalDouble.empty();
 
     // Get the subset of entries from the buffer
-    var sub = yawRateBuffer.getInternalBuffer().subMap(t0, true, t1, true);
+    var sub = yawRateBuffer.getSamplesInRange(t0, true, t1, true);
     if (sub.isEmpty()) return OptionalDouble.empty();
 
     double maxAbs = 0.0;
