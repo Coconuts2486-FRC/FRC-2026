@@ -30,8 +30,8 @@ import org.wpilib.math.geometry.Rotation3d;
 import org.wpilib.math.geometry.Translation2d;
 import org.wpilib.math.geometry.Translation3d;
 import org.wpilib.units.measure.Distance;
-import org.wpilib.driverstation.DriverStation;
-import org.wpilib.driverstation.DriverStation.Alliance;
+import org.wpilib.driverstation.Alliance;
+import org.wpilib.driverstation.MatchState;
 import org.wpilib.system.Filesystem;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -82,9 +82,9 @@ public class FieldConstants {
           new Translation3d(Inches.of(543.95), Inches.of(84.89), Inches.of(0)), Rotation3d.kZero);
 
   public static Translation2d hubCenter2d() {
-    if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
+    if (MatchState.getAlliance().orElse(Alliance.BLUE) == Alliance.RED) {
       return new Translation2d(hubCenterRed.getX(), hubCenterRed.getY());
-    } else if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
+    } else if (MatchState.getAlliance().orElse(Alliance.BLUE) == Alliance.BLUE) {
       return new Translation2d(hubCenterBlue.getX(), hubCenterBlue.getY());
     } else {
       return new Translation2d(hubCenterRed.getX(), hubCenterRed.getY());
@@ -92,7 +92,7 @@ public class FieldConstants {
   }
 
   public static Translation2d shootingSpot() {
-    if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
+    if (MatchState.getAlliance().orElse(Alliance.BLUE) == Alliance.RED) {
       return new Translation2d(hubCenterRed.getX() + 134, hubCenterRed.getY());
     } else {
       return new Translation2d(hubCenterBlue.getX() - 134, hubCenterBlue.getY());
@@ -100,9 +100,9 @@ public class FieldConstants {
   }
 
   // public static Rotation2d targetAngle(Translation2d target, Pose2d robotPose) {
-  //   if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
+  //   if (MatchState.getAlliance().orElse(Alliance.BLUE) == Alliance.RED) {
   //     return target.minus(robotPose.getTranslation()).getAngle();
-  //   } else if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
+  //   } else if (MatchState.getAlliance().orElse(Alliance.BLUE) == Alliance.RED) {
   //     return target.minus(robotPose.getTranslation()).getAngle();
   //   } else {
   //     return target.minus(robotPose.getTranslation()).getAngle();

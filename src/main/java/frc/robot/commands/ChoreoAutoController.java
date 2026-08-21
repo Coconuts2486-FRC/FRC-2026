@@ -15,7 +15,7 @@
 // import choreo.trajectory.SwerveSample;
 // import org.wpilib.math.controller.PIDController;
 // import org.wpilib.math.geometry.Pose2d;
-// import org.wpilib.math.kinematics.ChassisSpeeds;
+// import org.wpilib.math.kinematics.ChassisVelocities;
 // import frc.robot.subsystems.drive.Drive;
 // import java.util.function.Consumer;
 //
@@ -46,8 +46,8 @@
 //         headingController.calculate(pose.getRotation().getRadians(), referenceState.heading);
 //
 //     // Convert to field relative speeds & send command
-//     ChassisSpeeds out =
-//         ChassisSpeeds.fromFieldRelativeSpeeds(
+//     ChassisVelocities out =
+//         ChassisVelocities.fromFieldRelativeSpeeds(
 //             xFF + xFeedback, yFF + yFeedback, rotationFF + rotationFeedback, pose.getRotation());
 //     drive.runVelocity(out);
 //   }

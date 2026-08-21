@@ -22,9 +22,9 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.util.FlippingUtil;
 import com.revrobotics.util.StatusLogger;
 import org.wpilib.math.geometry.Pose2d;
-import org.wpilib.driverstation.DriverStation;
+import org.wpilib.driverstation.Alliance;
+import org.wpilib.driverstation.MatchState;
 import org.wpilib.system.Timer;
-import org.wpilib.livewindow.LiveWindow;
 import org.wpilib.command2.Command;
 import org.wpilib.command2.CommandScheduler;
 import frc.robot.Constants.PowerConstants;
@@ -103,16 +103,16 @@ public class Robot extends LoggedRobot {
     // Initialize URCL
     Logger.registerURCL(URCL.startExternal());
     StatusLogger.disableAutoLogging(); // Disable REVLib's built-in logging
-    LoggedPowerDistribution.getInstance(PowerConstants.kPDMCANid, PowerConstants.kPDMType);
+    LoggedPowerDistribution.getInstance(
+        PowerConstants.kPDMBusId, PowerConstants.kPDMCANid, PowerConstants.kPDMType);
 
     // Start AdvantageKit logger
     Logger.start();
 
     // Let NetworkTables batch updates on its own thread and remove unused LiveWindow publishers.
     // AdvantageKit telemetry continues to publish through NT4Publisher.
-    configureNetworkTablesBatching();
-    LiveWindow.disableAllTelemetry();
-    DriverStation.silenceJoystickConnectionWarning(true);
+    // NetworkTables now batches updates internally; the legacy flush toggle was removed.
+    // LiveWindow and joystick-warning suppression were removed from the 2027 public API.
 
     // Instantiate our RobotContainer. This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
@@ -121,13 +121,6 @@ public class Robot extends LoggedRobot {
     // Create a timer to disable motor brake a few seconds after disable. This will let the robot
     // stop immediately when disabled, but then also let it be pushed more
     m_disabledTimer = new Timer();
-  }
-
-  @SuppressWarnings("removal")
-  private void configureNetworkTablesBatching() {
-    // WPILib deprecated the per-loop flush switch without a replacement. Disabling it lets the NT
-    // implementation batch updates while retaining all publishers.
-    setNetworkTablesFlushEnabled(false);
   }
 
   // /** This function is called periodically during all modes. */
@@ -247,16 +240,16 @@ public class Robot extends LoggedRobot {
 
     if (FieldState.wonAuto == null) {
       // Only call this code block if the signal from FMS has not yet arrived
-      String gameData = DriverStation.getGameSpecificMessage();
+      String gameData = MatchState.getGameData().orElse("");
       if (gameData.length() > 0) {
         switch (gameData.charAt(0)) {
           case 'B':
             // Blue case code
-            FieldState.wonAuto = DriverStation.Alliance.Blue;
+            FieldState.wonAuto = Alliance.BLUE;
             break;
           case 'R':
             // Red case code
-            FieldState.wonAuto = DriverStation.Alliance.Red;
+            FieldState.wonAuto = Alliance.RED;
             break;
           default:
             // This is corrupt data, do nothing
@@ -281,17 +274,15 @@ public class Robot extends LoggedRobot {
 
   }
 
-  /** This function is called once when test mode is enabled. */
-  @Override
-  public void testInit() {
-    // Cancels all running commands at the start of test mode.
-    CommandScheduler.getInstance().cancelAll();
-    m_robotContainer.getDrivebase().resetHeadingController();
-  }
-
-  /** This function is called periodically during test mode. */
-  @Override
-  public void testPeriodic() {}
+  // The legacy test mode callbacks were removed in favor of 2027 utility opmodes.
+  // /** This function is called once when test mode is enabled. */
+  // public void testInit() {
+  //   CommandScheduler.getInstance().cancelAll();
+  //   m_robotContainer.getDrivebase().resetHeadingController();
+  // }
+  //
+  // /** This function is called periodically during test mode. */
+  // public void testPeriodic() {}
 
   /** This function is called once when the robot is first started up. */
   @Override

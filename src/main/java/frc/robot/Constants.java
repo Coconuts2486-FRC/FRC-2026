@@ -29,7 +29,7 @@ import org.wpilib.math.geometry.Rotation2d;
 import org.wpilib.math.geometry.Rotation3d;
 import org.wpilib.math.geometry.Transform3d;
 import org.wpilib.math.geometry.Translation3d;
-import org.wpilib.math.system.plant.DCMotor;
+import org.wpilib.math.system.DCMotor;
 import org.wpilib.math.util.Units;
 import org.wpilib.units.measure.Mass;
 import org.wpilib.hardware.power.PowerDistribution;
@@ -161,7 +161,8 @@ public final class Constants {
   public static final class PowerConstants {
 
     // Power Distribution Module Configuration
-    public static final PowerDistribution.ModuleType kPDMType = PowerDistribution.ModuleType.kRev;
+    public static final PowerDistribution.ModuleType kPDMType = PowerDistribution.ModuleType.REV;
+    public static final int kPDMBusId = 0;
     public static final int kPDMCANid = 1;
 
     // Current Limits
@@ -383,7 +384,7 @@ public final class Constants {
     public static final double kDriveA = 0.0;
     public static final double kDriveS = 0.20;
     public static final double kDriveT =
-        SwerveConstants.kDriveGearRatio / DCMotor.getKrakenX60Foc(1).KtNMPerAmp;
+        SwerveConstants.kDriveGearRatio / DCMotor.getKrakenX60Foc(1).Kt;
     public static final double kSteerP = 100.0;
     public static final double kSteerD = 0.5;
     public static final double kSteerS = 0.1;

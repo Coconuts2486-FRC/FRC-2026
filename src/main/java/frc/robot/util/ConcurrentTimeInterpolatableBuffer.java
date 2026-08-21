@@ -81,7 +81,8 @@ public final class ConcurrentTimeInterpolatableBuffer<T> {
    */
   public static ConcurrentTimeInterpolatableBuffer<Double> createDoubleBuffer(
       double historySizeSeconds) {
-    return new ConcurrentTimeInterpolatableBuffer<>(MathUtil::interpolate, historySizeSeconds);
+    return new ConcurrentTimeInterpolatableBuffer<>(
+        (start, end, t) -> start + (end - start) * t, historySizeSeconds);
   }
 
   /**
@@ -146,7 +147,7 @@ public final class ConcurrentTimeInterpolatableBuffer<T> {
     if (Math.abs(denom) < 1e-9) return Optional.of(bottomBound.getValue());
 
     double ratio = (timeSeconds - t0) / denom;
-    ratio = MathUtil.clamp(ratio, 0.0, 1.0);
+    ratio = Math.clamp(ratio, 0.0, 1.0);
 
     return Optional.of(
         m_interpolatingFunc.interpolate(bottomBound.getValue(), topBound.getValue(), ratio));

@@ -77,43 +77,43 @@ public class Blinkin {
   private void applyState() {
     switch (currentState) {
       case DISABLED:
-        ledDriver.set(Pattern.SOLID_COLOR_BLACK.value);
+        ledDriver.setThrottle(Pattern.SOLID_COLOR_BLACK.value);
         break;
 
       case AUTONOMOUS:
-        ledDriver.set(Pattern.FIRE_MEDIUM.value);
+        ledDriver.setThrottle(Pattern.FIRE_MEDIUM.value);
         break;
 
       case INTAKE:
-        ledDriver.set(Pattern.LIGHT_CHASE_GRAY.value);
+        ledDriver.setThrottle(Pattern.LIGHT_CHASE_GRAY.value);
         break;
 
       case ACTIVE:
-        ledDriver.set(Pattern.SOLID_COLOR_WHITE.value);
+        ledDriver.setThrottle(Pattern.SOLID_COLOR_WHITE.value);
         break;
 
       case DEACTIVE:
-        ledDriver.set(Pattern.SOLID_COLOR_DARK_GRAY.value);
+        ledDriver.setThrottle(Pattern.SOLID_COLOR_DARK_GRAY.value);
         break;
 
       case ENDGAME:
-        ledDriver.set(Pattern.C2_HEARTBEAT_SLOW.value);
+        ledDriver.setThrottle(Pattern.C2_HEARTBEAT_SLOW.value);
         break;
 
       case CLIMB:
-        ledDriver.set(Pattern.BREATH_CHASE_GRAY.value);
+        ledDriver.setThrottle(Pattern.BREATH_CHASE_GRAY.value);
         break;
 
       case TELEOP_BLUE:
-        ledDriver.set(Pattern.LIGHT_CHASE_BLUE.value);
+        ledDriver.setThrottle(Pattern.LIGHT_CHASE_BLUE.value);
         break;
 
       case TELEOP_RED:
-        ledDriver.set(Pattern.LIGHT_CHASE_RED.value);
+        ledDriver.setThrottle(Pattern.LIGHT_CHASE_RED.value);
         break;
 
       default:
-        ledDriver.set(Pattern.SOLID_COLOR_BLACK.value);
+        ledDriver.setThrottle(Pattern.SOLID_COLOR_BLACK.value);
     }
   }
 

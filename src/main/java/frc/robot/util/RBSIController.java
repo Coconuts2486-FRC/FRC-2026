@@ -8,10 +8,12 @@
 
 package frc.robot.util;
 
-import org.wpilib.driverstation.DriverStation;
-import org.wpilib.command2.button.CommandPS4Controller;
-import org.wpilib.command2.button.CommandPS5Controller;
-import org.wpilib.command2.button.CommandXboxController;
+import org.wpilib.driverstation.GenericHID;
+import org.wpilib.driverstation.GenericHID.HIDType;
+import org.wpilib.driverstation.GenericHID.RumbleType;
+import org.wpilib.command2.button.CommandNiDsPS4Controller;
+import org.wpilib.command2.button.CommandNiDsPS5Controller;
+import org.wpilib.command2.button.CommandNiDsXboxController;
 import org.wpilib.command2.button.Trigger;
 import frc.robot.Constants.ControllerButtonConstants;
 import org.littletonrobotics.junction.Logger;
@@ -64,20 +66,25 @@ public abstract class RBSIController {
 
   /** Creates a controller wrapper for the HID currently connected at startup. */
   public static RBSIController createDriverController(int port) {
-    String name = DriverStation.getJoystickName(port);
-    RBSIController controller = createController(port, name);
+    GenericHID hid = new GenericHID(port);
+    String name = hid.getName();
+    RBSIController controller = createController(port, name, isXbox(hid.getGamepadType()));
 
     Logger.recordOutput("Controller/Port" + port + "/Name", name);
     Logger.recordOutput("Controller/Port" + port + "/Type", controller.getControllerType());
     return controller;
   }
 
-  private static RBSIController createController(int port, String name) {
-    return switch (detectControllerType(DriverStation.getJoystickIsXbox(port), name)) {
+  private static RBSIController createController(int port, String name, boolean isXbox) {
+    return switch (detectControllerType(isXbox, name)) {
       case "PS5" -> new PS5ControllerAdapter(port);
       case "PS4" -> new PS4ControllerAdapter(port);
       default -> new XboxControllerAdapter(port);
     };
+  }
+
+  private static boolean isXbox(HIDType type) {
+    return type == HIDType.XBOX_360 || type == HIDType.XBOX_ONE;
   }
 
   static String detectControllerType(boolean isXbox, String name) {
@@ -129,11 +136,11 @@ public abstract class RBSIController {
   public abstract void setRumble(double strength);
 
   private static final class XboxControllerAdapter extends RBSIController {
-    private final CommandXboxController controller;
+    private final CommandNiDsXboxController controller;
 
     private XboxControllerAdapter(int port) {
       super(port, "Xbox");
-      controller = new CommandXboxController(port);
+      controller = new CommandNiDsXboxController(port);
     }
 
     @Override
@@ -193,16 +200,17 @@ public abstract class RBSIController {
 
     @Override
     public void setRumble(double strength) {
-      controller.setRumble(org.wpilib.driverstation.GenericHID.RumbleType.kBothRumble, strength);
+      controller.setRumble(RumbleType.LEFT_RUMBLE, strength);
+      controller.setRumble(RumbleType.RIGHT_RUMBLE, strength);
     }
   }
 
   private static final class PS4ControllerAdapter extends RBSIController {
-    private final CommandPS4Controller controller;
+    private final CommandNiDsPS4Controller controller;
 
     private PS4ControllerAdapter(int port) {
       super(port, "PS4");
-      controller = new CommandPS4Controller(port);
+      controller = new CommandNiDsPS4Controller(port);
     }
 
     @Override
@@ -254,16 +262,17 @@ public abstract class RBSIController {
 
     @Override
     public void setRumble(double strength) {
-      controller.setRumble(org.wpilib.driverstation.GenericHID.RumbleType.kBothRumble, strength);
+      controller.setRumble(RumbleType.LEFT_RUMBLE, strength);
+      controller.setRumble(RumbleType.RIGHT_RUMBLE, strength);
     }
   }
 
   private static final class PS5ControllerAdapter extends RBSIController {
-    private final CommandPS5Controller controller;
+    private final CommandNiDsPS5Controller controller;
 
     private PS5ControllerAdapter(int port) {
       super(port, "PS5");
-      controller = new CommandPS5Controller(port);
+      controller = new CommandNiDsPS5Controller(port);
     }
 
     @Override
@@ -315,7 +324,8 @@ public abstract class RBSIController {
 
     @Override
     public void setRumble(double strength) {
-      controller.setRumble(org.wpilib.driverstation.GenericHID.RumbleType.kBothRumble, strength);
+      controller.setRumble(RumbleType.LEFT_RUMBLE, strength);
+      controller.setRumble(RumbleType.RIGHT_RUMBLE, strength);
     }
   }
 }

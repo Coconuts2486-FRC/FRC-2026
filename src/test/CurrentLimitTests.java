@@ -21,7 +21,7 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import org.wpilib.hardware.hal.HAL;
 import org.wpilib.units.measure.Current;
-import org.wpilib.driverstation.DriverStation;
+import org.wpilib.driverstation.RobotState;
 import org.wpilib.system.Timer;
 import org.wpilib.simulation.DriverStationSim;
 import java.util.function.Supplier;
@@ -62,7 +62,7 @@ public class CurrentLimitTests implements AutoCloseable {
   @Test
   public void robotIsEnabled() {
     /* verify that the robot is enabled */
-    assertTrue(DriverStation.isEnabled());
+    assertTrue(RobotState.isEnabled());
   }
 
   @Test

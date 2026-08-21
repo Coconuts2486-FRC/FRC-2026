@@ -17,8 +17,9 @@
 
 package frc.robot;
 
-import org.wpilib.driverstation.DriverStation;
-import org.wpilib.driverstation.DriverStation.Alliance;
+import org.wpilib.driverstation.Alliance;
+import org.wpilib.driverstation.MatchState;
+import org.wpilib.driverstation.RobotState;
 import frc.robot.util.Alert;
 
 public class FieldState {
@@ -51,7 +52,7 @@ public class FieldState {
    *
    * @return Whether the team's alliance's HUB is active right now
    */
-  public static Alliance stationAlliance = DriverStation.getAlliance().orElse(Alliance.Blue);
+  public static Alliance stationAlliance = MatchState.getAlliance().orElse(Alliance.BLUE);
 
   public static Alliance getAlliance() {
     return stationAlliance;
@@ -60,25 +61,25 @@ public class FieldState {
   public static boolean isHubActive() {
 
     // The HUB is active for both alliances in AUTO
-    if (DriverStation.isAutonomous()) {
+    if (RobotState.isAutonomous()) {
       return true;
     }
 
     // The HUB is not active when not in AUTO or TELEOP
-    if (!DriverStation.isTeleop()) {
+    if (!RobotState.isTeleop()) {
       return false;
     }
 
     // Read in the current match time & get alliance
-    // TODO: Since the ``DriverStation.getMatchTime()`` returns INT::
+    // TODO: Since the ``MatchState.getMatchTime()`` returns INT::
     //       Return the approximate match time. The FMS does not send an
     //       official match time to the robots, but does send an approximate
     //       match time. The value will count down the time remaining in the
     //       current period (auto or teleop). Warning: This is not an official
     //       time (so it cannot be used to dispute ref calls or guarantee that
     //       a function will trigger before the match ends).
-    double timeRemaining = DriverStation.getMatchTime();
-    Alliance alliance = DriverStation.getAlliance().orElse(Alliance.Blue);
+    double timeRemaining = MatchState.getMatchTime();
+    Alliance alliance = MatchState.getAlliance().orElse(Alliance.BLUE);
 
     // If the FMS has not provided an alliance yet, set to TRUE and kick an Alert!
     if (timeRemaining < 130.0 && wonAuto == null) {

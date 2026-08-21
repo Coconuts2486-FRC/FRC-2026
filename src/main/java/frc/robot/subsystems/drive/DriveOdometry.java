@@ -21,7 +21,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import org.wpilib.math.geometry.Rotation2d;
 import org.wpilib.math.kinematics.SwerveModulePosition;
-import org.wpilib.driverstation.DriverStation;
+import org.wpilib.driverstation.RobotState;
 import frc.robot.Constants;
 import frc.robot.subsystems.imu.Imu;
 import frc.robot.util.RBSIEnum.Mode;
@@ -114,8 +114,8 @@ public final class DriveOdometry extends VirtualSubsystem {
 
         // Coast state uses "now" + current module positions
         drive.updateDisabledCoastState(
-            DriverStation.isEnabled(),
-            DriverStation.isDisabled(),
+            RobotState.isEnabled(),
+            RobotState.isDisabled(),
             now,
             drive.getSimYawRateRadPerSec(),
             drive.getModulePositions());
@@ -127,7 +127,7 @@ public final class DriveOdometry extends VirtualSubsystem {
       // DISABLED (REAL only): keep both estimator history and external buffers alive so delayed
       // vision measurements can still be applied while the robot is carried or repositioned.
       // ----------------------------------------------------------------------
-      if (DriverStation.isDisabled() && !isReplayActive) {
+      if (RobotState.isDisabled() && !isReplayActive) {
         final double now = TimeUtil.now();
 
         // keep yaw buffers alive
@@ -139,8 +139,8 @@ public final class DriveOdometry extends VirtualSubsystem {
 
         // Coast state from "now" + current module positions
         drive.updateDisabledCoastState(
-            DriverStation.isEnabled(),
-            DriverStation.isDisabled(),
+            RobotState.isEnabled(),
+            RobotState.isDisabled(),
             now,
             imuInputs.yawRateRadPerSec,
             currentPositions);
@@ -169,8 +169,8 @@ public final class DriveOdometry extends VirtualSubsystem {
 
           // Coast state update (no per-sample positions available; use current)
           drive.updateDisabledCoastState(
-              DriverStation.isEnabled(),
-              DriverStation.isDisabled(),
+              RobotState.isEnabled(),
+              RobotState.isDisabled(),
               now,
               imuInputs.yawRateRadPerSec,
               drive.getModulePositions());
@@ -256,8 +256,8 @@ public final class DriveOdometry extends VirtualSubsystem {
         // Yaw rate: if you have a buffered rate, use it; otherwise imuInputs.yawRateRadPerSec is
         // ok.
         drive.updateDisabledCoastState(
-            DriverStation.isEnabled(),
-            DriverStation.isDisabled(),
+            RobotState.isEnabled(),
+            RobotState.isDisabled(),
             t,
             imuInputs.yawRateRadPerSec,
             odomPositions);
@@ -277,7 +277,7 @@ public final class DriveOdometry extends VirtualSubsystem {
         // Module distance deltas (valid within batch)
         for (int m = 0; m < 4; m++) {
           final SwerveModulePosition pos = odomPositions[m];
-          final double dist = pos.distanceMeters;
+          final double dist = pos.distance;
 
           if (logDebug && i == n - 1) {
             Logger.recordOutput("Odometry/Debug/mod" + m + "_distanceMeters", dist);

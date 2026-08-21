@@ -19,7 +19,7 @@ class UtilTest {
   @Test
   void timeUtilReturnsSecondsFromAdvantageKitMicrosecondTimestamp() {
     assertTrue(HAL.initialize(500, 0));
-    double expectedSeconds = RobotController.getFPGATime() * 1.0e-6;
+    double expectedSeconds = RobotController.getTime() * 1.0e-6;
     assertEquals(expectedSeconds, TimeUtil.now(), 0.050);
   }
 

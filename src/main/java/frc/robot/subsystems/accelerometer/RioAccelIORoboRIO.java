@@ -13,11 +13,13 @@
 
 package frc.robot.subsystems.accelerometer;
 
-import org.wpilib.BuiltInAccelerometer;
+import frc.robot.Constants;
+import org.wpilib.hardware.imu.OnboardIMU;
+import org.wpilib.hardware.imu.OnboardIMU.MountOrientation;
 import org.wpilib.system.Notifier;
 
 public class RioAccelIORoboRIO implements RioAccelIO {
-  private final BuiltInAccelerometer accel = new BuiltInAccelerometer();
+  private final OnboardIMU accel = new OnboardIMU(MountOrientation.FLAT);
 
   private volatile long stampNs = 0L;
   private volatile double xG = 0.0, yG = 0.0, zG = 0.0;
@@ -28,9 +30,9 @@ public class RioAccelIORoboRIO implements RioAccelIO {
     sampler =
         new Notifier(
             () -> {
-              xG = accel.getX();
-              yG = accel.getY();
-              zG = accel.getZ();
+              xG = accel.getAccelX() / Constants.G_TO_MPS2;
+              yG = accel.getAccelY() / Constants.G_TO_MPS2;
+              zG = accel.getAccelZ() / Constants.G_TO_MPS2;
               stampNs = System.nanoTime();
             });
     sampler.setName("RioAccelSampler");

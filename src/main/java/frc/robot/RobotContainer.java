@@ -33,7 +33,7 @@ import com.pathplanner.lib.util.PathPlannerLogging;
 import org.wpilib.math.controller.PIDController;
 import org.wpilib.math.geometry.Pose2d;
 import org.wpilib.math.geometry.Rotation2d;
-import org.wpilib.math.kinematics.ChassisSpeeds;
+import org.wpilib.math.kinematics.ChassisVelocities;
 import org.wpilib.math.util.Units;
 import org.wpilib.system.Filesystem;
 // import org.wpilib.smartdashboard.SmartDashboard;
@@ -550,7 +550,7 @@ public class RobotContainer {
             Commands.run(
                 () -> {
                   m_drivebase.runVelocity(
-                      new ChassisSpeeds(Units.inchesToMeters(-16), Units.inchesToMeters(0), 0));
+                      new ChassisVelocities(Units.inchesToMeters(-16), Units.inchesToMeters(0), 0));
                 },
                 m_drivebase));
 
@@ -560,7 +560,7 @@ public class RobotContainer {
             Commands.run(
                 () -> {
                   m_drivebase.runVelocity(
-                      new ChassisSpeeds(Units.inchesToMeters(16), Units.inchesToMeters(0), 0));
+                      new ChassisVelocities(Units.inchesToMeters(16), Units.inchesToMeters(0), 0));
                 },
                 m_drivebase));
 
@@ -571,7 +571,7 @@ public class RobotContainer {
             Commands.run(
                 () -> {
                   m_drivebase.runVelocity(
-                      new ChassisSpeeds(Units.inchesToMeters(0.), Units.inchesToMeters(-20.0), 0.));
+                      new ChassisVelocities(Units.inchesToMeters(0.), Units.inchesToMeters(-20.0), 0.));
                 },
                 m_drivebase));
 
@@ -581,7 +581,7 @@ public class RobotContainer {
             Commands.run(
                 () -> {
                   m_drivebase.runVelocity(
-                      new ChassisSpeeds(Units.inchesToMeters(0.), Units.inchesToMeters(20.0), 0.));
+                      new ChassisVelocities(Units.inchesToMeters(0.), Units.inchesToMeters(20.0), 0.));
                 },
                 m_drivebase));
 

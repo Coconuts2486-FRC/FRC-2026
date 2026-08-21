@@ -11,7 +11,7 @@ package frc.robot.util;
 
 import org.wpilib.util.sendable.Sendable;
 import org.wpilib.util.sendable.SendableBuilder;
-import org.wpilib.driverstation.DriverStation;
+import org.wpilib.driverstation.DriverStationErrors;
 import org.wpilib.smartdashboard.SmartDashboard;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -67,10 +67,10 @@ public class Alert {
       activeStartTime = TimeUtil.now();
       switch (type) {
         case ERROR:
-          DriverStation.reportError(text, false);
+          DriverStationErrors.reportError(text, false);
           break;
         case WARNING:
-          DriverStation.reportWarning(text, false);
+          DriverStationErrors.reportWarning(text, false);
           break;
         case INFO:
           System.out.println(text);
@@ -85,10 +85,10 @@ public class Alert {
     if (active && !text.equals(this.text)) {
       switch (type) {
         case ERROR:
-          DriverStation.reportError(text, false);
+          DriverStationErrors.reportError(text, false);
           break;
         case WARNING:
-          DriverStation.reportWarning(text, false);
+          DriverStationErrors.reportWarning(text, false);
           break;
         case INFO:
           System.out.println(text);

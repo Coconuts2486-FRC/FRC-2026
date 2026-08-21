@@ -15,10 +15,10 @@ import org.wpilib.math.geometry.Pose2d;
 import org.wpilib.math.geometry.Rotation2d;
 import org.wpilib.math.geometry.Transform2d;
 import org.wpilib.math.geometry.Translation2d;
-import org.wpilib.math.kinematics.ChassisSpeeds;
+import org.wpilib.math.kinematics.ChassisVelocities;
 import org.wpilib.math.util.Units;
-import org.wpilib.driverstation.DriverStation;
-import org.wpilib.driverstation.DriverStation.Alliance;
+import org.wpilib.driverstation.Alliance;
+import org.wpilib.driverstation.MatchState;
 import org.wpilib.system.Timer;
 import org.wpilib.command2.Command;
 import org.wpilib.command2.Commands;
@@ -59,13 +59,13 @@ public class DriveCommands {
           double omega = getOmega(omegaSupplier.getAsDouble());
 
           // Convert to field relative speeds & send command
-          ChassisSpeeds speeds =
-              new ChassisSpeeds(
+          ChassisVelocities speeds =
+              new ChassisVelocities(
                   linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
                   linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
                   omega * drive.getMaxAngularSpeedRadPerSec());
           Rotation2d heading = getAllianceRelativeHeading(drive.getHeading());
-          drive.runVelocity(ChassisSpeeds.fromFieldRelativeSpeeds(speeds, heading));
+          drive.runVelocity(speeds.toRobotRelative(heading));
         },
         drive);
   }
@@ -87,7 +87,7 @@ public class DriveCommands {
 
           // Run with straight-up velocities w.r.t. the robot!
           drive.runVelocity(
-              new ChassisSpeeds(
+              new ChassisVelocities(
                   linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
                   linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
                   omega * drive.getMaxAngularSpeedRadPerSec()));
@@ -121,13 +121,13 @@ public class DriveCommands {
                           drive.getHeading().getRadians(), rotationSupplier.get().getRadians());
 
               // Convert to field relative speeds & send command
-              ChassisSpeeds speeds =
-                  new ChassisSpeeds(
+              ChassisVelocities speeds =
+                  new ChassisVelocities(
                       linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
                       linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
                       omega);
               Rotation2d heading = getAllianceRelativeHeading(drive.getHeading());
-              drive.runVelocity(ChassisSpeeds.fromFieldRelativeSpeeds(speeds, heading));
+              drive.runVelocity(speeds.toRobotRelative(heading));
             },
             drive)
 
@@ -166,7 +166,7 @@ public class DriveCommands {
   }
 
   private static Rotation2d getAllianceRelativeHeading(Rotation2d heading) {
-    return DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red
+    return MatchState.getAlliance().orElse(Alliance.BLUE) == Alliance.RED
         ? heading.plus(Rotation2d.kPi)
         : heading;
   }
@@ -254,7 +254,7 @@ public class DriveCommands {
             Commands.run(
                 () -> {
                   double speed = limiter.calculate(WHEEL_RADIUS_MAX_VELOCITY);
-                  drive.runVelocity(new ChassisSpeeds(0.0, 0.0, speed));
+                  drive.runVelocity(new ChassisVelocities(0.0, 0.0, speed));
                 },
                 drive)),
 

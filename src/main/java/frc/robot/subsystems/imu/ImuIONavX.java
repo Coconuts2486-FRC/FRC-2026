@@ -23,7 +23,7 @@
 // import org.wpilib.math.geometry.Translation3d;
 // import org.wpilib.math.util.Units;
 // import org.wpilib.driverstation.DriverStation;
-// import org.wpilib.driverstation.DriverStation.Alliance;
+// import org.wpilib.driverstation.Alliance;
 // import frc.robot.Constants;
 // import frc.robot.subsystems.drive.PhoenixOdometryThread;
 // import frc.robot.subsystems.drive.SwerveConstants;
@@ -54,7 +54,7 @@
 //     navx = new AHRS(NavXComType.kMXP_SPI, (byte) SwerveConstants.kOdometryFrequency);
 //
 //     // Alliance-based adjustment (your original behavior)
-//     if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
+//     if (MatchState.getAlliance().orElse(Alliance.BLUE) == Alliance.RED) {
 //       navx.setAngleAdjustment(180.0);
 //     } else {
 //       navx.setAngleAdjustment(0.0);
@@ -200,7 +200,7 @@
 //   // public void zero() {
 //   //   // With the Pigeon facing forward, forward depends on the alliance selected.
 //   //   // Set Angle Adjustment based on alliance
-//   //   if (DriverStation.getAlliance().get() == Alliance.Blue) {
+//   //   if (MatchState.getAlliance().get() == Alliance.BLUE) {
 //   //     navx.setAngleAdjustment(0.0);
 //   //   } else {
 //   //     navx.setAngleAdjustment(180.0);

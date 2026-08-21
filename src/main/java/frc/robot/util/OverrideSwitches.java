@@ -18,8 +18,8 @@
 
 package frc.robot.util;
 
-import org.wpilib.driverstation.DriverStation;
 import org.wpilib.driverstation.GenericHID;
+import org.wpilib.driverstation.GenericHID.HIDType;
 import org.wpilib.command2.button.Trigger;
 
 /** Interface for physical override switches on operator console. */
@@ -33,7 +33,8 @@ public class OverrideSwitches {
   /** Returns whether the controller is connected. */
   public boolean isConnected() {
     return consoleSwitches.isConnected()
-        && !DriverStation.getJoystickIsXbox(consoleSwitches.getPort())
+        && consoleSwitches.getGamepadType() != HIDType.XBOX_360
+        && consoleSwitches.getGamepadType() != HIDType.XBOX_ONE
         && consoleSwitches.getName().equals("Generic   USB  Joystick");
   }
 

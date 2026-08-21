@@ -24,8 +24,9 @@ import org.wpilib.math.geometry.Pose2d;
 import org.wpilib.math.geometry.Pose3d;
 import org.wpilib.math.geometry.Rotation2d;
 import org.wpilib.math.geometry.Translation2d;
-import org.wpilib.driverstation.DriverStation;
-import org.wpilib.driverstation.DriverStation.Alliance;
+import org.wpilib.driverstation.Alliance;
+import org.wpilib.driverstation.MatchState;
+import org.wpilib.driverstation.RobotState;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.FieldConstants;
 import frc.robot.computations.BasicRegression;
@@ -60,7 +61,7 @@ public class Coordinator extends VirtualSubsystem {
   private double xpos;
   private double ypos;
   private Translation2d velocity;
-  private Alliance alliance = Alliance.Blue;
+  private Alliance alliance = Alliance.BLUE;
   private boolean allianceSet = false;
   boolean intakeRunning;
   boolean runOnceDisabled = true;
@@ -108,7 +109,7 @@ public class Coordinator extends VirtualSubsystem {
 
   @Override
   public void rbsiPeriodic() {
-    if (DriverStation.isDisabled()) {
+    if (RobotState.isDisabled()) {
       if (!runOnceDisabled) {
         return;
       }
@@ -122,9 +123,9 @@ public class Coordinator extends VirtualSubsystem {
     xpos = pose.getX();
     ypos = pose.getY();
     velocity = velocitySupplier.get();
-    if (!allianceSet && DriverStation.isEnabled()) {
+    if (!allianceSet && RobotState.isEnabled()) {
       // Get the current alliance once when enabled
-      DriverStation.getAlliance()
+      MatchState.getAlliance()
           .ifPresent(
               selectedAlliance -> {
                 alliance = selectedAlliance;
@@ -137,16 +138,16 @@ public class Coordinator extends VirtualSubsystem {
       // On the BLUE side of the field
       zone =
           switch (alliance) {
-            case Blue -> Zones.HOME_ZONE;
-            case Red -> Zones.FOREIGN_ZONE;
+            case BLUE -> Zones.HOME_ZONE;
+            case RED -> Zones.FOREIGN_ZONE;
           };
 
     } else if (xpos > FieldConstants.startingLineXRedMeters) {
       // On the RED side of the field
       zone =
           switch (alliance) {
-            case Red -> Zones.HOME_ZONE;
-            case Blue -> Zones.FOREIGN_ZONE;
+            case RED -> Zones.HOME_ZONE;
+            case BLUE -> Zones.FOREIGN_ZONE;
           };
     } else {
       // In the NEUTRAL ZONE
@@ -159,8 +160,8 @@ public class Coordinator extends VirtualSubsystem {
         // Aim turret at our hub
         target =
             switch (alliance) {
-              case Blue -> FieldConstants.hubCenterBlue;
-              case Red -> FieldConstants.hubCenterRed;
+              case BLUE -> FieldConstants.hubCenterBlue;
+              case RED -> FieldConstants.hubCenterRed;
             };
 
         break;
@@ -169,11 +170,11 @@ public class Coordinator extends VirtualSubsystem {
         // Aim turret at one of two passing locations based on Y position
         target =
             switch (alliance) {
-              case Blue ->
+              case BLUE ->
                   (ypos < MID_FIELD_Y)
                       ? FieldConstants.passingOutpostBlue
                       : FieldConstants.passingDepotBlue;
-              case Red ->
+              case RED ->
                   (ypos > MID_FIELD_Y)
                       ? FieldConstants.passingOutpostRed
                       : FieldConstants.passingDepotRed;
@@ -213,7 +214,7 @@ public class Coordinator extends VirtualSubsystem {
       //     double desiredHeadingRad = targeting.getDesiredRobotHeadingRad(pose, tgt.get());
 
       //     // Produce a chassis request (you might have your own helper)
-      //     ChassisSpeeds speeds = targeting.buildAimingDriveRequest(desiredHeadingRad);
+      //     ChassisVelocities speeds = targeting.buildAimingDriveRequest(desiredHeadingRad);
       //     drive.runVelocity(speeds);
       //   }
       // }

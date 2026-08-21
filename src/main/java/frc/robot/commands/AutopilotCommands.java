@@ -23,7 +23,7 @@ import com.therekrab.autopilot.APTarget;
 import com.therekrab.autopilot.Autopilot.APResult;
 import org.wpilib.math.geometry.Pose2d;
 import org.wpilib.math.geometry.Rotation2d;
-import org.wpilib.math.kinematics.ChassisSpeeds;
+import org.wpilib.math.kinematics.ChassisVelocities;
 import org.wpilib.units.measure.Distance;
 import org.wpilib.command2.Command;
 import org.wpilib.command2.Commands;
@@ -177,7 +177,7 @@ public class AutopilotCommands {
 
     return Commands.run(
             () -> {
-              ChassisSpeeds robotRelativeSpeeds = drive.getChassisSpeeds();
+              ChassisVelocities robotRelativeSpeeds = drive.getChassisSpeeds();
               Pose2d pose = drive.getPose();
 
               Logger.recordOutput("Autopilot/CurrentPose", pose);
@@ -196,8 +196,8 @@ public class AutopilotCommands {
                   "Autopilot/atTarget", AutoConstants.kAutopilot.atTarget(drive.getPose(), target));
 
               // Output is field relative
-              ChassisSpeeds speeds =
-                  new ChassisSpeeds(
+              ChassisVelocities speeds =
+                  new ChassisVelocities(
                       output.vx(),
                       output.vy(),
                       RadiansPerSecond.of(
@@ -207,7 +207,7 @@ public class AutopilotCommands {
                                   drive.getHeading().getRadians(),
                                   output.targetAngle().getRadians())));
 
-              drive.runVelocity(ChassisSpeeds.fromFieldRelativeSpeeds(speeds, drive.getHeading()));
+              drive.runVelocity(speeds.toRobotRelative(drive.getHeading()));
             },
             drive)
 

@@ -70,7 +70,7 @@ public class VisionIOLimelight implements VisionIO {
   public void updateInputs(VisionIOInputs inputs) {
     // Update connection status based on whether an update has been seen in the last 250ms
     inputs.connected =
-        ((RobotController.getFPGATime() - heartbeatSubscriber.getLastChange()) / 1000) < 250;
+        ((RobotController.getTime() - heartbeatSubscriber.getLastChange()) / 1000) < 250;
 
     // Update target observation
     inputs.latestTargetObservation =
@@ -178,7 +178,7 @@ public class VisionIOLimelight implements VisionIO {
   }
 
   private static void flushOrientationIfDue() {
-    long nowUs = RobotController.getFPGATime();
+    long nowUs = RobotController.getTime();
     if (nowUs - lastOrientationFlushUs < ORIENTATION_FLUSH_PERIOD_US) return;
     NetworkTableInstance.getDefault().flush();
     lastOrientationFlushUs = nowUs;

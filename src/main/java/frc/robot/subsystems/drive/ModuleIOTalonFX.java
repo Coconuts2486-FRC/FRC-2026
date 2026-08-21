@@ -417,7 +417,7 @@ public class ModuleIOTalonFX implements ModuleIO {
     double accelerationRotPerSec2 =
         deltaTimeSec > 0 ? (velocityRotPerSec - lastVelocityRotPerSec) / deltaTimeSec : 0.0;
     accelerationRotPerSec2 =
-        MathUtil.clamp(
+        Math.clamp(
             accelerationRotPerSec2, -maxAccelerationRotPerSec2, maxAccelerationRotPerSec2);
     // Update last values for next loop
     lastVelocityRotPerSec = velocityRotPerSec;

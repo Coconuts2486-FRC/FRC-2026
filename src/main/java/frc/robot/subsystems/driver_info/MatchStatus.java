@@ -1,7 +1,8 @@
 package frc.robot.subsystems.driver_info;
 
-import org.wpilib.driverstation.DriverStation;
-import org.wpilib.driverstation.DriverStation.Alliance;
+import org.wpilib.driverstation.Alliance;
+import org.wpilib.driverstation.MatchState;
+import org.wpilib.driverstation.RobotState;
 import frc.robot.FieldState;
 import frc.robot.subsystems.driver_info.Blinkin.LEDState;
 import frc.robot.util.RBSIController;
@@ -12,7 +13,7 @@ public class MatchStatus extends VirtualSubsystem {
   private final RBSIController driver;
   private final RBSIController coDriver;
   private final Blinkin blinkin;
-  Alliance alliance = DriverStation.getAlliance().orElse(Alliance.Blue);
+  Alliance alliance = MatchState.getAlliance().orElse(Alliance.BLUE);
   private boolean isRumbling = false;
 
   /** Constructor */
@@ -61,8 +62,8 @@ public class MatchStatus extends VirtualSubsystem {
   public void rbsiPeriodic() {
 
     // Do these deeper calls once, and use the values for the rest of this loop
-    double matchTime = DriverStation.getMatchTime();
-    if (DriverStation.isAutonomous()) {
+    double matchTime = MatchState.getMatchTime();
+    if (RobotState.isAutonomous()) {
       // If Auto, don't do anything for this
       blinkin.setState(LEDState.AUTONOMOUS);
       return;

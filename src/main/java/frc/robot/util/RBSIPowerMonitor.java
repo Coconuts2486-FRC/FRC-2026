@@ -37,7 +37,7 @@ public class RBSIPowerMonitor extends VirtualSubsystem {
   private final LoggedTunableNumber batteryCapacityAh;
   private double totalAmpHours = 0.0;
   private double totalEnergyJoules = 0.0;
-  private long lastTimestampUs = RobotController.getFPGATime(); // In microseconds
+  private long lastTimestampUs = RobotController.getTime(); // In microseconds
   private double lastVoltage = 0.0;
   private double lastTotalCurrent = 0.0;
   private boolean totalCurrentOverLimit = false;
@@ -110,7 +110,7 @@ public class RBSIPowerMonitor extends VirtualSubsystem {
     }
 
     // --- Battery estimation ---
-    long nowUs = RobotController.getFPGATime();
+    long nowUs = RobotController.getTime();
     double dtSec = (nowUs - lastTimestampUs) / 1e6;
     lastTimestampUs = nowUs;
 

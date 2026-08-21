@@ -3,7 +3,7 @@
 ### Calling the `FieldRelativeShooterSolver`:
 
     import edu.wpi.first.math.geometry.*;
-    import edu.wpi.first.math.kinematics.ChassisSpeeds;
+    import edu.wpi.first.math.kinematics.ChassisVelocities;
 
     // ...
 
@@ -19,12 +19,12 @@
     Pose3d fieldTargetPose = targetProvider.getTargetPose();
 
     // 4) Current robot/platform velocity in FIELD coordinates
-    //    (convert from ChassisSpeeds)
-    ChassisSpeeds speeds = drivetrain.getChassisSpeeds();
+    //    (convert from ChassisVelocities)
+    ChassisVelocities speeds = drivetrain.getChassisSpeeds();
 
     Translation2d fieldPlatformVelocity =
-            new Translation2d(speeds.vxMetersPerSecond,
-                              speeds.vyMetersPerSecond);
+            new Translation2d(speeds.vx,
+                              speeds.vy);
 
     // 5) Solve for shot parameters
     FieldRelativeShooterSolver.FieldShotSolution solution =
@@ -63,7 +63,7 @@
 | `fieldRobotPose`         | `SwerveDrivePoseEstimator`            |
 | `launcherTransformRobot` | Measured CAD offset (`Constants`)     |
 | `fieldTargetPose`        | AprilTag pose or fixed field constant |
-| `fieldPlatformVelocity`  | `ChassisSpeeds` from drivetrain       |
+| `fieldPlatformVelocity`  | `ChassisVelocities` from drivetrain       |
 
 
 ### What to do if the solve fails
@@ -181,7 +181,7 @@ Optionally add a **slew-rate limiter** so aim commands don't jump faster than yo
 
             // Slew-rate limit psi
             double maxStep = maxPsiRateRadPerS * dtSeconds;
-            double step = MathUtil.clamp(
+            double step = Math.clamp(
                     MathUtil.angleModulus(psiNew - psiFiltRad),
                     -maxStep,
                     +maxStep
@@ -210,7 +210,7 @@ Assumptions
 
 * `Drivetrain` subsystem:
   * `Pose3d getPose3d()`
-  * `ChassisSpeeds getChassisSpeeds()`
+  * `ChassisVelocities getChassisSpeeds()`
 
 * `Launcher` subsystem:
   * `Transform3d getLauncherTransformRobot()` (or constant)
@@ -229,7 +229,7 @@ And your solver:
 The command:
 
     import edu.wpi.first.math.geometry.*;
-    import edu.wpi.first.math.kinematics.ChassisSpeeds;
+    import edu.wpi.first.math.kinematics.ChassisVelocities;
     import edu.wpi.first.wpilibj.Timer;
     import edu.wpi.first.wpilibj2.command.Command;
 
@@ -281,10 +281,10 @@ The command:
             Transform3d launcherTransformRobot = launcher.getLauncherTransformRobot();
             Pose3d fieldTargetPose = targetProvider.getTargetPoseField();
 
-            ChassisSpeeds speeds = drivetrain.getChassisSpeeds();
+            ChassisVelocities speeds = drivetrain.getChassisSpeeds();
             Translation2d fieldVel = new Translation2d(
-                    speeds.vxMetersPerSecond,
-                    speeds.vyMetersPerSecond
+                    speeds.vx,
+                    speeds.vy
             );
 
             try {

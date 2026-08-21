@@ -21,8 +21,8 @@
 // import org.wpilib.math.controller.PIDController;
 // import org.wpilib.math.numbers.N1;
 // import org.wpilib.math.system.LinearSystem;
-// import org.wpilib.math.system.plant.DCMotor;
-// import org.wpilib.math.system.plant.LinearSystemId;
+// import org.wpilib.math.system.DCMotor;
+// import org.wpilib.math.system.LinearSystemId;
 // import org.wpilib.simulation.FlywheelSim;
 
 // public class ClimbIOSim implements ClimbIO {
@@ -45,7 +45,7 @@
 //   public void updateInputs(ClimbIOInputs inputs) {
 //     if (closedLoop) {
 //       appliedVolts =
-//           MathUtil.clamp(pid.calculate(sim.getAngularVelocityRadPerSec()) + ffVolts, -12.0,
+//           Math.clamp(pid.calculate(sim.getAngularVelocity()) + ffVolts, -12.0,
 // 12.0);
 //       sim.setInputVoltage(appliedVolts);
 //     }

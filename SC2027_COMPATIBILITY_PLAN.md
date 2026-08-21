@@ -63,27 +63,32 @@ References:
 
 `./gradlew --version` now reports Java 25.0.2 for both the launcher and daemon. Dependency reports
 resolve successfully, including Jackson 2.21.1 and AdvantageKit `akit-autolog` 27.0.0-alpha-4.
-`compileJava` now reaches javac without a toolchain or dependency-resolution failure and stops on the
-expected step 3 WPILib API conversions. AdvantageKit generated types are now generated successfully.
-Choreo, NavX, and YAGSL source paths have been retained as comments because compatible dependencies
-are unavailable; Phoenix/Pigeon and PathPlanner remain the active configurations. The remaining
-compilation failures are confined to later WPILib API conversion work.
+`compileJava` now reaches javac without a toolchain or dependency-resolution failure. The WPILib API
+conversion and AdvantageKit generation stages are complete. Choreo, NavX, and YAGSL source paths
+have been retained as comments because compatible dependencies are unavailable; Phoenix/Pigeon and
+PathPlanner remain the active configurations. The remaining nine production compilation errors are
+Phoenix 6 mechanism API changes assigned to step 5.
 
 ## 3. Correct WPILib importer conversions
 
-- Replace `ChassisSpeeds` with `ChassisVelocities` and `SwerveModuleState` with
+- [x] Replace `ChassisSpeeds` with `ChassisVelocities` and `SwerveModuleState` with
   `SwerveModuleVelocity`, including method and field semantics.
-- Move `DCMotor` references from `math.system.plant` to `math.system`.
-- Move `Alert` references to `driverstation.Alert` and use the standalone `driverstation.Alliance`.
-- Replace Xbox, PS4, and PS5 command controllers with their `CommandNiDs...Controller` equivalents.
-- Adapt or remove obsolete `BuiltInAccelerometer`, LiveWindow, and HAL resource-reporting calls.
+- [x] Move `DCMotor` references from `math.system.plant` to `math.system` and replace the removed
+  `LinearSystemId` motor factory with `Models`.
+- [x] Move `Alert` references to `driverstation.Alert` and use the split `MatchState`, `RobotState`,
+  and `DriverStationErrors` APIs.
+- [x] Replace Xbox, PS4, and PS5 command controllers with their `CommandNiDs...Controller`
+  equivalents.
+- [x] Adapt obsolete `BuiltInAccelerometer`, LiveWindow, HAL resource reporting, FPGA time,
+  NetworkTables options, PWM motor, and math utility calls.
 
 ## 4. Restore AdvantageKit generated sources
 
-- Verify annotation processing produces the module, rollers, shooter, feeder, indexer, and intake
+- [x] Verify annotation processing produces the module, rollers, shooter, feeder, indexer, intake,
+  and IMU
   `*InputsAutoLogged` types.
-- Address genuine AdvantageKit API changes only after generated-source failures are removed.
-- Keep generated build metadata behavior separate from robot-generated tuner constants.
+- [x] Update the AdvantageKit power-distribution initialization for the SystemCore CAN bus ID.
+- [x] Keep generated build metadata behavior separate from robot-generated tuner constants.
 
 ## 5. Resolve vendor integrations
 

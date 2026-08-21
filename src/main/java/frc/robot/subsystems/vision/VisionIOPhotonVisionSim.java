@@ -66,7 +66,7 @@ public class VisionIOPhotonVisionSim extends VisionIOPhotonVision {
   }
 
   private void updateVisionSimOncePerLoop() {
-    long nowUs = RobotController.getFPGATime();
+    long nowUs = RobotController.getTime();
     if (nowUs - lastUpdateUs < MIN_UPDATE_PERIOD_US) return;
 
     visionSim.update(poseSupplier.get());

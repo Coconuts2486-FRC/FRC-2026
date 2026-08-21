@@ -1,6 +1,6 @@
 package frc.robot.subsystems.driver_info;
 
-import org.wpilib.driverstation.DriverStation;
+import org.wpilib.driverstation.MatchState;
 import frc.robot.FieldState;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.feeder.Feeder;
@@ -100,7 +100,7 @@ public class CANStatus extends VirtualSubsystem {
     Logger.recordOutput("CAN/IndexerAlive", indexer.indexerAlive());
 
     Logger.recordOutput("CAN/HubActive", FieldState.isHubActive());
-    Logger.recordOutput("CAN/MatchTime", DriverStation.getMatchTime());
+    Logger.recordOutput("CAN/MatchTime", MatchState.getMatchTime());
 
     Logger.recordOutput("CAN/intakePos", intake.getPivotPosition());
     Logger.recordOutput("CAN/IntakeDeployed", intake.isIntakeExtended());
