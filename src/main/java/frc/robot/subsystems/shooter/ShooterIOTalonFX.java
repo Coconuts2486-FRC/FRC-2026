@@ -56,6 +56,7 @@ public class ShooterIOTalonFX implements ShooterIO {
 
   private final StatusSignal<Current> leaderCurrent = leader.getSupplyCurrent();
   private final StatusSignal<Current> followerCurrent = follower.getSupplyCurrent();
+  private final StatusSignal<Double> leaderDutyCycle = leader.getDutyCycle();
 
   private final TalonFXConfiguration config = new TalonFXConfiguration();
   private final boolean isCTREPro = Constants.getPhoenixPro() == CTREPro.LICENSED;
@@ -99,7 +100,13 @@ public class ShooterIOTalonFX implements ShooterIO {
     follower.setControl(new Follower(leader.getDeviceID(), MotorAlignmentValue.Opposed));
 
     BaseStatusSignal.setUpdateFrequencyForAll(
-        50.0, leaderPosition, leaderVelocity, leaderAppliedVolts, leaderCurrent, followerCurrent);
+        50.0,
+        leaderPosition,
+        leaderVelocity,
+        leaderAppliedVolts,
+        leaderCurrent,
+        followerCurrent,
+        leaderDutyCycle);
     leader.optimizeBusUtilization();
     follower.optimizeBusUtilization();
   }
@@ -113,7 +120,7 @@ public class ShooterIOTalonFX implements ShooterIO {
 
     var leaderStatus =
         BaseStatusSignal.refreshAll(
-            leaderPosition, leaderVelocity, leaderAppliedVolts, leaderCurrent);
+            leaderPosition, leaderVelocity, leaderAppliedVolts, leaderCurrent, leaderDutyCycle);
 
     inputs.leaderAlive = leaderStatus.isOK();
     inputs.followerAlive = followerStatus.isOK();
@@ -168,7 +175,7 @@ public class ShooterIOTalonFX implements ShooterIO {
    */
   @Override
   public void set(double speed) {
-    leader.set(speed);
+    setPercent(speed);
   }
 
   @Override
@@ -184,7 +191,7 @@ public class ShooterIOTalonFX implements ShooterIO {
   /** Getter Functions ===================================================== */
   @Override
   public double get() {
-    return leader.get();
+    return leaderDutyCycle.getValueAsDouble();
   }
 
   @Override

@@ -38,7 +38,7 @@ public interface IntakeIO extends RBSIIO {
 
   public default void stopPivot() {}
 
-  public default double getPivotPosition() {
+  public default double getPivotPositionRot() {
     return 0.0;
   }
 

@@ -20,7 +20,7 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.util.FlippingUtil;
-import com.revrobotics.util.StatusLogger;
+// import com.revrobotics.util.StatusLogger;
 import org.wpilib.math.geometry.Pose2d;
 import org.wpilib.driverstation.Alliance;
 import org.wpilib.driverstation.MatchState;
@@ -37,7 +37,7 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
-import org.littletonrobotics.urcl.URCL;
+// import org.littletonrobotics.urcl.URCL;
 import org.photonvision.PhotonCamera;
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.VisionSystemSim;
@@ -100,9 +100,10 @@ public class Robot extends LoggedRobot {
         break;
     }
 
-    // Initialize URCL
-    Logger.registerURCL(URCL.startExternal());
-    StatusLogger.disableAutoLogging(); // Disable REVLib's built-in logging
+    // URCL 2026 only supplies native drivers for roboRIO and desktop targets. Retain the
+    // integration for a future Systemcore-compatible release, but keep REVLib logging active now.
+    // Logger.registerURCL(URCL.startExternal());
+    // StatusLogger.disableAutoLogging();
     LoggedPowerDistribution.getInstance(
         PowerConstants.kPDMBusId, PowerConstants.kPDMCANid, PowerConstants.kPDMType);
 

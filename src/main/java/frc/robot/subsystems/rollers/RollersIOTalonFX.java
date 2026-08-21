@@ -48,6 +48,7 @@ public class RollersIOTalonFX implements RollersIO {
   private final StatusSignal<AngularVelocity> rollersVelocity = rollers.getVelocity();
   private final StatusSignal<Voltage> rollersAppliedVolts = rollers.getMotorVoltage();
   private final StatusSignal<Current> rollersCurrent = rollers.getSupplyCurrent();
+  private final StatusSignal<Double> rollersDutyCycle = rollers.getDutyCycle();
 
   private final TalonFXConfiguration config = new TalonFXConfiguration();
   private final boolean isCTREPro = Constants.getPhoenixPro() == CTREPro.LICENSED;
@@ -80,7 +81,12 @@ public class RollersIOTalonFX implements RollersIO {
     PhoenixUtil.tryUntilOk(5, () -> rollers.getConfigurator().apply(config, 0.25));
 
     BaseStatusSignal.setUpdateFrequencyForAll(
-        50.0, rollersPosition, rollersVelocity, rollersAppliedVolts, rollersCurrent);
+        50.0,
+        rollersPosition,
+        rollersVelocity,
+        rollersAppliedVolts,
+        rollersCurrent,
+        rollersDutyCycle);
     rollers.optimizeBusUtilization();
   }
 
@@ -90,7 +96,11 @@ public class RollersIOTalonFX implements RollersIO {
 
     var rollerStatus =
         BaseStatusSignal.refreshAll(
-            rollersPosition, rollersVelocity, rollersAppliedVolts, rollersCurrent);
+            rollersPosition,
+            rollersVelocity,
+            rollersAppliedVolts,
+            rollersCurrent,
+            rollersDutyCycle);
 
     inputs.rollersConnected = rollerStatus.isOK();
     inputs.positionRad =
@@ -123,11 +133,7 @@ public class RollersIOTalonFX implements RollersIO {
 
   @Override
   public boolean isIntakeRollersRunning() {
-    if (Math.abs(rollers.get()) > 0.02) {
-      return true;
-    } else {
-      return false;
-    }
+    return Math.abs(rollersDutyCycle.getValueAsDouble()) > 0.02;
   }
 
   /**

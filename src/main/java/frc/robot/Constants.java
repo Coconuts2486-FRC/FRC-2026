@@ -478,9 +478,10 @@ public final class Constants {
     public static final MotorIdleMode kIntakeIdleMode = MotorIdleMode.COAST; // BRAKE, COAST
 
     // Pivot angle positions
-    public static final double dropPosition = 0.35;
-    public static final double storedAngle = 0.61;
-    public static final double lowerPosition = 0.3;
+    public static final double storedEncoderValue = -0.1;
+    public static final double dropPositionRot = 0.35;
+    public static final double storedAngleRot = 0.61;
+    public static final double lowerPositionRot = 0.3;
 
     // Pivot gear ratio
     public static final double kPivotGearRatio = 25.0 * 54.0 / 16.0;

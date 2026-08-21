@@ -21,8 +21,6 @@ package frc.robot;
 
 import static org.wpilib.units.Units.*;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.wpilib.vision.apriltag.AprilTagFieldLayout;
 import org.wpilib.vision.apriltag.AprilTagFields;
 import org.wpilib.math.geometry.Pose3d;
@@ -34,6 +32,7 @@ import org.wpilib.driverstation.Alliance;
 import org.wpilib.driverstation.MatchState;
 import org.wpilib.system.Filesystem;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
@@ -133,22 +132,15 @@ public class FieldConstants {
     NONE_ANDYMARK("none-andymark");
 
     AprilTagLayoutType(String name) {
+      Path layoutPath =
+          Constants.disableHAL
+              ? Path.of("src", "main", "deploy", "apriltags", name + ".json")
+              : Path.of(Filesystem.getDeployDirectory().getPath(), "apriltags", name + ".json");
       try {
-        layout =
-            new AprilTagFieldLayout(
-                Constants.disableHAL
-                    ? Path.of("src", "main", "deploy", "apriltags", name + ".json")
-                    : Path.of(
-                        Filesystem.getDeployDirectory().getPath(), "apriltags", name + ".json"));
+        layout = new AprilTagFieldLayout(layoutPath);
+        layoutString = Files.readString(layoutPath);
       } catch (IOException e) {
         throw new RuntimeException(e);
-      }
-
-      try {
-        layoutString = new ObjectMapper().writeValueAsString(layout);
-      } catch (JsonProcessingException e) {
-        throw new RuntimeException(
-            "Failed to serialize AprilTag layout JSON " + toString() + "for PhotonVision");
       }
     }
 

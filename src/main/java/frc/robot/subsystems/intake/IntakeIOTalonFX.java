@@ -24,6 +24,7 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -48,22 +49,23 @@ public class IntakeIOTalonFX implements IntakeIO {
   private final CANcoder pivotEncoder =
       new CANcoder(INTAKE_ENCODER.getDeviceNumber(), INTAKE_ENCODER.getCANBus());
 
-  private final StatusSignal<Angle> pivotPosition = pivot.getPosition();
-  private final StatusSignal<AngularVelocity> pivotVelocity = pivot.getVelocity();
+  private final StatusSignal<Angle> pivotPosition = pivotEncoder.getPosition();
+  private final StatusSignal<AngularVelocity> pivotArmVelocity = pivotEncoder.getVelocity();
+  private final StatusSignal<Angle> pivotMotorPosition = pivot.getPosition();
+  private final StatusSignal<AngularVelocity> pivotMotorVelocity = pivot.getVelocity();
   private final StatusSignal<Voltage> pivotAppliedVolts = pivot.getMotorVoltage();
   private final StatusSignal<Current> pivotCurrent = pivot.getSupplyCurrent();
+  private final TalonFXConfiguration pivotConfig = new TalonFXConfiguration();
+  private final DutyCycleOut dutyCycleRequest = new DutyCycleOut(0.0);
 
   /** Constructor */
   public IntakeIOTalonFX() {
 
     CANcoderConfiguration cancoderConfig = new CANcoderConfiguration();
-    TalonFXConfiguration pivotConfig = new TalonFXConfiguration();
-
     // pivot
     pivotConfig.CurrentLimits.SupplyCurrentLimit = PowerConstants.kMotorPortMaxCurrent;
     pivotConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
     pivotConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-    setCoast();
 
     pivotConfig.Slot0 =
         new Slot0Configs()
@@ -80,10 +82,11 @@ public class IntakeIOTalonFX implements IntakeIO {
     cancoderConfig.MagnetSensor.MagnetOffset = 0.5;
 
     BaseStatusSignal.setUpdateFrequencyForAll(
-        50.0, pivotCurrent, pivotPosition, pivotVelocity, pivotAppliedVolts);
+        50.0, pivotCurrent, pivotPosition, pivotMotorVelocity, pivotAppliedVolts);
 
     // applying
     PhoenixUtil.tryUntilOk(5, () -> pivotEncoder.getConfigurator().apply(cancoderConfig));
+    PhoenixUtil.tryUntilOk(5, () -> pivot.getConfigurator().apply(pivotConfig));
     pivot.optimizeBusUtilization();
   }
 
@@ -91,12 +94,12 @@ public class IntakeIOTalonFX implements IntakeIO {
   public void updateInputs(IntakeIOInputs inputs) {
     // checks the status of pivot
     var pivotStatus =
-        BaseStatusSignal.refreshAll(pivotCurrent, pivotPosition, pivotVelocity, pivotAppliedVolts);
+        BaseStatusSignal.refreshAll(pivotCurrent, pivotPosition, pivotMotorVelocity, pivotAppliedVolts);
 
     // checks the status of roller
     inputs.pivotConnected = pivotStatus.isOK();
     inputs.pivotPositionRot = pivotPosition.getValueAsDouble();
-    inputs.pivotAvAngularVelocity = pivotVelocity.getValueAsDouble();
+    inputs.pivotAvAngularVelocity = pivotMotorVelocity.getValueAsDouble();
     inputs.pivotAppliedVolts = pivotAppliedVolts.getValueAsDouble();
     inputs.currentAmps = new double[] {pivotCurrent.getValueAsDouble()};
   }
@@ -110,18 +113,20 @@ public class IntakeIOTalonFX implements IntakeIO {
   /** Set the coast mode of the mechanism as COAST */
   @Override
   public void setCoast() {
-    pivot.setNeutralMode(NeutralModeValue.Coast);
+    pivotConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    PhoenixUtil.tryUntilOk(5, () -> pivot.getConfigurator().apply(pivotConfig.MotorOutput));
   }
 
   /** Set the coast mode of the mechanism as BRAKE */
   @Override
   public void setBrake() {
-    pivot.setNeutralMode(NeutralModeValue.Brake);
+    pivotConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    PhoenixUtil.tryUntilOk(5, () -> pivot.getConfigurator().apply(pivotConfig.MotorOutput));
   }
 
   @Override
   public void setPivotPrimitiveSpeed(double speed) {
-    pivot.set(speed);
+    pivot.setControl(dutyCycleRequest.withOutput(speed));
   }
 
   @Override
@@ -133,11 +138,11 @@ public class IntakeIOTalonFX implements IntakeIO {
   @Override
   public boolean isIntakeExtended() {
     return (pivotEncoder.getAbsolutePosition().getValueAsDouble()
-        > (IntakeConstants.dropPosition - 0.05));
+        > (IntakeConstants.dropPositionRot - 0.05));
   }
 
   @Override
-  public double getPivotPosition() {
+  public double getPivotPositionRot() {
     return pivotEncoder.getAbsolutePosition().getValueAsDouble();
   }
 }

@@ -6,6 +6,7 @@ import static frc.robot.Constants.ShooterConstants.*;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -30,10 +31,12 @@ public class FeederIOTalonFX implements FeederIO {
   private final StatusSignal<AngularVelocity> feederVelocity = feeder.getVelocity();
   private final StatusSignal<Voltage> feederAppliedVolts = feeder.getMotorVoltage();
   private final StatusSignal<Current> feederCurrent = feeder.getSupplyCurrent();
+  private final StatusSignal<Double> feederDutyCycle = feeder.getDutyCycle();
 
   // configs
   private final TalonFXConfiguration config = new TalonFXConfiguration();
   private final boolean isCTREPro = Constants.getPhoenixPro() == CTREPro.LICENSED;
+  private final DutyCycleOut dutyCycleRequest = new DutyCycleOut(0.0);
 
   /**
    * Constructor
@@ -48,7 +51,7 @@ public class FeederIOTalonFX implements FeederIO {
     PhoenixUtil.tryUntilOk(5, () -> feeder.getConfigurator().apply(config, 0.25));
 
     BaseStatusSignal.setUpdateFrequencyForAll(
-        50.0, feederPosition, feederVelocity, feederAppliedVolts, feederCurrent);
+        50.0, feederPosition, feederVelocity, feederAppliedVolts, feederCurrent, feederDutyCycle);
     feeder.optimizeBusUtilization();
   }
 
@@ -57,7 +60,7 @@ public class FeederIOTalonFX implements FeederIO {
   public void updateInputs(FeederIOInputs inputs) {
     var status =
         BaseStatusSignal.refreshAll(
-            feederPosition, feederVelocity, feederAppliedVolts, feederCurrent);
+            feederPosition, feederVelocity, feederAppliedVolts, feederCurrent, feederDutyCycle);
     inputs.feederAlive = status.isOK();
     inputs.positionRad = Units.rotationsToRadians(feederPosition.getValueAsDouble());
     inputs.velocityRadPerSec = Units.rotationsToRadians(feederVelocity.getValueAsDouble());
@@ -79,7 +82,7 @@ public class FeederIOTalonFX implements FeederIO {
   // controls motor with value between -1 and 1 0 being off and 1 being 100%
   @Override
   public void setFeederVelocity(double velocity) {
-    feeder.set(velocity);
+    feeder.setControl(dutyCycleRequest.withOutput(velocity).withEnableFOC(isCTREPro));
   }
 
   // Stop the feeder
@@ -97,6 +100,6 @@ public class FeederIOTalonFX implements FeederIO {
   // returns true if feeder is going at above 10%
   @Override
   public boolean isFeederRunning() {
-    return (Math.abs(feeder.get()) > 0.1);
+    return Math.abs(feederDutyCycle.getValueAsDouble()) > 0.1;
   }
 }

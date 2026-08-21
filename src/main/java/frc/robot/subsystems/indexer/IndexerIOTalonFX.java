@@ -22,6 +22,7 @@ import static frc.robot.Constants.RobotDevices.*;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import org.wpilib.math.util.Units;
@@ -49,6 +50,7 @@ public class IndexerIOTalonFX implements IndexerIO {
 
   private final TalonFXConfiguration config = new TalonFXConfiguration();
   private final boolean isCTREPro = Constants.getPhoenixPro() == CTREPro.LICENSED;
+  private final DutyCycleOut dutyCycleRequest = new DutyCycleOut(0.0);
 
   /**
    * Constructor
@@ -96,7 +98,7 @@ public class IndexerIOTalonFX implements IndexerIO {
   // sets velocity at value from -1 to 1 0 being off and 1 being max speed
   @Override
   public void setVelocity(double velocity) {
-    indexer.set(velocity);
+    indexer.setControl(dutyCycleRequest.withOutput(velocity).withEnableFOC(isCTREPro));
   }
 
   // stops indexer
