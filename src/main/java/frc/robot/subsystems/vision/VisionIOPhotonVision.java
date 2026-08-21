@@ -11,9 +11,9 @@ package frc.robot.subsystems.vision;
 
 import static frc.robot.FieldConstants.*;
 
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform3d;
+import org.wpilib.math.geometry.Pose3d;
+import org.wpilib.math.geometry.Rotation2d;
+import org.wpilib.math.geometry.Transform3d;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;

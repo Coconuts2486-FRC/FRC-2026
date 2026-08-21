@@ -8,11 +8,11 @@
 
 package frc.robot.util;
 
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
-import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
+import org.wpilib.driverstation.DriverStation;
+import org.wpilib.command2.button.CommandPS4Controller;
+import org.wpilib.command2.button.CommandPS5Controller;
+import org.wpilib.command2.button.CommandXboxController;
+import org.wpilib.command2.button.Trigger;
 import frc.robot.Constants.ControllerButtonConstants;
 import org.littletonrobotics.junction.Logger;
 
@@ -193,7 +193,7 @@ public abstract class RBSIController {
 
     @Override
     public void setRumble(double strength) {
-      controller.setRumble(edu.wpi.first.wpilibj.GenericHID.RumbleType.kBothRumble, strength);
+      controller.setRumble(org.wpilib.driverstation.GenericHID.RumbleType.kBothRumble, strength);
     }
   }
 
@@ -254,7 +254,7 @@ public abstract class RBSIController {
 
     @Override
     public void setRumble(double strength) {
-      controller.setRumble(edu.wpi.first.wpilibj.GenericHID.RumbleType.kBothRumble, strength);
+      controller.setRumble(org.wpilib.driverstation.GenericHID.RumbleType.kBothRumble, strength);
     }
   }
 
@@ -315,7 +315,7 @@ public abstract class RBSIController {
 
     @Override
     public void setRumble(double strength) {
-      controller.setRumble(edu.wpi.first.wpilibj.GenericHID.RumbleType.kBothRumble, strength);
+      controller.setRumble(org.wpilib.driverstation.GenericHID.RumbleType.kBothRumble, strength);
     }
   }
 }

@@ -18,23 +18,14 @@
     {
       "name": "WPIlibUnitTests",
       "workingDirectory": "${workspaceFolder}/build/jni/release",
-      "vmargs": [
-        "-Djava.library.path=${workspaceFolder}/build/jni/release"
-      ],
+      "vmargs": [ "-Djava.library.path=${workspaceFolder}/build/jni/release" ],
       "env": {
-        "LD_LIBRARY_PATH": "${workspaceFolder}/build/jni/release",
+        "LD_LIBRARY_PATH": "${workspaceFolder}/build/jni/release" ,
         "DYLD_LIBRARY_PATH": "${workspaceFolder}/build/jni/release"
       }
     },
-    null
   ],
   "java.test.defaultConfig": "WPIlibUnitTests",
-  "editor.indentSize": 2,
-  "editor.inlayHints.enabled": "on",
-  "editor.tabSize": 2,
-  "files.eol": "\n",
-  "spotlessGradle.format.enable": true,
-  "spotlessGradle.diagnostics.enable": false,
   "java.import.gradle.annotationProcessing.enabled": false,
   "java.completion.favoriteStaticMembers": [
     "org.junit.Assert.*",
@@ -46,7 +37,7 @@
     "org.mockito.Mockito.*",
     "org.mockito.ArgumentMatchers.*",
     "org.mockito.Answers.*",
-    "edu.wpi.first.units.Units.*"
+    "org.wpilib.units.Units.*"
   ],
   "java.completion.filteredTypes": [
     "java.awt.*",
@@ -62,19 +53,9 @@
     "javax.swing.*",
     "javax.management.*",
     "javax.smartcardio.*",
-    "edu.wpi.first.math.proto.*",
-    "edu.wpi.first.math.**.proto.*",
-    "edu.wpi.first.math.**.struct.*",
-    null
+    "org.wpilib.math.proto.*",
+    "org.wpilib.math.**.proto.*",
+    "org.wpilib.math.**.struct.*",
   ],
-  "editor.defaultFormatter": "richardwillis.vscode-spotless-gradle",
-  "[json]": {
-    "editor.defaultFormatter": "richardwillis.vscode-spotless-gradle"
-  },
-  "[java]": {
-    "editor.defaultFormatter": "richardwillis.vscode-spotless-gradle"
-  },
-  "java.dependency.enableDependencyCheckup": false,
-  "java.debug.settings.onBuildFailureProceed": true,
-  "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx2G -Xms100m -Xlog:disable"
+  "java.dependency.enableDependencyCheckup": false
 }

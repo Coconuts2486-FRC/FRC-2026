@@ -17,7 +17,7 @@
 
 package frc.robot.subsystems.imu;
 
-import edu.wpi.first.math.geometry.Translation3d;
+import org.wpilib.math.geometry.Translation3d;
 import frc.robot.util.RBSIIO;
 import org.littletonrobotics.junction.AutoLog;
 

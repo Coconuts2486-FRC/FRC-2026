@@ -21,12 +21,12 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.util.FlippingUtil;
 import com.revrobotics.util.StatusLogger;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.livewindow.LiveWindow;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import org.wpilib.math.geometry.Pose2d;
+import org.wpilib.driverstation.DriverStation;
+import org.wpilib.system.Timer;
+import org.wpilib.livewindow.LiveWindow;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.CommandScheduler;
 import frc.robot.Constants.PowerConstants;
 import frc.robot.util.TimedCommand;
 import frc.robot.util.VirtualSubsystem;
@@ -212,9 +212,9 @@ public class Robot extends LoggedRobot {
         }
         break;
 
-      case CHOREO:
-        m_robotContainer.getAutonomousCommandChoreo();
-        break;
+//       case CHOREO:
+//         m_robotContainer.getAutonomousCommandChoreo();
+//         break;
       default:
         throw new RuntimeException(
             "Incorrect AUTO type selected in Constants: " + Constants.getAutoType());

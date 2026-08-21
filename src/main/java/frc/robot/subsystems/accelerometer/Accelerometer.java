@@ -13,7 +13,7 @@
 
 package frc.robot.subsystems.accelerometer;
 
-import edu.wpi.first.math.geometry.Translation3d;
+import org.wpilib.math.geometry.Translation3d;
 import frc.robot.Constants;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.subsystems.imu.Imu;

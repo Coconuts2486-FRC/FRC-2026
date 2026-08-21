@@ -28,15 +28,15 @@ public class RBSIEnum {
 
   /** Enumerate the supported swerve drive types */
   public static enum SwerveType {
-    PHOENIX6, // The all-CTRE Phoenix6 swerve generator
-    YAGSL // The generic YAGSL swerve generator
+    PHOENIX6 // The all-CTRE Phoenix6 swerve generator
+    // YAGSL // The generic YAGSL swerve generator
   }
 
   /** Enumerate the supported autonomous path planning types */
   public static enum AutoType {
     MANUAL, // Manual commands only
-    PATHPLANNER, // PathPlanner (https://pathplanner.dev/home.html)
-    CHOREO // Choreo (https://sleipnirgroup.github.io/Choreo/)
+    PATHPLANNER // PathPlanner (https://pathplanner.dev/home.html)
+    // CHOREO // Choreo (https://sleipnirgroup.github.io/Choreo/)
   }
 
   /** Enumerate the supported vision types */

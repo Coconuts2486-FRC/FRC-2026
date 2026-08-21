@@ -1,7 +1,7 @@
 package frc.robot.subsystems.driver_info;
 
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import org.wpilib.driverstation.DriverStation;
+import org.wpilib.driverstation.DriverStation.Alliance;
 import frc.robot.FieldState;
 import frc.robot.subsystems.driver_info.Blinkin.LEDState;
 import frc.robot.util.RBSIController;

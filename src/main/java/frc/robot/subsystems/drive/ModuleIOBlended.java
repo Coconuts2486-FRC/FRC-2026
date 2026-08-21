@@ -1,514 +1,515 @@
-// Copyright (c) 2024-2026 Az-FIRST
-// http://github.com/AZ-First
-// Copyright 2024-2025 FRC 2486
-// https://github.com/Coconuts2486-FRC
+// Disabled with the YAGSL drivetrain path for the 2027 SystemCore migration.
+// // Copyright (c) 2024-2026 Az-FIRST
+// // http://github.com/AZ-First
+// // Copyright 2024-2025 FRC 2486
+// // https://github.com/Coconuts2486-FRC
+// //
+// // Use of this source code is governed by a BSD
+// // license that can be found in the AdvantageKit-License.md file
+// // at the root directory of this project.
 //
-// Use of this source code is governed by a BSD
-// license that can be found in the AdvantageKit-License.md file
-// at the root directory of this project.
-
-package frc.robot.subsystems.drive;
-
-import com.ctre.phoenix6.BaseStatusSignal;
-import com.ctre.phoenix6.CANBus;
-import com.ctre.phoenix6.StatusCode;
-import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
-import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
-import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.VelocityVoltage;
-import com.ctre.phoenix6.controls.VoltageOut;
-import com.ctre.phoenix6.hardware.CANcoder;
-import com.ctre.phoenix6.hardware.ParentDevice;
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.ctre.phoenix6.signals.SensorDirectionValue;
-import com.ctre.phoenix6.swerve.SwerveModuleConstants;
-import com.ctre.phoenix6.swerve.SwerveModuleConstants.ClosedLoopOutputType;
-import com.ctre.phoenix6.swerve.SwerveModuleConstantsFactory;
-import com.revrobotics.PersistMode;
-import com.revrobotics.ResetMode;
-import com.revrobotics.spark.FeedbackSensor;
-import com.revrobotics.spark.SparkBase;
-import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkClosedLoopController;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkMaxConfig;
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.filter.Debouncer;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Current;
-import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.RobotController;
-import frc.robot.Constants;
-import frc.robot.Constants.DrivebaseConstants;
-import frc.robot.util.PhoenixUtil;
-import frc.robot.util.RBSICANBusRegistry;
-import frc.robot.util.RBSIEnum.CTREPro;
-import frc.robot.util.SparkUtil;
-import java.util.Arrays;
-import java.util.Queue;
-import org.littletonrobotics.junction.Logger;
-
-/**
- * Module IO implementation for blended TalonFX drive motor controller, SparkMax turn motor
- * controller (NEO or NEO 550), and CANcoder.
- *
- * <p>To calibrate the absolute encoder offsets, point the modules straight (such that forward
- * motion on the drive motor will propel the robot forward) and copy the reported values from the
- * absolute encoders using AdvantageScope. These values are logged under
- * "/Drive/ModuleX/TurnAbsolutePositionRad"
- */
-public class ModuleIOBlended implements ModuleIO {
-  private static final double[] EMPTY_DOUBLE_ARRAY = new double[0];
-  private static final Rotation2d[] EMPTY_ROTATION_ARRAY = new Rotation2d[0];
-  private final SwerveModuleConstants<
-          TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>
-      constants;
-
-  // This module number (for logging)
-  private final int module;
-
-  // Hardware Objects
-  private final TalonFX driveTalon;
-  private final SparkBase turnSpark;
-  private final CANcoder cancoder;
-  private final boolean enableVoltageFOC = Constants.getPhoenixPro() == CTREPro.LICENSED;
-  private final ClosedLoopOutputType m_DriveMotorClosedLoopOutput = ClosedLoopOutputType.Voltage;
-
-  // Closed loop controllers
-  private final SparkClosedLoopController turnController;
-
-  // Voltage control requests
-  private final VoltageOut voltageRequest = new VoltageOut(0);
-  private final VelocityVoltage velocityVoltageRequest = new VelocityVoltage(0.0);
-
-  // Timestamp inputs from Phoenix thread
-  private final Queue<Double> timestampQueue;
-
-  // Inputs from drive motor
-  private final StatusSignal<Angle> drivePosition;
-  private final StatusSignal<Angle> drivePositionOdom;
-  private final Queue<Double> drivePositionQueue;
-  private final StatusSignal<AngularVelocity> driveVelocity;
-  private final StatusSignal<Voltage> driveAppliedVolts;
-  private final StatusSignal<Current> driveCurrent;
-
-  // Inputs from turn motor
-  private final StatusSignal<Angle> turnAbsolutePosition;
-  private final StatusSignal<Angle> turnPosition;
-  private final Queue<Double> turnPositionQueue;
-  private final StatusSignal<AngularVelocity> turnVelocity;
-  private final BaseStatusSignal[] bulkRefreshSignals;
-  private StatusCode bulkRefreshStatus = StatusCode.OK;
-
-  // Connection debouncers
-  private final Debouncer driveConnectedDebounce =
-      new Debouncer(0.5, Debouncer.DebounceType.kFalling);
-  private final Debouncer turnConnectedDebounce =
-      new Debouncer(0.5, Debouncer.DebounceType.kFalling);
-  private final Debouncer turnEncoderConnectedDebounce =
-      new Debouncer(0.5, Debouncer.DebounceType.kFalling);
-
-  // Config
-  private final TalonFXConfiguration driveConfig = new TalonFXConfiguration();
-  private final SparkMaxConfig turnConfig = new SparkMaxConfig();
-
-  // Values used for calculating feedforward from kS, kV, and kA
-  private double lastVelocityRotPerSec = 0.0;
-  private long lastTimestampNano = System.nanoTime();
-  private static final double maxAccelerationRotPerSec2 =
-      Units.radiansToRotations(
-          DrivebaseConstants.kMaxLinearAccel / DrivebaseConstants.kWheelRadiusMeters);
-
-  /*
-   * Blended Module I/O, using Falcon drive and NEO steer motors
-   * Based on the ModuleIOTalonFX module, with the SparkMax components
-   * added in appropriately.
-   */
-  public ModuleIOBlended(int module) {
-    // Record the module number for logging purposes
-    this.module = module;
-
-    constants =
-        switch (module) {
-          case 0 ->
-              ConstantCreator.createModuleConstants(
-                  SwerveConstants.kFLSteerMotorId,
-                  SwerveConstants.kFLDriveMotorId,
-                  SwerveConstants.kFLEncoderId,
-                  SwerveConstants.kFLEncoderOffset,
-                  SwerveConstants.kFLXPosMeters,
-                  SwerveConstants.kFLYPosMeters,
-                  SwerveConstants.kFLDriveInvert,
-                  SwerveConstants.kFLSteerInvert,
-                  SwerveConstants.kFLEncoderInvert);
-          case 1 ->
-              ConstantCreator.createModuleConstants(
-                  SwerveConstants.kFRSteerMotorId,
-                  SwerveConstants.kFRDriveMotorId,
-                  SwerveConstants.kFREncoderId,
-                  SwerveConstants.kFREncoderOffset,
-                  SwerveConstants.kFRXPosMeters,
-                  SwerveConstants.kFRYPosMeters,
-                  SwerveConstants.kFRDriveInvert,
-                  SwerveConstants.kFRSteerInvert,
-                  SwerveConstants.kFREncoderInvert);
-          case 2 ->
-              ConstantCreator.createModuleConstants(
-                  SwerveConstants.kBLSteerMotorId,
-                  SwerveConstants.kBLDriveMotorId,
-                  SwerveConstants.kBLEncoderId,
-                  SwerveConstants.kBLEncoderOffset,
-                  SwerveConstants.kBLXPosMeters,
-                  SwerveConstants.kBLYPosMeters,
-                  SwerveConstants.kBLDriveInvert,
-                  SwerveConstants.kBLSteerInvert,
-                  SwerveConstants.kBLEncoderInvert);
-          case 3 ->
-              ConstantCreator.createModuleConstants(
-                  SwerveConstants.kBRSteerMotorId,
-                  SwerveConstants.kBRDriveMotorId,
-                  SwerveConstants.kBREncoderId,
-                  SwerveConstants.kBREncoderOffset,
-                  SwerveConstants.kBRXPosMeters,
-                  SwerveConstants.kBRYPosMeters,
-                  SwerveConstants.kBRDriveInvert,
-                  SwerveConstants.kBRSteerInvert,
-                  SwerveConstants.kBREncoderInvert);
-          default -> throw new IllegalArgumentException("Invalid module index");
-        };
-
-    CANBus canBus = RBSICANBusRegistry.getBus(SwerveConstants.kCANbusName);
-    driveTalon = new TalonFX(constants.DriveMotorId, canBus);
-    turnSpark = new SparkMax(constants.SteerMotorId, MotorType.kBrushless);
-    cancoder = new CANcoder(constants.EncoderId, canBus);
-
-    turnController = turnSpark.getClosedLoopController();
-
-    // Configure drive motor
-    driveConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    driveConfig.Slot0 =
-        new Slot0Configs()
-            .withKP(DrivebaseConstants.kDriveP)
-            .withKI(0.0)
-            .withKD(DrivebaseConstants.kDriveD)
-            .withKS(DrivebaseConstants.kDriveS)
-            .withKV(DrivebaseConstants.kDriveV)
-            .withKA(DrivebaseConstants.kDriveA);
-    driveConfig.Feedback.SensorToMechanismRatio = SwerveConstants.kDriveGearRatio;
-    driveConfig.TorqueCurrent.PeakForwardTorqueCurrent = DrivebaseConstants.kSlipCurrent;
-    driveConfig.TorqueCurrent.PeakReverseTorqueCurrent = -DrivebaseConstants.kSlipCurrent;
-    driveConfig.CurrentLimits.StatorCurrentLimit = SwerveConstants.kDriveCurrentLimit;
-    driveConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-    // Build the OpenLoopRampsConfigs and ClosedLoopRampsConfigs for current smoothing
-    OpenLoopRampsConfigs openRamps = new OpenLoopRampsConfigs();
-    openRamps.DutyCycleOpenLoopRampPeriod = DrivebaseConstants.kDriveOpenLoopRampPeriod;
-    openRamps.VoltageOpenLoopRampPeriod = DrivebaseConstants.kDriveOpenLoopRampPeriod;
-    openRamps.TorqueOpenLoopRampPeriod = DrivebaseConstants.kDriveOpenLoopRampPeriod;
-    ClosedLoopRampsConfigs closedRamps = new ClosedLoopRampsConfigs();
-    closedRamps.DutyCycleClosedLoopRampPeriod = DrivebaseConstants.kDriveClosedLoopRampPeriod;
-    closedRamps.VoltageClosedLoopRampPeriod = DrivebaseConstants.kDriveClosedLoopRampPeriod;
-    closedRamps.TorqueClosedLoopRampPeriod = DrivebaseConstants.kDriveClosedLoopRampPeriod;
-    // Apply the open- and closed-loop ramp configuration for current smoothing
-    driveConfig.withClosedLoopRamps(closedRamps).withOpenLoopRamps(openRamps);
-    // Set motor inversions
-    driveConfig.MotorOutput.Inverted =
-        constants.DriveMotorInverted
-            ? InvertedValue.Clockwise_Positive
-            : InvertedValue.CounterClockwise_Positive;
-
-    // Configure turn motor
-    turnConfig
-        .inverted(constants.SteerMotorInverted)
-        .idleMode(IdleMode.kBrake)
-        .smartCurrentLimit((int) SwerveConstants.kSteerCurrentLimit)
-        .voltageCompensation(DrivebaseConstants.kOptimalVoltage);
-    turnConfig
-        .absoluteEncoder
-        .inverted(constants.EncoderInverted)
-        .positionConversionFactor(SwerveConstants.turnEncoderPositionFactor)
-        .velocityConversionFactor(SwerveConstants.turnEncoderVelocityFactor)
-        .averageDepth(2);
-    turnConfig
-        .closedLoop
-        .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-        .positionWrappingEnabled(true)
-        .positionWrappingInputRange(
-            SwerveConstants.turnPIDMinInput, SwerveConstants.turnPIDMaxInput)
-        .pid(DrivebaseConstants.kSteerP, 0.0, DrivebaseConstants.kSteerD)
-        .feedForward
-        .kV(0.0)
-        .kS(DrivebaseConstants.kSteerS);
-    turnConfig
-        .signals
-        .absoluteEncoderPositionAlwaysOn(true)
-        .absoluteEncoderPositionPeriodMs((int) (1000.0 / SwerveConstants.kOdometryFrequency))
-        .absoluteEncoderVelocityAlwaysOn(true)
-        .absoluteEncoderVelocityPeriodMs((int) (Constants.loopPeriodSecs * 1000.))
-        .appliedOutputPeriodMs((int) (Constants.loopPeriodSecs * 1000.))
-        .busVoltagePeriodMs((int) (Constants.loopPeriodSecs * 1000.))
-        .outputCurrentPeriodMs((int) (Constants.loopPeriodSecs * 1000.));
-    turnConfig
-        .openLoopRampRate(DrivebaseConstants.kDriveOpenLoopRampPeriod)
-        .closedLoopRampRate(DrivebaseConstants.kDriveClosedLoopRampPeriod);
-
-    // Configure CANCoder
-    CANcoderConfiguration cancoderConfig = constants.EncoderInitialConfigs;
-    cancoderConfig.MagnetSensor.MagnetOffset = constants.EncoderOffset;
-    cancoderConfig.MagnetSensor.SensorDirection =
-        constants.EncoderInverted
-            ? SensorDirectionValue.Clockwise_Positive
-            : SensorDirectionValue.CounterClockwise_Positive;
-
-    constants.DriveMotorClosedLoopOutput = ClosedLoopOutputType.Voltage;
-
-    // Finally, apply the configs to the motor controllers
-    PhoenixUtil.tryUntilOk(5, () -> driveTalon.getConfigurator().apply(driveConfig, 0.25));
-    PhoenixUtil.tryUntilOk(5, () -> driveTalon.setPosition(0.0, 0.25));
-    SparkUtil.tryUntilOk(
-        turnSpark,
-        5,
-        () ->
-            turnSpark.configure(
-                turnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
-    cancoder.getConfigurator().apply(cancoderConfig);
-
-    // Create timestamp queue
-    timestampQueue = PhoenixOdometryThread.getInstance().makeTimestampQueue();
-
-    // Create drive status signals
-    drivePosition = driveTalon.getPosition();
-    drivePositionOdom = drivePosition.clone(); // NEW
-    drivePositionQueue = PhoenixOdometryThread.getInstance().registerSignal(drivePositionOdom);
-    driveVelocity = driveTalon.getVelocity();
-    driveAppliedVolts = driveTalon.getMotorVoltage();
-    driveCurrent = driveTalon.getStatorCurrent();
-
-    // Create turn status signals
-    turnVelocity = cancoder.getVelocity();
-    turnAbsolutePosition = cancoder.getAbsolutePosition();
-    turnPosition = cancoder.getPosition();
-    turnPositionQueue = PhoenixOdometryThread.getInstance().registerSignal(cancoder.getPosition());
-
-    bulkRefreshSignals =
-        new BaseStatusSignal[] {
-          drivePosition,
-          driveVelocity,
-          driveAppliedVolts,
-          driveCurrent,
-          turnAbsolutePosition,
-          turnPosition,
-          turnVelocity
-        };
-
-    // Configure periodic frames
-    BaseStatusSignal.setUpdateFrequencyForAll(
-        SwerveConstants.kOdometryFrequency, drivePositionOdom);
-    BaseStatusSignal.setUpdateFrequencyForAll(
-        50.0, drivePosition, driveVelocity, driveAppliedVolts, driveCurrent);
-
-    ParentDevice.optimizeBusUtilizationForAll(driveTalon);
-  }
-
-  @Override
-  public BaseStatusSignal[] getBulkRefreshSignals() {
-    return bulkRefreshSignals;
-  }
-
-  @Override
-  public void setBulkRefreshStatus(StatusCode status) {
-    bulkRefreshStatus = status;
-  }
-
-  @Override
-  public void updateInputs(ModuleIOInputs inputs) {
-    boolean driveStatus =
-        BaseStatusSignal.isAllGood(drivePosition, driveVelocity, driveAppliedVolts, driveCurrent);
-    boolean encStatus =
-        BaseStatusSignal.isAllGood(turnAbsolutePosition, turnPosition, turnVelocity);
-
-    if (!driveStatus) {
-      Logger.recordOutput(
-          "CAN/Module" + module + "/DriveRefreshStatus", bulkRefreshStatus.toString());
-    }
-    if (!encStatus) {
-      Logger.recordOutput(
-          "CAN/Module" + module + "/EncRefreshStatus", bulkRefreshStatus.toString());
-    }
-
-    // Drive inputs
-    inputs.driveConnected = driveConnectedDebounce.calculate(driveStatus);
-    inputs.drivePositionRad = Units.rotationsToRadians(drivePosition.getValueAsDouble());
-    inputs.driveVelocityRadPerSec = Units.rotationsToRadians(driveVelocity.getValueAsDouble());
-    inputs.driveAppliedVolts = driveAppliedVolts.getValueAsDouble();
-    inputs.driveCurrentAmps = driveCurrent.getValueAsDouble();
-
-    // Turn inputs (Spark for turn motor, CANcoder for absolute)
-    SparkUtil.sparkStickyFault = false;
-    inputs.turnEncoderConnected = turnEncoderConnectedDebounce.calculate(encStatus);
-    inputs.turnAbsolutePosition = Rotation2d.fromRotations(turnAbsolutePosition.getValueAsDouble());
-    inputs.turnPosition = Rotation2d.fromRotations(turnPosition.getValueAsDouble());
-    inputs.turnVelocityRadPerSec = Units.rotationsToRadians(turnVelocity.getValueAsDouble());
-    SparkUtil.ifOk(
-        turnSpark, turnSpark::getOutputCurrent, (value) -> inputs.turnCurrentAmps = value);
-    inputs.turnConnected = turnConnectedDebounce.calculate(!SparkUtil.sparkStickyFault);
-
-    // Odometry queue drain (common prefix only)
-    final int tsCount = timestampQueue.size();
-    final int driveCount = drivePositionQueue.size();
-    final int turnCount = turnPositionQueue.size();
-    final int sampleCount = Math.min(tsCount, Math.min(driveCount, turnCount));
-
-    if (sampleCount <= 0) {
-      inputs.odometryTimestamps = EMPTY_DOUBLE_ARRAY;
-      inputs.odometryDrivePositionsRad = EMPTY_DOUBLE_ARRAY;
-      inputs.odometryTurnPositions = EMPTY_ROTATION_ARRAY;
-      return;
-    }
-
-    final double[] outTs = new double[sampleCount];
-    final double[] outDriveRad = new double[sampleCount];
-    final Rotation2d[] outTurn = new Rotation2d[sampleCount];
-
-    for (int i = 0; i < sampleCount; i++) {
-      final Double t = timestampQueue.poll();
-      final Double driveRot = drivePositionQueue.poll();
-      final Double turnRot = turnPositionQueue.poll();
-
-      if (t == null || driveRot == null || turnRot == null) {
-        inputs.odometryTimestamps = Arrays.copyOf(outTs, i);
-        inputs.odometryDrivePositionsRad = Arrays.copyOf(outDriveRad, i);
-        inputs.odometryTurnPositions = Arrays.copyOf(outTurn, i);
-        return;
-      }
-
-      outTs[i] = t.doubleValue();
-      outDriveRad[i] = Units.rotationsToRadians(driveRot.doubleValue());
-      outTurn[i] = Rotation2d.fromRotations(turnRot.doubleValue());
-    }
-
-    inputs.odometryTimestamps = outTs;
-    inputs.odometryDrivePositionsRad = outDriveRad;
-    inputs.odometryTurnPositions = outTurn;
-  }
-
-  /**
-   * Set the drive motor to an open-loop voltage, scaled to battery voltage
-   *
-   * @param output Specified open-loop voltage requested
-   */
-  @Override
-  public void setDriveOpenLoop(double output) {
-    resetDriveFeedforwardState();
-
-    // Scale by actual battery voltage to keep full output consistent
-    double busVoltage = RobotController.getBatteryVoltage();
-    double scaledOutput = output * DrivebaseConstants.kOptimalVoltage / busVoltage;
-
-    driveTalon.setControl(voltageRequest.withOutput(scaledOutput).withEnableFOC(enableVoltageFOC));
-
-    // Log output and battery
-    Logger.recordOutput("Swerve/Drive/OpenLoopOutput", scaledOutput);
-    Logger.recordOutput("Robot/BatteryVoltage", busVoltage);
-  }
-
-  /**
-   * Set the turn motor to an open-loop voltage, scaled to battery voltage
-   *
-   * @param output Specified open-loop voltage requested
-   */
-  @Override
-  public void setTurnOpenLoop(double output) {
-    double busVoltage = RobotController.getBatteryVoltage();
-    double scaledOutput = output * DrivebaseConstants.kOptimalVoltage / busVoltage;
-    turnSpark.setVoltage(scaledOutput);
-
-    // Log output and battery
-    Logger.recordOutput("Swerve/Turn/OpenLoopOutput", scaledOutput);
-    Logger.recordOutput("Robot/BatteryVoltage", busVoltage);
-  }
-
-  /**
-   * Set the velocity of the module
-   *
-   * @param velocityRadPerSec Requested module drive velocity in radians per second
-   */
-  @Override
-  public void setDriveVelocity(double velocityRadPerSec) {
-    double velocityRotPerSec = Units.radiansToRotations(velocityRadPerSec);
-    double busVoltage = RobotController.getBatteryVoltage();
-
-    // Compute the Feedforward voltage for CTRE UNLICENSED operation *****
-    // Compute acceleration
-    long currentTimeNano = System.nanoTime();
-    double deltaTimeSec = (currentTimeNano - lastTimestampNano) * 1e-9;
-    double accelerationRotPerSec2 =
-        deltaTimeSec > 0 ? (velocityRotPerSec - lastVelocityRotPerSec) / deltaTimeSec : 0.0;
-    accelerationRotPerSec2 =
-        MathUtil.clamp(
-            accelerationRotPerSec2, -maxAccelerationRotPerSec2, maxAccelerationRotPerSec2);
-    // Update last values for next loop
-    lastVelocityRotPerSec = velocityRotPerSec;
-    lastTimestampNano = currentTimeNano;
-    // Estimate the slot feedforward for logging. The TalonFX applies kS/kV/kA from Slot0.
-    double estimatedSlotFFVolts =
-        Math.signum(velocityRotPerSec) * DrivebaseConstants.kDriveS
-            + DrivebaseConstants.kDriveV * velocityRotPerSec
-            + DrivebaseConstants.kDriveA * accelerationRotPerSec2;
-
-    driveTalon.setControl(
-        velocityVoltageRequest.withVelocity(velocityRotPerSec).withEnableFOC(enableVoltageFOC));
-
-    // AdvantageKit logging
-    Logger.recordOutput("Swerve/Drive/VelocityRadPerSec", velocityRadPerSec);
-    Logger.recordOutput("Swerve/Drive/VelocityRotPerSec", velocityRotPerSec);
-    Logger.recordOutput("Swerve/Drive/AccelerationRotPerSec2", accelerationRotPerSec2);
-    Logger.recordOutput("Swerve/Drive/EstimatedSlotFeedForwardVolts", estimatedSlotFFVolts);
-    Logger.recordOutput("Robot/BatteryVoltage", busVoltage);
-    Logger.recordOutput("Swerve/Drive/ClosedLoopMode", m_DriveMotorClosedLoopOutput);
-    Logger.recordOutput("Swerve/Drive/VoltageFOCEnabled", enableVoltageFOC);
-  }
-
-  private void resetDriveFeedforwardState() {
-    lastVelocityRotPerSec = 0.0;
-    lastTimestampNano = System.nanoTime();
-  }
-
-  /**
-   * Set the turn position of the module
-   *
-   * @param rotation Requested module Rotation2d position
-   */
-  @Override
-  public void setTurnPosition(Rotation2d rotation) {
-    double setpoint =
-        MathUtil.inputModulus(
-            rotation.plus(Rotation2d.fromRotations(constants.EncoderOffset)).getRadians(),
-            SwerveConstants.turnPIDMinInput,
-            SwerveConstants.turnPIDMaxInput);
-    turnController.setSetpoint(setpoint, ControlType.kPosition);
-  }
-
-  private SwerveModuleConstantsFactory<
-          TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>
-      ConstantCreator =
-          new SwerveModuleConstantsFactory<
-                  TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>()
-              .withDriveMotorGearRatio(SwerveConstants.kDriveGearRatio)
-              .withSteerMotorGearRatio(SwerveConstants.kSteerGearRatio)
-              .withCouplingGearRatio(SwerveConstants.kCoupleRatio)
-              .withWheelRadius(DrivebaseConstants.kWheelRadiusMeters)
-              .withSteerInertia(SwerveConstants.kSteerInertia)
-              .withDriveInertia(SwerveConstants.kDriveInertia)
-              .withSteerFrictionVoltage(SwerveConstants.kSteerFrictionVoltage)
-              .withDriveFrictionVoltage(SwerveConstants.kDriveFrictionVoltage);
-}
+// package frc.robot.subsystems.drive;
+//
+// import com.ctre.phoenix6.BaseStatusSignal;
+// import com.ctre.phoenix6.CANBus;
+// import com.ctre.phoenix6.StatusCode;
+// import com.ctre.phoenix6.StatusSignal;
+// import com.ctre.phoenix6.configs.CANcoderConfiguration;
+// import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
+// import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
+// import com.ctre.phoenix6.configs.Slot0Configs;
+// import com.ctre.phoenix6.configs.TalonFXConfiguration;
+// import com.ctre.phoenix6.controls.VelocityVoltage;
+// import com.ctre.phoenix6.controls.VoltageOut;
+// import com.ctre.phoenix6.hardware.CANcoder;
+// import com.ctre.phoenix6.hardware.ParentDevice;
+// import com.ctre.phoenix6.hardware.TalonFX;
+// import com.ctre.phoenix6.signals.InvertedValue;
+// import com.ctre.phoenix6.signals.NeutralModeValue;
+// import com.ctre.phoenix6.signals.SensorDirectionValue;
+// import com.ctre.phoenix6.swerve.SwerveModuleConstants;
+// import com.ctre.phoenix6.swerve.SwerveModuleConstants.ClosedLoopOutputType;
+// import com.ctre.phoenix6.swerve.SwerveModuleConstantsFactory;
+// import com.revrobotics.PersistMode;
+// import com.revrobotics.ResetMode;
+// import com.revrobotics.spark.FeedbackSensor;
+// import com.revrobotics.spark.SparkBase;
+// import com.revrobotics.spark.SparkBase.ControlType;
+// import com.revrobotics.spark.SparkClosedLoopController;
+// import com.revrobotics.spark.SparkLowLevel.MotorType;
+// import com.revrobotics.spark.SparkMax;
+// import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+// import com.revrobotics.spark.config.SparkMaxConfig;
+// import org.wpilib.math.util.MathUtil;
+// import org.wpilib.math.filter.Debouncer;
+// import org.wpilib.math.geometry.Rotation2d;
+// import org.wpilib.math.util.Units;
+// import org.wpilib.units.measure.Angle;
+// import org.wpilib.units.measure.AngularVelocity;
+// import org.wpilib.units.measure.Current;
+// import org.wpilib.units.measure.Voltage;
+// import org.wpilib.system.RobotController;
+// import frc.robot.Constants;
+// import frc.robot.Constants.DrivebaseConstants;
+// import frc.robot.util.PhoenixUtil;
+// import frc.robot.util.RBSICANBusRegistry;
+// import frc.robot.util.RBSIEnum.CTREPro;
+// import frc.robot.util.SparkUtil;
+// import java.util.Arrays;
+// import java.util.Queue;
+// import org.littletonrobotics.junction.Logger;
+//
+// /**
+//  * Module IO implementation for blended TalonFX drive motor controller, SparkMax turn motor
+//  * controller (NEO or NEO 550), and CANcoder.
+//  *
+//  * <p>To calibrate the absolute encoder offsets, point the modules straight (such that forward
+//  * motion on the drive motor will propel the robot forward) and copy the reported values from the
+//  * absolute encoders using AdvantageScope. These values are logged under
+//  * "/Drive/ModuleX/TurnAbsolutePositionRad"
+//  */
+// public class ModuleIOBlended implements ModuleIO {
+//   private static final double[] EMPTY_DOUBLE_ARRAY = new double[0];
+//   private static final Rotation2d[] EMPTY_ROTATION_ARRAY = new Rotation2d[0];
+//   private final SwerveModuleConstants<
+//           TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>
+//       constants;
+//
+//   // This module number (for logging)
+//   private final int module;
+//
+//   // Hardware Objects
+//   private final TalonFX driveTalon;
+//   private final SparkBase turnSpark;
+//   private final CANcoder cancoder;
+//   private final boolean enableVoltageFOC = Constants.getPhoenixPro() == CTREPro.LICENSED;
+//   private final ClosedLoopOutputType m_DriveMotorClosedLoopOutput = ClosedLoopOutputType.Voltage;
+//
+//   // Closed loop controllers
+//   private final SparkClosedLoopController turnController;
+//
+//   // Voltage control requests
+//   private final VoltageOut voltageRequest = new VoltageOut(0);
+//   private final VelocityVoltage velocityVoltageRequest = new VelocityVoltage(0.0);
+//
+//   // Timestamp inputs from Phoenix thread
+//   private final Queue<Double> timestampQueue;
+//
+//   // Inputs from drive motor
+//   private final StatusSignal<Angle> drivePosition;
+//   private final StatusSignal<Angle> drivePositionOdom;
+//   private final Queue<Double> drivePositionQueue;
+//   private final StatusSignal<AngularVelocity> driveVelocity;
+//   private final StatusSignal<Voltage> driveAppliedVolts;
+//   private final StatusSignal<Current> driveCurrent;
+//
+//   // Inputs from turn motor
+//   private final StatusSignal<Angle> turnAbsolutePosition;
+//   private final StatusSignal<Angle> turnPosition;
+//   private final Queue<Double> turnPositionQueue;
+//   private final StatusSignal<AngularVelocity> turnVelocity;
+//   private final BaseStatusSignal[] bulkRefreshSignals;
+//   private StatusCode bulkRefreshStatus = StatusCode.OK;
+//
+//   // Connection debouncers
+//   private final Debouncer driveConnectedDebounce =
+//       new Debouncer(0.5, Debouncer.DebounceType.kFalling);
+//   private final Debouncer turnConnectedDebounce =
+//       new Debouncer(0.5, Debouncer.DebounceType.kFalling);
+//   private final Debouncer turnEncoderConnectedDebounce =
+//       new Debouncer(0.5, Debouncer.DebounceType.kFalling);
+//
+//   // Config
+//   private final TalonFXConfiguration driveConfig = new TalonFXConfiguration();
+//   private final SparkMaxConfig turnConfig = new SparkMaxConfig();
+//
+//   // Values used for calculating feedforward from kS, kV, and kA
+//   private double lastVelocityRotPerSec = 0.0;
+//   private long lastTimestampNano = System.nanoTime();
+//   private static final double maxAccelerationRotPerSec2 =
+//       Units.radiansToRotations(
+//           DrivebaseConstants.kMaxLinearAccel / DrivebaseConstants.kWheelRadiusMeters);
+//
+//   /*
+//    * Blended Module I/O, using Falcon drive and NEO steer motors
+//    * Based on the ModuleIOTalonFX module, with the SparkMax components
+//    * added in appropriately.
+//    */
+//   public ModuleIOBlended(int module) {
+//     // Record the module number for logging purposes
+//     this.module = module;
+//
+//     constants =
+//         switch (module) {
+//           case 0 ->
+//               ConstantCreator.createModuleConstants(
+//                   SwerveConstants.kFLSteerMotorId,
+//                   SwerveConstants.kFLDriveMotorId,
+//                   SwerveConstants.kFLEncoderId,
+//                   SwerveConstants.kFLEncoderOffset,
+//                   SwerveConstants.kFLXPosMeters,
+//                   SwerveConstants.kFLYPosMeters,
+//                   SwerveConstants.kFLDriveInvert,
+//                   SwerveConstants.kFLSteerInvert,
+//                   SwerveConstants.kFLEncoderInvert);
+//           case 1 ->
+//               ConstantCreator.createModuleConstants(
+//                   SwerveConstants.kFRSteerMotorId,
+//                   SwerveConstants.kFRDriveMotorId,
+//                   SwerveConstants.kFREncoderId,
+//                   SwerveConstants.kFREncoderOffset,
+//                   SwerveConstants.kFRXPosMeters,
+//                   SwerveConstants.kFRYPosMeters,
+//                   SwerveConstants.kFRDriveInvert,
+//                   SwerveConstants.kFRSteerInvert,
+//                   SwerveConstants.kFREncoderInvert);
+//           case 2 ->
+//               ConstantCreator.createModuleConstants(
+//                   SwerveConstants.kBLSteerMotorId,
+//                   SwerveConstants.kBLDriveMotorId,
+//                   SwerveConstants.kBLEncoderId,
+//                   SwerveConstants.kBLEncoderOffset,
+//                   SwerveConstants.kBLXPosMeters,
+//                   SwerveConstants.kBLYPosMeters,
+//                   SwerveConstants.kBLDriveInvert,
+//                   SwerveConstants.kBLSteerInvert,
+//                   SwerveConstants.kBLEncoderInvert);
+//           case 3 ->
+//               ConstantCreator.createModuleConstants(
+//                   SwerveConstants.kBRSteerMotorId,
+//                   SwerveConstants.kBRDriveMotorId,
+//                   SwerveConstants.kBREncoderId,
+//                   SwerveConstants.kBREncoderOffset,
+//                   SwerveConstants.kBRXPosMeters,
+//                   SwerveConstants.kBRYPosMeters,
+//                   SwerveConstants.kBRDriveInvert,
+//                   SwerveConstants.kBRSteerInvert,
+//                   SwerveConstants.kBREncoderInvert);
+//           default -> throw new IllegalArgumentException("Invalid module index");
+//         };
+//
+//     CANBus canBus = RBSICANBusRegistry.getBus(SwerveConstants.kCANbusName);
+//     driveTalon = new TalonFX(constants.DriveMotorId, canBus);
+//     turnSpark = new SparkMax(constants.SteerMotorId, MotorType.kBrushless);
+//     cancoder = new CANcoder(constants.EncoderId, canBus);
+//
+//     turnController = turnSpark.getClosedLoopController();
+//
+//     // Configure drive motor
+//     driveConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+//     driveConfig.Slot0 =
+//         new Slot0Configs()
+//             .withKP(DrivebaseConstants.kDriveP)
+//             .withKI(0.0)
+//             .withKD(DrivebaseConstants.kDriveD)
+//             .withKS(DrivebaseConstants.kDriveS)
+//             .withKV(DrivebaseConstants.kDriveV)
+//             .withKA(DrivebaseConstants.kDriveA);
+//     driveConfig.Feedback.SensorToMechanismRatio = SwerveConstants.kDriveGearRatio;
+//     driveConfig.TorqueCurrent.PeakForwardTorqueCurrent = DrivebaseConstants.kSlipCurrent;
+//     driveConfig.TorqueCurrent.PeakReverseTorqueCurrent = -DrivebaseConstants.kSlipCurrent;
+//     driveConfig.CurrentLimits.StatorCurrentLimit = SwerveConstants.kDriveCurrentLimit;
+//     driveConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+//     // Build the OpenLoopRampsConfigs and ClosedLoopRampsConfigs for current smoothing
+//     OpenLoopRampsConfigs openRamps = new OpenLoopRampsConfigs();
+//     openRamps.DutyCycleOpenLoopRampPeriod = DrivebaseConstants.kDriveOpenLoopRampPeriod;
+//     openRamps.VoltageOpenLoopRampPeriod = DrivebaseConstants.kDriveOpenLoopRampPeriod;
+//     openRamps.TorqueOpenLoopRampPeriod = DrivebaseConstants.kDriveOpenLoopRampPeriod;
+//     ClosedLoopRampsConfigs closedRamps = new ClosedLoopRampsConfigs();
+//     closedRamps.DutyCycleClosedLoopRampPeriod = DrivebaseConstants.kDriveClosedLoopRampPeriod;
+//     closedRamps.VoltageClosedLoopRampPeriod = DrivebaseConstants.kDriveClosedLoopRampPeriod;
+//     closedRamps.TorqueClosedLoopRampPeriod = DrivebaseConstants.kDriveClosedLoopRampPeriod;
+//     // Apply the open- and closed-loop ramp configuration for current smoothing
+//     driveConfig.withClosedLoopRamps(closedRamps).withOpenLoopRamps(openRamps);
+//     // Set motor inversions
+//     driveConfig.MotorOutput.Inverted =
+//         constants.DriveMotorInverted
+//             ? InvertedValue.Clockwise_Positive
+//             : InvertedValue.CounterClockwise_Positive;
+//
+//     // Configure turn motor
+//     turnConfig
+//         .inverted(constants.SteerMotorInverted)
+//         .idleMode(IdleMode.kBrake)
+//         .smartCurrentLimit((int) SwerveConstants.kSteerCurrentLimit)
+//         .voltageCompensation(DrivebaseConstants.kOptimalVoltage);
+//     turnConfig
+//         .absoluteEncoder
+//         .inverted(constants.EncoderInverted)
+//         .positionConversionFactor(SwerveConstants.turnEncoderPositionFactor)
+//         .velocityConversionFactor(SwerveConstants.turnEncoderVelocityFactor)
+//         .averageDepth(2);
+//     turnConfig
+//         .closedLoop
+//         .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
+//         .positionWrappingEnabled(true)
+//         .positionWrappingInputRange(
+//             SwerveConstants.turnPIDMinInput, SwerveConstants.turnPIDMaxInput)
+//         .pid(DrivebaseConstants.kSteerP, 0.0, DrivebaseConstants.kSteerD)
+//         .feedForward
+//         .kV(0.0)
+//         .kS(DrivebaseConstants.kSteerS);
+//     turnConfig
+//         .signals
+//         .absoluteEncoderPositionAlwaysOn(true)
+//         .absoluteEncoderPositionPeriodMs((int) (1000.0 / SwerveConstants.kOdometryFrequency))
+//         .absoluteEncoderVelocityAlwaysOn(true)
+//         .absoluteEncoderVelocityPeriodMs((int) (Constants.loopPeriodSecs * 1000.))
+//         .appliedOutputPeriodMs((int) (Constants.loopPeriodSecs * 1000.))
+//         .busVoltagePeriodMs((int) (Constants.loopPeriodSecs * 1000.))
+//         .outputCurrentPeriodMs((int) (Constants.loopPeriodSecs * 1000.));
+//     turnConfig
+//         .openLoopRampRate(DrivebaseConstants.kDriveOpenLoopRampPeriod)
+//         .closedLoopRampRate(DrivebaseConstants.kDriveClosedLoopRampPeriod);
+//
+//     // Configure CANCoder
+//     CANcoderConfiguration cancoderConfig = constants.EncoderInitialConfigs;
+//     cancoderConfig.MagnetSensor.MagnetOffset = constants.EncoderOffset;
+//     cancoderConfig.MagnetSensor.SensorDirection =
+//         constants.EncoderInverted
+//             ? SensorDirectionValue.Clockwise_Positive
+//             : SensorDirectionValue.CounterClockwise_Positive;
+//
+//     constants.DriveMotorClosedLoopOutput = ClosedLoopOutputType.Voltage;
+//
+//     // Finally, apply the configs to the motor controllers
+//     PhoenixUtil.tryUntilOk(5, () -> driveTalon.getConfigurator().apply(driveConfig, 0.25));
+//     PhoenixUtil.tryUntilOk(5, () -> driveTalon.setPosition(0.0, 0.25));
+//     SparkUtil.tryUntilOk(
+//         turnSpark,
+//         5,
+//         () ->
+//             turnSpark.configure(
+//                 turnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
+//     cancoder.getConfigurator().apply(cancoderConfig);
+//
+//     // Create timestamp queue
+//     timestampQueue = PhoenixOdometryThread.getInstance().makeTimestampQueue();
+//
+//     // Create drive status signals
+//     drivePosition = driveTalon.getPosition();
+//     drivePositionOdom = drivePosition.clone(); // NEW
+//     drivePositionQueue = PhoenixOdometryThread.getInstance().registerSignal(drivePositionOdom);
+//     driveVelocity = driveTalon.getVelocity();
+//     driveAppliedVolts = driveTalon.getMotorVoltage();
+//     driveCurrent = driveTalon.getStatorCurrent();
+//
+//     // Create turn status signals
+//     turnVelocity = cancoder.getVelocity();
+//     turnAbsolutePosition = cancoder.getAbsolutePosition();
+//     turnPosition = cancoder.getPosition();
+//     turnPositionQueue = PhoenixOdometryThread.getInstance().registerSignal(cancoder.getPosition());
+//
+//     bulkRefreshSignals =
+//         new BaseStatusSignal[] {
+//           drivePosition,
+//           driveVelocity,
+//           driveAppliedVolts,
+//           driveCurrent,
+//           turnAbsolutePosition,
+//           turnPosition,
+//           turnVelocity
+//         };
+//
+//     // Configure periodic frames
+//     BaseStatusSignal.setUpdateFrequencyForAll(
+//         SwerveConstants.kOdometryFrequency, drivePositionOdom);
+//     BaseStatusSignal.setUpdateFrequencyForAll(
+//         50.0, drivePosition, driveVelocity, driveAppliedVolts, driveCurrent);
+//
+//     ParentDevice.optimizeBusUtilizationForAll(driveTalon);
+//   }
+//
+//   @Override
+//   public BaseStatusSignal[] getBulkRefreshSignals() {
+//     return bulkRefreshSignals;
+//   }
+//
+//   @Override
+//   public void setBulkRefreshStatus(StatusCode status) {
+//     bulkRefreshStatus = status;
+//   }
+//
+//   @Override
+//   public void updateInputs(ModuleIOInputs inputs) {
+//     boolean driveStatus =
+//         BaseStatusSignal.isAllGood(drivePosition, driveVelocity, driveAppliedVolts, driveCurrent);
+//     boolean encStatus =
+//         BaseStatusSignal.isAllGood(turnAbsolutePosition, turnPosition, turnVelocity);
+//
+//     if (!driveStatus) {
+//       Logger.recordOutput(
+//           "CAN/Module" + module + "/DriveRefreshStatus", bulkRefreshStatus.toString());
+//     }
+//     if (!encStatus) {
+//       Logger.recordOutput(
+//           "CAN/Module" + module + "/EncRefreshStatus", bulkRefreshStatus.toString());
+//     }
+//
+//     // Drive inputs
+//     inputs.driveConnected = driveConnectedDebounce.calculate(driveStatus);
+//     inputs.drivePositionRad = Units.rotationsToRadians(drivePosition.getValueAsDouble());
+//     inputs.driveVelocityRadPerSec = Units.rotationsToRadians(driveVelocity.getValueAsDouble());
+//     inputs.driveAppliedVolts = driveAppliedVolts.getValueAsDouble();
+//     inputs.driveCurrentAmps = driveCurrent.getValueAsDouble();
+//
+//     // Turn inputs (Spark for turn motor, CANcoder for absolute)
+//     SparkUtil.sparkStickyFault = false;
+//     inputs.turnEncoderConnected = turnEncoderConnectedDebounce.calculate(encStatus);
+//     inputs.turnAbsolutePosition = Rotation2d.fromRotations(turnAbsolutePosition.getValueAsDouble());
+//     inputs.turnPosition = Rotation2d.fromRotations(turnPosition.getValueAsDouble());
+//     inputs.turnVelocityRadPerSec = Units.rotationsToRadians(turnVelocity.getValueAsDouble());
+//     SparkUtil.ifOk(
+//         turnSpark, turnSpark::getOutputCurrent, (value) -> inputs.turnCurrentAmps = value);
+//     inputs.turnConnected = turnConnectedDebounce.calculate(!SparkUtil.sparkStickyFault);
+//
+//     // Odometry queue drain (common prefix only)
+//     final int tsCount = timestampQueue.size();
+//     final int driveCount = drivePositionQueue.size();
+//     final int turnCount = turnPositionQueue.size();
+//     final int sampleCount = Math.min(tsCount, Math.min(driveCount, turnCount));
+//
+//     if (sampleCount <= 0) {
+//       inputs.odometryTimestamps = EMPTY_DOUBLE_ARRAY;
+//       inputs.odometryDrivePositionsRad = EMPTY_DOUBLE_ARRAY;
+//       inputs.odometryTurnPositions = EMPTY_ROTATION_ARRAY;
+//       return;
+//     }
+//
+//     final double[] outTs = new double[sampleCount];
+//     final double[] outDriveRad = new double[sampleCount];
+//     final Rotation2d[] outTurn = new Rotation2d[sampleCount];
+//
+//     for (int i = 0; i < sampleCount; i++) {
+//       final Double t = timestampQueue.poll();
+//       final Double driveRot = drivePositionQueue.poll();
+//       final Double turnRot = turnPositionQueue.poll();
+//
+//       if (t == null || driveRot == null || turnRot == null) {
+//         inputs.odometryTimestamps = Arrays.copyOf(outTs, i);
+//         inputs.odometryDrivePositionsRad = Arrays.copyOf(outDriveRad, i);
+//         inputs.odometryTurnPositions = Arrays.copyOf(outTurn, i);
+//         return;
+//       }
+//
+//       outTs[i] = t.doubleValue();
+//       outDriveRad[i] = Units.rotationsToRadians(driveRot.doubleValue());
+//       outTurn[i] = Rotation2d.fromRotations(turnRot.doubleValue());
+//     }
+//
+//     inputs.odometryTimestamps = outTs;
+//     inputs.odometryDrivePositionsRad = outDriveRad;
+//     inputs.odometryTurnPositions = outTurn;
+//   }
+//
+//   /**
+//    * Set the drive motor to an open-loop voltage, scaled to battery voltage
+//    *
+//    * @param output Specified open-loop voltage requested
+//    */
+//   @Override
+//   public void setDriveOpenLoop(double output) {
+//     resetDriveFeedforwardState();
+//
+//     // Scale by actual battery voltage to keep full output consistent
+//     double busVoltage = RobotController.getBatteryVoltage();
+//     double scaledOutput = output * DrivebaseConstants.kOptimalVoltage / busVoltage;
+//
+//     driveTalon.setControl(voltageRequest.withOutput(scaledOutput).withEnableFOC(enableVoltageFOC));
+//
+//     // Log output and battery
+//     Logger.recordOutput("Swerve/Drive/OpenLoopOutput", scaledOutput);
+//     Logger.recordOutput("Robot/BatteryVoltage", busVoltage);
+//   }
+//
+//   /**
+//    * Set the turn motor to an open-loop voltage, scaled to battery voltage
+//    *
+//    * @param output Specified open-loop voltage requested
+//    */
+//   @Override
+//   public void setTurnOpenLoop(double output) {
+//     double busVoltage = RobotController.getBatteryVoltage();
+//     double scaledOutput = output * DrivebaseConstants.kOptimalVoltage / busVoltage;
+//     turnSpark.setVoltage(scaledOutput);
+//
+//     // Log output and battery
+//     Logger.recordOutput("Swerve/Turn/OpenLoopOutput", scaledOutput);
+//     Logger.recordOutput("Robot/BatteryVoltage", busVoltage);
+//   }
+//
+//   /**
+//    * Set the velocity of the module
+//    *
+//    * @param velocityRadPerSec Requested module drive velocity in radians per second
+//    */
+//   @Override
+//   public void setDriveVelocity(double velocityRadPerSec) {
+//     double velocityRotPerSec = Units.radiansToRotations(velocityRadPerSec);
+//     double busVoltage = RobotController.getBatteryVoltage();
+//
+//     // Compute the Feedforward voltage for CTRE UNLICENSED operation *****
+//     // Compute acceleration
+//     long currentTimeNano = System.nanoTime();
+//     double deltaTimeSec = (currentTimeNano - lastTimestampNano) * 1e-9;
+//     double accelerationRotPerSec2 =
+//         deltaTimeSec > 0 ? (velocityRotPerSec - lastVelocityRotPerSec) / deltaTimeSec : 0.0;
+//     accelerationRotPerSec2 =
+//         MathUtil.clamp(
+//             accelerationRotPerSec2, -maxAccelerationRotPerSec2, maxAccelerationRotPerSec2);
+//     // Update last values for next loop
+//     lastVelocityRotPerSec = velocityRotPerSec;
+//     lastTimestampNano = currentTimeNano;
+//     // Estimate the slot feedforward for logging. The TalonFX applies kS/kV/kA from Slot0.
+//     double estimatedSlotFFVolts =
+//         Math.signum(velocityRotPerSec) * DrivebaseConstants.kDriveS
+//             + DrivebaseConstants.kDriveV * velocityRotPerSec
+//             + DrivebaseConstants.kDriveA * accelerationRotPerSec2;
+//
+//     driveTalon.setControl(
+//         velocityVoltageRequest.withVelocity(velocityRotPerSec).withEnableFOC(enableVoltageFOC));
+//
+//     // AdvantageKit logging
+//     Logger.recordOutput("Swerve/Drive/VelocityRadPerSec", velocityRadPerSec);
+//     Logger.recordOutput("Swerve/Drive/VelocityRotPerSec", velocityRotPerSec);
+//     Logger.recordOutput("Swerve/Drive/AccelerationRotPerSec2", accelerationRotPerSec2);
+//     Logger.recordOutput("Swerve/Drive/EstimatedSlotFeedForwardVolts", estimatedSlotFFVolts);
+//     Logger.recordOutput("Robot/BatteryVoltage", busVoltage);
+//     Logger.recordOutput("Swerve/Drive/ClosedLoopMode", m_DriveMotorClosedLoopOutput);
+//     Logger.recordOutput("Swerve/Drive/VoltageFOCEnabled", enableVoltageFOC);
+//   }
+//
+//   private void resetDriveFeedforwardState() {
+//     lastVelocityRotPerSec = 0.0;
+//     lastTimestampNano = System.nanoTime();
+//   }
+//
+//   /**
+//    * Set the turn position of the module
+//    *
+//    * @param rotation Requested module Rotation2d position
+//    */
+//   @Override
+//   public void setTurnPosition(Rotation2d rotation) {
+//     double setpoint =
+//         MathUtil.inputModulus(
+//             rotation.plus(Rotation2d.fromRotations(constants.EncoderOffset)).getRadians(),
+//             SwerveConstants.turnPIDMinInput,
+//             SwerveConstants.turnPIDMaxInput);
+//     turnController.setSetpoint(setpoint, ControlType.kPosition);
+//   }
+//
+//   private SwerveModuleConstantsFactory<
+//           TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>
+//       ConstantCreator =
+//           new SwerveModuleConstantsFactory<
+//                   TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>()
+//               .withDriveMotorGearRatio(SwerveConstants.kDriveGearRatio)
+//               .withSteerMotorGearRatio(SwerveConstants.kSteerGearRatio)
+//               .withCouplingGearRatio(SwerveConstants.kCoupleRatio)
+//               .withWheelRadius(DrivebaseConstants.kWheelRadiusMeters)
+//               .withSteerInertia(SwerveConstants.kSteerInertia)
+//               .withDriveInertia(SwerveConstants.kDriveInertia)
+//               .withSteerFrictionVoltage(SwerveConstants.kSteerFrictionVoltage)
+//               .withDriveFrictionVoltage(SwerveConstants.kDriveFrictionVoltage);
+// }

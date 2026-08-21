@@ -9,10 +9,10 @@
 
 package frc.robot.util;
 
-import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.wpilib.util.sendable.Sendable;
+import org.wpilib.util.sendable.SendableBuilder;
+import org.wpilib.driverstation.DriverStation;
+import org.wpilib.smartdashboard.SmartDashboard;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;

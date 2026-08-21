@@ -21,32 +21,32 @@ package frc.robot;
 
 import static frc.robot.Constants.ControllerButtonConstants.*;
 
-import choreo.auto.AutoChooser;
-import choreo.auto.AutoFactory;
-import choreo.auto.AutoRoutine;
-import choreo.auto.AutoTrajectory;
+// import choreo.auto.AutoChooser;
+// import choreo.auto.AutoFactory;
+// import choreo.auto.AutoRoutine;
+// import choreo.auto.AutoTrajectory;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.util.PathPlannerLogging;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
-import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import org.wpilib.math.controller.PIDController;
+import org.wpilib.math.geometry.Pose2d;
+import org.wpilib.math.geometry.Rotation2d;
+import org.wpilib.math.kinematics.ChassisSpeeds;
+import org.wpilib.math.util.Units;
+import org.wpilib.system.Filesystem;
+// import org.wpilib.smartdashboard.SmartDashboard;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.Commands;
+import org.wpilib.command2.button.CommandJoystick;
+// import org.wpilib.command2.button.RobotModeTriggers;
+import org.wpilib.command2.sysid.SysIdRoutine;
 import frc.robot.Constants.CANBuses;
 import frc.robot.Constants.Cameras;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.FieldConstants.AprilTagLayoutType;
-import frc.robot.commands.ChoreoAutoController;
+// import frc.robot.commands.ChoreoAutoController;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.accelerometer.Accelerometer;
 import frc.robot.subsystems.coordinator.Coordinator;
@@ -167,8 +167,8 @@ public class RobotContainer {
   private final LoggedDashboardChooser<DriveStyle> driveStyle =
       new LoggedDashboardChooser<>("Drive Style");
 
-  private final AutoChooser autoChooserChoreo;
-  private final AutoFactory autoFactoryChoreo;
+  // private final AutoChooser autoChooserChoreo;
+  // private final AutoFactory autoFactoryChoreo;
   // Input estimated battery capacity (if full, use printed value)
   private final LoggedTunableNumber batteryCapacity =
       new LoggedTunableNumber("Battery Amp-Hours", 18.0);
@@ -365,8 +365,8 @@ public class RobotContainer {
         // ...
         // Set the others to null
         autoChooserPathPlanner = null;
-        autoChooserChoreo = null;
-        autoFactoryChoreo = null;
+        // autoChooserChoreo = null;
+        // autoFactoryChoreo = null;
         break;
 
       case PATHPLANNER:
@@ -374,8 +374,8 @@ public class RobotContainer {
             new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
         // Set the others to null
-        autoChooserChoreo = null;
-        autoFactoryChoreo = null;
+        // autoChooserChoreo = null;
+        // autoFactoryChoreo = null;
 
         // Set up the logging callback
         PathPlannerLogging.setLogActivePathCallback(
@@ -395,21 +395,21 @@ public class RobotContainer {
 
         break;
 
-      case CHOREO:
-        autoFactoryChoreo =
-            new AutoFactory(
-                m_drivebase::getPose, // A function that returns the current robot pose
-                m_drivebase::resetOdometry, // A function that resets the current robot pose to the
-                // provided Pose2d
-                new ChoreoAutoController(m_drivebase), // The drive subsystem trajectory follower
-                true, // If alliance flipping should be enabled
-                m_drivebase // The drive subsystem
-                );
-        autoChooserChoreo = new AutoChooser();
-        autoChooserChoreo.addRoutine("twoPieceAuto", this::twoPieceAuto);
-        // Set the others to null
-        autoChooserPathPlanner = null;
-        break;
+//       case CHOREO:
+//         autoFactoryChoreo =
+//             new AutoFactory(
+//                 m_drivebase::getPose, // A function that returns the current robot pose
+//                 m_drivebase::resetOdometry, // A function that resets the current robot pose to the
+//                 // provided Pose2d
+//                 new ChoreoAutoController(m_drivebase), // The drive subsystem trajectory follower
+//                 true, // If alliance flipping should be enabled
+//                 m_drivebase // The drive subsystem
+//                 );
+//         autoChooserChoreo = new AutoChooser();
+//         autoChooserChoreo.addRoutine("twoPieceAuto", this::twoPieceAuto);
+//         // Set the others to null
+//         autoChooserPathPlanner = null;
+//         break;
 
       default:
         // Then, throw the error
@@ -686,18 +686,18 @@ public class RobotContainer {
     // return autoChooserPathPlanner.get();
   }
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public void getAutonomousCommandChoreo() {
-    // Put the auto chooser on the dashboard
-    SmartDashboard.putData(autoChooserChoreo);
-
-    // Schedule the selected auto during the autonomous period
-    RobotModeTriggers.autonomous().whileTrue(autoChooserChoreo.selectedCommandScheduler());
-  }
+//   /**
+//    * Use this to pass the autonomous command to the main {@link Robot} class.
+//    *
+//    * @return the command to run in autonomous
+//    */
+//   public void getAutonomousCommandChoreo() {
+//     // Put the auto chooser on the dashboard
+//     SmartDashboard.putData(autoChooserChoreo);
+//
+//     // Schedule the selected auto during the autonomous period
+//     RobotModeTriggers.autonomous().whileTrue(autoChooserChoreo.selectedCommandScheduler());
+//   }
 
   /** Updates the alerts. */
   public void updateAlerts() {
@@ -815,35 +815,35 @@ public class RobotContainer {
     return ios;
   }
 
-  /**
-   * Example Choreo auto command
-   *
-   * <p>NOTE: This would normally be in a spearate file.
-   */
-  private AutoRoutine twoPieceAuto() {
-    AutoRoutine routine = autoFactoryChoreo.newRoutine("twoPieceAuto");
-
-    // Load the routine's trajectories
-    AutoTrajectory pickupTraj = routine.trajectory("pickupGamepiece");
-    AutoTrajectory scoreTraj = routine.trajectory("scoreGamepiece");
-
-    // When the routine begins, reset odometry and start the first trajectory
-    routine.active().onTrue(Commands.sequence(pickupTraj.resetOdometry(), pickupTraj.cmd()));
-
-    // Starting at the event marker named "intake", run the intake
-    // pickupTraj.atTime("intake").onTrue(intakeSubsystem.intake());
-
-    // When the trajectory is done, start the next trajectory
-    pickupTraj.done().onTrue(scoreTraj.cmd());
-
-    // While the trajectory is active, prepare the scoring subsystem
-    // scoreTraj.active().whileTrue(scoringSubsystem.getReady());
-
-    // When the trajectory is done, score
-    // scoreTraj.done().onTrue(scoringSubsystem.score());
-
-    return routine;
-  }
+//   /**
+//    * Example Choreo auto command
+//    *
+//    * <p>NOTE: This would normally be in a spearate file.
+//    */
+//   private AutoRoutine twoPieceAuto() {
+//     AutoRoutine routine = autoFactoryChoreo.newRoutine("twoPieceAuto");
+//
+//     // Load the routine's trajectories
+//     AutoTrajectory pickupTraj = routine.trajectory("pickupGamepiece");
+//     AutoTrajectory scoreTraj = routine.trajectory("scoreGamepiece");
+//
+//     // When the routine begins, reset odometry and start the first trajectory
+//     routine.active().onTrue(Commands.sequence(pickupTraj.resetOdometry(), pickupTraj.cmd()));
+//
+//     // Starting at the event marker named "intake", run the intake
+//     // pickupTraj.atTime("intake").onTrue(intakeSubsystem.intake());
+//
+//     // When the trajectory is done, start the next trajectory
+//     pickupTraj.done().onTrue(scoreTraj.cmd());
+//
+//     // While the trajectory is active, prepare the scoring subsystem
+//     // scoreTraj.active().whileTrue(scoringSubsystem.getReady());
+//
+//     // When the trajectory is done, score
+//     // scoreTraj.done().onTrue(scoringSubsystem.score());
+//
+//     return routine;
+//   }
 
   private DriveStyle getSelectedDriveStyle() {
     DriveStyle selected = driveStyle.get();

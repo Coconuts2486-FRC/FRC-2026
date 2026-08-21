@@ -17,7 +17,7 @@
 
 package frc.robot.subsystems.drive;
 
-import static edu.wpi.first.units.Units.Volts;
+import static org.wpilib.units.Units.Volts;
 import static frc.robot.subsystems.drive.SwerveConstants.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -25,27 +25,27 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.PathPlannerLogging;
-import edu.wpi.first.hal.FRCNetComm.tInstances;
-import edu.wpi.first.hal.FRCNetComm.tResourceType;
-import edu.wpi.first.hal.HAL;
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveModulePosition;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj.Alert;
-import edu.wpi.first.wpilibj.Alert.AlertType;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import org.wpilib.hardware.hal.FRCNetComm.tInstances;
+import org.wpilib.hardware.hal.FRCNetComm.tResourceType;
+import org.wpilib.hardware.hal.HAL;
+import org.wpilib.math.util.MathUtil;
+import org.wpilib.math.controller.ProfiledPIDController;
+import org.wpilib.math.estimator.SwerveDrivePoseEstimator;
+import org.wpilib.math.geometry.Pose2d;
+import org.wpilib.math.geometry.Pose3d;
+import org.wpilib.math.geometry.Rotation2d;
+import org.wpilib.math.geometry.Translation2d;
+import org.wpilib.math.kinematics.ChassisSpeeds;
+import org.wpilib.math.kinematics.SwerveDriveKinematics;
+import org.wpilib.math.kinematics.SwerveModulePosition;
+import org.wpilib.math.kinematics.SwerveModuleState;
+import org.wpilib.math.trajectory.TrapezoidProfile;
+import org.wpilib.util.Alert;
+import org.wpilib.util.Alert.AlertType;
+import org.wpilib.driverstation.DriverStation;
+import org.wpilib.driverstation.DriverStation.Alliance;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DrivebaseConstants;
@@ -55,7 +55,7 @@ import frc.robot.subsystems.imu.Imu;
 import frc.robot.util.ConcurrentTimeInterpolatableBuffer;
 import frc.robot.util.LocalADStarAK;
 import frc.robot.util.RBSIEnum.Mode;
-import frc.robot.util.RBSIParsing;
+// import frc.robot.util.RBSIParsing; // Disabled with YAGSL for 2027 SystemCore.
 import frc.robot.util.RBSISubsystem;
 import frc.robot.util.TimeUtil;
 import frc.robot.util.TimedPose;
@@ -175,27 +175,27 @@ public class Drive extends RBSISubsystem {
           }
           break;
 
-        case YAGSL:
-          // Then parse the module(s)
-          Byte modType = RBSIParsing.parseModuleType();
-          for (int i = 0; i < 4; i++) {
-            switch (modType) {
-              case 0b00000000: // ALL-CTRE
-                if (kImuType.equals("navx") || kImuType.equals("navx_spi")) {
-                  modules[i] = new Module(new ModuleIOTalonFX(i), i);
-                } else {
-                  throw new RuntimeException(
-                      "For an all-CTRE drive base, use Phoenix Tuner X Swerve Generator instead of YAGSL!");
-                }
-                break;
-              case 0b00010000: // Blended Talon Drive / NEO Steer
-                modules[i] = new Module(new ModuleIOBlended(i), i);
-                break;
-              default:
-                throw new RuntimeException("Invalid swerve module combination");
-            }
-          }
-          break;
+//         case YAGSL:
+//           // Then parse the module(s)
+//           Byte modType = RBSIParsing.parseModuleType();
+//           for (int i = 0; i < 4; i++) {
+//             switch (modType) {
+//               case 0b00000000: // ALL-CTRE
+//                 if (kImuType.equals("navx") || kImuType.equals("navx_spi")) {
+//                   modules[i] = new Module(new ModuleIOTalonFX(i), i);
+//                 } else {
+//                   throw new RuntimeException(
+//                       "For an all-CTRE drive base, use Phoenix Tuner X Swerve Generator instead of YAGSL!");
+//                 }
+//                 break;
+//               case 0b00010000: // Blended Talon Drive / NEO Steer
+//                 modules[i] = new Module(new ModuleIOBlended(i), i);
+//                 break;
+//               default:
+//                 throw new RuntimeException("Invalid swerve module combination");
+//             }
+//           }
+//           break;
 
         default:
           throw new RuntimeException("Invalid Swerve Drive Type");
@@ -259,9 +259,9 @@ public class Drive extends RBSISubsystem {
             });
         break;
 
-      case CHOREO:
-        // TODO: If your team is using Choreo, you'll know what to do here...
-        break;
+//       case CHOREO:
+//         // TODO: If your team is using Choreo, you'll know what to do here...
+//         break;
 
       case MANUAL:
         // Nothing to be done for MANUAL; may just use AutoPilot
@@ -1118,12 +1118,12 @@ public class Drive extends RBSISubsystem {
   }
 
   /************************************************************************* */
-  /** CHOREO SECTION (Ignore if AutoType == PATHPLANNER) ******************* */
+  // /** CHOREO SECTION (Ignore if AutoType == PATHPLANNER) ******************* */
 
-  /** Choreo: Reset odometry */
-  public void resetOdometry(Pose2d pose) {
-    resetPose(pose);
-  }
+  // /** Choreo: Reset odometry */
+  // public void resetOdometry(Pose2d pose) {
+  //   resetPose(pose);
+  // }
 
   private double[] getModuleStatesAsDoubleArray() {
     SwerveModuleState[] states = getModuleStates();

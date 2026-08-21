@@ -19,7 +19,7 @@ package frc.robot.computations;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import edu.wpi.first.math.geometry.*;
+import org.wpilib.math.geometry.*;
 import org.junit.jupiter.api.Test;
 
 public class FieldRelativeShooterSolverTest {

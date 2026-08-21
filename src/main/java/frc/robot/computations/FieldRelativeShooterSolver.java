@@ -17,8 +17,8 @@
 
 package frc.robot.computations;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.*;
+import org.wpilib.math.util.MathUtil;
+import org.wpilib.math.geometry.*;
 
 public final class FieldRelativeShooterSolver {
   private FieldRelativeShooterSolver() {}

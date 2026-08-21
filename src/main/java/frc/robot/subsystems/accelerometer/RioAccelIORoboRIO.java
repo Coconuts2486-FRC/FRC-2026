@@ -13,8 +13,8 @@
 
 package frc.robot.subsystems.accelerometer;
 
-import edu.wpi.first.wpilibj.BuiltInAccelerometer;
-import edu.wpi.first.wpilibj.Notifier;
+import org.wpilib.BuiltInAccelerometer;
+import org.wpilib.system.Notifier;
 
 public class RioAccelIORoboRIO implements RioAccelIO {
   private final BuiltInAccelerometer accel = new BuiltInAccelerometer();

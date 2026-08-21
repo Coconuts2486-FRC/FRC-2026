@@ -15,8 +15,8 @@ package frc.robot.commands;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Translation2d;
+import org.wpilib.math.util.MathUtil;
+import org.wpilib.math.geometry.Translation2d;
 import frc.robot.Constants.OperatorConstants;
 import org.junit.jupiter.api.Test;
 

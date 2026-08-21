@@ -9,11 +9,11 @@
 
 package frc.robot.subsystems.shooter;
 
-import static edu.wpi.first.units.Units.*;
+import static org.wpilib.units.Units.*;
 
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Voltage;
+import org.wpilib.units.measure.Angle;
+import org.wpilib.units.measure.AngularVelocity;
+import org.wpilib.units.measure.Voltage;
 import frc.robot.util.RBSIIO;
 import org.littletonrobotics.junction.AutoLog;
 

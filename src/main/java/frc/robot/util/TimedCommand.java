@@ -3,8 +3,8 @@
 
 package frc.robot.util;
 
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.WrapperCommand;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.WrapperCommand;
 import org.littletonrobotics.junction.Logger;
 
 /** Logs each lifecycle phase of a wrapped command without changing its scheduling semantics. */

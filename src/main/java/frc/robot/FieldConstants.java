@@ -19,23 +19,22 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.*;
+import static org.wpilib.units.Units.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.Filesystem;
+import org.wpilib.vision.apriltag.AprilTagFieldLayout;
+import org.wpilib.vision.apriltag.AprilTagFields;
+import org.wpilib.math.geometry.Pose3d;
+import org.wpilib.math.geometry.Rotation3d;
+import org.wpilib.math.geometry.Translation2d;
+import org.wpilib.math.geometry.Translation3d;
+import org.wpilib.units.measure.Distance;
+import org.wpilib.driverstation.DriverStation;
+import org.wpilib.driverstation.DriverStation.Alliance;
+import org.wpilib.system.Filesystem;
 import java.io.IOException;
 import java.nio.file.Path;
-import lombok.Getter;
 
 /**
  * Contains various field dimensions and useful reference points. All units are in meters and poses
@@ -124,7 +123,6 @@ public class FieldConstants {
   public static final AprilTagFieldLayout aprilTagLayout =
       AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
-  @Getter
   public enum AprilTagLayoutType {
     REBUILT_WELDED("2026-rebuilt-welded"),
     REBUILT_ANDYMARK("2026-rebuilt-welded"),
@@ -156,5 +154,13 @@ public class FieldConstants {
 
     private final AprilTagFieldLayout layout;
     private final String layoutString;
+
+    public AprilTagFieldLayout getLayout() {
+      return layout;
+    }
+
+    public String getLayoutString() {
+      return layoutString;
+    }
   }
 }

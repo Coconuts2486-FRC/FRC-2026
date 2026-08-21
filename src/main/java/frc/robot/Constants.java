@@ -17,7 +17,7 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.*;
+import static org.wpilib.units.Units.*;
 
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
@@ -25,15 +25,15 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.therekrab.autopilot.APConstraints;
 import com.therekrab.autopilot.APProfile;
 import com.therekrab.autopilot.Autopilot;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.measure.Mass;
-import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.RobotBase;
+import org.wpilib.math.geometry.Rotation2d;
+import org.wpilib.math.geometry.Rotation3d;
+import org.wpilib.math.geometry.Transform3d;
+import org.wpilib.math.geometry.Translation3d;
+import org.wpilib.math.system.plant.DCMotor;
+import org.wpilib.math.util.Units;
+import org.wpilib.units.measure.Mass;
+import org.wpilib.hardware.power.PowerDistribution;
+import org.wpilib.framework.RobotBase;
 import frc.robot.FieldConstants.AprilTagLayoutType;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.SwerveConstants;
@@ -52,7 +52,7 @@ import frc.robot.util.RobotDeviceId;
 import java.util.Set;
 import org.littletonrobotics.junction.Logger;
 import org.photonvision.simulation.SimCameraProperties;
-import swervelib.math.Matter;
+// import swervelib.math.Matter; // Disabled until YAGSL supports 2027 SystemCore.
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -123,8 +123,10 @@ public final class Constants {
   public static final class RobotConstants {
 
     public static final Mass kRobotMass = Pounds.of(100.);
-    public static final Matter kChassis =
-        new Matter(new Translation3d(0, 0, Inches.of(8).in(Meters)), kRobotMass.in(Kilograms));
+    // Disabled until YAGSL supports 2027 SystemCore.
+    // public static final Matter kChassis =
+    //     new Matter(new Translation3d(0, 0, Inches.of(8).in(Meters)),
+    //         kRobotMass.in(Kilograms));
     // Robot moment of intertial; this can be obtained from a CAD model of your drivetrain. Usually,
     // this is between 3 and 8 kg*m^2.
     public static final double kRobotMOI = 6.8;
@@ -600,8 +602,8 @@ public final class Constants {
 
     // ********** CHOREO CONSTANTS ************************
     // Drive and Turn PID constants used for ChoreO
-    public static final PIDConstants kChoreoDrivePID = new PIDConstants(10.0, 0.0, 0.0);
-    public static final PIDConstants kChoreoSteerPID = new PIDConstants(7.5, 0.0, 0.0);
+    // public static final PIDConstants kChoreoDrivePID = new PIDConstants(10.0, 0.0, 0.0);
+    // public static final PIDConstants kChoreoSteerPID = new PIDConstants(7.5, 0.0, 0.0);
 
     // ********** AUTOPILOT CONSTANTS *********************
     // Autopilot (Drive to Pose in Teleop) Constraints
@@ -733,9 +735,9 @@ public final class Constants {
   /** Deploy Directoy Location Constants *********************************** */
   public static final class DeployConstants {
     public static final String apriltagDir = "apriltags";
-    public static final String choreoDir = "choreo";
+    // public static final String choreoDir = "choreo";
     public static final String pathplannerDir = "pathplanner";
-    public static final String yagslDir = "swerve";
+    // public static final String yagslDir = "swerve";
   }
 
   /***************************************************************************/

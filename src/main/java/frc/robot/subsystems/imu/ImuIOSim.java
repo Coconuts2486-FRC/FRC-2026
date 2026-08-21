@@ -17,8 +17,8 @@
 
 package frc.robot.subsystems.imu;
 
-import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.util.Units;
+import org.wpilib.math.geometry.Translation3d;
+import org.wpilib.math.util.Units;
 import frc.robot.util.TimeUtil;
 import org.littletonrobotics.junction.Logger;
 

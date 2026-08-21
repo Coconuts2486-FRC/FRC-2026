@@ -19,9 +19,9 @@
 
 package frc.robot.util;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.interpolation.Interpolatable;
-import edu.wpi.first.math.interpolation.Interpolator;
+import org.wpilib.math.util.MathUtil;
+import org.wpilib.math.interpolation.Interpolatable;
+import org.wpilib.math.interpolation.Interpolator;
 import java.util.Collections;
 import java.util.Map.Entry;
 import java.util.NavigableMap;

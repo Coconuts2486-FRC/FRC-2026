@@ -14,14 +14,14 @@
 package frc.robot.subsystems.drive;
 
 import com.ctre.phoenix6.CANBus;
-import edu.wpi.first.math.util.Units;
+import org.wpilib.math.util.Units;
 import frc.robot.Constants;
 import frc.robot.Constants.CANBuses;
 import frc.robot.generated.TunerFactory;
 import frc.robot.subsystems.imu.ImuIO;
-import frc.robot.subsystems.imu.ImuIONavX;
+// import frc.robot.subsystems.imu.ImuIONavX;
 import frc.robot.subsystems.imu.ImuIOPigeon2;
-import frc.robot.util.YagslConstants;
+// import frc.robot.util.YagslConstants;
 import java.util.function.Supplier;
 
 /**
@@ -191,84 +191,84 @@ public class SwerveConstants {
         kBRYPosMeters = t.backRight().LocationY;
         break;
 
-      case YAGSL:
-        kImuType = YagslConstants.swerveDriveJson.imu.type;
-        kCoupleRatio = YagslConstants.kCoupleRatio;
-        kDriveGearRatio = YagslConstants.kDriveGearRatio;
-        kSteerGearRatio = YagslConstants.kSteerGearRatio;
-        kCANbusName = YagslConstants.kCANbusName;
-        kPigeonId = YagslConstants.kPigeonId;
-        kSteerInertia = YagslConstants.kSteerInertia;
-        kDriveInertia = YagslConstants.kDriveInertia;
-        kSteerFrictionVoltage = YagslConstants.kSteerFrictionVoltage;
-        kDriveFrictionVoltage = YagslConstants.kDriveFrictionVoltage;
-        kSteerCurrentLimit = YagslConstants.kSteerCurrentLimit;
-        kDriveCurrentLimit = YagslConstants.kDriveCurrentLimit;
-        // Front Left
-        kFLDriveMotorId = YagslConstants.kFrontLeftDriveMotorId;
-        kFLSteerMotorId = YagslConstants.kFrontLeftSteerMotorId;
-        kFLEncoderId = YagslConstants.kFrontLeftEncoderId;
-        kFLDriveCanbus = YagslConstants.kFrontLeftDriveCanbus;
-        kFLSteerCanbus = YagslConstants.kFrontLeftSteerCanbus;
-        kFLEncoderCanbus = YagslConstants.kFrontLeftEncoderCanbus;
-        kFLDriveType = YagslConstants.kFrontLeftDriveType.toLowerCase();
-        kFLSteerType = YagslConstants.kFrontLeftSteerType.toLowerCase();
-        kFLEncoderType = YagslConstants.kFrontLeftEncoderType.toLowerCase();
-        kFLEncoderOffset = Units.degreesToRadians(YagslConstants.kFrontLeftEncoderOffset);
-        kFLDriveInvert = YagslConstants.kFrontLeftDriveInvert;
-        kFLSteerInvert = YagslConstants.kFrontLeftSteerInvert;
-        kFLEncoderInvert = YagslConstants.kFrontLeftEncoderInvert;
-        kFLXPosMeters = Units.inchesToMeters(YagslConstants.kFrontLeftXPosInches);
-        kFLYPosMeters = Units.inchesToMeters(YagslConstants.kFrontLeftYPosInches);
-        // Front Right
-        kFRDriveMotorId = YagslConstants.kFrontRightDriveMotorId;
-        kFRSteerMotorId = YagslConstants.kFrontRightSteerMotorId;
-        kFREncoderId = YagslConstants.kFrontRightEncoderId;
-        kFRDriveCanbus = YagslConstants.kFrontRightDriveCanbus;
-        kFRSteerCanbus = YagslConstants.kFrontRightSteerCanbus;
-        kFREncoderCanbus = YagslConstants.kFrontRightEncoderCanbus;
-        kFRDriveType = YagslConstants.kFrontRightDriveType.toLowerCase();
-        kFRSteerType = YagslConstants.kFrontRightSteerType.toLowerCase();
-        kFREncoderType = YagslConstants.kFrontRightEncoderType.toLowerCase();
-        kFREncoderOffset = Units.degreesToRadians(YagslConstants.kFrontRightEncoderOffset);
-        kFRDriveInvert = YagslConstants.kFrontRightDriveInvert;
-        kFRSteerInvert = YagslConstants.kFrontRightSteerInvert;
-        kFREncoderInvert = YagslConstants.kFrontRightEncoderInvert;
-        kFRXPosMeters = Units.inchesToMeters(YagslConstants.kFrontRightXPosInches);
-        kFRYPosMeters = Units.inchesToMeters(YagslConstants.kFrontRightYPosInches);
-        // Back Left
-        kBLDriveMotorId = YagslConstants.kBackLeftDriveMotorId;
-        kBLSteerMotorId = YagslConstants.kBackLeftSteerMotorId;
-        kBLEncoderId = YagslConstants.kBackLeftEncoderId;
-        kBLDriveCanbus = YagslConstants.kBackLeftDriveCanbus;
-        kBLSteerCanbus = YagslConstants.kBackLeftSteerCanbus;
-        kBLEncoderCanbus = YagslConstants.kBackLeftEncoderCanbus;
-        kBLDriveType = YagslConstants.kBackLeftDriveType.toLowerCase();
-        kBLSteerType = YagslConstants.kBackLeftSteerType.toLowerCase();
-        kBLEncoderType = YagslConstants.kBackLeftEncoderType.toLowerCase();
-        kBLEncoderOffset = Units.degreesToRadians(YagslConstants.kBackLeftEncoderOffset);
-        kBLDriveInvert = YagslConstants.kBackLeftDriveInvert;
-        kBLSteerInvert = YagslConstants.kBackLeftSteerInvert;
-        kBLEncoderInvert = YagslConstants.kBackLeftEncoderInvert;
-        kBLXPosMeters = Units.inchesToMeters(YagslConstants.kBackLeftXPosInches);
-        kBLYPosMeters = Units.inchesToMeters(YagslConstants.kBackLeftYPosInches);
-        // Back Right
-        kBRDriveMotorId = YagslConstants.kBackRightDriveMotorId;
-        kBRSteerMotorId = YagslConstants.kBackRightSteerMotorId;
-        kBREncoderId = YagslConstants.kBackRightEncoderId;
-        kBRDriveCanbus = YagslConstants.kBackRightDriveCanbus;
-        kBRSteerCanbus = YagslConstants.kBackRightSteerCanbus;
-        kBREncoderCanbus = YagslConstants.kBackRightEncoderCanbus;
-        kBRDriveType = YagslConstants.kBackRightDriveType.toLowerCase();
-        kBRSteerType = YagslConstants.kBackRightSteerType.toLowerCase();
-        kBREncoderType = YagslConstants.kBackRightEncoderType.toLowerCase();
-        kBREncoderOffset = Units.degreesToRadians(YagslConstants.kBackRightEncoderOffset);
-        kBRDriveInvert = YagslConstants.kBackRightDriveInvert;
-        kBRSteerInvert = YagslConstants.kBackRightSteerInvert;
-        kBREncoderInvert = YagslConstants.kBackRightEncoderInvert;
-        kBRXPosMeters = Units.inchesToMeters(YagslConstants.kBackRightXPosInches);
-        kBRYPosMeters = Units.inchesToMeters(YagslConstants.kBackRightYPosInches);
-        break;
+//       case YAGSL:
+//         kImuType = YagslConstants.swerveDriveJson.imu.type;
+//         kCoupleRatio = YagslConstants.kCoupleRatio;
+//         kDriveGearRatio = YagslConstants.kDriveGearRatio;
+//         kSteerGearRatio = YagslConstants.kSteerGearRatio;
+//         kCANbusName = YagslConstants.kCANbusName;
+//         kPigeonId = YagslConstants.kPigeonId;
+//         kSteerInertia = YagslConstants.kSteerInertia;
+//         kDriveInertia = YagslConstants.kDriveInertia;
+//         kSteerFrictionVoltage = YagslConstants.kSteerFrictionVoltage;
+//         kDriveFrictionVoltage = YagslConstants.kDriveFrictionVoltage;
+//         kSteerCurrentLimit = YagslConstants.kSteerCurrentLimit;
+//         kDriveCurrentLimit = YagslConstants.kDriveCurrentLimit;
+//         // Front Left
+//         kFLDriveMotorId = YagslConstants.kFrontLeftDriveMotorId;
+//         kFLSteerMotorId = YagslConstants.kFrontLeftSteerMotorId;
+//         kFLEncoderId = YagslConstants.kFrontLeftEncoderId;
+//         kFLDriveCanbus = YagslConstants.kFrontLeftDriveCanbus;
+//         kFLSteerCanbus = YagslConstants.kFrontLeftSteerCanbus;
+//         kFLEncoderCanbus = YagslConstants.kFrontLeftEncoderCanbus;
+//         kFLDriveType = YagslConstants.kFrontLeftDriveType.toLowerCase();
+//         kFLSteerType = YagslConstants.kFrontLeftSteerType.toLowerCase();
+//         kFLEncoderType = YagslConstants.kFrontLeftEncoderType.toLowerCase();
+//         kFLEncoderOffset = Units.degreesToRadians(YagslConstants.kFrontLeftEncoderOffset);
+//         kFLDriveInvert = YagslConstants.kFrontLeftDriveInvert;
+//         kFLSteerInvert = YagslConstants.kFrontLeftSteerInvert;
+//         kFLEncoderInvert = YagslConstants.kFrontLeftEncoderInvert;
+//         kFLXPosMeters = Units.inchesToMeters(YagslConstants.kFrontLeftXPosInches);
+//         kFLYPosMeters = Units.inchesToMeters(YagslConstants.kFrontLeftYPosInches);
+//         // Front Right
+//         kFRDriveMotorId = YagslConstants.kFrontRightDriveMotorId;
+//         kFRSteerMotorId = YagslConstants.kFrontRightSteerMotorId;
+//         kFREncoderId = YagslConstants.kFrontRightEncoderId;
+//         kFRDriveCanbus = YagslConstants.kFrontRightDriveCanbus;
+//         kFRSteerCanbus = YagslConstants.kFrontRightSteerCanbus;
+//         kFREncoderCanbus = YagslConstants.kFrontRightEncoderCanbus;
+//         kFRDriveType = YagslConstants.kFrontRightDriveType.toLowerCase();
+//         kFRSteerType = YagslConstants.kFrontRightSteerType.toLowerCase();
+//         kFREncoderType = YagslConstants.kFrontRightEncoderType.toLowerCase();
+//         kFREncoderOffset = Units.degreesToRadians(YagslConstants.kFrontRightEncoderOffset);
+//         kFRDriveInvert = YagslConstants.kFrontRightDriveInvert;
+//         kFRSteerInvert = YagslConstants.kFrontRightSteerInvert;
+//         kFREncoderInvert = YagslConstants.kFrontRightEncoderInvert;
+//         kFRXPosMeters = Units.inchesToMeters(YagslConstants.kFrontRightXPosInches);
+//         kFRYPosMeters = Units.inchesToMeters(YagslConstants.kFrontRightYPosInches);
+//         // Back Left
+//         kBLDriveMotorId = YagslConstants.kBackLeftDriveMotorId;
+//         kBLSteerMotorId = YagslConstants.kBackLeftSteerMotorId;
+//         kBLEncoderId = YagslConstants.kBackLeftEncoderId;
+//         kBLDriveCanbus = YagslConstants.kBackLeftDriveCanbus;
+//         kBLSteerCanbus = YagslConstants.kBackLeftSteerCanbus;
+//         kBLEncoderCanbus = YagslConstants.kBackLeftEncoderCanbus;
+//         kBLDriveType = YagslConstants.kBackLeftDriveType.toLowerCase();
+//         kBLSteerType = YagslConstants.kBackLeftSteerType.toLowerCase();
+//         kBLEncoderType = YagslConstants.kBackLeftEncoderType.toLowerCase();
+//         kBLEncoderOffset = Units.degreesToRadians(YagslConstants.kBackLeftEncoderOffset);
+//         kBLDriveInvert = YagslConstants.kBackLeftDriveInvert;
+//         kBLSteerInvert = YagslConstants.kBackLeftSteerInvert;
+//         kBLEncoderInvert = YagslConstants.kBackLeftEncoderInvert;
+//         kBLXPosMeters = Units.inchesToMeters(YagslConstants.kBackLeftXPosInches);
+//         kBLYPosMeters = Units.inchesToMeters(YagslConstants.kBackLeftYPosInches);
+//         // Back Right
+//         kBRDriveMotorId = YagslConstants.kBackRightDriveMotorId;
+//         kBRSteerMotorId = YagslConstants.kBackRightSteerMotorId;
+//         kBREncoderId = YagslConstants.kBackRightEncoderId;
+//         kBRDriveCanbus = YagslConstants.kBackRightDriveCanbus;
+//         kBRSteerCanbus = YagslConstants.kBackRightSteerCanbus;
+//         kBREncoderCanbus = YagslConstants.kBackRightEncoderCanbus;
+//         kBRDriveType = YagslConstants.kBackRightDriveType.toLowerCase();
+//         kBRSteerType = YagslConstants.kBackRightSteerType.toLowerCase();
+//         kBREncoderType = YagslConstants.kBackRightEncoderType.toLowerCase();
+//         kBREncoderOffset = Units.degreesToRadians(YagslConstants.kBackRightEncoderOffset);
+//         kBRDriveInvert = YagslConstants.kBackRightDriveInvert;
+//         kBRSteerInvert = YagslConstants.kBackRightSteerInvert;
+//         kBREncoderInvert = YagslConstants.kBackRightEncoderInvert;
+//         kBRXPosMeters = Units.inchesToMeters(YagslConstants.kBackRightXPosInches);
+//         kBRYPosMeters = Units.inchesToMeters(YagslConstants.kBackRightYPosInches);
+//         break;
 
       default:
         throw new RuntimeException("Invalid Swerve Drive Type");
@@ -308,8 +308,8 @@ public class SwerveConstants {
 
   /** IMU Type enum */
   public enum ImuType {
-    PIGEON(new String[] {"pigeon", "pigeon2"}, ImuIOPigeon2::new),
-    NAVX(new String[] {"navx", "navx_spi"}, ImuIONavX::new);
+    PIGEON(new String[] {"pigeon", "pigeon2"}, ImuIOPigeon2::new);
+    // NAVX(new String[] {"navx", "navx_spi"}, ImuIONavX::new);
 
     private final String[] keys;
     public final Supplier<ImuIO> factory;

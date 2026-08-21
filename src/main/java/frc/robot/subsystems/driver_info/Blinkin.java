@@ -1,6 +1,6 @@
 package frc.robot.subsystems.driver_info;
 
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
+import org.wpilib.hardware.motor.Spark;
 import java.util.EnumSet;
 import java.util.Set;
 

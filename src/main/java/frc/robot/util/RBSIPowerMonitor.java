@@ -13,7 +13,7 @@
 
 package frc.robot.util;
 
-import edu.wpi.first.wpilibj.RobotController;
+import org.wpilib.system.RobotController;
 import frc.robot.Constants.PowerConstants;
 import frc.robot.Constants.RobotDevices;
 import frc.robot.util.Alert.AlertType;
