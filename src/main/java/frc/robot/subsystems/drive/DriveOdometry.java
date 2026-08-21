@@ -161,7 +161,7 @@ public final class DriveOdometry extends VirtualSubsystem {
       final int n = (ts == null) ? 0 : ts.length;
       sampleCount = n;
 
-      // Always keep yaw buffers “alive” even if no samples
+      // Always keep yaw buffers "alive" even if no samples
       if (n == 0) {
         if (Constants.getMode() != Mode.REPLAY) {
           final double now = TimeUtil.now();

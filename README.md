@@ -18,10 +18,10 @@ details on the latest release, including restrictions and cautions.
 ## Purpose
 
 The purpose of Az-RBSI is to help Arizona FRC teams with:
-* Improving robot reliability / performance during “Autonomous Play”
+* Improving robot reliability / performance during "Autonomous Play"
 * Improving robot build & endurance, gameplay reliability and troubleshooting
     skills
-* Providing a standardized robot “stack” to allow for quick software setup and
+* Providing a standardized robot "stack" to allow for quick software setup and
     troubleshooting, and make it easier for Arizona teams to form effective
     in-state alliances
 

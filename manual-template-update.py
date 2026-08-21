@@ -750,7 +750,7 @@ def main() -> int:
         except Exception:
             pass
 
-        # Best-effort: delete temp branch if it still exists (and we’re back on start branch)
+        # Best-effort: delete temp branch if it still exists (and we're back on start branch)
         if tmp_branch:
             try:
                 delete_branch(tmp_branch)
@@ -772,4 +772,3 @@ if __name__ == "__main__":
     except CmdError as e:
         print(f"\nERROR: {e}\n", file=sys.stderr)
         raise SystemExit(2)
-    
