@@ -26,7 +26,9 @@ public interface IntakeIO extends RBSIIO {
   public static class IntakeIOInputs {
     public boolean pivotConnected = false;
     public double pivotPositionRot = 0.0;
+    public double pivotMotorPosRot = 0.0;
     public double pivotAvAngularVelocity = 0.0;
+    public double pivotMotorAngVel = 0.0;
     public double pivotAppliedVolts = 0.0;
     public double[] currentAmps = new double[] {};
   }

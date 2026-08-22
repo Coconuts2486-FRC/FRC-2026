@@ -50,9 +50,9 @@ public class IntakeIOTalonFX implements IntakeIO {
       new CANcoder(INTAKE_ENCODER.getDeviceNumber(), INTAKE_ENCODER.getCANBus());
 
   private final StatusSignal<Angle> pivotPosition = pivotEncoder.getPosition();
-  private final StatusSignal<AngularVelocity> pivotArmVelocity = pivotEncoder.getVelocity();
   private final StatusSignal<Angle> pivotMotorPosition = pivot.getPosition();
-  private final StatusSignal<AngularVelocity> pivotMotorVelocity = pivot.getVelocity();
+  private final StatusSignal<AngularVelocity> pivotVelocity = pivot.getVelocity();
+  private final StatusSignal<AngularVelocity> pivotMotorVelocity = pivotEncoder.getVelocity();
   private final StatusSignal<Voltage> pivotAppliedVolts = pivot.getMotorVoltage();
   private final StatusSignal<Current> pivotCurrent = pivot.getSupplyCurrent();
   private final TalonFXConfiguration pivotConfig = new TalonFXConfiguration();
@@ -99,7 +99,9 @@ public class IntakeIOTalonFX implements IntakeIO {
     // checks the status of roller
     inputs.pivotConnected = pivotStatus.isOK();
     inputs.pivotPositionRot = pivotPosition.getValueAsDouble();
-    inputs.pivotAvAngularVelocity = pivotMotorVelocity.getValueAsDouble();
+    inputs.pivotAvAngularVelocity = pivotVelocity.getValueAsDouble();
+    inputs.pivotMotorPosRot = pivotMotorPosition.getValueAsDouble();
+    inputs.pivotMotorAngVel = pivotMotorVelocity.getValueAsDouble();
     inputs.pivotAppliedVolts = pivotAppliedVolts.getValueAsDouble();
     inputs.currentAmps = new double[] {pivotCurrent.getValueAsDouble()};
   }
