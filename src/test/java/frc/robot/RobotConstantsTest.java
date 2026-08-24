@@ -12,6 +12,11 @@ import org.junit.jupiter.api.Test;
 
 class RobotConstantsTest {
   @Test
+  void mechanismCanBusUsesSecondSystemcoreConnector() {
+    assertEquals("can_s1", Constants.CANBuses.RIO);
+  }
+
+  @Test
   void robotDeviceCanBusesMatchTeamSwerveConstants() {
     assertEquals(SwerveConstants.kFLDriveCanbus, Constants.RobotDevices.FL_DRIVE.getBus());
     assertEquals(SwerveConstants.kFLSteerCanbus, Constants.RobotDevices.FL_ROTATION.getBus());
