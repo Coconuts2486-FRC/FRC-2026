@@ -66,9 +66,9 @@ public class Intake extends RBSISubsystem {
   public void pivotDown() {
 
     if (io.getPivotPosition() > IntakeConstants.dropPosition) {
-      io.setPivotPrimitiveSpeed(-0.4);
+      io.setPivotPrimitiveSpeed(0.4);
     } else if (io.getPivotPosition() > IntakeConstants.lowerPosition) {
-      io.setPivotPrimitiveSpeed(-0.1);
+      io.setPivotPrimitiveSpeed(0.1);
     } else {
       io.stopPivot();
     }
@@ -76,7 +76,7 @@ public class Intake extends RBSISubsystem {
 
   public void pivotUp() {
     io.setPivotPrimitiveSpeed(
-        controller.calculate(io.getPivotPosition(), IntakeConstants.storedAngle));
+        -controller.calculate(io.getPivotPosition(), IntakeConstants.storedAngle));
   }
 
   public void pivotGoToPosition(double pos) {
