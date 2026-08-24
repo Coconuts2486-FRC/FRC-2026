@@ -79,7 +79,7 @@ public class IntakeIOTalonFX implements IntakeIO {
 
     // cancoder
     cancoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1.0;
-    cancoderConfig.MagnetSensor.MagnetOffset = 0.5;
+    cancoderConfig.MagnetSensor.MagnetOffset = 0;
 
     BaseStatusSignal.setUpdateFrequencyForAll(
         50.0, pivotCurrent, pivotPosition, pivotMotorVelocity, pivotAppliedVolts);
@@ -140,7 +140,7 @@ public class IntakeIOTalonFX implements IntakeIO {
   @Override
   public boolean isIntakeExtended() {
     return (pivotEncoder.getAbsolutePosition().getValueAsDouble()
-        > (IntakeConstants.dropPositionRot - 0.05));
+        > (IntakeConstants.dropPosition - 0.05));
   }
 
   @Override
