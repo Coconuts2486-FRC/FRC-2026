@@ -64,7 +64,7 @@ public class Rollers extends RBSISubsystem {
 
   /** Run the intake rollers in reverse */
   public void reverseRollers() {
-    io.setVelocity(IntakeConstants.kRollersRPM / 60.);
+    io.setVelocity(IntakeConstants.kRollersRPM * 0.6 / 60.);
     // io.runRollers(0.8);
   }
 
