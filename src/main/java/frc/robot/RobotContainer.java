@@ -506,8 +506,8 @@ public class RobotContainer {
     driverController
         .button(FIXED_SHOT)
         .whileTrue(
-            Commands.run(() -> m_shooter.runVelocityRPM((4500)), m_shooter)
-                .alongWith(Commands.run(() -> m_rollers.feedRollers(), m_rollers)));
+            Commands.run(() -> m_shooter.runVelocityRPM((3700)), m_shooter)
+                .alongWith(Commands.run(() -> m_rollers.runRollers(), m_rollers)));
 
     // epic solution
     driverController
