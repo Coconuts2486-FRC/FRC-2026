@@ -77,7 +77,6 @@ public class IntakeIOTalonFX implements IntakeIO {
 
     // cancoder
     cancoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1.0;
-    cancoderConfig.MagnetSensor.MagnetOffset = 0.5;
 
     BaseStatusSignal.setUpdateFrequencyForAll(
         50.0, pivotCurrent, pivotPosition, pivotVelocity, pivotAppliedVolts);
