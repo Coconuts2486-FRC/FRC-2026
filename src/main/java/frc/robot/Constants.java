@@ -180,7 +180,7 @@ public final class Constants {
   /** List of Robot CAN Busses ********************************************* */
   public static final class CANBuses {
     public static final String RIO = "can_s1";
-    public static final String DRIVE = "DriveTrain";
+    public static final String DRIVE = "can_s2";
 
     public static final String[] ALL = {RIO, DRIVE};
   }
