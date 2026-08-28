@@ -680,10 +680,10 @@ public class RobotContainer {
    */
   public Command getAutonomousCommandPathPlanner() {
     // Manually insert AUTO for dashboardless testing
-    return new PathPlannerAuto("Test1_Bowers");
+    // return new PathPlannerAuto("Test1_Bowers");
 
     // Use the ``autoChooser`` to define your auto path from the SmartDashboard
-    // return autoChooserPathPlanner.get();
+    return autoChooserPathPlanner.get();
   }
 
 //   /**
