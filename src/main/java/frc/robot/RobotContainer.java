@@ -27,7 +27,6 @@ import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import edu.wpi.first.math.controller.PIDController;
@@ -680,10 +679,10 @@ public class RobotContainer {
    */
   public Command getAutonomousCommandPathPlanner() {
     // Manually insert AUTO for dashboardless testing
-    return new PathPlannerAuto("Test1_Bowers");
+    // return new PathPlannerAuto("Test1_Bowers");
 
     // Use the ``autoChooser`` to define your auto path from the SmartDashboard
-    // return autoChooserPathPlanner.get();
+    return autoChooserPathPlanner.get();
   }
 
   /**
