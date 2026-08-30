@@ -393,6 +393,7 @@ public final class Constants {
     public static final double kHistorySize = 1.5; // seconds
     public static final double kPathPlannerVisionFreshnessSec = 1.0;
     public static final double kPathPlannerStartToleranceMeters = 0.5;
+    public static final double kPathPlannerGyroLossTimeoutSec = 0.25;
     // How aggressively to pull pose toward vision while DISABLED.
     // 0.10 = gentle, 0.25 = fairly quick, 1.0 = full snap.
     public static final double kDisabledVisionBlendAlpha = 0.15;

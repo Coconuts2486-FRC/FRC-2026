@@ -88,21 +88,30 @@ public class ImuIOPigeon2 implements ImuIO {
     inputs.timestampNs = start;
 
     StatusCode code = BaseStatusSignal.refreshAll(yawSignal, yawRateSignal, accelX, accelY, accelZ);
-    inputs.connected = code.isOK();
 
-    // Yaw / rate: Phoenix returns degrees and deg/s here; convert to radians
-    inputs.yawPositionRad = Units.degreesToRadians(yawSignal.getValueAsDouble());
-    inputs.yawRateRadPerSec = Units.degreesToRadians(yawRateSignal.getValueAsDouble());
-
-    // Accel: Phoenix returns "g" for these signals; convert to m/s/s
-    inputs.linearAccel =
+    // Phoenix retains the last signal value after a CAN timeout. Do not present that stale value as
+    // a new measurement, and never allow a non-finite value to reach odometry.
+    final double yawRad = Units.degreesToRadians(yawSignal.getValueAsDouble());
+    final double yawRateRadPerSec = Units.degreesToRadians(yawRateSignal.getValueAsDouble());
+    final Translation3d accel =
         new Translation3d(
             accelX.getValueAsDouble() * Constants.G_TO_MPS2,
             accelY.getValueAsDouble() * Constants.G_TO_MPS2,
             accelZ.getValueAsDouble() * Constants.G_TO_MPS2);
+    inputs.connected =
+        code.isOK()
+            && Double.isFinite(yawRad)
+            && Double.isFinite(yawRateRadPerSec)
+            && isFinite(accel);
+
+    if (inputs.connected) {
+      inputs.yawPositionRad = yawRad;
+      inputs.yawRateRadPerSec = yawRateRadPerSec;
+      inputs.linearAccel = accel;
+    }
 
     // Jerk computed as (delta accel) / dt
-    if (prevTimestampNs != 0L) {
+    if (inputs.connected && prevTimestampNs != 0L) {
       final double dt = (start - prevTimestampNs) * 1e-9;
       // Only compute if `dt` is larger than 1 ms.
       if (dt > 1e-6) {
@@ -111,11 +120,13 @@ public class ImuIOPigeon2 implements ImuIO {
     }
 
     // Load "previous values" for the next loop
-    prevTimestampNs = start;
-    prevAcc = inputs.linearAccel;
+    if (inputs.connected) {
+      prevTimestampNs = start;
+      prevAcc = inputs.linearAccel;
+    }
 
     // Drain odometry queues to primitive arrays (timestamps == doubles; yaws == degrees)
-    final int n = drainOdometryQueuesIntoBuffers();
+    final int n = inputs.connected ? drainOdometryQueuesIntoBuffers() : drainAndDiscardOdometryQueues();
     if (n > 0) {
       // If there's anything to drain...
       final double[] tsOut = new double[n];
@@ -168,14 +179,32 @@ public class ImuIOPigeon2 implements ImuIO {
 
     int i = 0;
     while (i < n && itT.hasNext() && itY.hasNext()) {
-      odomTsBuf[i] = itT.next();
-      odomYawRadBuf[i] = Units.degreesToRadians(itY.next());
-      i++;
+      final Double timestamp = itT.next();
+      final Double yawDeg = itY.next();
+      final double yawRad = yawDeg == null ? Double.NaN : Units.degreesToRadians(yawDeg);
+      if (timestamp != null && Double.isFinite(timestamp) && Double.isFinite(yawRad)) {
+        odomTsBuf[i] = timestamp;
+        odomYawRadBuf[i] = yawRad;
+        i++;
+      }
     }
 
     odomTimestamps.clear();
     odomYawsDeg.clear();
     return i;
+  }
+
+  /** Clears queued samples after a failed refresh so stale data is never replayed as a new sample. */
+  private int drainAndDiscardOdometryQueues() {
+    odomTimestamps.clear();
+    odomYawsDeg.clear();
+    return 0;
+  }
+
+  private static boolean isFinite(Translation3d value) {
+    return Double.isFinite(value.getX())
+        && Double.isFinite(value.getY())
+        && Double.isFinite(value.getZ());
   }
 
   /**

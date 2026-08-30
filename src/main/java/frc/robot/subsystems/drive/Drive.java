@@ -90,12 +90,13 @@ public class Drive extends RBSISubsystem {
 
   // Declare an alert
   private final Alert gyroDisconnectedAlert =
-      new Alert("Disconnected gyro, using kinematics as fallback.", Level.HIGH);
+      new Alert("Disconnected gyro, holding the last valid heading.", Level.HIGH);
   private final Alert pathPlannerStartPoseAlert =
       new Alert("PathPlanner auto start pose is outside the allowed radius.", Level.HIGH);
   private boolean pathPlannerStartBlocked = false;
   private PathPlannerStartAction pendingPathPlannerStartAction;
   private Pose2d pendingPathPlannerStartPose;
+  private volatile double lastValidGyroMeasurementTimestamp = Double.NEGATIVE_INFINITY;
 
   enum PathPlannerStartAction {
     RESET_TO_PATH_START,
@@ -777,9 +778,28 @@ public class Drive extends RBSISubsystem {
 
   /** Validates PathPlanner's starting pose and returns whether autonomous may run. */
   public boolean validatePathPlannerAutoStart(Pose2d pathStartPose) {
+    if (!hasRecentGyroMeasurement()) {
+      pendingPathPlannerStartAction = null;
+      pendingPathPlannerStartPose = null;
+      pathPlannerStartBlocked = true;
+      pathPlannerStartPoseAlert.setText(
+          "PathPlanner auto blocked: gyro does not have a valid CAN measurement.");
+      pathPlannerStartPoseAlert.set(true);
+      Logger.recordOutput("Auto/StartPoseAction", "BLOCK_AUTO_GYRO_UNHEALTHY");
+      Logger.recordOutput("Auto/StartPoseBlocked", true);
+      return false;
+    }
+
     pendingPathPlannerStartAction = evaluatePathPlannerStart(pathStartPose);
     pendingPathPlannerStartPose = pathStartPose;
     return pendingPathPlannerStartAction != PathPlannerStartAction.BLOCK_AUTO;
+  }
+
+  /** Returns whether a finite gyro measurement has arrived recently enough for autonomous use. */
+  public boolean hasRecentGyroMeasurement() {
+    return Constants.isPureSim()
+        || TimeUtil.now() - lastValidGyroMeasurementTimestamp
+            <= DrivebaseConstants.kPathPlannerGyroLossTimeoutSec;
   }
 
   private PathPlannerStartAction evaluatePathPlannerStart(Pose2d pathStartPose) {
@@ -1103,6 +1123,11 @@ public class Drive extends RBSISubsystem {
   /** Set the gyroDisconnectedAlert */
   void setGyroDisconnectedAlert(boolean disconnected) {
     gyroDisconnectedAlert.set(disconnected);
+  }
+
+  /** Records a valid gyro sample for autonomous health monitoring. */
+  void markGyroMeasurementValid(double timestampSeconds) {
+    lastValidGyroMeasurementTimestamp = timestampSeconds;
   }
 
   /************************************************************************* */

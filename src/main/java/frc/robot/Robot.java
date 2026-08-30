@@ -49,6 +49,8 @@ import org.photonvision.simulation.VisionSystemSim;
  * project.
  */
 public class Robot extends LoggedRobot {
+  private static final String SYSTEMCORE_LOG_PATH = "/home/systemcore/logs";
+
   private Command m_autoCommandPathPlanner;
   private RobotContainer m_robotContainer;
   private Timer m_disabledTimer;
@@ -81,8 +83,8 @@ public class Robot extends LoggedRobot {
     // Set up data receivers & replay source
     switch (Constants.getMode()) {
       case REAL:
-        // Running on a real robot, log to a USB stick ("/U/logs")
-        Logger.addDataReceiver(new WPILOGWriter());
+        // Running on SystemCore, log to a writable folder on the controller.
+        Logger.addDataReceiver(new WPILOGWriter(SYSTEMCORE_LOG_PATH));
         Logger.addDataReceiver(new NT4Publisher());
         break;
 
@@ -198,7 +200,8 @@ public class Robot extends LoggedRobot {
 
           if (autoReady) {
             m_autoCommandPathPlanner =
-                new TimedCommand(m_autoCommandPathPlanner, "Loop/Commands/PathPlannerAuto");
+                new TimedCommand(m_autoCommandPathPlanner, "Loop/Commands/PathPlannerAuto")
+                    .until(() -> !m_robotContainer.getDrivebase().hasRecentGyroMeasurement());
             CommandScheduler.getInstance().schedule(m_autoCommandPathPlanner);
           } else {
             m_autoCommandPathPlanner = null;

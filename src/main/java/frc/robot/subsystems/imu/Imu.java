@@ -120,7 +120,11 @@ public class Imu extends VirtualSubsystem {
     if (stamp == cacheStampNs) return;
     cacheStampNs = stamp;
 
-    cachedYaw = Rotation2d.fromRadians(inputs.yawPositionRad);
+    // Keep the last good heading if an IO implementation reports bad data. This is a second line
+    // of defense for consumers such as PathPlanner, which must always receive a finite pose.
+    if (inputs.connected && Double.isFinite(inputs.yawPositionRad)) {
+      cachedYaw = Rotation2d.fromRadians(inputs.yawPositionRad);
+    }
     cachedAccel = inputs.linearAccel;
     cachedJerk = inputs.linearJerk;
   }

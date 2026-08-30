@@ -45,6 +45,10 @@ public final class DriveOdometry extends VirtualSubsystem {
   // Checking whether this is a REPLAY
   private boolean isReplayActive = Logger.hasReplaySource();
 
+  // The estimator must never receive a non-finite rotation. On a transient IMU failure, holding
+  // this value is safer than injecting a bad measurement into every downstream pose consumer.
+  private double lastValidYawRad = 0.0;
+
   /** Constructor */
   public DriveOdometry(Drive drive, Imu imu, Module[] modules) {
     this.drive = drive;
@@ -94,6 +98,13 @@ public final class DriveOdometry extends VirtualSubsystem {
     int sampleCount = 0;
     try {
       final var imuInputs = imu.getInputs();
+      final boolean hasValidYaw = isValidYaw(imuInputs.connected, imuInputs.yawPositionRad);
+      final double safeYawRad = selectYawRad(hasValidYaw, imuInputs.yawPositionRad, lastValidYawRad);
+      if (hasValidYaw) {
+        lastValidYawRad = safeYawRad;
+        drive.markGyroMeasurementValid(TimeUtil.now());
+      }
+      final double safeYawRateRadPerSec = sanitizeYawRate(imuInputs.yawRateRadPerSec);
 
       // Read refreshed module telemetry and drain each odometry queue once per loop.
       for (var module : modules) {
@@ -131,8 +142,8 @@ public final class DriveOdometry extends VirtualSubsystem {
         final double now = TimeUtil.now();
 
         // keep yaw buffers alive
-        if (imuInputs.connected) {
-          drive.yawBuffersAddSample(now, imuInputs.yawPositionRad, imuInputs.yawRateRadPerSec);
+        if (hasValidYaw) {
+          drive.yawBuffersAddSample(now, safeYawRad, safeYawRateRadPerSec);
         }
 
         SwerveModulePosition[] currentPositions = drive.getModulePositions();
@@ -142,15 +153,15 @@ public final class DriveOdometry extends VirtualSubsystem {
             RobotState.isEnabled(),
             RobotState.isDisabled(),
             now,
-            imuInputs.yawRateRadPerSec,
+            safeYawRateRadPerSec,
             currentPositions);
 
         drive.poseEstimatorUpdateWithTime(
-            now, Rotation2d.fromRadians(imuInputs.yawPositionRad), currentPositions);
+            now, Rotation2d.fromRadians(safeYawRad), currentPositions);
 
         // Keep the external vision-alignment buffer on the same timestamp and pose.
         drive.poseBufferAddSample(now, drive.getPose());
-        drive.setGyroDisconnectedAlert(!imuInputs.connected);
+        drive.setGyroDisconnectedAlert(!hasValidYaw);
         return;
       }
 
@@ -165,17 +176,17 @@ public final class DriveOdometry extends VirtualSubsystem {
       if (n == 0) {
         if (Constants.getMode() != Mode.REPLAY) {
           final double now = TimeUtil.now();
-          drive.yawBuffersAddSample(now, imuInputs.yawPositionRad, imuInputs.yawRateRadPerSec);
+          drive.yawBuffersAddSample(now, safeYawRad, safeYawRateRadPerSec);
 
           // Coast state update (no per-sample positions available; use current)
           drive.updateDisabledCoastState(
               RobotState.isEnabled(),
               RobotState.isDisabled(),
               now,
-              imuInputs.yawRateRadPerSec,
+              safeYawRateRadPerSec,
               drive.getModulePositions());
         }
-        drive.setGyroDisconnectedAlert(!imuInputs.connected);
+        drive.setGyroDisconnectedAlert(!hasValidYaw);
         return;
       }
 
@@ -189,7 +200,7 @@ public final class DriveOdometry extends VirtualSubsystem {
       // Determine YAW queue availability (everything exists and lines up)
       // ----------------------------------------------------------------------
       final boolean hasYawQueue =
-          imuInputs.connected
+          hasValidYaw
               && imuInputs.odometryYawTimestamps != null
               && imuInputs.odometryYawPositionsRad != null
               && imuInputs.odometryYawTimestamps.length == imuInputs.odometryYawPositionsRad.length
@@ -216,7 +227,7 @@ public final class DriveOdometry extends VirtualSubsystem {
         drive.yawBuffersFillFromQueue(yawTs, yawPos);
       } else if (!hasYawQueue) {
         final double now = TimeUtil.now();
-        drive.yawBuffersAddSample(now, imuInputs.yawPositionRad, imuInputs.yawRateRadPerSec);
+        drive.yawBuffersAddSample(now, safeYawRad, safeYawRateRadPerSec);
       }
 
       // ----------------------------------------------------------------------
@@ -242,13 +253,13 @@ public final class DriveOdometry extends VirtualSubsystem {
         }
 
         // Determine yaw at this timestamp
-        double yawRad = imuInputs.yawPositionRad;
+        double yawRad = safeYawRad;
         if (hasYawQueue) {
           if (yawIndexAligned) {
             yawRad = yawPos[i];
             drive.yawBuffersAddSampleIndexAligned(t, yawTs, yawPos, i);
           } else {
-            yawRad = drive.yawBufferSampleOr(t, imuInputs.yawPositionRad);
+            yawRad = drive.yawBufferSampleOr(t, safeYawRad);
           }
         }
 
@@ -259,7 +270,7 @@ public final class DriveOdometry extends VirtualSubsystem {
             RobotState.isEnabled(),
             RobotState.isDisabled(),
             t,
-            imuInputs.yawRateRadPerSec,
+            safeYawRateRadPerSec,
             odomPositions);
 
         // Detailed replay logging is expensive at the odometry sample rate. In tuning mode, retain
@@ -302,7 +313,7 @@ public final class DriveOdometry extends VirtualSubsystem {
         drive.poseBufferAddSample(t, drive.getPose());
       }
 
-      drive.setGyroDisconnectedAlert(!imuInputs.connected);
+      drive.setGyroDisconnectedAlert(!hasValidYaw);
 
     } finally {
       final long visionApplyStartNanos = System.nanoTime();
@@ -334,5 +345,17 @@ public final class DriveOdometry extends VirtualSubsystem {
       Logger.recordOutput("Odometry/VisionMeasurementsProcessed", visionMeasurementsProcessed);
       Logger.recordOutput("Odometry/BulkRefreshStatus", bulkRefreshStatus.toString());
     }
+  }
+
+  static boolean isValidYaw(boolean connected, double yawRad) {
+    return connected && Double.isFinite(yawRad);
+  }
+
+  static double selectYawRad(boolean hasValidYaw, double yawRad, double lastValidYawRad) {
+    return hasValidYaw ? yawRad : lastValidYawRad;
+  }
+
+  private static double sanitizeYawRate(double yawRateRadPerSec) {
+    return Double.isFinite(yawRateRadPerSec) ? yawRateRadPerSec : 0.0;
   }
 }

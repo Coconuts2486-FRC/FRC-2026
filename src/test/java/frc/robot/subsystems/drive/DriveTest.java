@@ -49,6 +49,16 @@ class DriveTest {
   }
 
   @Test
+  void invalidGyroYawUsesLastKnownFiniteHeading() {
+    assertTrue(DriveOdometry.isValidYaw(true, 1.25));
+    assertFalse(DriveOdometry.isValidYaw(false, 1.25));
+    assertFalse(DriveOdometry.isValidYaw(true, Double.NaN));
+
+    assertEquals(1.25, DriveOdometry.selectYawRad(true, 1.25, 0.5), EPSILON);
+    assertEquals(0.5, DriveOdometry.selectYawRad(false, Double.NaN, 0.5), EPSILON);
+  }
+
+  @Test
   void pathPlannerStartResetsWhenVisionIsMissingOrEstimatorIsUninitialized() {
     Pose2d pathStart = new Pose2d(4.0, 6.0, Rotation2d.kZero);
 
