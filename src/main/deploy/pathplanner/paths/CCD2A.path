@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.522024096385542,
-        "y": 5.717867469879518
+        "x": 2.500168674698795,
+        "y": 5.575807228915662
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.052272466721887,
-        "y": 6.821223284947507
+        "x": 2.03041704503514,
+        "y": 6.6791630439836505
       },
       "isLocked": false,
       "linkedName": "CC1-2"
@@ -168,10 +168,10 @@
     "rotation": 136.0
   },
   "reversed": false,
-  "folder": "Citrus",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 136.0
+    "rotation": 148.57043438516135
   },
   "useDefaultConstraints": false
 }

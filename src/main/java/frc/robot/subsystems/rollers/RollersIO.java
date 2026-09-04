@@ -52,6 +52,9 @@ public interface RollersIO extends RBSIIO {
 
   /** Set gain constants */
   public default void configureGains(double kP, double kI, double kD, double kS, double kV) {}
+  
+  public default void runRollers(double speed){
+  }
 
   /** Set gain constants */
   public default void configureGains(

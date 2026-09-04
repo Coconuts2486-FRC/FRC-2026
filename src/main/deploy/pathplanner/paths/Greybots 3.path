@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.116690442225392,
-        "y": 0.7291726105563499
+        "x": 2.2925421686746983,
+        "y": 1.029879518072289
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.116690442225392,
-        "y": 0.7291726105563496
+        "x": 3.2925421686746983,
+        "y": 1.0298795180722888
       },
       "isLocked": false,
       "linkedName": "gb1 ending but its cooler"
@@ -139,7 +139,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": -132.39743779750026
   },
   "useDefaultConstraints": true
 }

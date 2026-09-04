@@ -185,7 +185,7 @@ public class RobotContainer {
 
     NamedCommands.registerCommand(
         "Intake",
-        Commands.run(() -> m_rollers.runRollers(), m_rollers).finallyDo(() -> m_rollers.stop()));
+        Commands.run(() -> m_rollers.autoRollers(), m_rollers).finallyDo(() -> m_rollers.stop()));
 
     NamedCommands.registerCommand(
         "Shoot",

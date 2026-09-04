@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.55,
-        "y": 2.314
+        "x": 2.620373493975903,
+        "y": 2.4932180989583332
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.869692563657408,
-        "y": 1.4927887008101859
+        "x": 1.9400660576333113,
+        "y": 1.672006799768519
       },
       "isLocked": false,
       "linkedName": "CCO1-2"
@@ -56,10 +56,10 @@
     "rotation": -91.38284392170218
   },
   "reversed": false,
-  "folder": "OFF",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -136.0
+    "rotation": -144.5591213840369
   },
   "useDefaultConstraints": false
 }
