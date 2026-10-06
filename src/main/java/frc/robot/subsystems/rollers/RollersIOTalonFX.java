@@ -26,6 +26,7 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -52,6 +53,8 @@ public class RollersIOTalonFX implements RollersIO {
 
   private final TalonFXConfiguration config = new TalonFXConfiguration();
   private final boolean isCTREPro = Constants.getPhoenixPro() == CTREPro.LICENSED;
+  private final DutyCycleOut dutyCycleRequest = new DutyCycleOut(0.0);
+
 
   private final VelocityTorqueCurrentFOC velocityRequest =
       new VelocityTorqueCurrentFOC(0.0).withSlot(0);
@@ -121,15 +124,17 @@ public class RollersIOTalonFX implements RollersIO {
     rollers.setControl(velocityRequest.withVelocity(velocityRotationsPerSecond));
   }
 
-  // @Override
-  // public void runRollers(double speed) {
-  //   rollers.set(speed);
-  // }
+  @Override
+  public void runRollers(double speed) {
+    rollers.setControl(dutyCycleRequest.withOutput(speed));
+  }
 
   @Override
   public void stop() {
     rollers.stopMotor();
   }
+
+
 
   @Override
   public boolean isIntakeRollersRunning() {

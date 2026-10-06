@@ -20,60 +20,76 @@
         "y": 0.5997860199714706
       },
       "prevControl": {
-        "x": 4.759900142653351,
-        "y": 0.5997860199714707
+        "x": 5.079108433734939,
+        "y": 0.5490602409638552
       },
       "nextControl": {
-        "x": 6.75990014265335,
-        "y": 0.5997860199714706
+        "x": 6.757135778788522,
+        "y": 0.6740900307789432
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.088858773181169,
-        "y": 3.0969472182596305
+        "x": 7.545435092724677,
+        "y": 0.8550361445783141
       },
       "prevControl": {
-        "x": 8.33114951602967,
-        "y": 1.5523437326004372
+        "x": 7.216463398042381,
+        "y": 0.5435790019447082
       },
       "nextControl": {
-        "x": 7.881840228245363,
-        "y": 4.416690442225392
+        "x": 7.874406787406972,
+        "y": 1.16649328721192
       },
       "isLocked": false,
-      "linkedName": "gb1 ending"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.199814550641939,
+        "x": 7.933594864479314,
         "y": 3.0969472182596305
       },
       "prevControl": {
-        "x": 6.188552813266123,
-        "y": 4.2906913800960345
+        "x": 8.049949762030764,
+        "y": 1.5377915910702207
       },
       "nextControl": {
-        "x": 6.225691868758916,
-        "y": 0.35395149786020097
+        "x": 7.868901569186875,
+        "y": 3.963837375178319
       },
       "isLocked": false,
-      "linkedName": "gb3 start"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.116690442225392,
-        "y": 0.7291726105563499
+        "x": 6.342139800285306,
+        "y": 2.5405848787446508
       },
       "prevControl": {
         "x": 6.342139800285306,
-        "y": 0.7032952924393738
+        "y": 3.9653069186740018
+      },
+      "nextControl": {
+        "x": 6.342139800285306,
+        "y": 0.4703994293865925
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.2488313253012047,
+        "y": 0.8550361445783141
+      },
+      "prevControl": {
+        "x": 6.281156626506026,
+        "y": 0.13380722891566277
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "gb1 ending but its cooler"
+      "linkedName": "greybots good"
     }
   ],
   "rotationTargets": [
@@ -82,25 +98,41 @@
       "rotationDegrees": 0.0
     },
     {
-      "waypointRelativePos": 1.6034115138592724,
-      "rotationDegrees": 75.0
+      "waypointRelativePos": 2.2,
+      "rotationDegrees": 91.06862508962794
     },
     {
-      "waypointRelativePos": 2.2942430703624774,
-      "rotationDegrees": 140.0
+      "waypointRelativePos": 2.850326469110986,
+      "rotationDegrees": 91.27427294981948
     },
     {
-      "waypointRelativePos": 3.0959488272920983,
+      "waypointRelativePos": 3.3927674535409347,
+      "rotationDegrees": 180.0
+    },
+    {
+      "waypointRelativePos": 4.045705675539917,
       "rotationDegrees": -90.0
+    },
+    {
+      "waypointRelativePos": 4.095948827292098,
+      "rotationDegrees": -90.0
+    },
+    {
+      "waypointRelativePos": 4.601659751037348,
+      "rotationDegrees": 180.0
+    },
+    {
+      "waypointRelativePos": 4.86721991701244,
+      "rotationDegrees": -179.51656944330995
     }
   ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 3.359891964888571,
-      "maxWaypointRelativePos": 4.0,
+      "minWaypointRelativePos": 0.0,
+      "maxWaypointRelativePos": 5.0,
       "constraints": {
-        "maxVelocity": 2.0,
+        "maxVelocity": 1.7,
         "maxAcceleration": 2.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
@@ -121,13 +153,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": -132.1375947738881
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -1.1484162473862802
   },
   "useDefaultConstraints": true
 }

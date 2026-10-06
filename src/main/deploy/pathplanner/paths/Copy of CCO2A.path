@@ -96,12 +96,12 @@
     },
     {
       "anchor": {
-        "x": 2.55,
-        "y": 2.314
+        "x": 2.620373493975903,
+        "y": 2.4932180989583332
       },
       "prevControl": {
-        "x": 2.249065496632019,
-        "y": 2.3000451593970763
+        "x": 2.3194389906079222,
+        "y": 2.4792632583554095
       },
       "nextControl": null,
       "isLocked": false,
@@ -165,10 +165,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -136.0
+    "rotation": -144.5591213840369
   },
   "reversed": false,
-  "folder": "Team Specific",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": -119.72000000000001
