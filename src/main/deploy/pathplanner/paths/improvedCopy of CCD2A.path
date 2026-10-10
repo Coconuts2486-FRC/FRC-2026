@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.500168674698795,
-        "y": 5.575807228915662
+        "x": 2.5769900142653355,
+        "y": 5.412967189728959
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.03041704503514,
-        "y": 6.6791630439836505
+        "x": 2.1072383846016804,
+        "y": 6.516323004796948
       },
       "isLocked": false,
       "linkedName": "CC1-2"
@@ -161,7 +161,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 148.57043438516135
+    "rotation": 139.76364169072627
   },
   "useDefaultConstraints": false
 }

@@ -16,48 +16,48 @@
     },
     {
       "anchor": {
-        "x": 4.456228915662651,
+        "x": 4.6601141226818825,
         "y": 0.5599879518072293
       },
       "prevControl": {
-        "x": 4.206228915662651,
-        "y": 0.5599879518072293
+        "x": 3.1851069900142646,
+        "y": 0.5350927246790309
       },
       "nextControl": {
-        "x": 7.210207178973,
-        "y": 0.5599879518072293
+        "x": 7.320303460393026,
+        "y": 0.6048867297857179
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.909614457831326,
-        "y": 3.4011927710843373
+        "x": 7.299600570613409,
+        "y": 3.2263338088445086
       },
       "prevControl": {
-        "x": 5.894044938350916,
-        "y": 2.7784119918679284
+        "x": 7.3513552068473595,
+        "y": 1.4019828815977178
       },
       "nextControl": {
-        "x": 5.9314698795180725,
-        "y": 4.275409638554217
+        "x": 7.27480231983122,
+        "y": 4.100472148916663
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.395783132530121,
-        "y": 2.887590361445783
+        "x": 5.928102710413694,
+        "y": 3.2263338088445086
       },
       "prevControl": {
-        "x": 7.384855421686747,
-        "y": 4.100566265060243
+        "x": 5.939765874403411,
+        "y": 4.439302863775154
       },
       "nextControl": {
-        "x": 7.404233836153275,
-        "y": 1.9495622592756314
+        "x": 5.917174999570321,
+        "y": 2.089851881133665
       },
       "isLocked": false,
       "linkedName": null
@@ -68,12 +68,12 @@
         "y": 0.5599879518072293
       },
       "prevControl": {
-        "x": 6.991457831325301,
-        "y": 0.5381325301204822
+        "x": 6.991003204415168,
+        "y": 0.5930558919760142
       },
       "nextControl": {
-        "x": 4.653755319848345,
-        "y": 0.6135422885552231
+        "x": 5.009457917261056,
+        "y": 0.496276747503566
       },
       "isLocked": false,
       "linkedName": null
@@ -102,8 +102,16 @@
       "rotationDegrees": 0.0
     },
     {
+      "waypointRelativePos": 1.0847880299251864,
+      "rotationDegrees": 0.0
+    },
+    {
       "waypointRelativePos": 1.672199170124474,
       "rotationDegrees": 90.0
+    },
+    {
+      "waypointRelativePos": 2.115544472152951,
+      "rotationDegrees": 119.99999999999999
     },
     {
       "waypointRelativePos": 3.0000000000000004,
@@ -124,7 +132,7 @@
   ],
   "constraintZones": [
     {
-      "name": "Constraints Zone",
+      "name": "Initial Rotation Constraint",
       "minWaypointRelativePos": 0.0,
       "maxWaypointRelativePos": 0.818858560794033,
       "constraints": {
@@ -137,12 +145,51 @@
       }
     },
     {
-      "name": "Constraints Zone",
-      "minWaypointRelativePos": 1.6823821339950196,
-      "maxWaypointRelativePos": 5.0,
+      "name": "Intake Constraint Hard",
+      "minWaypointRelativePos": 2.0537046245648956,
+      "maxWaypointRelativePos": 3.3465937344604675,
       "constraints": {
         "maxVelocity": 2.0,
         "maxAcceleration": 2.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    },
+    {
+      "name": "Intake Bash Buffer Constraint",
+      "minWaypointRelativePos": 3.535554450522106,
+      "maxWaypointRelativePos": 4.271506713078069,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 2.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    },
+    {
+      "name": "Intake Bash Buffer Constraint 2",
+      "minWaypointRelativePos": 4.719045251118837,
+      "maxWaypointRelativePos": 4.8682247637990965,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 2.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    },
+    {
+      "name": "Intake Constraint Med",
+      "minWaypointRelativePos": 1.5962207856787654,
+      "maxWaypointRelativePos": 2.06,
+      "constraints": {
+        "maxVelocity": 2.5,
+        "maxAcceleration": 2.5,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.0,
