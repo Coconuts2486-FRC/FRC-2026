@@ -156,7 +156,7 @@ public class ModuleIOTalonFX implements ModuleIO {
     driveConfig.Feedback.SensorToMechanismRatio = SwerveConstants.kDriveGearRatio;
     driveConfig.TorqueCurrent.PeakForwardTorqueCurrent = DrivebaseConstants.kSlipCurrent;
     driveConfig.TorqueCurrent.PeakReverseTorqueCurrent = -DrivebaseConstants.kSlipCurrent;
-    driveConfig.CurrentLimits.StatorCurrentLimit = SwerveConstants.kDriveCurrentLimit;
+    driveConfig.CurrentLimits.StatorCurrentLimit = DrivebaseConstants.kSlipCurrent;
     driveConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     // Build the OpenLoopRampsConfigs and ClosedLoopRampsConfigs for current smoothing
     OpenLoopRampsConfigs openRamps = new OpenLoopRampsConfigs();
