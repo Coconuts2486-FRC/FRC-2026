@@ -478,7 +478,7 @@ public final class Constants {
     public static final MotorIdleMode kIntakeIdleMode = MotorIdleMode.COAST; // BRAKE, COAST
 
     // Pivot angle positions
-    public static final double encoderStow = 0.64;
+    public static final double encoderStow = 0.96;
     // These are derived from the encoderStow position -- in case we have to take off the encoder
     // again
     public static final double dropPosition = encoderStow - 0.26;
