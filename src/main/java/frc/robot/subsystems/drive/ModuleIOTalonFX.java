@@ -136,10 +136,41 @@ public class ModuleIOTalonFX implements ModuleIO {
           default -> throw new IllegalArgumentException("Invalid module index");
         };
 
-    CANBus canBus = RBSICANBusRegistry.getBus(SwerveConstants.kCANbusName);
-    driveTalon = new TalonFX(constants.DriveMotorId, canBus);
-    turnTalon = new TalonFX(constants.SteerMotorId, canBus);
-    cancoder = new CANcoder(constants.EncoderId, canBus);
+    String[] busNames =
+        switch (module) {
+          case 0 ->
+              new String[] {
+                SwerveConstants.kFLDriveCanbus,
+                SwerveConstants.kFLSteerCanbus,
+                SwerveConstants.kFLEncoderCanbus
+              };
+          case 1 ->
+              new String[] {
+                SwerveConstants.kFRDriveCanbus,
+                SwerveConstants.kFRSteerCanbus,
+                SwerveConstants.kFREncoderCanbus
+              };
+          case 2 ->
+              new String[] {
+                SwerveConstants.kBLDriveCanbus,
+                SwerveConstants.kBLSteerCanbus,
+                SwerveConstants.kBLEncoderCanbus
+              };
+          case 3 ->
+              new String[] {
+                SwerveConstants.kBRDriveCanbus,
+                SwerveConstants.kBRSteerCanbus,
+                SwerveConstants.kBREncoderCanbus
+              };
+          default -> throw new IllegalArgumentException("Invalid module index");
+        };
+
+    CANBus driveBus = RBSICANBusRegistry.getBus(busNames[0]);
+    CANBus steerBus = RBSICANBusRegistry.getBus(busNames[1]);
+    CANBus encoderBus = RBSICANBusRegistry.getBus(busNames[2]);
+    driveTalon = new TalonFX(constants.DriveMotorId, driveBus);
+    turnTalon = new TalonFX(constants.SteerMotorId, steerBus);
+    cancoder = new CANcoder(constants.EncoderId, encoderBus);
 
     Logger.recordOutput("Drive/EncoderOffsets/Module" + module, constants.EncoderOffset);
 
@@ -220,7 +251,8 @@ public class ModuleIOTalonFX implements ModuleIO {
     // Create drive status signals
     drivePosition = driveTalon.getPosition();
     drivePositionOdom = drivePosition.clone(); // NEW
-    drivePositionQueue = PhoenixOdometryThread.getInstance().registerSignal(drivePositionOdom);
+    drivePositionQueue =
+        PhoenixOdometryThread.getInstance().registerSignal(drivePositionOdom, busNames[0]);
 
     driveVelocity = driveTalon.getVelocity();
     driveAppliedVolts = driveTalon.getMotorVoltage();
@@ -229,7 +261,8 @@ public class ModuleIOTalonFX implements ModuleIO {
     // Create turn status signals
     turnPosition = turnTalon.getPosition();
     turnPositionOdom = turnPosition.clone(); // NEW
-    turnPositionQueue = PhoenixOdometryThread.getInstance().registerSignal(turnPositionOdom);
+    turnPositionQueue =
+        PhoenixOdometryThread.getInstance().registerSignal(turnPositionOdom, busNames[1]);
 
     turnAbsolutePosition = cancoder.getAbsolutePosition();
     turnVelocity = turnTalon.getVelocity();

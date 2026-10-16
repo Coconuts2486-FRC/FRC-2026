@@ -180,9 +180,11 @@ public final class Constants {
   /** List of Robot CAN Busses ********************************************* */
   public static final class CANBuses {
     public static final String RIO = "can_s1";
-    public static final String DRIVE = "can_s2";
+    public static final String DRIVE_FRONT = "can_s2";
+    public static final String DRIVE_BACK = "can_s3";
+    public static final String DRIVE_IMU = "can_s4";
 
-    public static final String[] ALL = {RIO, DRIVE};
+    public static final String[] ALL = {RIO, DRIVE_FRONT, DRIVE_BACK, DRIVE_IMU};
   }
 
   /************************************************************************* */
@@ -216,14 +218,14 @@ public final class Constants {
         new RobotDeviceId(SwerveConstants.kBLEncoderId, SwerveConstants.kBLEncoderCanbus, null);
     // Back Right
     public static final RobotDeviceId BR_DRIVE =
-        new RobotDeviceId(SwerveConstants.kBRDriveMotorId, SwerveConstants.kBRSteerCanbus, 18);
+        new RobotDeviceId(SwerveConstants.kBRDriveMotorId, SwerveConstants.kBRDriveCanbus, 18);
     public static final RobotDeviceId BR_ROTATION =
         new RobotDeviceId(SwerveConstants.kBRSteerMotorId, SwerveConstants.kBRSteerCanbus, 17);
     public static final RobotDeviceId BR_CANCODER =
         new RobotDeviceId(SwerveConstants.kBREncoderId, SwerveConstants.kBREncoderCanbus, null);
     // Pigeon
     public static final RobotDeviceId PIGEON =
-        new RobotDeviceId(SwerveConstants.kPigeonId, SwerveConstants.kCANbusName, null);
+        new RobotDeviceId(SwerveConstants.kPigeonId, SwerveConstants.kCANbusName3, null);
 
     /* SUBSYSTEM CAN DEVICE IDS */
     // This is where mechanism subsystem devices are defined (Including ID, bus, and power port)
@@ -237,12 +239,6 @@ public final class Constants {
     public static final RobotDeviceId INDEXER_ROLLER = new RobotDeviceId(15, CANBuses.RIO, 9);
 
     public static final RobotDeviceId FEEDER_ROLLER = new RobotDeviceId(20, CANBuses.RIO, 13);
-
-    public static final RobotDeviceId TURRET_POINTER = new RobotDeviceId(31, CANBuses.RIO, 5);
-    public static final RobotDeviceId TURRET_ENCODER = new RobotDeviceId(42, CANBuses.RIO, null);
-
-    public static final RobotDeviceId CLIMB_MOTOR = new RobotDeviceId(20, CANBuses.DRIVE, 16);
-    public static final RobotDeviceId CLIMB_ENCODER = new RobotDeviceId(21, CANBuses.DRIVE, null);
 
     /* BEAM BREAK and/or LIMIT SWITCH DIO CHANNELS */
     // This is where digital I/O feedback devices are defined

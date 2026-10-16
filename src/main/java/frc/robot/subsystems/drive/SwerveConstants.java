@@ -37,7 +37,9 @@ public class SwerveConstants {
   public static final double kCoupleRatio;
   public static final double kDriveGearRatio;
   public static final double kSteerGearRatio;
-  public static final String kCANbusName;
+  public static final String kCANbusName1;
+  public static final String kCANbusName2;
+  public static final String kCANbusName3;
   public static final int kPigeonId;
   public static final double kSteerInertia;
   public static final double kDriveInertia;
@@ -117,7 +119,9 @@ public class SwerveConstants {
         kCoupleRatio = t.frontLeft().CouplingGearRatio;
         kDriveGearRatio = t.frontLeft().DriveMotorGearRatio;
         kSteerGearRatio = t.frontLeft().SteerMotorGearRatio;
-        kCANbusName = CANBuses.DRIVE;
+        kCANbusName1 = CANBuses.DRIVE_FRONT;
+        kCANbusName2 = CANBuses.DRIVE_BACK;
+        kCANbusName3 = CANBuses.DRIVE_IMU;
         kPigeonId = t.drivetrain().Pigeon2Id;
         kSteerInertia = t.frontLeft().SteerInertia;
         kDriveInertia = t.frontLeft().DriveInertia;
@@ -129,9 +133,9 @@ public class SwerveConstants {
         kFLDriveMotorId = t.frontLeft().DriveMotorId;
         kFLSteerMotorId = t.frontLeft().SteerMotorId;
         kFLEncoderId = t.frontLeft().EncoderId;
-        kFLDriveCanbus = kCANbusName;
-        kFLSteerCanbus = kCANbusName;
-        kFLEncoderCanbus = kCANbusName;
+        kFLDriveCanbus = kCANbusName1;
+        kFLSteerCanbus = kCANbusName1;
+        kFLEncoderCanbus = kCANbusName1;
         kFLDriveType = "kraken";
         kFLSteerType = "kraken";
         kFLEncoderType = "cancoder";
@@ -145,9 +149,9 @@ public class SwerveConstants {
         kFRDriveMotorId = t.frontRight().DriveMotorId;
         kFRSteerMotorId = t.frontRight().SteerMotorId;
         kFREncoderId = t.frontRight().EncoderId;
-        kFRDriveCanbus = kCANbusName;
-        kFRSteerCanbus = kCANbusName;
-        kFREncoderCanbus = kCANbusName;
+        kFRDriveCanbus = kCANbusName1;
+        kFRSteerCanbus = kCANbusName1;
+        kFREncoderCanbus = kCANbusName1;
         kFRDriveType = "kraken";
         kFRSteerType = "kraken";
         kFREncoderType = "cancoder";
@@ -161,9 +165,9 @@ public class SwerveConstants {
         kBLDriveMotorId = t.backLeft().DriveMotorId;
         kBLSteerMotorId = t.backLeft().SteerMotorId;
         kBLEncoderId = t.backLeft().EncoderId;
-        kBLDriveCanbus = kCANbusName;
-        kBLSteerCanbus = kCANbusName;
-        kBLEncoderCanbus = kCANbusName;
+        kBLDriveCanbus = kCANbusName2;
+        kBLSteerCanbus = kCANbusName2;
+        kBLEncoderCanbus = kCANbusName2;
         kBLDriveType = "kraken";
         kBLSteerType = "kraken";
         kBLEncoderType = "cancoder";
@@ -177,9 +181,9 @@ public class SwerveConstants {
         kBRDriveMotorId = t.backRight().DriveMotorId;
         kBRSteerMotorId = t.backRight().SteerMotorId;
         kBREncoderId = t.backRight().EncoderId;
-        kBRDriveCanbus = kCANbusName;
-        kBRSteerCanbus = kCANbusName;
-        kBREncoderCanbus = kCANbusName;
+        kBRDriveCanbus = kCANbusName2;
+        kBRSteerCanbus = kCANbusName2;
+        kBREncoderCanbus = kCANbusName2;
         kBRDriveType = "kraken";
         kBRSteerType = "kraken";
         kBREncoderType = "cancoder";
@@ -289,7 +293,7 @@ public class SwerveConstants {
 
   // Are we on the CANivore or not?
   public static final double kOdometryFrequency =
-      new CANBus(kCANbusName).isNetworkFD() ? 250.0 : 100.0;
+      new CANBus(kCANbusName1).isNetworkFD() ? 250.0 : 100.0;
 
   // SPARK Drive encoder configuration
   // Rotor Rotations -> Wheel Radians

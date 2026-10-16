@@ -14,9 +14,10 @@ import com.ctre.phoenix6.StatusSignal;
 import org.wpilib.units.measure.Angle;
 import org.wpilib.driverstation.DriverStationErrors;
 import org.wpilib.system.RobotController;
-import frc.robot.generated.TunerFactory;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -26,21 +27,19 @@ import org.littletonrobotics.junction.Logger;
 /**
  * Provides an interface for asynchronously reading high-frequency measurements to a set of queues.
  *
- * <p>This version is intended for Phoenix 6 devices on both the RIO and CANivore buses. When using
- * a CANivore, the thread uses the "waitForAll" blocking method to enable more consistent sampling.
- * This also allows Phoenix Pro users to benefit from lower latency between devices using CANivore
- * time synchronization.
+ * <p>Samples Phoenix 6 signals across multiple CAN networks. Signals are refreshed in groups by bus
+ * because Phoenix bulk refresh calls cannot mix networks.
  */
 public class PhoenixOdometryThread extends Thread {
   private final Lock signalsLock =
       new ReentrantLock(); // Prevents conflicts when registering signals
   private BaseStatusSignal[] phoenixSignals = new BaseStatusSignal[0];
+  private final Map<String, List<BaseStatusSignal>> phoenixSignalsByBus = new LinkedHashMap<>();
   private final List<DoubleSupplier> genericSignals = new ArrayList<>();
   private final List<LatestSampleQueue<Double>> phoenixQueues = new ArrayList<>();
   private final List<LatestSampleQueue<Double>> genericQueues = new ArrayList<>();
   private final List<LatestSampleQueue<Double>> timestampQueues = new ArrayList<>();
 
-  private static final boolean isCANFD = TunerFactory.INSTANCE.canBus().isNetworkFD();
   private static PhoenixOdometryThread instance = null;
 
   private long droppedSamples = 0;
@@ -66,7 +65,7 @@ public class PhoenixOdometryThread extends Thread {
   }
 
   /** Registers a Phoenix signal to be read from the thread. */
-  public Queue<Double> registerSignal(StatusSignal<Angle> signal) {
+  public Queue<Double> registerSignal(StatusSignal<Angle> signal, String busName) {
     LatestSampleQueue<Double> queue = new LatestSampleQueue<>(128);
     signalsLock.lock();
     Drive.odometryLock.lock();
@@ -75,6 +74,7 @@ public class PhoenixOdometryThread extends Thread {
       System.arraycopy(phoenixSignals, 0, newSignals, 0, phoenixSignals.length);
       newSignals[phoenixSignals.length] = signal;
       phoenixSignals = newSignals;
+      phoenixSignalsByBus.computeIfAbsent(busName, name -> new ArrayList<>()).add(signal);
       phoenixQueues.add(queue);
     } finally {
       signalsLock.unlock();
@@ -113,17 +113,12 @@ public class PhoenixOdometryThread extends Thread {
   @Override
   public void run() {
     while (true) {
-      // Wait for updates from all signals
+      // Refresh each CAN bus separately; CTRE bulk calls require a single network.
       signalsLock.lock();
       try {
-        if (isCANFD && phoenixSignals.length > 0) {
-          BaseStatusSignal.waitForAll(2.0 / SwerveConstants.kOdometryFrequency, phoenixSignals);
-        } else {
-          // "waitForAll" does not support blocking on multiple signals with a bus
-          // that is not CAN FD, regardless of Pro licensing. No reasoning for this
-          // behavior is provided by the documentation.
-          Thread.sleep((long) (1000.0 / SwerveConstants.kOdometryFrequency));
-          if (phoenixSignals.length > 0) BaseStatusSignal.refreshAll(phoenixSignals);
+        Thread.sleep((long) (1000.0 / SwerveConstants.kOdometryFrequency));
+        for (List<BaseStatusSignal> busSignals : phoenixSignalsByBus.values()) {
+          BaseStatusSignal.refreshAll(busSignals);
         }
       } catch (InterruptedException e) {
         DriverStationErrors.reportWarning("Phoenix odometry thread interrupted", e.getStackTrace());

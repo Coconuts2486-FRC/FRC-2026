@@ -248,7 +248,7 @@ public class RobotContainer {
         // Real robot, instantiate hardware IO implementations
 
         // Register the CANBus
-        RBSICANBusRegistry.initReal(CANBuses.RIO, CANBuses.DRIVE);
+        RBSICANBusRegistry.initReal(CANBuses.RIO, CANBuses.DRIVE_FRONT, CANBuses.DRIVE_BACK, CANBuses.DRIVE_IMU);
 
         // YAGSL drivebase, get config from deploy directory
         // Get the IMU instance
@@ -273,7 +273,7 @@ public class RobotContainer {
         break;
 
       case SIM:
-        RBSICANBusRegistry.initSim(CANBuses.RIO, CANBuses.DRIVE);
+        RBSICANBusRegistry.initSim(CANBuses.RIO, CANBuses.DRIVE_FRONT, CANBuses.DRIVE_BACK, CANBuses.DRIVE_IMU);
 
         m_imu = new Imu(new ImuIOSim());
         m_drivebase = new Drive(m_imu);
@@ -314,7 +314,7 @@ public class RobotContainer {
 
       default:
         // Replayed robot, disable IO implementations
-        RBSICANBusRegistry.initSim(CANBuses.RIO, CANBuses.DRIVE);
+        RBSICANBusRegistry.initSim(CANBuses.RIO, CANBuses.DRIVE_FRONT, CANBuses.DRIVE_BACK, CANBuses.DRIVE_IMU);
         m_imu = new Imu(new ImuIOSim() {});
         m_drivebase = new Drive(m_imu);
         m_driveOdometry = new DriveOdometry(m_drivebase, m_imu, m_drivebase.getModules());
