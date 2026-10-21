@@ -11,12 +11,11 @@ package frc.robot.subsystems.drive;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
+import java.util.Map;
 import org.wpilib.math.geometry.Rotation2d;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface ModuleIO {
-  BaseStatusSignal[] NO_BULK_REFRESH_SIGNALS = new BaseStatusSignal[0];
-
   @AutoLog
   public static class ModuleIOInputs {
 
@@ -42,12 +41,12 @@ public interface ModuleIO {
   /** Updates the set of loggable inputs. */
   public default void updateInputs(ModuleIOInputs inputs) {}
 
-  /** Returns telemetry signals that should be refreshed in one drivetrain-wide transaction. */
-  public default BaseStatusSignal[] getBulkRefreshSignals() {
-    return NO_BULK_REFRESH_SIGNALS;
+  /** Returns telemetry signals grouped by their CAN bus for bulk refresh. */
+  public default Map<String, BaseStatusSignal[]> getBulkRefreshSignalsByBus() {
+    return Map.of();
   }
 
-  /** Supplies the result of the drivetrain-wide telemetry refresh. */
+  /** Supplies the result of this module's telemetry refresh. */
   public default void setBulkRefreshStatus(StatusCode status) {}
 
   /** Run the drive motor at the specified open loop value. */

@@ -28,6 +28,10 @@ import frc.robot.util.RBSIEnum.Mode;
 import frc.robot.util.TimeUtil;
 import frc.robot.util.VirtualSubsystem;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import org.littletonrobotics.junction.Logger;
 
 public final class DriveOdometry extends VirtualSubsystem {
@@ -37,7 +41,11 @@ public final class DriveOdometry extends VirtualSubsystem {
   private final Drive drive;
   private final Imu imu;
   private final Module[] modules;
-  private final BaseStatusSignal[] bulkRefreshSignals;
+  private final List<BusRefreshGroup> busRefreshGroups;
+  private final StatusCode[] moduleRefreshStatuses;
+
+  private record BusRefreshGroup(
+      String name, BaseStatusSignal[] signals, int[] moduleIndexes) {}
 
   // Per-cycle cached objects (to avoid repeated allocations)
   private final SwerveModulePosition[] odomPositions = new SwerveModulePosition[4];
@@ -50,14 +58,27 @@ public final class DriveOdometry extends VirtualSubsystem {
     this.drive = drive;
     this.imu = imu;
     this.modules = modules;
+    moduleRefreshStatuses = new StatusCode[modules.length];
 
-    ArrayList<BaseStatusSignal> signals = new ArrayList<>();
-    for (Module module : modules) {
-      for (BaseStatusSignal signal : module.getBulkRefreshSignals()) {
-        signals.add(signal);
+    Map<String, List<BaseStatusSignal>> signalsByBus = new LinkedHashMap<>();
+    Map<String, List<Integer>> moduleIndexesByBus = new LinkedHashMap<>();
+    for (int moduleIndex = 0; moduleIndex < modules.length; moduleIndex++) {
+      for (var entry : modules[moduleIndex].getBulkRefreshSignalsByBus().entrySet()) {
+        if (entry.getValue().length == 0) continue;
+        signalsByBus
+            .computeIfAbsent(entry.getKey(), ignored -> new ArrayList<>())
+            .addAll(Arrays.asList(entry.getValue()));
+        moduleIndexesByBus.computeIfAbsent(entry.getKey(), ignored -> new ArrayList<>()).add(moduleIndex);
       }
     }
-    bulkRefreshSignals = signals.toArray(new BaseStatusSignal[0]);
+    busRefreshGroups = new ArrayList<>(signalsByBus.size());
+    signalsByBus.forEach(
+        (busName, signals) ->
+            busRefreshGroups.add(
+                new BusRefreshGroup(
+                    busName,
+                    signals.toArray(new BaseStatusSignal[0]),
+                    moduleIndexesByBus.get(busName).stream().mapToInt(Integer::intValue).toArray())));
   }
 
   /**
@@ -76,15 +97,24 @@ public final class DriveOdometry extends VirtualSubsystem {
   public void rbsiPeriodic() {
     final long loopStartNanos = System.nanoTime();
     final long bulkRefreshStartNanos = System.nanoTime();
-    final StatusCode bulkRefreshStatus =
-        bulkRefreshSignals.length == 0
-            ? StatusCode.OK
-            : BaseStatusSignal.refreshAll(bulkRefreshSignals);
-    final long bulkRefreshEndNanos = System.nanoTime();
-
-    for (Module module : modules) {
-      module.setBulkRefreshStatus(bulkRefreshStatus);
+    Arrays.fill(moduleRefreshStatuses, StatusCode.OK);
+    StatusCode bulkRefreshStatus = StatusCode.OK;
+    for (BusRefreshGroup group : busRefreshGroups) {
+      StatusCode busStatus = BaseStatusSignal.refreshAll(group.signals());
+      Logger.recordOutput("Odometry/BusRefreshStatus/" + group.name(), busStatus.toString());
+      if (bulkRefreshStatus.isOK() && !busStatus.isOK()) {
+        bulkRefreshStatus = busStatus;
+      }
+      for (int moduleIndex : group.moduleIndexes()) {
+        if (moduleRefreshStatuses[moduleIndex].isOK()) {
+          moduleRefreshStatuses[moduleIndex] = busStatus;
+        }
+      }
     }
+    for (int moduleIndex = 0; moduleIndex < modules.length; moduleIndex++) {
+      modules[moduleIndex].setBulkRefreshStatus(moduleRefreshStatuses[moduleIndex]);
+    }
+    final long bulkRefreshEndNanos = System.nanoTime();
 
     final long lockWaitStartNanos = System.nanoTime();
     Drive.odometryLock.lock();

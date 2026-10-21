@@ -18,6 +18,7 @@ import org.wpilib.math.util.Units;
 import org.wpilib.driverstation.Alert;
 import org.wpilib.driverstation.Alert.Level;
 import frc.robot.Constants.DrivebaseConstants;
+import java.util.Map;
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -90,8 +91,8 @@ public class Module {
     turnEncoderDisconnectedAlert.set(!inputs.turnEncoderConnected);
   }
 
-  BaseStatusSignal[] getBulkRefreshSignals() {
-    return io.getBulkRefreshSignals();
+  Map<String, BaseStatusSignal[]> getBulkRefreshSignalsByBus() {
+    return io.getBulkRefreshSignalsByBus();
   }
 
   void setBulkRefreshStatus(StatusCode status) {
@@ -107,11 +108,11 @@ public class Module {
   /**
    * Runs the module with the specified setpoint state
    *
-   * <p>Mutates the state to optimize it
+   * <p>Returns the optimized state actually sent to the module.
    *
    * @param state The requested Swerve Modeule State
    */
-  public void runSetpoint(SwerveModuleVelocity state) {
+  public SwerveModuleVelocity runSetpoint(SwerveModuleVelocity state) {
     // Optimize velocity setpoint
     state = state.optimize(getAngle());
     state = state.cosineScale(inputs.turnPosition);
@@ -119,6 +120,7 @@ public class Module {
     // Apply setpoints
     io.setDriveVelocity(state.velocity / DrivebaseConstants.kWheelRadiusMeters);
     io.setTurnPosition(state.angle);
+    return state;
   }
 
   /** Runs the module with the specified output while controlling to zero degrees. */

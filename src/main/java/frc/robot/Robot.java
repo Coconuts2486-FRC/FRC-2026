@@ -67,7 +67,9 @@ public class Robot extends LoggedRobot {
     Logger.recordMetadata("RuntimeType", getRuntimeType().toString());
     Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
     Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
+    Logger.recordMetadata("BuildUnixTime", Long.toString(BuildConstants.BUILD_UNIX_TIME));
     Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
+    Logger.recordMetadata("GitRevision", Integer.toString(BuildConstants.GIT_REVISION));
     Logger.recordMetadata("GitDate", BuildConstants.GIT_DATE);
     Logger.recordMetadata("GitBranch", BuildConstants.GIT_BRANCH);
     Logger.recordMetadata(
@@ -81,8 +83,8 @@ public class Robot extends LoggedRobot {
     // Set up data receivers & replay source
     switch (Constants.getMode()) {
       case REAL:
-        // Running on a real robot, log to a USB stick ("/U/logs")
-        Logger.addDataReceiver(new WPILOGWriter());
+        // SystemCore's internal storage is available even when no USB drive is mounted.
+        Logger.addDataReceiver(new WPILOGWriter("/home/systemcore/logs"));
         Logger.addDataReceiver(new NT4Publisher());
         break;
 

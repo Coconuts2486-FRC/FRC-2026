@@ -46,7 +46,11 @@ import frc.robot.generated.TunerFactory;
 import frc.robot.util.PhoenixUtil;
 import frc.robot.util.RBSICANBusRegistry;
 import frc.robot.util.RBSIEnum.CTREPro;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 import org.littletonrobotics.junction.Logger;
 
@@ -98,7 +102,7 @@ public class ModuleIOTalonFX implements ModuleIO {
   private final StatusSignal<AngularVelocity> turnVelocity;
   private final StatusSignal<Voltage> turnAppliedVolts;
   private final StatusSignal<Current> turnCurrent;
-  private final BaseStatusSignal[] bulkRefreshSignals;
+  private final Map<String, BaseStatusSignal[]> bulkRefreshSignalsByBus;
   private StatusCode bulkRefreshStatus = StatusCode.OK;
 
   // Connection debouncers
@@ -269,18 +273,16 @@ public class ModuleIOTalonFX implements ModuleIO {
     turnAppliedVolts = turnTalon.getMotorVoltage();
     turnCurrent = turnTalon.getStatorCurrent();
 
-    bulkRefreshSignals =
-        new BaseStatusSignal[] {
-          drivePosition,
-          driveVelocity,
-          driveAppliedVolts,
-          driveCurrent,
-          turnPosition,
-          turnVelocity,
-          turnAppliedVolts,
-          turnCurrent,
-          turnAbsolutePosition
-        };
+    Map<String, List<BaseStatusSignal>> signalsByBus = new LinkedHashMap<>();
+    addBulkRefreshSignals(
+        signalsByBus, busNames[0], drivePosition, driveVelocity, driveAppliedVolts, driveCurrent);
+    addBulkRefreshSignals(
+        signalsByBus, busNames[1], turnPosition, turnVelocity, turnAppliedVolts, turnCurrent);
+    addBulkRefreshSignals(signalsByBus, busNames[2], turnAbsolutePosition);
+    Map<String, BaseStatusSignal[]> groupedSignals = new LinkedHashMap<>();
+    signalsByBus.forEach(
+        (busName, signals) -> groupedSignals.put(busName, signals.toArray(new BaseStatusSignal[0])));
+    bulkRefreshSignalsByBus = Map.copyOf(groupedSignals);
 
     // Configure periodic frames (IMPORTANT: apply odometry rate to the *odom clones*)
     BaseStatusSignal.setUpdateFrequencyForAll(
@@ -302,8 +304,15 @@ public class ModuleIOTalonFX implements ModuleIO {
 
   /** Input Updating Loop ************************************************** */
   @Override
-  public BaseStatusSignal[] getBulkRefreshSignals() {
-    return bulkRefreshSignals;
+  public Map<String, BaseStatusSignal[]> getBulkRefreshSignalsByBus() {
+    return bulkRefreshSignalsByBus;
+  }
+
+  private static void addBulkRefreshSignals(
+      Map<String, List<BaseStatusSignal>> signalsByBus,
+      String busName,
+      BaseStatusSignal... signals) {
+    signalsByBus.computeIfAbsent(busName, ignored -> new ArrayList<>()).addAll(Arrays.asList(signals));
   }
 
   @Override
@@ -467,6 +476,7 @@ public class ModuleIOTalonFX implements ModuleIO {
     // AdvantageKit logging
     Logger.recordOutput("Swerve/Drive/VelocityRadPerSec", velocityRadPerSec);
     Logger.recordOutput("Swerve/Drive/VelocityRotPerSec", velocityRotPerSec);
+    Logger.recordOutput("Swerve/Module" + module + "/Drive/VelocityRotPerSec", velocityRotPerSec);
     Logger.recordOutput("Swerve/Drive/AccelerationRotPerSec2", accelerationRotPerSec2);
     Logger.recordOutput("Swerve/Drive/EstimatedSlotFeedForwardVolts", estimatedSlotFFVolts);
     Logger.recordOutput("Swerve/BatteryVoltage", busVoltage);
@@ -492,6 +502,7 @@ public class ModuleIOTalonFX implements ModuleIO {
             .withEnableFOC(enableVoltageFOC));
 
     Logger.recordOutput("Swerve/Turn/TargetRotations", rotation.getRotations());
+    Logger.recordOutput("Swerve/Module" + module + "/Turn/TargetRotations", rotation.getRotations());
     Logger.recordOutput("Swerve/BatteryVoltage", RobotController.getBatteryVoltage());
     Logger.recordOutput("Swerve/Turn/ClosedLoopMode", m_SteerMotorClosedLoopOutput);
     Logger.recordOutput("Swerve/Turn/VoltageFOCEnabled", enableVoltageFOC);

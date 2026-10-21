@@ -335,8 +335,7 @@ public class RobotContainer {
         break;
     }
 
-    // Init all CAN busses specified in the `Constants.CANBuses` class
-    RBSICANBusRegistry.initReal(Constants.CANBuses.ALL);
+    // The CAN registry was initialized for the selected mode above.
     m_canHealth = Arrays.stream(Constants.CANBuses.ALL).map(RBSICANHealth::new).toList();
     m_canStatus =
         new CANStatus(m_drivebase, m_imu, m_intake, m_feeder, m_rollers, m_shooter, m_indexer);
