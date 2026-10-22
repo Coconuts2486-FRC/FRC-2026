@@ -74,6 +74,21 @@ public class Intake extends RBSISubsystem {
     }
   }
 
+  public void adjustablePivotDown(double value){
+
+    if (value > 0.8){
+      value = 0.8;
+    }
+
+      if (io.getPivotPositionRot() > IntakeConstants.dropPosition) {
+      io.setPivotPrimitiveSpeed(value);
+    } else if (io.getPivotPositionRot() > IntakeConstants.lowerPosition) {
+      io.setPivotPrimitiveSpeed(0.1);
+    } else {
+      io.stopPivot();
+    }
+}
+
   public void pivotUp() {
     io.setPivotPrimitiveSpeed(
         -controller.calculate(io.getPivotPositionRot(), IntakeConstants.storedAngle));

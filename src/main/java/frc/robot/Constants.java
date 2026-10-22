@@ -162,7 +162,7 @@ public final class Constants {
 
     // Power Distribution Module Configuration
     public static final PowerDistribution.ModuleType kPDMType = PowerDistribution.ModuleType.REV;
-    public static final int kPDMBusId = 0;
+    public static final int kPDMBusId = 1; // SystemCore can_s1
     public static final int kPDMCANid = 1;
 
     // Current Limits

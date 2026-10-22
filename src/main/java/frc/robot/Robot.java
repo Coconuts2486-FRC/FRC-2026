@@ -27,11 +27,9 @@ import org.wpilib.driverstation.MatchState;
 import org.wpilib.system.Timer;
 import org.wpilib.command2.Command;
 import org.wpilib.command2.CommandScheduler;
-import frc.robot.Constants.PowerConstants;
 import frc.robot.util.TimedCommand;
 import frc.robot.util.VirtualSubsystem;
 import org.littletonrobotics.junction.LogFileUtil;
-import org.littletonrobotics.junction.LoggedPowerDistribution;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
@@ -106,9 +104,6 @@ public class Robot extends LoggedRobot {
     // integration for a future Systemcore-compatible release, but keep REVLib logging active now.
     // Logger.registerURCL(URCL.startExternal());
     // StatusLogger.disableAutoLogging();
-    LoggedPowerDistribution.getInstance(
-        PowerConstants.kPDMBusId, PowerConstants.kPDMCANid, PowerConstants.kPDMType);
-
     // Start AdvantageKit logger
     Logger.start();
 

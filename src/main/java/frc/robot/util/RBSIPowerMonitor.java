@@ -14,10 +14,10 @@
 package frc.robot.util;
 
 import org.wpilib.system.RobotController;
+import org.wpilib.hardware.power.PowerDistribution;
 import frc.robot.Constants.PowerConstants;
 import frc.robot.Constants.RobotDevices;
 import frc.robot.util.Alert.AlertType;
-import org.littletonrobotics.conduit.ConduitApi;
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -29,9 +29,9 @@ import org.littletonrobotics.junction.Logger;
 public class RBSIPowerMonitor extends VirtualSubsystem {
 
   private final RBSISubsystem[] subsystems;
-  // private final LoggedPowerDistribution m_pdm =
-  //     LoggedPowerDistribution.getInstance(PowerConstants.kPDMCANid, PowerConstants.kPDMType);
-  private final ConduitApi conduit = ConduitApi.getInstance();
+  private final PowerDistribution pdh =
+      new PowerDistribution(
+          PowerConstants.kPDMBusId, PowerConstants.kPDMCANid, PowerConstants.kPDMType);
 
   // Define local variables
   private final LoggedTunableNumber batteryCapacityAh;
@@ -89,25 +89,31 @@ public class RBSIPowerMonitor extends VirtualSubsystem {
     if ((loops++ % 5) != 0) return; // 50Hz loop -> run at 10Hz
 
     // --- Read voltage & total current ---
-    double voltage = conduit.getPDPVoltage();
-    double totalCurrent = conduit.getPDPTotalCurrent();
+    double voltage = pdh.getVoltage();
+    double totalCurrent = pdh.getTotalCurrent();
+    boolean pdhDataValid = Double.isFinite(voltage) && voltage > 0.0;
     lastVoltage = voltage;
     lastTotalCurrent = totalCurrent;
-    totalCurrentOverLimit = totalCurrent > PowerConstants.kTotalMaxCurrent;
+    totalCurrentOverLimit = pdhDataValid && totalCurrent > PowerConstants.kTotalMaxCurrent;
 
     // --- Safety alerts ---
     totalCurrentAlert.set(totalCurrentOverLimit);
-    lowVoltageAlert.set(voltage < PowerConstants.kVoltageWarning);
-    criticalVoltageAlert.set(voltage < PowerConstants.kVoltageCritical);
+    lowVoltageAlert.set(pdhDataValid && voltage < PowerConstants.kVoltageWarning);
+    criticalVoltageAlert.set(pdhDataValid && voltage < PowerConstants.kVoltageCritical);
+    Logger.recordOutput("Power/PDHDataValid", pdhDataValid);
     Logger.recordOutput("Power/Voltage", voltage);
     Logger.recordOutput("Power/TotalCurrent", totalCurrent);
     Logger.recordOutput("Power/TotalCurrentOverLimit", totalCurrentOverLimit);
 
-    int channelCount = Math.min(channelCurrents.length, conduit.getPDPChannelCount());
+    int channelCount = Math.min(channelCurrents.length, pdh.getNumChannels());
     for (int ch = 0; ch < channelCount; ch++) {
-      channelCurrents[ch] = conduit.getPDPChannelCurrent(ch);
-      portAlerts[ch].set(channelCurrents[ch] > PowerConstants.kMotorPortMaxCurrent);
+      channelCurrents[ch] = pdh.getCurrent(ch);
+      portAlerts[ch].set(pdhDataValid && channelCurrents[ch] > PowerConstants.kMotorPortMaxCurrent);
     }
+    Logger.recordOutput("PowerDistribution/Voltage", voltage);
+    Logger.recordOutput("PowerDistribution/TotalCurrent", totalCurrent);
+    Logger.recordOutput("PowerDistribution/ChannelCurrent", channelCurrents);
+    Logger.recordOutput("PowerDistribution/ChannelCount", channelCount);
 
     // --- Battery estimation ---
     long nowUs = RobotController.getTime();
@@ -137,9 +143,11 @@ public class RBSIPowerMonitor extends VirtualSubsystem {
     Logger.recordOutput("Power/TotalPower", totalPower);
     Logger.recordOutput("Power/EnergyJoules", totalEnergyJoules);
     Logger.recordOutput("Power/EnergyWh", totalEnergyJoules / 3600.0);
+    Logger.recordOutput("PowerDistribution/TotalPower", totalPower);
+    Logger.recordOutput("PowerDistribution/TotalEnergy", totalEnergyJoules);
 
     // --- Brownout prediction ---
-    brownoutImminent = voltage < PowerConstants.kVoltageLimiting;
+    brownoutImminent = pdhDataValid && voltage < PowerConstants.kVoltageLimiting;
     Logger.recordOutput("Power/BrownoutImminent", brownoutImminent);
   }
 

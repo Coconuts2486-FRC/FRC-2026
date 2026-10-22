@@ -181,7 +181,7 @@ public class RobotContainer {
 
   public void defineAutoCommands() {
 
-    NamedCommands.registerCommand("IntakeDown", Commands.run(() -> m_intake.pivotDown(), m_intake));
+    NamedCommands.registerCommand("IntakeDown", Commands.run(() -> m_intake.adjustablePivotDown(0.8), m_intake));
 
     NamedCommands.registerCommand(
         "Intake",
@@ -214,7 +214,8 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Align",
         DriveCommands.fieldRelativeDriveAtAngle(
-            m_drivebase, () -> 0.0, () -> 0.0, Coordinator::getRobotAngle));
+                m_drivebase, () -> 0.0, () -> 0.0, Coordinator::getRobotAngle)
+            .finallyDo(m_drivebase::stop));
 
     NamedCommands.registerCommand(
         "EnableShootOnMove",
