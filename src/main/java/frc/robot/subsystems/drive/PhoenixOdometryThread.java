@@ -31,6 +31,7 @@ import org.littletonrobotics.junction.Logger;
  * because Phoenix bulk refresh calls cannot mix networks.
  */
 public class PhoenixOdometryThread extends Thread {
+  private static final double MAX_VALID_CAN_LATENCY_SECONDS = 0.1;
   private final Lock signalsLock =
       new ReentrantLock(); // Prevents conflicts when registering signals
   private BaseStatusSignal[] phoenixSignals = new BaseStatusSignal[0];
@@ -136,12 +137,18 @@ public class PhoenixOdometryThread extends Thread {
         //     FPGA timestamps, this solution is imperfect but close
         double timestamp = RobotController.getTime() / 1e6;
         double totalLatency = 0.0;
+        int validLatencyCount = 0;
         for (BaseStatusSignal signal : phoenixSignals) {
-          totalLatency += signal.getTimestamp().getLatency();
+          double latency = signal.getTimestamp().getLatency();
+          if (signal.getStatus().isOK() && isValidCanLatency(latency)) {
+            totalLatency += latency;
+            validLatencyCount++;
+          }
         }
-        if (phoenixSignals.length > 0) {
-          timestamp -= totalLatency / phoenixSignals.length;
+        if (validLatencyCount > 0) {
+          timestamp -= totalLatency / validLatencyCount;
         }
+        Logger.recordOutput("Drive/OdomThread/ValidLatencySignals", validLatencyCount);
 
         // Add new samples to queues
         for (int i = 0; i < phoenixSignals.length; i++) {
@@ -168,5 +175,11 @@ public class PhoenixOdometryThread extends Thread {
         Logger.recordOutput("Drive/OdomThread/DroppedSamples", droppedSamples);
       }
     }
+  }
+
+  static boolean isValidCanLatency(double latencySeconds) {
+    return Double.isFinite(latencySeconds)
+        && latencySeconds >= 0.0
+        && latencySeconds <= MAX_VALID_CAN_LATENCY_SECONDS;
   }
 }

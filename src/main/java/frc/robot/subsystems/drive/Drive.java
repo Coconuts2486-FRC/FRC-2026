@@ -118,6 +118,7 @@ public class Drive extends RBSISubsystem {
       };
   private final SwerveDrivePoseEstimator m_PoseEstimator =
       new SwerveDrivePoseEstimator(kinematics, Rotation2d.kZero, lastModulePositions, Pose2d.kZero);
+  private volatile Rotation2d odometryYaw = Rotation2d.kZero;
 
   // Declare PID controller and siumulation physics
   private final ProfiledPIDController angleController;
@@ -618,7 +619,7 @@ public class Drive extends RBSISubsystem {
     if (Constants.isPureSim()) {
       return simPhysics.getYaw();
     }
-    return imu.getYaw();
+    return imu.isConnected() ? imu.getYaw() : odometryYaw;
   }
 
   /**
@@ -1053,7 +1054,13 @@ public class Drive extends RBSISubsystem {
 
   /** Update the pose estimator at a timestamp */
   void poseEstimatorUpdateWithTime(double t, Rotation2d yaw, SwerveModulePosition[] positions) {
+    odometryYaw = yaw;
     m_PoseEstimator.updateWithTime(t, yaw, positions);
+  }
+
+  double wheelHeadingDeltaRadians(
+      SwerveModulePosition[] previous, SwerveModulePosition[] current) {
+    return kinematics.toTwist2d(previous, current).dtheta;
   }
 
   /** Add a sample to the pose buffer */

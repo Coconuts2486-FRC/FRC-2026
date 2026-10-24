@@ -49,6 +49,10 @@ public final class DriveOdometry extends VirtualSubsystem {
 
   // Per-cycle cached objects (to avoid repeated allocations)
   private final SwerveModulePosition[] odomPositions = new SwerveModulePosition[4];
+  private SwerveModulePosition[] previousYawPositions;
+  private Rotation2d lastOdometryYaw = Rotation2d.kZero;
+  private double lastYawSampleTime = Double.NaN;
+  private double lastWheelYawRate = 0.0;
 
   // Checking whether this is a REPLAY
   private boolean isReplayActive = Logger.hasReplaySource();
@@ -124,6 +128,7 @@ public final class DriveOdometry extends VirtualSubsystem {
     int sampleCount = 0;
     try {
       final var imuInputs = imu.getInputs();
+      Logger.recordOutput("Odometry/UsingWheelHeading", !imuInputs.connected);
 
       // Read refreshed module telemetry and drain each odometry queue once per loop.
       for (var module : modules) {
@@ -161,22 +166,24 @@ public final class DriveOdometry extends VirtualSubsystem {
         final double now = TimeUtil.now();
 
         // keep yaw buffers alive
-        if (imuInputs.connected) {
-          drive.yawBuffersAddSample(now, imuInputs.yawPositionRad, imuInputs.yawRateRadPerSec);
-        }
-
         SwerveModulePosition[] currentPositions = drive.getModulePositions();
+        Rotation2d yaw =
+            yawForSample(
+                now, imuInputs.connected, imuInputs.yawPositionRad, currentPositions);
+        drive.yawBuffersAddSample(
+            now,
+            yaw.getRadians(),
+            imuInputs.connected ? imuInputs.yawRateRadPerSec : lastWheelYawRate);
 
         // Coast state from "now" + current module positions
         drive.updateDisabledCoastState(
             RobotState.isEnabled(),
             RobotState.isDisabled(),
             now,
-            imuInputs.yawRateRadPerSec,
+            imuInputs.connected ? imuInputs.yawRateRadPerSec : lastWheelYawRate,
             currentPositions);
 
-        drive.poseEstimatorUpdateWithTime(
-            now, Rotation2d.fromRadians(imuInputs.yawPositionRad), currentPositions);
+        drive.poseEstimatorUpdateWithTime(now, yaw, currentPositions);
 
         // Keep the external vision-alignment buffer on the same timestamp and pose.
         drive.poseBufferAddSample(now, drive.getPose());
@@ -195,14 +202,17 @@ public final class DriveOdometry extends VirtualSubsystem {
       if (n == 0) {
         if (Constants.getMode() != Mode.REPLAY) {
           final double now = TimeUtil.now();
-          drive.yawBuffersAddSample(now, imuInputs.yawPositionRad, imuInputs.yawRateRadPerSec);
+          drive.yawBuffersAddSample(
+              now,
+              lastOdometryYaw.getRadians(),
+              imuInputs.connected ? imuInputs.yawRateRadPerSec : 0.0);
 
           // Coast state update (no per-sample positions available; use current)
           drive.updateDisabledCoastState(
               RobotState.isEnabled(),
               RobotState.isDisabled(),
               now,
-              imuInputs.yawRateRadPerSec,
+              imuInputs.connected ? imuInputs.yawRateRadPerSec : 0.0,
               drive.getModulePositions());
         }
         drive.setGyroDisconnectedAlert(!imuInputs.connected);
@@ -244,7 +254,7 @@ public final class DriveOdometry extends VirtualSubsystem {
       // If yaw not aligned, pre-fill yaw buffers once and interpolate later
       if (hasYawQueue && !yawIndexAligned) {
         drive.yawBuffersFillFromQueue(yawTs, yawPos);
-      } else if (!hasYawQueue) {
+      } else if (imuInputs.connected) {
         final double now = TimeUtil.now();
         drive.yawBuffersAddSample(now, imuInputs.yawPositionRad, imuInputs.yawRateRadPerSec);
       }
@@ -281,6 +291,11 @@ public final class DriveOdometry extends VirtualSubsystem {
             yawRad = drive.yawBufferSampleOr(t, imuInputs.yawPositionRad);
           }
         }
+        Rotation2d yaw = yawForSample(t, imuInputs.connected, yawRad, odomPositions);
+        yawRad = yaw.getRadians();
+        if (!imuInputs.connected) {
+          drive.yawBuffersAddSample(t, yawRad, lastWheelYawRate);
+        }
 
         // Coast state update IN REPLAY TIMEBASE
         // Yaw rate: if you have a buffered rate, use it; otherwise imuInputs.yawRateRadPerSec is
@@ -289,7 +304,7 @@ public final class DriveOdometry extends VirtualSubsystem {
             RobotState.isEnabled(),
             RobotState.isDisabled(),
             t,
-            imuInputs.yawRateRadPerSec,
+            imuInputs.connected ? imuInputs.yawRateRadPerSec : lastWheelYawRate,
             odomPositions);
 
         // Detailed replay logging is expensive at the odometry sample rate. In tuning mode, retain
@@ -326,7 +341,7 @@ public final class DriveOdometry extends VirtualSubsystem {
         haveLastDist = true;
 
         // Feed estimator at this historical timestamp
-        drive.poseEstimatorUpdateWithTime(t, Rotation2d.fromRadians(yawRad), odomPositions);
+        drive.poseEstimatorUpdateWithTime(t, yaw, odomPositions);
 
         // Maintain pose history in SAME timebase as estimator
         drive.poseBufferAddSample(t, drive.getPose());
@@ -364,5 +379,23 @@ public final class DriveOdometry extends VirtualSubsystem {
       Logger.recordOutput("Odometry/VisionMeasurementsProcessed", visionMeasurementsProcessed);
       Logger.recordOutput("Odometry/BulkRefreshStatus", bulkRefreshStatus.toString());
     }
+  }
+
+  private Rotation2d yawForSample(
+      double timestamp, boolean imuConnected, double imuYawRad, SwerveModulePosition[] positions) {
+    if (imuConnected && Double.isFinite(imuYawRad)) {
+      lastOdometryYaw = Rotation2d.fromRadians(imuYawRad);
+      lastWheelYawRate = 0.0;
+    } else if (previousYawPositions != null) {
+      double delta = drive.wheelHeadingDeltaRadians(previousYawPositions, positions);
+      if (Double.isFinite(delta)) {
+        lastOdometryYaw = lastOdometryYaw.plus(Rotation2d.fromRadians(delta));
+        double dt = timestamp - lastYawSampleTime;
+        lastWheelYawRate = dt > 1e-6 ? delta / dt : 0.0;
+      }
+    }
+    previousYawPositions = positions.clone();
+    lastYawSampleTime = timestamp;
+    return lastOdometryYaw;
   }
 }
